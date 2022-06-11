@@ -1,0 +1,57 @@
+#!/bin/bash
+
+print_usage() {
+  (cat | fold -w 80) << EOF
+Usage: configure [--build=debug|release] [--prefix=<install prefix>]
+
+Configures either a debug or release build, with the given installation prefix.
+
+  --build=BUILD_TYPE   configures either a debug or release build
+  --prefix=PREFIX      installation prefix
+EOF
+  exit 0
+}
+
+build_type="debug"
+cmake_install_prefix="/usr/local"
+
+for arg in "$@"; do
+  case $arg in
+    -h|--help)
+      print_usage
+      shift;
+      ;;
+    --build=*)
+      build_type=${arg#*=}
+      shift
+      ;;
+    --prefix=*)
+      cmake_install_prefix=${arg#*=}
+      shift
+      ;;
+  esac
+done
+
+if [ ! -e build/ ]; then
+  mkdir build
+fi
+
+# Determine the CMake build type from the build type specified by the user. In
+# case an invalid build type is specified, issue an error and exit.
+if [ $build_type = "debug" ]; then
+  cmake_build_type="Debug"
+elif [ $build_type = "release" ]; then
+  cmake_build_type="Release"
+else
+  echo "Invalid build type '${build_type}' specified, specify either 'debug' or 'release'."
+  exit 1
+fi
+
+printf "** Configuring a $build_type build, with installation prefix '$cmake_install_prefix'...\n\n"
+
+cd build && cmake ../ -GNinja \
+  -DCMAKE_MAKE_PROGRAM="$(command -v ninja)" \
+  -DCMAKE_INSTALL_PREFIX="$cmake_install_prefix" \
+  -DCMAKE_BUILD_TYPE="$cmake_build_type"
+
+printf "\n** Configuration complete, to build issue 'ninja -C build'.\n"

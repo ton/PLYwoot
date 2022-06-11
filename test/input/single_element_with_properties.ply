@@ -1,0 +1,13 @@
+ply
+format ascii 1.0
+element vertex 0
+property char a
+property uchar b
+property short c
+property ushort d
+property int e
+property uint f
+property float g
+property double h
+property list uchar int i
+end_header

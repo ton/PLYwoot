@@ -1,0 +1,5 @@
+ply
+format ascii 1.0
+element vertex 0
+element face 0
+end_header

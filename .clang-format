@@ -1,0 +1,44 @@
+---
+BasedOnStyle: Google
+Language: Cpp
+
+NamespaceIndentation: All
+FixNamespaceComments: false
+
+AccessModifierOffset: -2
+ColumnLimit: 100
+
+AlignAfterOpenBracket: AlwaysBreak
+AlignEscapedNewlines: Right
+AlignTrailingComments: true
+
+AllowShortBlocksOnASingleLine: Always
+AllowShortFunctionsOnASingleLine: All
+AllowShortIfStatementsOnASingleLine: WithoutElse
+AllowShortLoopsOnASingleLine: true
+
+AllowAllParametersOfDeclarationOnNextLine: false
+BinPackParameters: false
+
+DerivePointerAlignment: false
+PointerAlignment: Right
+
+BreakBeforeBraces: Allman
+
+KeepEmptyLinesAtTheStartOfBlocks: false
+
+SpaceAfterTemplateKeyword: false
+
+IncludeBlocks: Regroup
+IncludeCategories:
+    - Regex:  '^".*"'
+      Priority: 1
+    - Regex:  '^<lib/.*\.h>'
+      Priority: 2
+    - Regex:  '^<vendor/.*\.h>'
+      Priority: 3
+    - Regex:  '^<(check.h)>'
+      Priority: 4
+    - Regex:  '^<.*\.h>'
+      Priority: 5
+...
