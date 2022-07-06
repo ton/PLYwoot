@@ -1,0 +1,16 @@
+ply
+format ascii 1.0
+element vertex 10
+property char a
+property uchar b
+end_header
+86 255
+87 254
+88 253
+89 252
+90 251
+91 250
+92 249
+93 248
+94 247
+95 246

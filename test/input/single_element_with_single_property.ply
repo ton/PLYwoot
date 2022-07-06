@@ -1,0 +1,6 @@
+ply
+format ascii 1.0
+element vertex 1
+property char a
+end_header
+86

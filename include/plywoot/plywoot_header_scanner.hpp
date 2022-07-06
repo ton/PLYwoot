@@ -193,8 +193,10 @@ namespace plywoot
     // Returns the most recently scanned token.
     Token token() const noexcept { return token_; }
     // Converts the current token string to a number of the given type.
-    template<typename T>
-    T tokenNumber() const noexcept;
+    std::size_t tokenNumber() const noexcept
+    {
+      return static_cast<std::size_t>(std::strtoull(tokenString_.data(), nullptr, 10));
+    }
     // Returns the string representation of the current token.
     std::string tokenString() const noexcept
     {
@@ -231,12 +233,6 @@ namespace plywoot
     // Reference to the wrapped input stream.
     std::istream &is_;
   };
-
-  template<>
-  std::size_t HeaderScanner::tokenNumber() const noexcept
-  {
-    return static_cast<std::size_t>(std::strtoull(tokenString_.data(), nullptr, 10));
-  }
 }
 
 #endif
