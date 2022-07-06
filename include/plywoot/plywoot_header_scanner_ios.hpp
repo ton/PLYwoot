@@ -5,7 +5,7 @@
 
 namespace plywoot
 {
-  std::ostream &operator<<(std::ostream &os, HeaderScanner::Token t)
+  inline std::ostream &operator<<(std::ostream &os, HeaderScanner::Token t)
   {
     switch (t)
     {

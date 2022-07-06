@@ -1,0 +1,15 @@
+ply
+format ascii 1.0
+element vertex 10
+property char a
+end_header
+86
+87
+88
+89
+90
+91
+92
+93
+94
+95

@@ -1,6 +1,7 @@
 #ifndef PLYWOOT_STD_HPP
 #define PLYWOOT_STD_HPP
 
+#include <cstdlib>
 #include <cstring>
 #include <sstream>
 #include <string>
@@ -9,8 +10,42 @@ namespace plywoot
 {
   namespace pstd
   {
+    inline size_t roundup(std::size_t num, std::size_t multiple)
+    {
+      std::size_t mod = num % multiple;
+      return mod == 0 ? num : num + multiple - mod;
+    }
+
+    template<typename T>
+    struct CharToInt
+    {
+      template<typename U>
+      T operator()(U&& u) const { return u; }
+
+      int operator()(signed char c) const { return static_cast<int>(c); }
+      unsigned operator()(unsigned char c) const { return static_cast<unsigned>(c); }
+    };
+
+    template<typename Number>
+    inline Number to_number(char *buf)
+    {
+      return std::atoi(buf);
+    }
+
+    template<>
+    inline float to_number<>(char *buf)
+    {
+      return std::atof(buf);
+    }
+
+    template<>
+    inline double to_number<double>(char *buf)
+    {
+      return std::atof(buf);
+    }
+
     /// Returns whether the given string starts with the given prefix.
-    bool starts_with(const std::string &s, const char *prefix) { return s.rfind(prefix, 0) == 0; }
+    inline bool starts_with(const std::string &s, const char *prefix) { return s.rfind(prefix, 0) == 0; }
 
     /// Simple string-view like type; very basic, do not use for anything serious.
     class string_view

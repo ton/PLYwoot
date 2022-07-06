@@ -12,33 +12,6 @@
 
 namespace plywoot
 {
-  enum class PlyDataType
-  {
-    Char,
-    UChar,
-    Short,
-    UShort,
-    Int,
-    UInt,
-    Float,
-    Double
-  };
-
-  struct PlyProperty
-  {
-    std::string name;
-    PlyDataType type;
-    bool isList{false};
-    PlyDataType sizeType{PlyDataType::Char};
-  };
-
-  struct PlyElement
-  {
-    std::string name;
-    std::size_t size;
-    std::vector<PlyProperty> properties;
-  };
-
   // Base class for all parser exception.
   struct ParserException : Exception
   {
@@ -94,13 +67,6 @@ namespace plywoot
     using Token = HeaderScanner::Token;
 
   public:
-    enum class Format
-    {
-      Ascii,
-      BinaryBigEndian,
-      BinaryLittleEndian,
-    };
-
     HeaderParser(std::istream &is) : scanner_{is}
     {
       accept(Token::MagicNumber);
@@ -110,7 +76,7 @@ namespace plywoot
       switch (scanner_.nextToken())
       {
         case Token::Ascii:
-          format_ = Format::Ascii;
+          format_ = PlyFormat::Ascii;
           break;
         case Token::BinaryLittleEndian:
         case Token::BinaryBigEndian:
@@ -143,6 +109,7 @@ namespace plywoot
     }
 
     const std::vector<PlyElement> &elements() const { return elements_; }
+    PlyFormat format() const { return format_; }
 
   private:
     // Asks the scanner for the next token, and verifies that it matches the
@@ -186,7 +153,7 @@ namespace plywoot
       std::string name{scanner_.tokenString()};
 
       accept(Token::Number);
-      std::size_t size{scanner_.tokenNumber<std::size_t>()};
+      std::size_t size{scanner_.tokenNumber()};
 
       PlyElement result{std::move(name), size, {}};
       while (scanner_.nextToken() == Token::Property)
@@ -217,7 +184,7 @@ namespace plywoot
     }
 
     // Format the data is stored in.
-    Format format_;
+    PlyFormat format_;
     // PLY elements defined in the header.
     std::vector<PlyElement> elements_;
     // Reference to the wrapped input stream.

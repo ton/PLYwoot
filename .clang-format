@@ -33,12 +33,10 @@ IncludeBlocks: Regroup
 IncludeCategories:
     - Regex:  '^".*"'
       Priority: 1
-    - Regex:  '^<lib/.*\.h>'
+    - Regex:  '^<plywoot/.*>'
       Priority: 2
-    - Regex:  '^<vendor/.*\.h>'
+    - Regex:  '^<catch2/.*>'
       Priority: 3
-    - Regex:  '^<(check.h)>'
-      Priority: 4
     - Regex:  '^<.*\.h>'
-      Priority: 5
+      Priority: 4
 ...
