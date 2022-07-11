@@ -1,0 +1,7 @@
+ply
+format ascii 1.0
+comment First comment...
+element vertex 1
+property char a
+end_header
+86
