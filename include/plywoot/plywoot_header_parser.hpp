@@ -89,8 +89,7 @@ namespace plywoot
       // Ignore comment section for now.
       // TODO(ton): better to store the comments so that we can recreate the
       // original input when writing is implemented.
-      while (scanner_.nextToken() == Token::Comment)
-        ;
+      while (scanner_.nextToken() == Token::Comment) { scanner_.skipLines(1); }
 
       // Parse elements.
       do {

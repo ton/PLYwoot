@@ -305,3 +305,19 @@ TEST_CASE(
         [](unsigned char u, X x) { return u == x.u; }));
   }
 }
+
+TEST_CASE("Read a PLY file with a comment section", "[ascii][comments]")
+{
+  std::ifstream ifs{"test/input/single_line_comment.ply"};
+  const plywoot::IStream plyFile{ifs};
+  REQUIRE(plyFile.elements().size() == 1);
+  CHECK(plyFile.elements().front().name == "vertex");
+}
+
+TEST_CASE("Read a PLY file with a comment section consisting of multiple lines", "[ascii][comments]")
+{
+  std::ifstream ifs{"test/input/multi_line_comment.ply"};
+  const plywoot::IStream plyFile{ifs};
+  REQUIRE(plyFile.elements().size() == 1);
+  CHECK(plyFile.elements().front().name == "vertex");
+}

@@ -95,6 +95,19 @@ namespace plywoot
       UShort,
     };
 
+    /// Skips all input data and puts the read head just after the n-th newline
+    /// character it encounters, or at EOF in case no such newline character is
+    /// present in the input stream.
+    void skipLines(std::size_t n)
+    {
+      const char *last{buffer_.data() + buffer_.size()};
+      while (c_ && n > 0)
+      {
+        c_ = static_cast<const char *>(std::memchr(c_, '\n', (last - c_)));
+        --n;
+      }
+    }
+
     /// Returns the next token type in the input stream.
     Token nextToken() noexcept
     {
