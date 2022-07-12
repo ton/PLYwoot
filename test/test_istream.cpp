@@ -269,6 +269,45 @@ TEST_CASE("Read multiple elements with two properties from an ASCII PLY file", "
   }
 }
 
+TEST_CASE("Retrieve a element and property definition from an IStream given an element name", "[istream][ascii]")
+{
+  std::ifstream ifs{"test/input/cube.ply"};
+  const plywoot::IStream plyFile{ifs};
+
+  plywoot::PlyElement faceElement;
+  bool isFaceElementFound{false};
+  std::tie(faceElement, isFaceElementFound) = plyFile.element("face");
+
+  CHECK(isFaceElementFound);
+  CHECK(faceElement.name == "face");
+  CHECK(faceElement.size == 12);
+
+  plywoot::PlyProperty vertexIndicesProperty;
+  bool isVertexIndicesPropertyFound{false};
+  std::tie(vertexIndicesProperty, isVertexIndicesPropertyFound) = faceElement.property("vertex_indices");
+
+  CHECK(vertexIndicesProperty.name == "vertex_indices");
+  CHECK(vertexIndicesProperty.type == plywoot::PlyDataType::Int);
+  CHECK(vertexIndicesProperty.isList);
+  CHECK(vertexIndicesProperty.sizeType == plywoot::PlyDataType::UChar);
+
+  plywoot::PlyElement vertexElement;
+  bool isVertexElementFound{false};
+  std::tie(vertexElement, isVertexElementFound) = plyFile.element("vertex");
+
+  CHECK(isVertexElementFound);
+  CHECK(vertexElement.name == "vertex");
+  CHECK(vertexElement.size == 8);
+  CHECK(vertexElement.properties.size() == 3);
+
+  plywoot::PlyElement fooElement;
+  bool isFooElementFound{false};
+  std::tie(fooElement, isFooElementFound) = plyFile.element("foo");
+
+  CHECK(fooElement.size == 0);
+  CHECK(!isFooElementFound);
+}
+
 TEST_CASE(
     "Read multiple elements with two properties from an ASCII PLY file with type casts",
     "[istream][ascii][casts]")
