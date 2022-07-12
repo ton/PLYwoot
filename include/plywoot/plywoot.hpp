@@ -1,6 +1,7 @@
 #ifndef PLYWOOT_HPP
 #define PLYWOOT_HPP
 
+#include <algorithm>
 #include <cstdint>
 #include <functional>
 #include <iostream>
@@ -98,6 +99,20 @@ namespace plywoot
     std::size_t size;
     std::vector<PlyProperty> properties;
 
+    /// Returns a pair where the first element is a copy of the property with
+    /// the given name in case it exists. The second element is a Boolean that
+    /// indicates whether the requested property was found. In case a requested
+    /// property was not found for this element, a default constructed property
+    /// is returned.
+    std::pair<PlyProperty, bool> property(const std::string &propertyName) const
+    {
+      const auto it = std::find_if(
+          properties.begin(), properties.end(),
+          [&](const PlyProperty &p) { return p.name == propertyName; });
+      return it != properties.end() ? std::pair<PlyProperty, bool>{*it, true}
+                                    : std::pair<PlyProperty, bool>{{}, false};
+    }
+
     inline friend bool operator==(const PlyElement &x, const PlyElement &y)
     {
       return x.size == y.size && x.name == y.name && x.properties == y.properties;
@@ -111,7 +126,6 @@ namespace plywoot
 #include "plywoot_header_scanner.hpp"
 #include "plywoot_std.hpp"
 
-#include <algorithm>
 #include <iostream>
 
 namespace plywoot
@@ -133,6 +147,19 @@ namespace plywoot
     /// Returns all elements associated with this PLY file.
     std::vector<PlyElement> elements() { return elements_; }
     const std::vector<PlyElement> &elements() const { return elements_; }
+
+    /// Returns a pair where the first element is a copy of the element with the
+    /// given name in case it exists. The second element is a boolean that
+    /// indicates whether the requested element was found. In case a requested
+    /// element was not found in the input data, a default constructed element
+    /// is returned.
+    std::pair<PlyElement, bool> element(const std::string &name) const
+    {
+      const auto it = std::find_if(
+          elements_.begin(), elements_.end(), [&](const PlyElement &e) { return e.name == name; });
+      return it != elements_.end() ? std::pair<PlyElement, bool>{*it, true}
+                                   : std::pair<PlyElement, bool>{{}, false};
+    }
 
     template<typename T, typename... PropertyTypes>
     std::vector<T> read(const PlyElement &element) const
@@ -531,7 +558,6 @@ namespace plywoot
       os << pstd::CharToInt<Number>{}(*reinterpret_cast<const Number *>(data + alignedOffset));
       return alignedOffset + sizeof(Number);
     }
-
 
     using ElementWriteClosure = std::function<void(std::ostream &, const PlyElement &)>;
 
