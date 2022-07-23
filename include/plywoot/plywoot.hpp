@@ -189,11 +189,9 @@ namespace plywoot
     std::vector<T> readAscii(const PlyElement &element) const
     {
       is_.seekg(headerOffset_);
-      const auto first{elements().begin()};
+      auto first{elements().begin()};
       const auto last{elements().end()};
-      while (first != last && *first != element) { skipLines(first->size); }
-
-      readCharacter();
+      while (first != last && *first != element) skipLines(first++->size);
 
       std::vector<T> result(element.size);
       for (std::size_t i{0}; i < element.size; ++i)
@@ -244,11 +242,10 @@ namespace plywoot
     std::vector<T> readAscii(const PlyElement &element) const
     {
       is_.seekg(headerOffset_);
-      const auto first{elements().begin()};
+      auto first{elements().begin()};
       const auto last{elements().end()};
-      while (first != last && *first != element) { skipLines(first->size); }
+      while (first != last && *first != element) { skipLines(first++->size); }
 
-      readCharacter();
       std::vector<T> result(element.size);
       for (std::size_t i{0}; i < element.size; ++i)
       {
@@ -323,7 +320,20 @@ namespace plywoot
       c_ = buffer_;
     }
 
-    void skipLines(std::size_t n) const {}
+    /// Skips `n` lines in the input, places the read head at the first
+    /// character after the `n`-th newline character that as found in the input,
+    /// or in case that character does not exist, at EOF.
+    void skipLines(std::size_t n) const
+    {
+      if (c_ >= buffer_ + bufferedBytes_) { bufferData(); }
+      while (*c_ != EOF && n > 0)
+      {
+        auto first = static_cast<char *>(std::memchr(c_, '\n', bufferedBytes_ - (c_ - buffer_)));
+        if (first == nullptr || first == (buffer_ + bufferedBytes_ - 1)) { bufferData(); }
+        else { c_ = first + 1; }
+        --n;
+      }
+    }
 
     std::istream &is_;
     std::istream::pos_type headerOffset_;

@@ -269,7 +269,9 @@ TEST_CASE("Read multiple elements with two properties from an ASCII PLY file", "
   }
 }
 
-TEST_CASE("Retrieve a element and property definition from an IStream given an element name", "[istream][ascii]")
+TEST_CASE(
+    "Retrieve a element and property definition from an IStream given an element name",
+    "[istream][ascii]")
 {
   std::ifstream ifs{"test/input/cube.ply"};
   const plywoot::IStream plyFile{ifs};
@@ -284,7 +286,8 @@ TEST_CASE("Retrieve a element and property definition from an IStream given an e
 
   plywoot::PlyProperty vertexIndicesProperty;
   bool isVertexIndicesPropertyFound{false};
-  std::tie(vertexIndicesProperty, isVertexIndicesPropertyFound) = faceElement.property("vertex_indices");
+  std::tie(vertexIndicesProperty, isVertexIndicesPropertyFound) =
+      faceElement.property("vertex_indices");
 
   CHECK(vertexIndicesProperty.name == "vertex_indices");
   CHECK(vertexIndicesProperty.type == plywoot::PlyDataType::Int);
@@ -306,6 +309,62 @@ TEST_CASE("Retrieve a element and property definition from an IStream given an e
 
   CHECK(fooElement.size == 0);
   CHECK(!isFooElementFound);
+}
+
+TEST_CASE("Test out of order retrieval of element data", "[istream][ascii]")
+{
+  std::ifstream ifs{"test/input/cube_faces_before_vertices.ply"};
+  const plywoot::IStream plyFile{ifs};
+
+  plywoot::PlyElement faceElement;
+  bool isFaceElementFound{false};
+  std::tie(faceElement, isFaceElementFound) = plyFile.element("face");
+  REQUIRE(isFaceElementFound);
+
+  plywoot::PlyElement vertexElement;
+  bool isVertexElementFound{false};
+  std::tie(vertexElement, isVertexElementFound) = plyFile.element("vertex");
+  REQUIRE(isVertexElementFound);
+
+  struct Vertex
+  {
+    float x, y, z;
+
+    bool operator==(const Vertex &v) const { return x == v.x && y == v.y && z == v.z; }
+  };
+
+  const std::vector<Vertex> result = plyFile.read<Vertex>(vertexElement);
+  const std::vector<Vertex> expected = {{0, 0, 0}, {1, 0, 0}, {1, 1, 0}, {0, 1, 0},
+                                        {0, 0, 1}, {1, 0, 1}, {1, 1, 1}, {0, 1, 1}};
+  CHECK(result == expected);
+}
+
+TEST_CASE("Test out of order retrieval of element data", "[istream][ascii][casts]")
+{
+  std::ifstream ifs{"test/input/cube_faces_before_vertices.ply"};
+  const plywoot::IStream plyFile{ifs};
+
+  plywoot::PlyElement faceElement;
+  bool isFaceElementFound{false};
+  std::tie(faceElement, isFaceElementFound) = plyFile.element("face");
+  REQUIRE(isFaceElementFound);
+
+  plywoot::PlyElement vertexElement;
+  bool isVertexElementFound{false};
+  std::tie(vertexElement, isVertexElementFound) = plyFile.element("vertex");
+  REQUIRE(isVertexElementFound);
+
+  struct Vertex
+  {
+    double x, y, z;
+
+    bool operator==(const Vertex &v) const { return x == v.x && y == v.y && z == v.z; }
+  };
+
+  const std::vector<Vertex> result = plyFile.read<Vertex, double, double, double>(vertexElement);
+  const std::vector<Vertex> expected = {{0, 0, 0}, {1, 0, 0}, {1, 1, 0}, {0, 1, 0},
+                                        {0, 0, 1}, {1, 0, 1}, {1, 1, 1}, {0, 1, 1}};
+  CHECK(result == expected);
 }
 
 TEST_CASE(
@@ -353,7 +412,9 @@ TEST_CASE("Read a PLY file with a comment section", "[ascii][comments]")
   CHECK(plyFile.elements().front().name == "vertex");
 }
 
-TEST_CASE("Read a PLY file with a comment section consisting of multiple lines", "[ascii][comments]")
+TEST_CASE(
+    "Read a PLY file with a comment section consisting of multiple lines",
+    "[ascii][comments]")
 {
   std::ifstream ifs{"test/input/multi_line_comment.ply"};
   const plywoot::IStream plyFile{ifs};
