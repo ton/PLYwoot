@@ -38,17 +38,20 @@ namespace plywoot
   // Exception thrown in case the input contains an unexpected token.
   struct UnexpectedToken : ParserException
   {
-    UnexpectedToken(HeaderScanner::Token expected, HeaderScanner::Token found)
+    UnexpectedToken(
+        HeaderScanner::Token expected,
+        HeaderScanner::Token found,
+        const std::string &tokenString)
         : ParserException(
               "unexpected token '" + pstd::to_string(found) + "' found, expected '" +
-              pstd::to_string(expected) + "' instead"),
+              pstd::to_string(expected) + "' (=" + tokenString + ") instead"),
           expected_{expected},
           found_{found}
     {
     }
 
-    UnexpectedToken(HeaderScanner::Token expected)
-        : UnexpectedToken{expected, HeaderScanner::Token::Eof}
+    UnexpectedToken(HeaderScanner::Token found, const std::string &tokenString)
+        : UnexpectedToken{HeaderScanner::Token::Eof, found, tokenString}
     {
     }
 
@@ -101,7 +104,7 @@ namespace plywoot
             elements_.push_back(parseElement());
             break;
           default:
-            throw UnexpectedToken(scanner_.token());
+            throw UnexpectedToken(scanner_.token(), scanner_.tokenString());
             break;
         }
       } while (scanner_.token() != Token::EndHeader);
@@ -115,7 +118,10 @@ namespace plywoot
     // given expected token. In case it fails, throws `UnexpectedToken`.
     void accept(Token expected)
     {
-      if (scanner_.nextToken() != expected) { throw UnexpectedToken(expected, scanner_.token()); }
+      if (scanner_.nextToken() != expected)
+      {
+        throw UnexpectedToken(expected, scanner_.token(), scanner_.tokenString());
+      }
     }
 
     // Converts a scanner token type to a data type, in case the token
@@ -141,7 +147,8 @@ namespace plywoot
         case Token::Double:
           return PlyDataType::Double;
         default:
-          throw UnexpectedToken(t);
+          // TODO(ton): expected is a range of tokens...
+          throw UnexpectedToken(Token::Char, t, scanner_.tokenString());
       }
     }
 
