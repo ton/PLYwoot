@@ -292,6 +292,7 @@ namespace plywoot
       const auto last = elements().end();
       if (std::find(first, last, element) != last)
       {
+        // Calculate the number of properties to skip from the input file.
         if (format_ == PlyFormat::Ascii)
         {
           readAscii<PropertyType, PropertyTypes...>(static_cast<std::uint8_t *>(dest), element);
@@ -320,6 +321,15 @@ namespace plywoot
       for (std::size_t i{0}; i < element.size(); ++i)
       {
         dest = readAsciiCastedProperties<Casts...>(dest);
+
+        // In case the number of properties in the element exceeds the number of
+        // properties to read, ignore the remainder of the element.
+        // TODO(ton): maybe we need to make this more explicit; what should the
+        // default behavior be? Skipping or adding without a cast?
+        if (sizeof...(Casts) < element.properties().size())
+        {
+          skipLines(1);
+        }
       }
 
       return dest;
