@@ -116,7 +116,7 @@ TEST_CASE("Write PLY file with a single element with a list property", "[ostream
   const auto sizeType{plywoot::PlyDataType::Char};
   const std::size_t sizeHint{3};
 
-  const plywoot::PlyProperty faceIndices{"vertex_indices", plywoot::PlyDataType::Int, true, sizeType, sizeHint};
+  const plywoot::PlyProperty faceIndices{"vertex_indices", plywoot::PlyDataType::Int, sizeType, sizeHint};
   const plywoot::PlyElement element{"face", 10, {faceIndices}};
 
   std::vector<int> values;

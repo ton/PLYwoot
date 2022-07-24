@@ -58,16 +58,32 @@ namespace plywoot
 
   struct PlyProperty
   {
-    std::string name;
-    PlyDataType type;
+    PlyProperty() = default;
+    PlyProperty(std::string name, PlyDataType type) : name_{std::move(name)}, type_{type} {}
+    PlyProperty(std::string name, PlyDataType type, PlyDataType sizeType, std::size_t sizeHint = 0)
+        : name_{std::move(name)},
+          type_{type},
+          isList_{true},
+          sizeType_{sizeType},
+          sizeHint_{sizeHint}
+    {
+    }
 
-    bool isList{false};
-    PlyDataType sizeType{PlyDataType::Char};
-    std::size_t sizeHint{0};
+    /// Returns the name of this property.
+    const std::string &name() const { return name_; }
+    /// Returns the type of this property.
+    PlyDataType type() const { return type_; }
+    /// Returns whether this property represents a list property.
+    bool isList() const { return isList_; }
+    /// Returns the size type of this property.
+    PlyDataType sizeType() const { return sizeType_; }
+    /// Returns the size hint set for this property, in case no such hint is
+    /// set, this returns zero.
+    std::size_t sizeHint() const { return sizeHint_; }
 
     size_t numBytes() const
     {
-      switch (type)
+      switch (type_)
       {
         case PlyDataType::Char:
         case PlyDataType::UChar:
@@ -87,18 +103,40 @@ namespace plywoot
     inline friend bool operator==(const PlyProperty &x, const PlyProperty &y)
     {
       // Note; the size hint is not part of the identity of a property.
-      return x.type == y.type && x.isList == y.isList && x.sizeType == y.sizeType &&
-             x.name == y.name;
+      return x.type_ == y.type_ && x.isList_ == y.isList_ && x.sizeType_ == y.sizeType_ &&
+             x.name_ == y.name_;
     }
 
     inline friend bool operator!=(const PlyProperty &x, const PlyProperty &y) { return !(x == y); }
+
+  private:
+    std::string name_;
+    PlyDataType type_;
+
+    bool isList_{false};
+    PlyDataType sizeType_{PlyDataType::Char};
+    std::size_t sizeHint_{0};
   };
 
   struct PlyElement
   {
-    std::string name;
-    std::size_t size;
-    std::vector<PlyProperty> properties;
+    /// Default constructor.
+    PlyElement() = default;
+    /// Constructor taking a name and size for this element.
+    PlyElement(std::string name, std::size_t size) : name_{std::move(name)}, size_{size} {}
+    /// Constructor taking a name and size for this element, as well as a list
+    /// of initial properties to associate with this element.
+    PlyElement(std::string name, std::size_t size, std::vector<PlyProperty> properties)
+        : name_{std::move(name)}, size_{size}, properties_{std::move(properties)}
+    {
+    }
+
+    /// Returns the name of this element.
+    const std::string &name() const { return name_; }
+    /// Returns the size of this element.
+    std::size_t size() const { return size_; }
+    /// Returns the properties associated with this element.
+    const std::vector<PlyProperty> &properties() const { return properties_; }
 
     /// Returns a pair where the first element is a copy of the property with
     /// the given name in case it exists. The second element is a Boolean that
@@ -108,17 +146,29 @@ namespace plywoot
     std::pair<PlyProperty, bool> property(const std::string &propertyName) const
     {
       const auto it = std::find_if(
-          properties.begin(), properties.end(),
-          [&](const PlyProperty &p) { return p.name == propertyName; });
-      return it != properties.end() ? std::pair<PlyProperty, bool>{*it, true}
-                                    : std::pair<PlyProperty, bool>{{}, false};
+          properties_.begin(), properties_.end(),
+          [&](const PlyProperty &p) { return p.name() == propertyName; });
+      return it != properties_.end() ? std::pair<PlyProperty, bool>{*it, true}
+                                     : std::pair<PlyProperty, bool>{{}, false};
+    }
+
+    template<typename... Args>
+    PlyProperty &addProperty(Args &&...args)
+    {
+      properties_.emplace_back(std::forward<Args>(args)...);
+      return properties_.back();
     }
 
     inline friend bool operator==(const PlyElement &x, const PlyElement &y)
     {
-      return x.size == y.size && x.name == y.name && x.properties == y.properties;
+      return x.size_ == y.size_ && x.name_ == y.name_ && x.properties_ == y.properties_;
     }
     inline friend bool operator!=(const PlyElement &x, const PlyElement &y) { return !(x == y); }
+
+  private:
+    std::string name_;
+    std::size_t size_;
+    std::vector<PlyProperty> properties_;
   };
 }
 
@@ -168,7 +218,8 @@ namespace plywoot
     std::pair<PlyElement, bool> element(const std::string &name) const
     {
       const auto it = std::find_if(
-          elements_.begin(), elements_.end(), [&](const PlyElement &e) { return e.name == name; });
+          elements_.begin(), elements_.end(),
+          [&](const PlyElement &e) { return e.name() == name; });
       return it != elements_.end() ? std::pair<PlyElement, bool>{*it, true}
                                    : std::pair<PlyElement, bool>{{}, false};
     }
@@ -182,7 +233,7 @@ namespace plywoot
     template<typename T>
     std::vector<T> read(const PlyElement &element) const
     {
-      std::vector<T> result(element.size);
+      std::vector<T> result(element.size());
       read(result.data(), element);
       return result;
     }
@@ -196,7 +247,7 @@ namespace plywoot
     template<typename T, typename PropertyType, typename... PropertyTypes>
     std::vector<T> read(const PlyElement &element) const
     {
-      std::vector<T> result(element.size);
+      std::vector<T> result(element.size());
       read<T, PropertyType, PropertyTypes...>(result.data(), element);
       return result;
     }
@@ -264,9 +315,9 @@ namespace plywoot
       is_.seekg(headerOffset_);
       auto first{elements().begin()};
       const auto last{elements().end()};
-      while (first != last && *first != element) { skipLines(first++->size); }
+      while (first != last && *first != element) { skipLines(first++->size()); }
 
-      for (std::size_t i{0}; i < element.size; ++i)
+      for (std::size_t i{0}; i < element.size(); ++i)
       {
         dest = readAsciiCastedProperties<Casts...>(dest);
       }
@@ -280,16 +331,16 @@ namespace plywoot
       is_.seekg(headerOffset_);
       auto first{elements().begin()};
       const auto last{elements().end()};
-      while (first != last && *first != element) skipLines(first++->size);
+      while (first != last && *first != element) skipLines(first++->size());
 
       std::size_t offset{0};
-      for (std::size_t i{0}; i < element.size; ++i)
+      for (std::size_t i{0}; i < element.size(); ++i)
       {
-        for (const PlyProperty &property : element.properties)
+        for (const PlyProperty &property : element.properties())
         {
-          const size_t n{property.isList ? readNumber<std::size_t>() : 1};
+          const size_t n{property.isList() ? readNumber<std::size_t>() : 1};
 
-          switch (property.type)
+          switch (property.type())
           {
             case PlyDataType::Char:
               offset = storeNumbers<std::int8_t>(n, dest, offset);
@@ -441,9 +492,9 @@ namespace plywoot
     template<typename T>
     void add(const PlyElement &element, const std::vector<T> &values)
     {
-      for (const PlyProperty &p : element.properties)
+      for (const PlyProperty &p : element.properties())
       {
-        if (p.isList && p.sizeHint == 0) { throw MissingSizeHint(p.name); }
+        if (p.isList() && p.sizeHint() == 0) { throw MissingSizeHint(p.name()); }
       }
 
       elementWriteClosures_.emplace_back(
@@ -459,9 +510,9 @@ namespace plywoot
     template<typename T, typename PropertyType, typename... PropertyTypes>
     void add(const PlyElement &element, const std::vector<T> &values)
     {
-      for (const PlyProperty &p : element.properties)
+      for (const PlyProperty &p : element.properties())
       {
-        if (p.isList && p.sizeHint == 0) { throw MissingSizeHint(p.name); }
+        if (p.isList() && p.sizeHint() == 0) { throw MissingSizeHint(p.name()); }
       }
 
       elementWriteClosures_.emplace_back(
@@ -505,16 +556,16 @@ namespace plywoot
       for (const auto &elementClosurePair : elementWriteClosures_)
       {
         const PlyElement &element{elementClosurePair.first};
-        os << "element " << element.name << ' ' << element.size << '\n';
+        os << "element " << element.name() << ' ' << element.size() << '\n';
 
-        for (const PlyProperty &property : element.properties)
+        for (const PlyProperty &property : element.properties())
         {
-          if (property.isList)
+          if (property.isList())
           {
-            os << "property list " << property.sizeType << ' ' << property.type << ' '
-               << property.name << '\n';
+            os << "property list " << property.sizeType() << ' ' << property.type() << ' '
+               << property.name() << '\n';
           }
-          else { os << "property " << property.type << ' ' << property.name << '\n'; }
+          else { os << "property " << property.type() << ' ' << property.name() << '\n'; }
         }
       }
 
@@ -541,19 +592,18 @@ namespace plywoot
       {
         const std::uint8_t *src{reinterpret_cast<const std::uint8_t *>(&value)};
 
-        for (std::size_t i{0}; i < element.properties.size(); ++i)
+        std::size_t i{0};
+        for (const PlyProperty &property : element.properties())
         {
-          const PlyProperty &property{element.properties[i]};
-
           size_t n{1};
-          if (property.isList)
+          if (property.isList())
           {
-            assert(property.sizeHint > 0);
-            os << int(property.sizeHint) << ' ';
-            n = property.sizeHint;
+            assert(property.sizeHint() > 0);
+            os << int(property.sizeHint()) << ' ';
+            n = property.sizeHint();
           }
 
-          switch (property.type)
+          switch (property.type())
           {
             case PlyDataType::Char:
               src = streamNumbers<std::int8_t>(os, n, src);
@@ -581,7 +631,7 @@ namespace plywoot
               break;
           }
 
-          if (i < element.properties.size() - 1) { os.put(' '); }
+          if (i++ < element.properties().size() - 1) { os.put(' '); }
         }
 
         os.put('\n');
@@ -607,7 +657,7 @@ namespace plywoot
         std::size_t propertyIndex)
     {
       src = static_cast<const std::uint8_t *>(pstd::align(src, alignof(T)));
-      switch (element.properties[propertyIndex].type)
+      switch (element.properties()[propertyIndex].type())
       {
         // Note all data types that 'fit' are just casted to int here, to
         // prevent having issues with 'char' being interpreted as ASCII

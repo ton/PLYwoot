@@ -161,29 +161,28 @@ namespace plywoot
       accept(Token::Number);
       std::size_t size{scanner_.tokenNumber()};
 
-      PlyElement result{std::move(name), size, {}};
+      PlyElement result{std::move(name), size};
       while (scanner_.nextToken() == Token::Property)
       {
-        PlyProperty property;
-
-        switch (scanner_.nextToken())
-        {
-          case Token::List:
-            property.isList = true;
-            property.sizeType = tokenToDataType(scanner_.nextToken());
-            property.type = tokenToDataType(scanner_.nextToken());
-            break;
-          default:
-            property.type = tokenToDataType(scanner_.token());
-            break;
-        }
+        PlyDataType type;
+        PlyDataType sizeType;
 
         // TODO(ton): probably reserved keywords may be used as names as well,
         // just accept every token here, even numbers?
-        accept(Token::Identifier);
-        property.name = scanner_.tokenString();
-
-        result.properties.push_back(std::move(property));
+        switch (scanner_.nextToken())
+        {
+          case Token::List:
+            sizeType = tokenToDataType(scanner_.nextToken());
+            type = tokenToDataType(scanner_.nextToken());
+            accept(Token::Identifier);
+            result.addProperty(scanner_.tokenString(), type, sizeType);
+            break;
+          default:
+            type = tokenToDataType(scanner_.token());
+            accept(Token::Identifier);
+            result.addProperty(scanner_.tokenString(), type);
+            break;
+        }
       }
 
       return result;
