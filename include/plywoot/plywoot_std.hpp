@@ -10,10 +10,38 @@ namespace plywoot
 {
   namespace pstd
   {
-    inline size_t roundup(std::size_t num, std::size_t multiple)
+    inline std::size_t roundup(std::size_t num, std::size_t multiple)
     {
       std::size_t mod = num % multiple;
       return mod == 0 ? num : num + multiple - mod;
+    }
+
+    /// Aligns the given input pointer. Implementation is taken from GCCs
+    /// `std::align` implementation. The given alignment value should be a power
+    /// of two.
+    inline void *align(void *ptr, std::size_t alignment)
+    {
+      // Some explanation on the code below; -x is x in two's complement, which
+      // means that an alignment value x of power two is converted to (~x + 1).
+      // For example, for an alignment value of 4, this turns 0b000100 into
+      // 0b111100. The factor (uintptr + alignment - 1u) guarantees that the
+      // alignment bit is set unless (uintptr % alignment == 0).
+      const auto uintptr = reinterpret_cast<uintptr_t>(ptr);
+      return reinterpret_cast<void *>((uintptr + alignment - 1u) & -alignment);
+    }
+
+    /// Aligns the given input pointer. Implementation is taken from GCCs
+    /// `std::align` implementation. The given alignment value should be a power
+    /// of two.
+    inline const void *align(const void *ptr, std::size_t alignment)
+    {
+      // Some explanation on the code below; -x is x in two's complement, which
+      // means that an alignment value x of power two is converted to (~x + 1).
+      // For example, for an alignment value of 4, this turns 0b000100 into
+      // 0b111100. The factor (uintptr + alignment - 1u) guarantees that the
+      // alignment bit is set unless (uintptr % alignment == 0).
+      const auto uintptr = reinterpret_cast<uintptr_t>(ptr);
+      return reinterpret_cast<const void *>((uintptr + alignment - 1u) & -alignment);
     }
 
     template<typename T>
