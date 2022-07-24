@@ -422,3 +422,28 @@ TEST_CASE(
   REQUIRE(plyFile.elements().size() == 1);
   CHECK(plyFile.elements().front().name() == "vertex");
 }
+
+TEST_CASE(
+    "Read elements from a PLY file by only partially retrieving all properties set for it",
+    "[istream][ascii]")
+{
+  std::ifstream ifs{"test/input/cube_with_material_data.ply"};
+  const plywoot::IStream plyFile{ifs};
+
+  plywoot::PlyElement vertexElement;
+  bool isVertexElementFound{false};
+  std::tie(vertexElement, isVertexElementFound) = plyFile.element("vertex");
+  REQUIRE(isVertexElementFound);
+
+  struct Vertex
+  {
+    float x, y, z;
+
+    bool operator==(const Vertex &v) const { return x == v.x && y == v.y && z == v.z; }
+  };
+
+  const std::vector<Vertex> result = plyFile.read<Vertex, float, float, float>(vertexElement);
+  const std::vector<Vertex> expected = {{0, 0, 0}, {1, 0, 0}, {1, 1, 0}, {0, 1, 0},
+                                        {0, 0, 1}, {1, 0, 1}, {1, 1, 1}, {0, 1, 1}};
+  CHECK(result == expected);
+}
