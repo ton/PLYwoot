@@ -2,6 +2,7 @@
 #define PLYWOOT_HPP
 
 #include <algorithm>
+#include <cassert>
 #include <cstdint>
 #include <functional>
 #include <iostream>
@@ -136,6 +137,17 @@ namespace plywoot
     UnexpectedEof() : ParserException("unexpected end of file") {}
   };
 
+  /// Missing size hint exception is thrown in case the user request to write
+  /// elements with lists that have no size hint size. For now, it is not
+  /// possible to write dynamic lists.
+  struct MissingSizeHint : Exception
+  {
+    MissingSizeHint(const std::string &propertyName)
+        : Exception(std::string{"missing size hint for property '"} + propertyName + "'")
+    {
+    }
+  };
+
   class IStream
   {
   public:
@@ -161,17 +173,79 @@ namespace plywoot
                                    : std::pair<PlyElement, bool>{{}, false};
     }
 
-    template<typename T, typename... PropertyTypes>
+    /// Returns the format of the input PLY data stream.
+    PlyFormat format() const { return format_; }
+
+    /// Reads the given element from the PLY input data stream, expecting
+    /// elements where every property has exactly the same type as the
+    /// corresponding properties of objects of type T.
+    template<typename T>
     std::vector<T> read(const PlyElement &element) const
+    {
+      std::vector<T> result(element.size);
+      read(result.data(), element);
+      return result;
+    }
+
+    /// Reads the given element from the PLY input data stream, expecting
+    /// elements where every property can be casted to the given property type
+    /// in the template argument list.
+    // TODO(ton): test what happens in case the number of property types given
+    // does not match the number of properties in the element; the remaining
+    // properties will be read 'uncasted'.
+    template<typename T, typename PropertyType, typename... PropertyTypes>
+    std::vector<T> read(const PlyElement &element) const
+    {
+      std::vector<T> result(element.size);
+      read<T, PropertyType, PropertyTypes...>(result.data(), element);
+      return result;
+    }
+
+    /// Reads the given element from the PLY input data stream, storing data in
+    /// the given destination buffer `dest` using the types defined by the
+    /// element. This assumes that the output buffer can hold the required
+    /// amount of data; failing to satisfy this precondition results in
+    /// undefined behavior.
+    // TODO(ton): probably better to add another parameter 'size' to guard
+    // against overwriting the input buffer.
+    // TODO(ton): test what happens in case the number of property types given
+    // in the argument list *exceeds* the number of properties associated with
+    // the element.
+    void read(void *dest, const PlyElement &element) const
     {
       const auto first = elements().begin();
       const auto last = elements().end();
       if (std::find(first, last, element) != last)
       {
-        if (format_ == PlyFormat::Ascii) { return readAscii<T, PropertyTypes...>(element); }
+        if (format_ == PlyFormat::Ascii) { readAscii(static_cast<std::uint8_t *>(dest), element); }
       }
+    }
 
-      return {};
+    /// Reads the given element from the PLY input data stream, storing data in
+    /// the given destination buffer `dest` using the types given as
+    /// `PropertyType`'s in the template argument list. In case the number of
+    /// properties for the element exceeds the number of properties in the
+    /// template argument list, the remaining properties are directly stored
+    /// using the property type as defined in the PLY header. This assumes that
+    /// the output buffer can hold the required amount of data; failing to
+    /// satisfy this precondition results in undefined behavior.
+    // TODO(ton): probably better to add another parameter 'size' to guard
+    // against overwriting the input buffer.
+    // TODO(ton): test what happens in case the number of property types given
+    // in the argument list *exceeds* the number of properties associated with
+    // the element.
+    template<typename T, typename PropertyType, typename... PropertyTypes>
+    void read(void *dest, const PlyElement &element) const
+    {
+      const auto first = elements().begin();
+      const auto last = elements().end();
+      if (std::find(first, last, element) != last)
+      {
+        if (format_ == PlyFormat::Ascii)
+        {
+          readAscii<PropertyType, PropertyTypes...>(static_cast<std::uint8_t *>(dest), element);
+        }
+      }
     }
 
   private:
@@ -184,91 +258,82 @@ namespace plywoot
     {
     }
 
-    /// Reads from ASCII without casting any of the properties.
-    template<typename T>
-    std::vector<T> readAscii(const PlyElement &element) const
-    {
-      is_.seekg(headerOffset_);
-      auto first{elements().begin()};
-      const auto last{elements().end()};
-      while (first != last && *first != element) skipLines(first++->size);
-
-      std::vector<T> result(element.size);
-      for (std::size_t i{0}; i < element.size; ++i)
-      {
-        T &t{result[i]};
-
-        char dest[sizeof(T)];
-        std::size_t offset{0};
-
-        for (const PlyProperty &property : element.properties)
-        {
-          switch (property.type)
-          {
-            case PlyDataType::Char:
-              offset = writeAsciiNumber(readNumber<std::int8_t>(), dest, offset);
-              break;
-            case PlyDataType::UChar:
-              offset = writeAsciiNumber(readNumber<std::uint8_t>(), dest, offset);
-              break;
-            case PlyDataType::Short:
-              offset = writeAsciiNumber(readNumber<std::int16_t>(), dest, offset);
-              break;
-            case PlyDataType::UShort:
-              offset = writeAsciiNumber(readNumber<std::uint16_t>(), dest, offset);
-              break;
-            case PlyDataType::Int:
-              offset = writeAsciiNumber(readNumber<std::int32_t>(), dest, offset);
-              break;
-            case PlyDataType::UInt:
-              offset = writeAsciiNumber(readNumber<std::uint32_t>(), dest, offset);
-              break;
-            case PlyDataType::Float:
-              offset = writeAsciiNumber(readNumber<float>(), dest, offset);
-              break;
-            case PlyDataType::Double:
-              offset = writeAsciiNumber(readNumber<double>(), dest, offset);
-              break;
-          }
-        }
-
-        std::memcpy(&t, dest, sizeof(T));
-      }
-
-      return result;
-    }
-
-    template<typename T, typename Cast, typename... Casts>
-    std::vector<T> readAscii(const PlyElement &element) const
+    template<typename... Casts>
+    std::uint8_t *readAscii(std::uint8_t *dest, const PlyElement &element) const
     {
       is_.seekg(headerOffset_);
       auto first{elements().begin()};
       const auto last{elements().end()};
       while (first != last && *first != element) { skipLines(first++->size); }
 
-      std::vector<T> result(element.size);
       for (std::size_t i{0}; i < element.size; ++i)
       {
-        char dest[sizeof(T)];
-        readAsciiCastedProperties<Cast, Casts...>(dest, std::size_t{0});
-
-        std::memcpy(&result[i], dest, sizeof(T));
+        dest = readAsciiCastedProperties<Casts...>(dest);
       }
 
-      return result;
+      return dest;
+    }
+
+    /// Reads from ASCII without casting any of the properties.
+    void readAscii(std::uint8_t *dest, const PlyElement &element) const
+    {
+      is_.seekg(headerOffset_);
+      auto first{elements().begin()};
+      const auto last{elements().end()};
+      while (first != last && *first != element) skipLines(first++->size);
+
+      std::size_t offset{0};
+      for (std::size_t i{0}; i < element.size; ++i)
+      {
+        for (const PlyProperty &property : element.properties)
+        {
+          const size_t n{property.isList ? readNumber<std::size_t>() : 1};
+
+          switch (property.type)
+          {
+            case PlyDataType::Char:
+              offset = storeNumbers<std::int8_t>(n, dest, offset);
+              break;
+            case PlyDataType::UChar:
+              offset = storeNumbers<std::uint8_t>(n, dest, offset);
+              break;
+            case PlyDataType::Short:
+              offset = storeNumbers<std::int16_t>(n, dest, offset);
+              break;
+            case PlyDataType::UShort:
+              offset = storeNumbers<std::uint16_t>(n, dest, offset);
+              break;
+            case PlyDataType::Int:
+              offset = storeNumbers<std::int32_t>(n, dest, offset);
+              break;
+            case PlyDataType::UInt:
+              offset = storeNumbers<std::uint32_t>(n, dest, offset);
+              break;
+            case PlyDataType::Float:
+              offset = storeNumbers<float>(n, dest, offset);
+              break;
+            case PlyDataType::Double:
+              offset = storeNumbers<double>(n, dest, offset);
+              break;
+          }
+        }
+      }
     }
 
     template<typename T>
-    void readAsciiCastedProperties(char *dest, std::size_t offset) const
+    std::uint8_t *readAsciiCastedProperties(std::uint8_t *dest) const
     {
-      *reinterpret_cast<T *>(dest + offset) = readNumber<T>();
+      dest = static_cast<std::uint8_t *>(pstd::align(dest, alignof(T)));
+      *reinterpret_cast<T *>(dest) = readNumber<T>();
+      return dest + sizeof(T);
     }
 
     template<typename T, typename U, typename... Ts>
-    void readAsciiCastedProperties(char *dest, std::size_t offset) const
+    std::uint8_t *readAsciiCastedProperties(std::uint8_t *dest) const
     {
-      *reinterpret_cast<T *>(dest + offset) = readNumber<T>();
-      readAsciiCastedProperties<U, Ts...>(dest, pstd::roundup(offset + sizeof(T), alignof(T)));
+      dest = static_cast<std::uint8_t *>(pstd::align(dest, alignof(T)));
+      *reinterpret_cast<T *>(dest) = readNumber<T>();
+      return readAsciiCastedProperties<U, Ts...>(dest + sizeof(T));
     }
 
     template<typename Number>
@@ -292,11 +357,15 @@ namespace plywoot
     }
 
     template<typename Number>
-    std::size_t writeAsciiNumber(Number number, char *data, std::size_t offset) const
+    std::size_t storeNumbers(std::size_t n, std::uint8_t *data, std::size_t offset) const
     {
-      const std::size_t alignedOffset{pstd::roundup(offset, alignof(Number))};
-      *reinterpret_cast<Number *>(data + alignedOffset) = number;
-      return alignedOffset + sizeof(Number);
+      for (std::size_t i{0}; i < n; ++i)
+      {
+        const std::size_t alignedOffset{pstd::roundup(offset, alignof(Number))};
+        *reinterpret_cast<Number *>(data + alignedOffset) = readNumber<Number>();
+        offset = alignedOffset + sizeof(Number);
+      }
+      return offset;
     }
 
     /// Reads the next character in the input stream and advances the read head by
@@ -365,20 +434,36 @@ namespace plywoot
     OStream(PlyFormat format) : format_{format} {}
 
     /// Queues an element with the associated data for writing. Elements will be
-    /// stored in the same order they are queued.
+    /// stored in the same order they are queued. List properties require a size
+    /// hint for now.
+    ///
+    /// \throw MissingSizeHint in case a property is present without a size hint
     template<typename T>
     void add(const PlyElement &element, const std::vector<T> &values)
     {
+      for (const PlyProperty &p : element.properties)
+      {
+        if (p.isList && p.sizeHint == 0) { throw MissingSizeHint(p.name); }
+      }
+
       elementWriteClosures_.emplace_back(
           element,
           [this, &values](std::ostream &os, const PlyElement &e) { write(os, e, values); });
     }
 
     /// Queues an element with the associated data for writing. Elements will be
-    /// stored in the same order they are queued.
+    /// stored in the same order they are queued. List properties require a size
+    /// hint for now.
+    ///
+    /// \throw MissingSizeHint in case a property is present without a size hint
     template<typename T, typename PropertyType, typename... PropertyTypes>
     void add(const PlyElement &element, const std::vector<T> &values)
     {
+      for (const PlyProperty &p : element.properties)
+      {
+        if (p.isList && p.sizeHint == 0) { throw MissingSizeHint(p.name); }
+      }
+
       elementWriteClosures_.emplace_back(
           element, [this, &values](std::ostream &os, const PlyElement &e)
           { write<T, PropertyType, PropertyTypes...>(os, e, values); });
@@ -454,40 +539,45 @@ namespace plywoot
     {
       for (const T &value : values)
       {
-        const char *src{reinterpret_cast<const char *>(&value)};
-        std::size_t offset{0};
+        const std::uint8_t *src{reinterpret_cast<const std::uint8_t *>(&value)};
 
         for (std::size_t i{0}; i < element.properties.size(); ++i)
         {
           const PlyProperty &property{element.properties[i]};
 
+          size_t n{1};
+          if (property.isList)
+          {
+            assert(property.sizeHint > 0);
+            os << int(property.sizeHint) << ' ';
+            n = property.sizeHint;
+          }
+
           switch (property.type)
           {
             case PlyDataType::Char:
-              offset = writeAsciiNumber<std::int8_t>(os, src, offset);
+              src = streamNumbers<std::int8_t>(os, n, src);
               break;
             case PlyDataType::UChar:
-              offset = writeAsciiNumber<std::uint8_t>(os, src, offset);
+              src = streamNumbers<std::uint8_t>(os, n, src);
               break;
             case PlyDataType::Short:
-              offset = writeAsciiNumber<std::int16_t>(os, src, offset);
+              src = streamNumbers<std::int16_t>(os, n, src);
               break;
             case PlyDataType::UShort:
-              offset = writeAsciiNumber<std::uint16_t>(os, src, offset);
+              src = streamNumbers<std::uint16_t>(os, n, src);
               break;
             case PlyDataType::Int:
-              offset = writeAsciiNumber<std::int32_t>(os, src, offset);
+              src = streamNumbers<std::int32_t>(os, n, src);
               break;
             case PlyDataType::UInt:
-              offset = writeAsciiNumber<std::uint32_t>(os, src, offset);
+              src = streamNumbers<std::uint32_t>(os, n, src);
               break;
             case PlyDataType::Float:
-              offset = writeAsciiNumber<float>(os, src, offset);
+              src = streamNumbers<float>(os, n, src);
               break;
             case PlyDataType::Double:
-              offset = writeAsciiNumber<double>(os, src, offset);
-              break;
-            default:
+              src = streamNumbers<double>(os, n, src);
               break;
           }
 
@@ -503,70 +593,71 @@ namespace plywoot
     {
       for (const T &value : values)
       {
-        const std::uint8_t *src{reinterpret_cast<const std::uint8_t *>(&value)};
-        writeAsciiCastedProperty<PropertyType, PropertyTypes...>(os, src, 0, element, 0),
-            os.put('\n');
+        const auto *src{reinterpret_cast<const std::uint8_t *>(&value)};
+        writeAsciiCastedProperty<PropertyType, PropertyTypes...>(os, src, element, 0);
+        os.put('\n');
       }
     }
 
     template<typename T>
-    void writeAsciiCastedProperty(
+    const std::uint8_t *writeAsciiCastedProperty(
         std::ostream &os,
         const std::uint8_t *src,
-        std::size_t offset,
         const PlyElement &element,
         std::size_t propertyIndex)
     {
+      src = static_cast<const std::uint8_t *>(pstd::align(src, alignof(T)));
       switch (element.properties[propertyIndex].type)
       {
+        // Note all data types that 'fit' are just casted to int here, to
+        // prevent having issues with 'char' being interpreted as ASCII
+        // characters instead of numbers.
         case PlyDataType::Char:
-          os << static_cast<const char>(*reinterpret_cast<const T *>(src + offset));
-          break;
         case PlyDataType::UChar:
-          os << static_cast<const unsigned char>(*reinterpret_cast<const T *>(src + offset));
+        case PlyDataType::Short:
+        case PlyDataType::UShort:
+        case PlyDataType::Int:
+          os << static_cast<const int>(*reinterpret_cast<const T *>(src));
+          break;
+        case PlyDataType::UInt:
+          os << static_cast<const unsigned int>(*reinterpret_cast<const T *>(src));
           break;
         case PlyDataType::Float:
-          os << static_cast<const float>(*reinterpret_cast<const T *>(src + offset));
+          os << static_cast<const float>(*reinterpret_cast<const T *>(src));
           break;
-        default:
+        case PlyDataType::Double:
+          os << static_cast<const double>(*reinterpret_cast<const T *>(src));
           break;
       }
+
+      return src + sizeof(T);
     }
 
     template<typename T, typename U, typename... PropertyTypes>
-    void writeAsciiCastedProperty(
+    const std::uint8_t *writeAsciiCastedProperty(
         std::ostream &os,
         const std::uint8_t *src,
-        const std::size_t offset,
         const PlyElement &element,
         const std::size_t propertyIndex)
     {
-      switch (element.properties[propertyIndex].type)
-      {
-        case PlyDataType::Char:
-          os << static_cast<const char>(*reinterpret_cast<const T *>(src + offset));
-          break;
-        case PlyDataType::UChar:
-          os << static_cast<const unsigned char>(*reinterpret_cast<const T *>(src + offset));
-          break;
-        case PlyDataType::Float:
-          os << static_cast<const float>(*reinterpret_cast<const T *>(src + offset));
-          break;
-        default:
-          break;
-      }
-
+      src = writeAsciiCastedProperty<T>(os, src, element, propertyIndex);
       os.put(' ');
-
-      writeAsciiCastedProperty<U, PropertyTypes...>(os, src, offset, element, propertyIndex + 1);
+      return writeAsciiCastedProperty<U, PropertyTypes...>(os, src, element, propertyIndex + 1);
     }
 
     template<typename Number>
-    std::size_t writeAsciiNumber(std::ostream &os, const char *data, std::size_t offset) const
+    const std::uint8_t *streamNumbers(std::ostream &os, size_t n, const std::uint8_t *data) const
     {
-      const std::size_t alignedOffset = pstd::roundup(offset, alignof(Number));
-      os << pstd::CharToInt<Number>{}(*reinterpret_cast<const Number *>(data + alignedOffset));
-      return alignedOffset + sizeof(Number);
+      for (size_t i{0}; i < n; ++i)
+      {
+        data = static_cast<const std::uint8_t *>(pstd::align(data, alignof(Number)));
+        os << pstd::CharToInt<Number>{}(*reinterpret_cast<const Number *>(data));
+        data += sizeof(Number);
+
+        if (i < n - 1) { os.put(' '); }
+      }
+
+      return data;
     }
 
     using ElementWriteClosure = std::function<void(std::ostream &, const PlyElement &)>;
