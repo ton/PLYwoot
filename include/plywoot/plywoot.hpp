@@ -492,14 +492,23 @@ namespace plywoot
     template<typename T>
     void add(const PlyElement &element, const std::vector<T> &values)
     {
+      add(element, reinterpret_cast<const std::uint8_t *>(values.data()), values.size());
+    }
+
+    /// Queues an element with the associated data for writing. Elements will be
+    /// stored in the same order they are queued. List properties require a size
+    /// hint for now.
+    ///
+    /// \throw MissingSizeHint in case a property is present without a size hint
+    void add(const PlyElement &element, const std::uint8_t *src, std::size_t n)
+    {
       for (const PlyProperty &p : element.properties())
       {
         if (p.isList() && p.sizeHint() == 0) { throw MissingSizeHint(p.name()); }
       }
 
       elementWriteClosures_.emplace_back(
-          element,
-          [this, &values](std::ostream &os, const PlyElement &e) { write(os, e, values); });
+          element, [this, src, n](std::ostream &os, const PlyElement &e) { write(os, e, src, n); });
     }
 
     /// Queues an element with the associated data for writing. Elements will be
@@ -510,14 +519,26 @@ namespace plywoot
     template<typename T, typename PropertyType, typename... PropertyTypes>
     void add(const PlyElement &element, const std::vector<T> &values)
     {
+      add<PropertyType, PropertyTypes...>(
+          element, reinterpret_cast<const std::uint8_t *>(values.data()), values.size());
+    }
+
+    /// Queues an element with the associated data for writing. Elements will be
+    /// stored in the same order they are queued. List properties require a size
+    /// hint for now.
+    ///
+    /// \throw MissingSizeHint in case a property is present without a size hint
+    template<typename PropertyType, typename... PropertyTypes>
+    void add(const PlyElement &element, const std::uint8_t *src, std::size_t n)
+    {
       for (const PlyProperty &p : element.properties())
       {
         if (p.isList() && p.sizeHint() == 0) { throw MissingSizeHint(p.name()); }
       }
 
       elementWriteClosures_.emplace_back(
-          element, [this, &values](std::ostream &os, const PlyElement &e)
-          { write<T, PropertyType, PropertyTypes...>(os, e, values); });
+          element, [this, src, n](std::ostream &os, const PlyElement &e)
+          { write<PropertyType, PropertyTypes...>(os, e, src, n); });
     }
 
     /// Writes all data as a PLY file queued through `addElement()` to the given
@@ -572,27 +593,40 @@ namespace plywoot
       os << "end_header\n";
     }
 
-    template<typename T, typename... PropertyTypes>
-    void write(std::ostream &os, const PlyElement &element, const std::vector<T> &values)
+    void write(std::ostream &os, const PlyElement &element, const std::uint8_t *src, std::size_t n)
     {
       switch (format_)
       {
         case PlyFormat::Ascii:
-          writeAscii<T, PropertyTypes...>(os, element, values);
+          writeAscii(os, element, src, n);
           break;
         default:
           break;
       }
     }
 
-    template<typename T>
-    void writeAscii(std::ostream &os, const PlyElement &element, const std::vector<T> &values)
+    template<typename PropertyType, typename... PropertyTypes>
+    void write(std::ostream &os, const PlyElement &element, const std::uint8_t *src, std::size_t n)
     {
-      for (const T &value : values)
+      switch (format_)
       {
-        const std::uint8_t *src{reinterpret_cast<const std::uint8_t *>(&value)};
+        case PlyFormat::Ascii:
+          writeAscii<PropertyType, PropertyTypes...>(os, element, src, n);
+          break;
+        default:
+          break;
+      }
+    }
 
-        std::size_t i{0};
+    void writeAscii(
+        std::ostream &os,
+        const PlyElement &element,
+        const std::uint8_t *src,
+        std::size_t numElements)
+    {
+      for (std::size_t i{0}; i < numElements; ++i)
+      {
+        std::size_t j{0};
         for (const PlyProperty &property : element.properties())
         {
           size_t n{1};
@@ -631,20 +665,20 @@ namespace plywoot
               break;
           }
 
-          if (i++ < element.properties().size() - 1) { os.put(' '); }
+          if (j++ < element.properties().size() - 1) { os.put(' '); }
         }
 
         os.put('\n');
       }
     }
 
-    template<typename T, typename PropertyType, typename... PropertyTypes>
-    void writeAscii(std::ostream &os, const PlyElement &element, const std::vector<T> &values)
+    template<typename PropertyType, typename... PropertyTypes>
+    void
+    writeAscii(std::ostream &os, const PlyElement &element, const std::uint8_t *src, std::size_t n)
     {
-      for (const T &value : values)
+      for (std::size_t i{0}; i < n; ++i)
       {
-        const auto *src{reinterpret_cast<const std::uint8_t *>(&value)};
-        writeAsciiCastedProperty<PropertyType, PropertyTypes...>(os, src, element, 0);
+        src = writeAsciiCastedProperty<PropertyType, PropertyTypes...>(os, src, element, 0);
         os.put('\n');
       }
     }
