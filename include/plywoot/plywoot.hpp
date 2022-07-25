@@ -138,6 +138,24 @@ namespace plywoot
     /// Returns the properties associated with this element.
     const std::vector<PlyProperty> &properties() const { return properties_; }
 
+    /// Returns a copy of this element, with a size hint set for the property
+    /// with the given name. In case the property is not found, this just
+    /// returns a copy of this element.
+    PlyElement copyWithSizeHint(const std::string &propertyName, std::size_t sizeHint) const
+    {
+      std::vector<PlyProperty> propertiesCopy;
+      for (const PlyProperty &p : properties_)
+      {
+        if (p.name() == propertyName && p.isList())
+        {
+          propertiesCopy.emplace_back(p.name(), p.type(), p.sizeType(), sizeHint);
+        }
+        else { propertiesCopy.push_back(p); }
+      }
+
+      return PlyElement{name_, size_, std::move(propertiesCopy)};
+    }
+
     /// Returns a pair where the first element is a copy of the property with
     /// the given name in case it exists. The second element is a Boolean that
     /// indicates whether the requested property was found. In case a requested
@@ -313,22 +331,17 @@ namespace plywoot
     template<typename... Casts>
     std::uint8_t *readAscii(std::uint8_t *dest, const PlyElement &element) const
     {
-      is_.seekg(headerOffset_);
-      auto first{elements().begin()};
-      const auto last{elements().end()};
-      while (first != last && *first != element) { skipLines(first++->size()); }
-
-      for (std::size_t i{0}; i < element.size(); ++i)
+      if (seekTo(element))
       {
-        dest = readAsciiCastedProperties<Casts...>(dest);
-
-        // In case the number of properties in the element exceeds the number of
-        // properties to read, ignore the remainder of the element.
-        // TODO(ton): maybe we need to make this more explicit; what should the
-        // default behavior be? Skipping or adding without a cast?
-        if (sizeof...(Casts) < element.properties().size())
+        for (std::size_t i{0}; i < element.size(); ++i)
         {
-          skipLines(1);
+          dest = readAsciiCastedProperties<Casts...>(dest);
+
+          // In case the number of properties in the element exceeds the number of
+          // properties to read, ignore the remainder of the element.
+          // TODO(ton): maybe we need to make this more explicit; what should the
+          // default behavior be? Skipping or adding without a cast?
+          if (sizeof...(Casts) < element.properties().size()) { skipLines(1); }
         }
       }
 
@@ -338,44 +351,42 @@ namespace plywoot
     /// Reads from ASCII without casting any of the properties.
     void readAscii(std::uint8_t *dest, const PlyElement &element) const
     {
-      is_.seekg(headerOffset_);
-      auto first{elements().begin()};
-      const auto last{elements().end()};
-      while (first != last && *first != element) skipLines(first++->size());
-
-      std::size_t offset{0};
-      for (std::size_t i{0}; i < element.size(); ++i)
+      if (seekTo(element))
       {
-        for (const PlyProperty &property : element.properties())
+        std::size_t offset{0};
+        for (std::size_t i{0}; i < element.size(); ++i)
         {
-          const size_t n{property.isList() ? readNumber<std::size_t>() : 1};
-
-          switch (property.type())
+          for (const PlyProperty &property : element.properties())
           {
-            case PlyDataType::Char:
-              offset = storeNumbers<std::int8_t>(n, dest, offset);
-              break;
-            case PlyDataType::UChar:
-              offset = storeNumbers<std::uint8_t>(n, dest, offset);
-              break;
-            case PlyDataType::Short:
-              offset = storeNumbers<std::int16_t>(n, dest, offset);
-              break;
-            case PlyDataType::UShort:
-              offset = storeNumbers<std::uint16_t>(n, dest, offset);
-              break;
-            case PlyDataType::Int:
-              offset = storeNumbers<std::int32_t>(n, dest, offset);
-              break;
-            case PlyDataType::UInt:
-              offset = storeNumbers<std::uint32_t>(n, dest, offset);
-              break;
-            case PlyDataType::Float:
-              offset = storeNumbers<float>(n, dest, offset);
-              break;
-            case PlyDataType::Double:
-              offset = storeNumbers<double>(n, dest, offset);
-              break;
+            const size_t n{property.isList() ? readNumber<std::size_t>() : 1};
+
+            switch (property.type())
+            {
+              case PlyDataType::Char:
+                offset = storeNumbers<std::int8_t>(n, dest, offset);
+                break;
+              case PlyDataType::UChar:
+                offset = storeNumbers<std::uint8_t>(n, dest, offset);
+                break;
+              case PlyDataType::Short:
+                offset = storeNumbers<std::int16_t>(n, dest, offset);
+                break;
+              case PlyDataType::UShort:
+                offset = storeNumbers<std::uint16_t>(n, dest, offset);
+                break;
+              case PlyDataType::Int:
+                offset = storeNumbers<std::int32_t>(n, dest, offset);
+                break;
+              case PlyDataType::UInt:
+                offset = storeNumbers<std::uint32_t>(n, dest, offset);
+                break;
+              case PlyDataType::Float:
+                offset = storeNumbers<float>(n, dest, offset);
+                break;
+              case PlyDataType::Double:
+                offset = storeNumbers<double>(n, dest, offset);
+                break;
+            }
           }
         }
       }
@@ -439,6 +450,27 @@ namespace plywoot
 
     void readBinary(const PlyElement &element, void *data, std::size_t size);
 
+    /// Seeks to the start of the data for the given element. Returns whether
+    /// seeking was successful.
+    bool seekTo(const PlyElement &element) const
+    {
+      // Position the read head at the start of the data just after the header.
+      // Resets any buffered data.
+      bufferedBytes_ = 0;
+      c_ = buffer_;
+
+      is_.clear();  // need to clear eofbit() in case it is set, otherwise the
+                    // first read after the seek will fail
+      is_.seekg(headerOffset_);
+
+      // Skip all element data for elements that come before the given element.
+      auto first{elements().begin()};
+      const auto last{elements().end()};
+      while (first != last && *first != element) { skipLines(first++->size()); }
+
+      return first != last;
+    }
+
     void bufferData() const
     {
       if (!is_.read(buffer_, BufferSize))
@@ -455,13 +487,20 @@ namespace plywoot
     /// or in case that character does not exist, at EOF.
     void skipLines(std::size_t n) const
     {
-      if (c_ >= buffer_ + bufferedBytes_) { bufferData(); }
+      if (c_ >= buffer_ + bufferedBytes_)
+      {
+        bufferData();
+      }
       while (*c_ != EOF && n > 0)
       {
         auto first = static_cast<char *>(std::memchr(c_, '\n', bufferedBytes_ - (c_ - buffer_)));
-        if (first == nullptr || first == (buffer_ + bufferedBytes_ - 1)) { bufferData(); }
-        else { c_ = first + 1; }
-        --n;
+        if (first)
+        {
+          c_ = first + 1;
+          if (c_ >= buffer_ + bufferedBytes_) { bufferData(); }
+          --n;
+        }
+        else { bufferData(); }
       }
     }
 
@@ -473,7 +512,7 @@ namespace plywoot
 
     constexpr static size_t BufferSize{8192};
     /// Buffered data, always a null terminated string.
-    mutable char buffer_[BufferSize];
+    mutable char buffer_[BufferSize] = {};
     /// Number of bytes in the input buffer retrieved from disk.
     mutable size_t bufferedBytes_{0};
     /// Character the scanner's read head is currently pointing to. Invariant

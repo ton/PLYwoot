@@ -141,3 +141,65 @@ TEST_CASE("Test reading and writing all property types with casts", "[iostream][
           element)};
   REQUIRE(expected == elements);
 }
+
+TEST_CASE("Tests reading and writing vertex and face data", "[iostream][casts]")
+{
+  std::ifstream ifs{"test/input/cube.ply"};
+  const plywoot::IStream plyFile{ifs};
+
+  struct Vertex
+  {
+    float x, y, z;
+
+    bool operator==(const Vertex &v) const { return x == v.x && y == v.y && z == v.z; }
+  };
+
+  struct Face
+  {
+    int a, b, c;
+
+    bool operator==(const Face &f) const { return a == f.a && b == f.b && c == f.c; }
+  };
+
+  plywoot::PlyElement vertexElement;
+  bool isVertexElementFound{false};
+  std::tie(vertexElement, isVertexElementFound) = plyFile.element("vertex");
+
+  CHECK(isVertexElementFound);
+  CHECK(vertexElement.name() == "vertex");
+  CHECK(vertexElement.size() == 8);
+
+  plywoot::PlyElement faceElement;
+  bool isFaceElementFound{false};
+  std::tie(faceElement, isFaceElementFound) = plyFile.element("face");
+
+  CHECK(isFaceElementFound);
+  CHECK(faceElement.name() == "face");
+  CHECK(faceElement.size() == 12);
+
+  const std::vector<Vertex> vertices = plyFile.read<Vertex, float, float, float>(vertexElement);
+  CHECK(vertices.size() == 8);
+
+  const std::vector<Face> faces = plyFile.read<Face>(faceElement);
+  CHECK(faces.size() == 12);
+
+  // Now write the data to a string stream, read it back in again, and compare.
+  std::stringstream oss;
+  plywoot::PlyElement faceElementWithSizeHint{faceElement.copyWithSizeHint("vertex_indices", 3)};
+
+  plywoot::OStream plyos{plywoot::PlyFormat::Ascii};
+  plyos.add<Vertex, float, float, float>(vertexElement, vertices);
+  plyos.add(faceElementWithSizeHint, faces);
+  plyos.write(oss);
+
+  {
+    const plywoot::IStream plyis{oss};
+
+    const std::vector<Vertex> writtenVertices = plyis.read<Vertex, float, float, float>(vertexElement);
+    CHECK(vertices == writtenVertices);
+
+    const std::vector<Face> writtenFaces = plyis.read<Face>(faceElement);
+    CHECK(faces == writtenFaces);
+  }
+
+}
