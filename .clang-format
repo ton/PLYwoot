@@ -2,7 +2,8 @@
 BasedOnStyle: Google
 Language: Cpp
 
-NamespaceIndentation: All
+CompactNamespaces: true
+NamespaceIndentation: None
 FixNamespaceComments: false
 
 AccessModifierOffset: -2
@@ -23,7 +24,14 @@ BinPackParameters: false
 DerivePointerAlignment: false
 PointerAlignment: Right
 
-BreakBeforeBraces: Allman
+BreakBeforeBraces: Custom
+BraceWrapping:
+  AfterNamespace: false
+  AfterClass: true
+  AfterFunction: true
+  AfterStruct: true
+  AfterControlStatement: Always
+  BeforeElse: true
 
 KeepEmptyLinesAtTheStartOfBlocks: false
 
