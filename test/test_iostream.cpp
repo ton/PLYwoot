@@ -185,7 +185,7 @@ TEST_CASE("Tests reading and writing vertex and face data", "[iostream][casts]")
 
   // Now write the data to a string stream, read it back in again, and compare.
   std::stringstream oss;
-  plywoot::PlyElement faceElementWithSizeHint{faceElement.copyWithSizeHint("vertex_indices", 3)};
+  plywoot::PlyElement faceElementWithSizeHint{faceElement.setSizeHint("vertex_indices", 3)};
 
   plywoot::OStream plyos{plywoot::PlyFormat::Ascii};
   plyos.add<Vertex, float, float, float>(vertexElement, vertices);
