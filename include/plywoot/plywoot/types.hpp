@@ -43,7 +43,7 @@ struct PlyProperty
 {
   PlyProperty() = default;
   PlyProperty(std::string name, PlyDataType type) : name_{std::move(name)}, type_{type} {}
-  PlyProperty(std::string name, PlyDataType type, PlyDataType sizeType, std::size_t sizeHint = 0)
+  PlyProperty(std::string name, PlyDataType type, PlyDataType sizeType, std::size_t sizeHint)
       : name_{std::move(name)}, type_{type}, isList_{true}, sizeType_{sizeType}, sizeHint_{sizeHint}
   {
   }
@@ -120,7 +120,7 @@ struct PlyElement
   /// Returns a copy of this element, with a size hint set for the property
   /// with the given name. In case the property is not found, this just
   /// returns a copy of this element.
-  PlyElement copyWithSizeHint(const std::string &propertyName, std::size_t sizeHint) const
+  PlyElement setSizeHint(const std::string &propertyName, std::size_t sizeHint) const
   {
     std::vector<PlyProperty> propertiesCopy;
     for (const PlyProperty &p : properties_)

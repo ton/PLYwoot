@@ -186,7 +186,7 @@ private:
           sizeType = tokenToDataType(scanner_.nextToken());
           type = tokenToDataType(scanner_.nextToken());
           accept(Token::Identifier);
-          result.addProperty(scanner_.tokenString(), type, sizeType);
+          result.addProperty(scanner_.tokenString(), type, sizeType, 0);
           break;
         default:
           type = tokenToDataType(scanner_.token());
