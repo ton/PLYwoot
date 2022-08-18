@@ -82,8 +82,7 @@ struct PlyProperty
   inline friend bool operator==(const PlyProperty &x, const PlyProperty &y)
   {
     // Note; the size hint is not part of the identity of a property.
-    return x.type_ == y.type_ && x.isList_ == y.isList_ && x.sizeType_ == y.sizeType_ &&
-           x.name_ == y.name_;
+    return x.type_ == y.type_ && x.isList_ == y.isList_ && x.sizeType_ == y.sizeType_ && x.name_ == y.name_;
   }
 
   inline friend bool operator!=(const PlyProperty &x, const PlyProperty &y) { return !(x == y); }

@@ -30,8 +30,7 @@ struct InvalidFormat : ParserException
 // found in the input.
 struct UnsupportedFormat : ParserException
 {
-  UnsupportedFormat(const std::string &format)
-      : ParserException("unsupported format definition: " + format)
+  UnsupportedFormat(const std::string &format) : ParserException("unsupported format definition: " + format)
   {
   }
 };

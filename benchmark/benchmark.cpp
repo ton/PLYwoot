@@ -67,13 +67,9 @@ static void BM_miniply_ascii(benchmark::State &state, const std::string &filenam
     const int verts_per_face = 3;
 
     miniply::PLYReader reader{filename.data()};
-    if (!reader.valid())
-    {
-      state.SkipWithError((std::string{"could not open: "} + filename).data());
-    }
+    if (!reader.valid()) { state.SkipWithError((std::string{"could not open: "} + filename).data()); }
 
-    miniply::PLYElement *facesElem =
-        reader.get_element(reader.find_element(miniply::kPLYFaceElement));
+    miniply::PLYElement *facesElem = reader.get_element(reader.find_element(miniply::kPLYFaceElement));
     if (!facesElem)
     {
       state.SkipWithError("could not load triangle data; face element not found in input data");
