@@ -27,7 +27,7 @@ namespace
     }
   };
 
-  ExceptionMessageContainsMatcher MessageContains(const std::string &message) { return {message}; }
+  inline ExceptionMessageContainsMatcher MessageContains(const std::string &message) { return {message}; }
 }
 
 #endif
