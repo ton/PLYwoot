@@ -32,18 +32,31 @@ class Layout : public std::tuple<Ts...>
 {
 public:
   template<typename T>
-  Layout(const std::vector<T> &v) : data_{reinterpret_cast<const std::uint8_t *>(v.data())}, size_{v.size()} {}
+  Layout(const std::vector<T> &v)
+      : data_{nullptr}, cdata_{reinterpret_cast<const std::uint8_t *>(v.data())}, size_{v.size()}
+  {
+  }
+  template<typename T>
+  Layout(std::vector<T> &v)
+      : data_{reinterpret_cast<std::uint8_t *>(v.data())}, cdata_{data_}, size_{v.size()}
+  {
+  }
   Layout(const std::uint8_t *data, std::size_t size) : data_{data}, size_{size} {}
 
-  const std::uint8_t *data() const { return data_; }
+  std::uint8_t *data() { return data_; }
+  const std::uint8_t *data() const { return cdata_; }
+
   std::size_t size() const { return size_; }
 
   constexpr std::size_t numProperties() const { return std::tuple_size<std::tuple<Ts...>>::value; }
 
 private:
-  /// Pointer to the memory area that contains `n` number of structures made up of
-  /// the types associated with this layout.
-  const std::uint8_t *data_{nullptr};
+  /// Pointer to the writable memory area that contains `n` number of structures
+  /// made up of the types associated with this layout.
+  std::uint8_t *data_{nullptr};
+  /// Pointer to the read-only memory area that contains `n` number of
+  /// structures made up of the types associated with this layout.
+  const std::uint8_t *cdata_{nullptr};
   /// Number of elements that are or may be stored in the memory block pointer
   /// to by the associated data block.
   std::size_t size_{0};

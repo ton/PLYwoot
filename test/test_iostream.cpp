@@ -58,8 +58,7 @@ TEST_CASE("Test reading and writing all property types", "[iostream]")
   std::stringstream iss{ascii, std::ios::in};
   plywoot::IStream plyis{iss};
 
-  std::vector<Element> elements{
-      plyis.read<Element, char, char, char, unsigned char, short, unsigned short, float, double>(element)};
+  std::vector<Element> elements{plyis.read<Element, Layout>(element)};
   REQUIRE(expected == elements);
 }
 
@@ -90,7 +89,7 @@ TEST_CASE("Test reading and writing of a list", "[iostream]")
   std::stringstream iss{ascii, std::ios::in};
   plywoot::IStream plyis{iss};
 
-  std::vector<Triangle> triangles{plyis.read<Triangle>(element)};
+  std::vector<Triangle> triangles{plyis.read<Triangle, Layout>(element)};
   REQUIRE(expected == triangles);
 }
 
@@ -117,14 +116,13 @@ TEST_CASE("Tests reading and writing vertex and face data", "[iostream]")
   CHECK(faceElement.name() == "face");
   CHECK(faceElement.size() == 12);
 
-  const std::vector<Vertex> vertices = plyFile.read<Vertex, float, float, float>(vertexElement);
+  using VertexLayout = plywoot::reflect::Layout<float, float, float>;
+  const std::vector<Vertex> vertices = plyFile.read<Vertex, VertexLayout>(vertexElement);
   CHECK(vertices.size() == 8);
 
-  const std::vector<Face> faces = plyFile.read<Face>(faceElement);
-  CHECK(faces.size() == 12);
-
-  using VertexLayout = plywoot::reflect::Layout<float, float, float>;
   using FaceLayout = plywoot::reflect::Layout<plywoot::reflect::Array<int, 3>>;
+  const std::vector<Face> faces = plyFile.read<Face, FaceLayout>(faceElement);
+  CHECK(faces.size() == 12);
 
   // Now write the data to a string stream, read it back in again, and compare.
   std::stringstream oss;
@@ -136,10 +134,10 @@ TEST_CASE("Tests reading and writing vertex and face data", "[iostream]")
   {
     const plywoot::IStream plyis{oss};
 
-    const std::vector<Vertex> writtenVertices = plyis.read<Vertex, float, float, float>(vertexElement);
+    const std::vector<Vertex> writtenVertices = plyis.read<Vertex, VertexLayout>(vertexElement);
     CHECK(vertices == writtenVertices);
 
-    const std::vector<Face> writtenFaces = plyis.read<Face>(faceElement);
+    const std::vector<Face> writtenFaces = plyis.read<Face, FaceLayout>(faceElement);
     CHECK(faces == writtenFaces);
   }
 }
