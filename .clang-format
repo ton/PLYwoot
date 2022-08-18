@@ -37,6 +37,8 @@ KeepEmptyLinesAtTheStartOfBlocks: false
 
 SpaceAfterTemplateKeyword: false
 
+PenaltyReturnTypeOnItsOwnLine: 1000
+
 IncludeBlocks: Regroup
 IncludeCategories:
     - Regex:  '^".*"'

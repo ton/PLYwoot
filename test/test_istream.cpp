@@ -247,7 +247,7 @@ TEST_CASE("Read multiple elements with two properties from an ASCII PLY file", "
     std::iota(expected.begin(), expected.end(), 246);
     std::reverse(expected.begin(), expected.end());
     REQUIRE(std::equal(
-          expected.begin(), expected.end(), xs.begin(), [](unsigned char u, X x) { return u == x.u; }));
+        expected.begin(), expected.end(), xs.begin(), [](unsigned char u, X x) { return u == x.u; }));
   }
 }
 
