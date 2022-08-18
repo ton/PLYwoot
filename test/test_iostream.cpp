@@ -1,3 +1,5 @@
+#include "test_types.hpp"
+
 #include <plywoot/plywoot.hpp>
 
 #include <catch2/catch_test_macros.hpp>
@@ -145,19 +147,7 @@ TEST_CASE("Tests reading and writing vertex and face data", "[iostream][casts]")
   std::ifstream ifs{"test/input/cube.ply"};
   const plywoot::IStream plyFile{ifs};
 
-  struct Vertex
-  {
-    float x, y, z;
-
-    bool operator==(const Vertex &v) const { return x == v.x && y == v.y && z == v.z; }
-  };
-
-  struct Face
-  {
-    int a, b, c;
-
-    bool operator==(const Face &f) const { return a == f.a && b == f.b && c == f.c; }
-  };
+  using Vertex = FloatVertex;
 
   plywoot::PlyElement vertexElement;
   bool isVertexElementFound{false};

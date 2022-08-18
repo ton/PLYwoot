@@ -1,3 +1,5 @@
+#include "test_types.hpp"
+
 #include <plywoot/plywoot.hpp>
 
 #include <catch2/catch_test_macros.hpp>
@@ -5,14 +7,6 @@
 #include <fstream>
 #include <numeric>
 #include <sstream>
-
-namespace
-{
-  struct Vertex
-  {
-    double x, y, z;
-  };
-}
 
 TEST_CASE("Write empty PLY file", "[ostream][ascii]")
 {
@@ -33,6 +27,8 @@ TEST_CASE("Write PLY file with a single element and some properties", "[ostream]
   const plywoot::PlyProperty y{"y", plywoot::PlyDataType::Double};
   const plywoot::PlyProperty z{"z", plywoot::PlyDataType::Double};
   const plywoot::PlyElement element{"vertex", 3, {x, y, z}};
+
+  using Vertex = DoubleVertex;
 
   std::vector<Vertex> vertices{{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
   plyos.add(element, vertices);
