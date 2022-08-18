@@ -50,48 +50,17 @@ public:
   PlyFormat format() const { return format_; }
 
   /// Reads the given element from the PLY input data stream, expecting
-  /// elements where every property has exactly the same type as the
-  /// corresponding properties of objects of type T.
-  template<typename T>
-  std::vector<T> read(const PlyElement &element) const
-  {
-    std::vector<T> result(element.size());
-    read(result.data(), element);
-    return result;
-  }
-
-  /// Reads the given element from the PLY input data stream, expecting
   /// elements where every property can be casted to the given property type
   /// in the template argument list.
   // TODO(ton): test what happens in case the number of property types given
   // does not match the number of properties in the element; the remaining
   // properties will be read 'uncasted'.
-  template<typename T, typename PropertyType, typename... PropertyTypes>
+  template<typename T, typename Layout>
   std::vector<T> read(const PlyElement &element) const
   {
     std::vector<T> result(element.size());
-    read<T, PropertyType, PropertyTypes...>(result.data(), element);
+    read(element, Layout{result});
     return result;
-  }
-
-  /// Reads the given element from the PLY input data stream, storing data in
-  /// the given destination buffer `dest` using the types defined by the
-  /// element. This assumes that the output buffer can hold the required
-  /// amount of data; failing to satisfy this precondition results in
-  /// undefined behavior.
-  // TODO(ton): probably better to add another parameter 'size' to guard
-  // against overwriting the input buffer.
-  // TODO(ton): test what happens in case the number of property types given
-  // in the argument list *exceeds* the number of properties associated with
-  // the element.
-  void read(void *dest, const PlyElement &element) const
-  {
-    const auto first = elements().begin();
-    const auto last = elements().end();
-    if (std::find(first, last, element) != last)
-    {
-      if (format_ == PlyFormat::Ascii) { readAscii(static_cast<std::uint8_t *>(dest), element); }
-    }
   }
 
   /// Reads the given element from the PLY input data stream, storing data in
@@ -107,18 +76,15 @@ public:
   // TODO(ton): test what happens in case the number of property types given
   // in the argument list *exceeds* the number of properties associated with
   // the element.
-  template<typename T, typename PropertyType, typename... PropertyTypes>
-  void read(void *dest, const PlyElement &element) const
+  template<typename... Ts>
+  void read(const PlyElement &element, reflect::Layout<Ts...> layout) const
   {
     const auto first = elements().begin();
     const auto last = elements().end();
     if (std::find(first, last, element) != last)
     {
       // Calculate the number of properties to skip from the input file.
-      if (format_ == PlyFormat::Ascii)
-      {
-        readAscii<PropertyType, PropertyTypes...>(static_cast<std::uint8_t *>(dest), element);
-      }
+      if (format_ == PlyFormat::Ascii) { readAscii<Ts...>(element, layout.data()); }
     }
   }
 
@@ -129,84 +95,74 @@ private:
   {
   }
 
-  template<typename... Casts>
-  std::uint8_t *readAscii(std::uint8_t *dest, const PlyElement &element) const
+  template<typename... Ts>
+  std::uint8_t *readAscii(const PlyElement &element, std::uint8_t *dest) const
   {
     if (seekTo(element))
     {
       for (std::size_t i{0}; i < element.size(); ++i)
       {
-        dest = readAsciiCastedProperties<Casts...>(dest);
+        dest = readAsciiElement<Ts...>(dest);
 
         // In case the number of properties in the element exceeds the number of
         // properties to read, ignore the remainder of the element.
         // TODO(ton): maybe we need to make this more explicit; what should the
         // default behavior be? Skipping or adding without a cast?
-        if (sizeof...(Casts) < element.properties().size()) { skipLines(1); }
+        if (sizeof...(Ts) < element.properties().size()) { skipLines(1); }
       }
     }
 
     return dest;
   }
 
-  /// Reads from ASCII without casting any of the properties.
-  void readAscii(std::uint8_t *dest, const PlyElement &element) const
-  {
-    if (seekTo(element))
-    {
-      std::size_t offset{0};
-      for (std::size_t i{0}; i < element.size(); ++i)
-      {
-        for (const PlyProperty &property : element.properties())
-        {
-          const size_t n{property.isList() ? readNumber<std::size_t>() : 1};
-
-          switch (property.type())
-          {
-            case PlyDataType::Char:
-              offset = storeNumbers<std::int8_t>(n, dest, offset);
-              break;
-            case PlyDataType::UChar:
-              offset = storeNumbers<std::uint8_t>(n, dest, offset);
-              break;
-            case PlyDataType::Short:
-              offset = storeNumbers<std::int16_t>(n, dest, offset);
-              break;
-            case PlyDataType::UShort:
-              offset = storeNumbers<std::uint16_t>(n, dest, offset);
-              break;
-            case PlyDataType::Int:
-              offset = storeNumbers<std::int32_t>(n, dest, offset);
-              break;
-            case PlyDataType::UInt:
-              offset = storeNumbers<std::uint32_t>(n, dest, offset);
-              break;
-            case PlyDataType::Float:
-              offset = storeNumbers<float>(n, dest, offset);
-              break;
-            case PlyDataType::Double:
-              offset = storeNumbers<double>(n, dest, offset);
-              break;
-          }
-        }
-      }
-    }
-  }
-
-  template<typename T>
-  std::uint8_t *readAsciiCastedProperties(std::uint8_t *dest) const
+  template<
+      typename T,
+      typename TypeTag,
+      typename std::enable_if<std::is_arithmetic<T>::value, std::size_t>::type = 0>
+  std::uint8_t *readAsciiProperty(std::uint8_t *dest, TypeTag) const
   {
     dest = static_cast<std::uint8_t *>(detail::align(dest, alignof(T)));
     *reinterpret_cast<T *>(dest) = readNumber<T>();
     return dest + sizeof(T);
   }
 
-  template<typename T, typename U, typename... Ts>
-  std::uint8_t *readAsciiCastedProperties(std::uint8_t *dest) const
+  template<
+      typename T,
+      typename TypeTag,
+      typename std::enable_if<!std::is_arithmetic<T>::value, std::size_t>::type = 0>
+  std::uint8_t *readAsciiProperty(std::uint8_t *dest, TypeTag) const
   {
-    dest = static_cast<std::uint8_t *>(detail::align(dest, alignof(T)));
-    *reinterpret_cast<T *>(dest) = readNumber<T>();
-    return readAsciiCastedProperties<U, Ts...>(dest + sizeof(T));
+    return static_cast<std::uint8_t *>(detail::align(dest, alignof(T))) + sizeof(T);
+  }
+
+  template<typename, typename T, size_t N>
+  std::uint8_t *readAsciiProperty(std::uint8_t *dest, detail::Type<reflect::Array<T, N>>) const
+  {
+    // TODO(ton): skip the number that defines the list in the PLY data, we
+    // expect it to be of length N; throw an exception here in case they do no match?
+    readNumber<std::size_t>();
+    for (size_t i = 0; i < N; ++i) { dest = readAsciiProperty<T>(dest, detail::Type<T>{}); }
+    return dest;
+  }
+
+  template<typename, typename T>
+  std::uint8_t *readAsciiProperty(std::uint8_t *dest, detail::Type<reflect::Stride<T>>) const
+  {
+    return static_cast<std::uint8_t *>(detail::align(dest, alignof(T))) + sizeof(T);
+  }
+
+  std::uint8_t *readAsciiElement(std::uint8_t *dest) const { return dest; }
+
+  template<typename T>
+  std::uint8_t *readAsciiElement(std::uint8_t *dest) const
+  {
+    return readAsciiProperty<T>(dest, detail::Type<T>{});
+  }
+
+  template<typename T, typename U, typename... Ts>
+  std::uint8_t *readAsciiElement(std::uint8_t *dest) const
+  {
+    return readAsciiElement<U, Ts...>(readAsciiProperty<T>(dest, detail::Type<T>{}));
   }
 
   template<typename Number>
@@ -227,18 +183,6 @@ private:
     *head = '\0';
 
     return detail::to_number<Number>(buf);
-  }
-
-  template<typename Number>
-  std::size_t storeNumbers(std::size_t n, std::uint8_t *data, std::size_t offset) const
-  {
-    for (std::size_t i{0}; i < n; ++i)
-    {
-      const std::size_t alignedOffset{detail::roundup(offset, alignof(Number))};
-      *reinterpret_cast<Number *>(data + alignedOffset) = readNumber<Number>();
-      offset = alignedOffset + sizeof(Number);
-    }
-    return offset;
   }
 
   /// Reads the next character in the input stream and advances the read head by

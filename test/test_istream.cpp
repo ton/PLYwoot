@@ -73,13 +73,15 @@ TEST_CASE("No property data for an element value", "[istream][error][ascii]")
     char a, b;
   };
 
+  using Layout = plywoot::reflect::Layout<char, char>;
+
   std::ifstream ifs{"test/input/missing_element_property_data.ply"};
   const plywoot::IStream plyFile{ifs};
   const std::vector<plywoot::PlyElement> elements{plyFile.elements()};
   REQUIRE(elements.size() == 1);
   REQUIRE(elements.front().name() == "e");
   REQUIRE(elements.front().size() == 1);
-  REQUIRE_THROWS_AS(plyFile.read<S>(elements.front()), plywoot::UnexpectedEof);
+  REQUIRE_THROWS_AS((plyFile.read<S, Layout>(elements.front())), plywoot::UnexpectedEof);
 }
 
 TEST_CASE("Missing property data for an element value", "[istream][error][ascii]")
@@ -89,13 +91,15 @@ TEST_CASE("Missing property data for an element value", "[istream][error][ascii]
     char a, b;
   };
 
+  using Layout = plywoot::reflect::Layout<char, char>;
+
   std::ifstream ifs{"test/input/missing_element_property_data_2.ply"};
   const plywoot::IStream plyFile{ifs};
   const std::vector<plywoot::PlyElement> elements{plyFile.elements()};
   REQUIRE(elements.size() == 1);
   REQUIRE(elements.front().name() == "e");
   REQUIRE(elements.front().size() == 1);
-  REQUIRE_THROWS_AS(plyFile.read<S>(elements.front()), plywoot::UnexpectedEof);
+  REQUIRE_THROWS_AS((plyFile.read<S, Layout>(elements.front())), plywoot::UnexpectedEof);
 }
 
 TEST_CASE("A single element definition without properties is correctly parsed", "[istream][ascii]")
@@ -183,7 +187,9 @@ TEST_CASE("Read an element with a single property from an ASCII PLY file", "[ist
     char c{0};
   };
 
-  const std::vector<X> xs = plyFile.read<X>(elements.front());
+  using Layout = plywoot::reflect::Layout<char>;
+
+  const std::vector<X> xs = plyFile.read<X, Layout>(elements.front());
   REQUIRE(xs.size() == 1);
   REQUIRE(xs.front().c == 86);
 }
@@ -200,29 +206,9 @@ TEST_CASE("Read multiple elements with a single property from an ASCII PLY file"
     char c{0};
   };
 
-  const std::vector<X> xs = plyFile.read<X>(elements.front());
-  REQUIRE(xs.size() == 10);
+  using Layout = plywoot::reflect::Layout<char>;
 
-  std::vector<char> expected(10);
-  std::iota(expected.begin(), expected.end(), 86);
-  REQUIRE(std::equal(expected.begin(), expected.end(), xs.begin(), [](char c, X x) { return c == x.c; }));
-}
-
-TEST_CASE(
-    "Read multiple elements with a single property from an ASCII PLY file with type casts",
-    "[istream][ascii][cast]")
-{
-  std::ifstream ifs{"test/input/multiple_elements_with_single_property.ply"};
-  const plywoot::IStream plyFile{ifs};
-  const std::vector<plywoot::PlyElement> elements{plyFile.elements()};
-  REQUIRE(elements.size() == 1);
-
-  struct X
-  {
-    int c{0};
-  };
-
-  const std::vector<X> xs = plyFile.read<X, int>(elements.front());
+  const std::vector<X> xs = plyFile.read<X, Layout>(elements.front());
   REQUIRE(xs.size() == 10);
 
   std::vector<char> expected(10);
@@ -239,18 +225,20 @@ TEST_CASE("Read multiple elements with two properties from an ASCII PLY file", "
 
   struct X
   {
-    char c{0};
+    int c{0};
     unsigned char u{0};
   };
 
-  const std::vector<X> xs = plyFile.read<X>(elements.front());
+  using Layout = plywoot::reflect::Layout<int, unsigned char>;
+
+  const std::vector<X> xs = plyFile.read<X, Layout>(elements.front());
   REQUIRE(xs.size() == 10);
 
   // c
   {
-    std::vector<char> expected(10);
+    std::vector<int> expected(10);
     std::iota(expected.begin(), expected.end(), 86);
-    REQUIRE(std::equal(expected.begin(), expected.end(), xs.begin(), [](char c, X x) { return c == x.c; }));
+    REQUIRE(std::equal(expected.begin(), expected.end(), xs.begin(), [](int c, X x) { return c == x.c; }));
   }
 
   // u
@@ -259,7 +247,7 @@ TEST_CASE("Read multiple elements with two properties from an ASCII PLY file", "
     std::iota(expected.begin(), expected.end(), 246);
     std::reverse(expected.begin(), expected.end());
     REQUIRE(std::equal(
-        expected.begin(), expected.end(), xs.begin(), [](unsigned char u, X x) { return u == x.u; }));
+          expected.begin(), expected.end(), xs.begin(), [](unsigned char u, X x) { return u == x.u; }));
   }
 }
 
@@ -319,69 +307,13 @@ TEST_CASE("Test out of order retrieval of element data", "[istream][ascii]")
   std::tie(vertexElement, isVertexElementFound) = plyFile.element("vertex");
   REQUIRE(isVertexElementFound);
 
-  using Vertex = FloatVertex;
-  const std::vector<Vertex> result = plyFile.read<Vertex, float, float, float>(vertexElement);
-  const std::vector<Vertex> expected = {{0, 0, 0}, {1, 0, 0}, {1, 1, 0}, {0, 1, 0},
-                                        {0, 0, 1}, {1, 0, 1}, {1, 1, 1}, {0, 1, 1}};
-  CHECK(result == expected);
-}
-
-TEST_CASE("Test out of order retrieval of element data", "[istream][ascii][casts]")
-{
-  std::ifstream ifs{"test/input/cube_faces_before_vertices.ply"};
-  const plywoot::IStream plyFile{ifs};
-
-  plywoot::PlyElement faceElement;
-  bool isFaceElementFound{false};
-  std::tie(faceElement, isFaceElementFound) = plyFile.element("face");
-  REQUIRE(isFaceElementFound);
-
-  plywoot::PlyElement vertexElement;
-  bool isVertexElementFound{false};
-  std::tie(vertexElement, isVertexElementFound) = plyFile.element("vertex");
-  REQUIRE(isVertexElementFound);
-
   using Vertex = DoubleVertex;
+  using VertexLayout = plywoot::reflect::Layout<double, double, double>;
 
-  const std::vector<Vertex> result = plyFile.read<Vertex, double, double, double>(vertexElement);
+  const std::vector<Vertex> result = plyFile.read<Vertex, VertexLayout>(vertexElement);
   const std::vector<Vertex> expected = {{0, 0, 0}, {1, 0, 0}, {1, 1, 0}, {0, 1, 0},
                                         {0, 0, 1}, {1, 0, 1}, {1, 1, 1}, {0, 1, 1}};
   CHECK(result == expected);
-}
-
-TEST_CASE(
-    "Read multiple elements with two properties from an ASCII PLY file with type casts",
-    "[istream][ascii][casts]")
-{
-  std::ifstream ifs{"test/input/multiple_elements_with_two_properties.ply"};
-  const plywoot::IStream plyFile{ifs};
-  const std::vector<plywoot::PlyElement> elements{plyFile.elements()};
-  REQUIRE(elements.size() == 1);
-
-  struct X
-  {
-    int c{0};
-    unsigned char u{0};
-  };
-
-  const std::vector<X> xs = plyFile.read<X, int, unsigned char>(elements.front());
-  REQUIRE(xs.size() == 10);
-
-  // c
-  {
-    std::vector<char> expected(10);
-    std::iota(expected.begin(), expected.end(), 86);
-    REQUIRE(std::equal(expected.begin(), expected.end(), xs.begin(), [](char c, X x) { return c == x.c; }));
-  }
-
-  // u
-  {
-    std::vector<unsigned char> expected(10);
-    std::iota(expected.begin(), expected.end(), 246);
-    std::reverse(expected.begin(), expected.end());
-    REQUIRE(std::equal(
-        expected.begin(), expected.end(), xs.begin(), [](unsigned char u, X x) { return u == x.u; }));
-  }
 }
 
 TEST_CASE("Read a PLY file with a comment section", "[ascii][comments]")
@@ -413,8 +345,9 @@ TEST_CASE(
   REQUIRE(isVertexElementFound);
 
   using Vertex = FloatVertex;
+  using VertexLayout = plywoot::reflect::Layout<float, float, float>;
 
-  const std::vector<Vertex> result = plyFile.read<Vertex, float, float, float>(vertexElement);
+  const std::vector<Vertex> result = plyFile.read<Vertex, VertexLayout>(vertexElement);
   const std::vector<Vertex> expected = {{0, 0, 0}, {1, 0, 0}, {1, 1, 0}, {0, 1, 0},
                                         {0, 0, 1}, {1, 0, 1}, {1, 1, 1}, {0, 1, 1}};
   CHECK(result == expected);
