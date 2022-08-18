@@ -65,8 +65,7 @@ TEST_CASE("Test reading and writing all property types", "[iostream]")
 TEST_CASE("Test reading and writing of a list", "[iostream]")
 {
   const auto sizeType{plywoot::PlyDataType::Char};
-  const std::size_t sizeHint{3};
-  const plywoot::PlyProperty vertexIndices{"vertex_indices", plywoot::PlyDataType::Int, sizeType, sizeHint};
+  const plywoot::PlyProperty vertexIndices{"vertex_indices", plywoot::PlyDataType::Int, sizeType};
   const plywoot::PlyElement element{"triangle", 3, {vertexIndices}};
 
   struct Triangle

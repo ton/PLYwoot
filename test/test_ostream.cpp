@@ -149,12 +149,11 @@ TEST_CASE("Write PLY file with a single element with a list property", "[ostream
   plywoot::OStream plyos{plywoot::PlyFormat::Ascii};
 
   const auto sizeType{plywoot::PlyDataType::Char};
-  constexpr std::size_t sizeHint{3};
 
-  const plywoot::PlyProperty faceIndices{"vertex_indices", plywoot::PlyDataType::Int, sizeType, sizeHint};
+  const plywoot::PlyProperty faceIndices{"vertex_indices", plywoot::PlyDataType::Int, sizeType};
   const plywoot::PlyElement element{"face", 10, {faceIndices}};
 
-  using Layout = plywoot::reflect::Layout<plywoot::reflect::Array<int, sizeHint>>;
+  using Layout = plywoot::reflect::Layout<plywoot::reflect::Array<int, 3>>;
 
   std::vector<Face> faces;
   plyos.add(element, Layout{faces});
