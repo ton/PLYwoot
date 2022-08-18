@@ -1,5 +1,5 @@
-#ifndef UTIL_HPP
-#define UTIL_HPP
+#ifndef PLYWOOT_TEST_UTIL_HPP
+#define PLYWOOT_TEST_UTIL_HPP
 
 #include <catch2/matchers/catch_matchers_exception.hpp>
 #include <catch2/matchers/catch_matchers_predicate.hpp>

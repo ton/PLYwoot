@@ -1,5 +1,3 @@
-#include "util.hpp"
-
 #include <plywoot/plywoot.hpp>
 
 #include <catch2/catch_test_macros.hpp>
