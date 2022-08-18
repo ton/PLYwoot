@@ -128,6 +128,11 @@ std::string to_string(const T &t)
   return oss.str();
 }
 
+template<typename T>
+struct Type
+{
+};
+
 }}
 
 #endif

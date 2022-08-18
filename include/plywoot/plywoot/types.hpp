@@ -167,6 +167,8 @@ private:
   std::vector<PlyProperty> properties_;
 };
 
+using ConstPropertyIterator = std::vector<PlyProperty>::const_iterator;
+
 }
 
 #endif
