@@ -43,8 +43,8 @@ struct PlyProperty
 {
   PlyProperty() = default;
   PlyProperty(std::string name, PlyDataType type) : name_{std::move(name)}, type_{type} {}
-  PlyProperty(std::string name, PlyDataType type, PlyDataType sizeType, std::size_t sizeHint)
-      : name_{std::move(name)}, type_{type}, isList_{true}, sizeType_{sizeType}, sizeHint_{sizeHint}
+  PlyProperty(std::string name, PlyDataType type, PlyDataType sizeType)
+      : name_{std::move(name)}, type_{type}, isList_{true}, sizeType_{sizeType}
   {
   }
 
@@ -56,9 +56,6 @@ struct PlyProperty
   bool isList() const { return isList_; }
   /// Returns the size type of this property.
   PlyDataType sizeType() const { return sizeType_; }
-  /// Returns the size hint set for this property, in case no such hint is
-  /// set, this returns zero.
-  std::size_t sizeHint() const { return sizeHint_; }
 
   size_t numBytes() const
   {
@@ -81,7 +78,6 @@ struct PlyProperty
 
   inline friend bool operator==(const PlyProperty &x, const PlyProperty &y)
   {
-    // Note; the size hint is not part of the identity of a property.
     return x.type_ == y.type_ && x.isList_ == y.isList_ && x.sizeType_ == y.sizeType_ && x.name_ == y.name_;
   }
 
@@ -93,7 +89,6 @@ private:
 
   bool isList_{false};
   PlyDataType sizeType_{PlyDataType::Char};
-  std::size_t sizeHint_{0};
 };
 
 struct PlyElement
@@ -115,24 +110,6 @@ struct PlyElement
   std::size_t size() const { return size_; }
   /// Returns the properties associated with this element.
   const std::vector<PlyProperty> &properties() const { return properties_; }
-
-  /// Returns a copy of this element, with a size hint set for the property
-  /// with the given name. In case the property is not found, this just
-  /// returns a copy of this element.
-  PlyElement setSizeHint(const std::string &propertyName, std::size_t sizeHint) const
-  {
-    std::vector<PlyProperty> propertiesCopy;
-    for (const PlyProperty &p : properties_)
-    {
-      if (p.name() == propertyName && p.isList())
-      {
-        propertiesCopy.emplace_back(p.name(), p.type(), p.sizeType(), sizeHint);
-      }
-      else { propertiesCopy.push_back(p); }
-    }
-
-    return PlyElement{name_, size_, std::move(propertiesCopy)};
-  }
 
   /// Returns a pair where the first element is a copy of the property with
   /// the given name in case it exists. The second element is a Boolean that
