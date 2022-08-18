@@ -30,6 +30,7 @@ target_include_directories(plywoot
 )
 target_compile_features(plywoot INTERFACE cxx_std_11)
 
+add_subdirectory(benchmark)
 add_subdirectory(test)
 
 # install target
