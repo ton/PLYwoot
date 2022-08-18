@@ -28,6 +28,10 @@ find_package(FastFloat QUIET)
 set_package_properties(FastFloat PROPERTIES TYPE DESCRIPTION "fast and exact implementation of the C++ from_chars functions for float and double types.")
 set_package_properties(FastFloat PROPERTIES TYPE RECOMMENDED PURPOSE "Significantly improves ASCII parser performance.")
 
+find_package(fast_int QUIET)
+set_package_properties(fast_int PROPERTIES TYPE DESCRIPTION "header-only C++11 implementation of the C++17 `from_chars` functions for integer types.")
+set_package_properties(fast_int PROPERTIES TYPE RECOMMENDED PURPOSE "Significantly improves ASCII parser performance.")
+
 feature_summary(WHAT ALL INCLUDE_QUIET_PACKAGES)
 
 # Define the header-only library target for plywoot.
@@ -47,6 +51,17 @@ if(TARGET FastFloat::fast_float)
   target_link_libraries(plywoot
     INTERFACE
     FastFloat::fast_float
+  )
+endif()
+
+if(TARGET fast_int::fast_int)
+  target_compile_definitions(plywoot
+    INTERFACE
+    PLYWOOT_HAS_FAST_INT
+  )
+  target_link_libraries(plywoot
+    INTERFACE
+    fast_int::fast_int
   )
 endif()
 

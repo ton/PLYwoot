@@ -5,6 +5,10 @@
 #include <fast_float/fast_float.h>
 #endif
 
+#ifdef PLYWOOT_HAS_FAST_INT
+#include <fast_int/fast_int.hpp>
+#endif
+
 #include <cstdlib>
 #include <cstring>
 #include <sstream>
@@ -60,9 +64,15 @@ struct CharToInt
 };
 
 template<typename Number>
-inline Number to_number(char *first, char *)
+inline Number to_number(char *first, char *last)
 {
+#ifdef PLYWOOT_HAS_FAST_INT
+  Number n{};
+  fast_int::from_chars(first, last, n);
+  return n;
+#else
   return std::atoi(first);
+#endif
 }
 
 template<>
