@@ -410,8 +410,11 @@ private:
   /// Note; type tag parameter is merely to facility overloading based on the
   /// template type.
   template<typename T, typename TypeTag>
-  const std::uint8_t *
-  writeAsciiProperty(std::ostream &os, const std::uint8_t *src, const PlyProperty &property, TypeTag tag)
+  const std::uint8_t *writeAsciiProperty(
+      std::ostream &os,
+      const std::uint8_t *src,
+      const PlyProperty &property,
+      TypeTag tag)
   {
     return writeAsciiArithmeticProperty<T>(os, src, property, tag);
   }
@@ -454,8 +457,11 @@ private:
   /// Writes all properties of the given element, iterating over all types
   /// specified in the source type layout, matching them with properties defined
   /// for the element. This is the bottom case and ends the recursion.
-  const std::uint8_t *
-  writeAsciiElement(std::ostream &, const std::uint8_t *src, ConstPropertyIterator, ConstPropertyIterator)
+  const std::uint8_t *writeAsciiElement(
+      std::ostream &,
+      const std::uint8_t *src,
+      ConstPropertyIterator,
+      ConstPropertyIterator)
   {
     return src;
   }

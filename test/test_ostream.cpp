@@ -130,7 +130,7 @@ TEST_CASE(
   plyos.write(ss);
 
   const std::string expected{
-    "ply\n"
+      "ply\n"
       "format ascii 1.0\n"
       "element e 3\n"
       "property float f\n"
