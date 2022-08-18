@@ -1,3 +1,4 @@
+#include "test_types.hpp"
 #include "util.hpp"
 
 #include <plywoot/plywoot.hpp>
@@ -264,9 +265,9 @@ TEST_CASE("Read multiple elements with two properties from an ASCII PLY file", "
     std::vector<unsigned char> expected(10);
     std::iota(expected.begin(), expected.end(), 246);
     std::reverse(expected.begin(), expected.end());
-    REQUIRE(std::equal(
-        expected.begin(), expected.end(), xs.begin(),
-        [](unsigned char u, X x) { return u == x.u; }));
+    REQUIRE(std::equal(expected.begin(), expected.end(), xs.begin(), [](unsigned char u, X x) {
+      return u == x.u;
+    }));
   }
 }
 
@@ -327,12 +328,7 @@ TEST_CASE("Test out of order retrieval of element data", "[istream][ascii]")
   std::tie(vertexElement, isVertexElementFound) = plyFile.element("vertex");
   REQUIRE(isVertexElementFound);
 
-  struct Vertex
-  {
-    float x, y, z;
-
-    bool operator==(const Vertex &v) const { return x == v.x && y == v.y && z == v.z; }
-  };
+  using Vertex = FloatVertex;
 
   const std::vector<Vertex> result = plyFile.read<Vertex>(vertexElement);
   const std::vector<Vertex> expected = {{0, 0, 0}, {1, 0, 0}, {1, 1, 0}, {0, 1, 0},
@@ -355,12 +351,7 @@ TEST_CASE("Test out of order retrieval of element data", "[istream][ascii][casts
   std::tie(vertexElement, isVertexElementFound) = plyFile.element("vertex");
   REQUIRE(isVertexElementFound);
 
-  struct Vertex
-  {
-    double x, y, z;
-
-    bool operator==(const Vertex &v) const { return x == v.x && y == v.y && z == v.z; }
-  };
+  using Vertex = DoubleVertex;
 
   const std::vector<Vertex> result = plyFile.read<Vertex, double, double, double>(vertexElement);
   const std::vector<Vertex> expected = {{0, 0, 0}, {1, 0, 0}, {1, 1, 0}, {0, 1, 0},
@@ -399,9 +390,9 @@ TEST_CASE(
     std::vector<unsigned char> expected(10);
     std::iota(expected.begin(), expected.end(), 246);
     std::reverse(expected.begin(), expected.end());
-    REQUIRE(std::equal(
-        expected.begin(), expected.end(), xs.begin(),
-        [](unsigned char u, X x) { return u == x.u; }));
+    REQUIRE(std::equal(expected.begin(), expected.end(), xs.begin(), [](unsigned char u, X x) {
+      return u == x.u;
+    }));
   }
 }
 
@@ -435,12 +426,7 @@ TEST_CASE(
   std::tie(vertexElement, isVertexElementFound) = plyFile.element("vertex");
   REQUIRE(isVertexElementFound);
 
-  struct Vertex
-  {
-    float x, y, z;
-
-    bool operator==(const Vertex &v) const { return x == v.x && y == v.y && z == v.z; }
-  };
+  using Vertex = FloatVertex;
 
   const std::vector<Vertex> result = plyFile.read<Vertex, float, float, float>(vertexElement);
   const std::vector<Vertex> expected = {{0, 0, 0}, {1, 0, 0}, {1, 1, 0}, {0, 1, 0},
