@@ -7,27 +7,25 @@
 
 using namespace Catch::Matchers;
 
-namespace
+namespace {
+
+class ExceptionMessageContainsMatcher final : public MatcherBase<std::exception>
 {
-  class ExceptionMessageContainsMatcher final : public MatcherBase<std::exception>
+  std::string m_messagePart;
+
+public:
+  ExceptionMessageContainsMatcher(const std::string &messagePart) : m_messagePart{messagePart} {}
+
+  bool match(const std::exception &e) const override
   {
-    std::string m_messagePart;
+    return ::strstr(e.what(), m_messagePart.data()) != nullptr;
+  }
 
-  public:
-    ExceptionMessageContainsMatcher(const std::string &messagePart) : m_messagePart{messagePart} {}
+  std::string describe() const override { return "exception message contains \"" + m_messagePart + '"'; }
+};
 
-    bool match(const std::exception &e) const override
-    {
-      return ::strstr(e.what(), m_messagePart.data()) != nullptr;
-    }
+inline ExceptionMessageContainsMatcher MessageContains(const std::string &message) { return {message}; }
 
-    std::string describe() const override
-    {
-      return "exception message contains \"" + m_messagePart + '"';
-    }
-  };
-
-  inline ExceptionMessageContainsMatcher MessageContains(const std::string &message) { return {message}; }
 }
 
 #endif

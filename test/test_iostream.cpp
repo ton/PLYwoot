@@ -63,8 +63,7 @@ TEST_CASE("Test reading and writing of a list", "[iostream]")
 {
   const auto sizeType{plywoot::PlyDataType::Char};
   const std::size_t sizeHint{3};
-  const plywoot::PlyProperty vertexIndices{
-      "vertex_indices", plywoot::PlyDataType::Int, sizeType, sizeHint};
+  const plywoot::PlyProperty vertexIndices{"vertex_indices", plywoot::PlyDataType::Int, sizeType, sizeHint};
   const plywoot::PlyElement element{"triangle", 3, {vertexIndices}};
 
   struct Triangle
@@ -121,15 +120,14 @@ TEST_CASE("Test reading and writing all property types with casts", "[iostream][
   };
 
   const std::vector<Element> expected{
-      {std::numeric_limits<char>::min(), std::numeric_limits<char>::min(),
-       std::numeric_limits<char>::min(), std::numeric_limits<unsigned char>::max(),
-       std::numeric_limits<short>::min(), std::numeric_limits<unsigned short>::max(),
-       std::numeric_limits<float>::epsilon(), std::numeric_limits<float>::epsilon()}};
+      {std::numeric_limits<char>::min(), std::numeric_limits<char>::min(), std::numeric_limits<char>::min(),
+       std::numeric_limits<unsigned char>::max(), std::numeric_limits<short>::min(),
+       std::numeric_limits<unsigned short>::max(), std::numeric_limits<float>::epsilon(),
+       std::numeric_limits<float>::epsilon()}};
 
   std::stringstream oss;
   plywoot::OStream plyos{plywoot::PlyFormat::Ascii};
-  plyos.add<Element, char, char, char, unsigned char, short, unsigned short, float, float>(
-      element, expected);
+  plyos.add<Element, char, char, char, unsigned char, short, unsigned short, float, float>(element, expected);
   plyos.write(oss);
 
   const std::string ascii{oss.str()};
@@ -137,8 +135,7 @@ TEST_CASE("Test reading and writing all property types with casts", "[iostream][
   plywoot::IStream plyis{iss};
 
   std::vector<Element> elements{
-      plyis.read<Element, char, char, char, unsigned char, short, unsigned short, float, float>(
-          element)};
+      plyis.read<Element, char, char, char, unsigned char, short, unsigned short, float, float>(element)};
   REQUIRE(expected == elements);
 }
 
@@ -189,5 +186,4 @@ TEST_CASE("Tests reading and writing vertex and face data", "[iostream][casts]")
     const std::vector<Face> writtenFaces = plyis.read<Face>(faceElement);
     CHECK(faces == writtenFaces);
   }
-
 }

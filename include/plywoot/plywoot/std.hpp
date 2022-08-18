@@ -74,10 +74,7 @@ inline double to_number<double>(char *buf)
 }
 
 /// Returns whether the given string starts with the given prefix.
-inline bool starts_with(const std::string &s, const char *prefix)
-{
-  return s.rfind(prefix, 0) == 0;
-}
+inline bool starts_with(const std::string &s, const char *prefix) { return s.rfind(prefix, 0) == 0; }
 
 /// Simple string-view like type; very basic, do not use for anything serious.
 class string_view

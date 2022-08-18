@@ -383,10 +383,9 @@ public:
       if (p.isList() && p.sizeHint() == 0) { throw MissingSizeHint(p.name()); }
     }
 
-    elementWriteClosures_.emplace_back(
-        element, [this, src, n](std::ostream &os, const PlyElement &e) {
-          write<PropertyType, PropertyTypes...>(os, e, src, n);
-        });
+    elementWriteClosures_.emplace_back(element, [this, src, n](std::ostream &os, const PlyElement &e) {
+      write<PropertyType, PropertyTypes...>(os, e, src, n);
+    });
   }
 
   /// Writes all data as a PLY file queued through `addElement()` to the given
@@ -431,8 +430,8 @@ private:
       {
         if (property.isList())
         {
-          os << "property list " << property.sizeType() << ' ' << property.type() << ' '
-             << property.name() << '\n';
+          os << "property list " << property.sizeType() << ' ' << property.type() << ' ' << property.name()
+             << '\n';
         }
         else { os << "property " << property.type() << ' ' << property.name() << '\n'; }
       }
@@ -466,11 +465,8 @@ private:
     }
   }
 
-  void writeAscii(
-      std::ostream &os,
-      const PlyElement &element,
-      const std::uint8_t *src,
-      std::size_t numElements)
+  void
+  writeAscii(std::ostream &os, const PlyElement &element, const std::uint8_t *src, std::size_t numElements)
   {
     for (std::size_t i{0}; i < numElements; ++i)
     {
@@ -521,8 +517,7 @@ private:
   }
 
   template<typename PropertyType, typename... PropertyTypes>
-  void
-  writeAscii(std::ostream &os, const PlyElement &element, const std::uint8_t *src, std::size_t n)
+  void writeAscii(std::ostream &os, const PlyElement &element, const std::uint8_t *src, std::size_t n)
   {
     for (std::size_t i{0}; i < n; ++i)
     {

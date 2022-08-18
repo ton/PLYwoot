@@ -108,9 +108,7 @@ TEST_CASE("A single element definition without properties is correctly parsed", 
   REQUIRE(elements.front().size() == 0);
 }
 
-TEST_CASE(
-    "Multiple element definitions without properties are correctly parsed",
-    "[istream][ascii]")
+TEST_CASE("Multiple element definitions without properties are correctly parsed", "[istream][ascii]")
 {
   std::ifstream ifs{"test/input/multiple_elements.ply"};
   const plywoot::IStream plyFile{ifs};
@@ -190,9 +188,7 @@ TEST_CASE("Read an element with a single property from an ASCII PLY file", "[ist
   REQUIRE(xs.front().c == 86);
 }
 
-TEST_CASE(
-    "Read multiple elements with a single property from an ASCII PLY file",
-    "[istream][ascii]")
+TEST_CASE("Read multiple elements with a single property from an ASCII PLY file", "[istream][ascii]")
 {
   std::ifstream ifs{"test/input/multiple_elements_with_single_property.ply"};
   const plywoot::IStream plyFile{ifs};
@@ -209,8 +205,7 @@ TEST_CASE(
 
   std::vector<char> expected(10);
   std::iota(expected.begin(), expected.end(), 86);
-  REQUIRE(std::equal(
-      expected.begin(), expected.end(), xs.begin(), [](char c, X x) { return c == x.c; }));
+  REQUIRE(std::equal(expected.begin(), expected.end(), xs.begin(), [](char c, X x) { return c == x.c; }));
 }
 
 TEST_CASE(
@@ -232,8 +227,7 @@ TEST_CASE(
 
   std::vector<char> expected(10);
   std::iota(expected.begin(), expected.end(), 86);
-  REQUIRE(std::equal(
-      expected.begin(), expected.end(), xs.begin(), [](char c, X x) { return c == x.c; }));
+  REQUIRE(std::equal(expected.begin(), expected.end(), xs.begin(), [](char c, X x) { return c == x.c; }));
 }
 
 TEST_CASE("Read multiple elements with two properties from an ASCII PLY file", "[istream][ascii]")
@@ -256,8 +250,7 @@ TEST_CASE("Read multiple elements with two properties from an ASCII PLY file", "
   {
     std::vector<char> expected(10);
     std::iota(expected.begin(), expected.end(), 86);
-    REQUIRE(std::equal(
-        expected.begin(), expected.end(), xs.begin(), [](char c, X x) { return c == x.c; }));
+    REQUIRE(std::equal(expected.begin(), expected.end(), xs.begin(), [](char c, X x) { return c == x.c; }));
   }
 
   // u
@@ -265,9 +258,8 @@ TEST_CASE("Read multiple elements with two properties from an ASCII PLY file", "
     std::vector<unsigned char> expected(10);
     std::iota(expected.begin(), expected.end(), 246);
     std::reverse(expected.begin(), expected.end());
-    REQUIRE(std::equal(expected.begin(), expected.end(), xs.begin(), [](unsigned char u, X x) {
-      return u == x.u;
-    }));
+    REQUIRE(std::equal(
+        expected.begin(), expected.end(), xs.begin(), [](unsigned char u, X x) { return u == x.u; }));
   }
 }
 
@@ -288,8 +280,7 @@ TEST_CASE(
 
   plywoot::PlyProperty vertexIndicesProperty;
   bool isVertexIndicesPropertyFound{false};
-  std::tie(vertexIndicesProperty, isVertexIndicesPropertyFound) =
-      faceElement.property("vertex_indices");
+  std::tie(vertexIndicesProperty, isVertexIndicesPropertyFound) = faceElement.property("vertex_indices");
 
   CHECK(vertexIndicesProperty.name() == "vertex_indices");
   CHECK(vertexIndicesProperty.type() == plywoot::PlyDataType::Int);
@@ -381,8 +372,7 @@ TEST_CASE(
   {
     std::vector<char> expected(10);
     std::iota(expected.begin(), expected.end(), 86);
-    REQUIRE(std::equal(
-        expected.begin(), expected.end(), xs.begin(), [](char c, X x) { return c == x.c; }));
+    REQUIRE(std::equal(expected.begin(), expected.end(), xs.begin(), [](char c, X x) { return c == x.c; }));
   }
 
   // u
@@ -390,9 +380,8 @@ TEST_CASE(
     std::vector<unsigned char> expected(10);
     std::iota(expected.begin(), expected.end(), 246);
     std::reverse(expected.begin(), expected.end());
-    REQUIRE(std::equal(expected.begin(), expected.end(), xs.begin(), [](unsigned char u, X x) {
-      return u == x.u;
-    }));
+    REQUIRE(std::equal(
+        expected.begin(), expected.end(), xs.begin(), [](unsigned char u, X x) { return u == x.u; }));
   }
 }
 
@@ -404,9 +393,7 @@ TEST_CASE("Read a PLY file with a comment section", "[ascii][comments]")
   CHECK(plyFile.elements().front().name() == "vertex");
 }
 
-TEST_CASE(
-    "Read a PLY file with a comment section consisting of multiple lines",
-    "[ascii][comments]")
+TEST_CASE("Read a PLY file with a comment section consisting of multiple lines", "[ascii][comments]")
 {
   std::ifstream ifs{"test/input/multi_line_comment.ply"};
   const plywoot::IStream plyFile{ifs};
