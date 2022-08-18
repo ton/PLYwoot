@@ -49,8 +49,7 @@ static void BM_plywoot_ascii(benchmark::State &state, const std::string &filenam
       state.SkipWithError("could not load triangle data; face element not found in input data");
     }
 
-    const std::vector<Triangle> triangles{
-        plyIn.read<Triangle, int, int, int>(faceElement.setSizeHint("vertex_indices", 3))};
+    const std::vector<Triangle> triangles{plyIn.read<Triangle>(faceElement.setSizeHint("vertex_indices", 3))};
     benchmark::DoNotOptimize(triangles);
 
     const std::vector<Vertex> vertices{plyIn.read<Vertex, float, float, float>(vertexElement)};
