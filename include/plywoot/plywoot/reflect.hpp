@@ -32,16 +32,15 @@ class Layout : public std::tuple<Ts...>
 {
 public:
   template<typename T>
-  Layout(const std::vector<T> &v)
-      : data_{nullptr}, cdata_{reinterpret_cast<const std::uint8_t *>(v.data())}, size_{v.size()}
-  {
-  }
-  template<typename T>
   Layout(std::vector<T> &v)
       : data_{reinterpret_cast<std::uint8_t *>(v.data())}, cdata_{data_}, size_{v.size()}
   {
   }
-  Layout(const std::uint8_t *data, std::size_t size) : data_{data}, size_{size} {}
+  template<typename T>
+  Layout(const std::vector<T> &v)
+      : data_{nullptr}, cdata_{reinterpret_cast<const std::uint8_t *>(v.data())}, size_{v.size()}
+  {
+  }
 
   std::uint8_t *data() { return data_; }
   const std::uint8_t *data() const { return cdata_; }
