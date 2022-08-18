@@ -8,6 +8,10 @@ target_link_libraries(tests
   Catch2::Catch2WithMain
 )
 
+# TODO(ton): seems there is a bug in GCC 12 where it issues a warning in the
+# standard library code for a trivial `std::reverse` call.
+set_source_files_properties(test_istream.cpp PROPERTIES COMPILE_FLAGS -Wno-strict-overflow)
+
 # Executables that are only compiled to test compatibility for the various C++
 # standards.
 add_executable(test-cpp11 test-cpp11.cpp)
