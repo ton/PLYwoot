@@ -140,7 +140,7 @@ private:
   {
     // TODO(ton): skip the number that defines the list in the PLY data, we
     // expect it to be of length N; throw an exception here in case they do no match?
-    readNumber<std::size_t>();
+    skipNumber();
     for (size_t i = 0; i < N; ++i) { dest = readAsciiProperty<T>(dest, detail::Type<T>{}); }
     return dest;
   }
@@ -183,6 +183,12 @@ private:
     *head = '\0';
 
     return detail::to_number<Number>(buf);
+  }
+
+  void skipNumber() const
+  {
+    while (0 <= *c_ && *c_ <= 0x20) readCharacter();
+    while (*c_ > 0x20) readCharacter();
   }
 
   /// Reads the next character in the input stream and advances the read head by
