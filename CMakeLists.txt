@@ -21,6 +21,15 @@ set (CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
 add_compile_options("$<$<CONFIG:DEBUG>:-Wall;-Wextra;-Wshadow;-Wno-unused-variable;-Wno-unused-function;-Wno-unused-parameter;-Werror;-Wstrict-overflow;-fno-strict-aliasing;-march=native>")
 add_compile_options("$<$<CONFIG:RELEASE>:-Wall;-Wextra;-Wshadow;-Wpedantic;-Werror;-Wno-unused-parameter;-Wstrict-overflow;-fno-strict-aliasing;-march=native>")
 
+# External (optional) dependencies.
+include(FeatureSummary)
+
+find_package(FastFloat QUIET)
+set_package_properties(FastFloat PROPERTIES TYPE DESCRIPTION "fast and exact implementation of the C++ from_chars functions for float and double types.")
+set_package_properties(FastFloat PROPERTIES TYPE RECOMMENDED PURPOSE "Significantly improves ASCII parser performance.")
+
+feature_summary(WHAT ALL INCLUDE_QUIET_PACKAGES)
+
 # Define the header-only library target for plywoot.
 add_library(plywoot INTERFACE)
 target_include_directories(plywoot
@@ -29,6 +38,17 @@ target_include_directories(plywoot
   $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
 )
 target_compile_features(plywoot INTERFACE cxx_std_11)
+
+if(TARGET FastFloat::fast_float)
+  target_compile_definitions(plywoot
+    INTERFACE
+    PLYWOOT_HAS_FAST_FLOAT
+  )
+  target_link_libraries(plywoot
+    INTERFACE
+    FastFloat::fast_float
+  )
+endif()
 
 add_subdirectory(benchmark)
 add_subdirectory(test)
