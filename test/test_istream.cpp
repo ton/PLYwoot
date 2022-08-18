@@ -320,8 +320,7 @@ TEST_CASE("Test out of order retrieval of element data", "[istream][ascii]")
   REQUIRE(isVertexElementFound);
 
   using Vertex = FloatVertex;
-
-  const std::vector<Vertex> result = plyFile.read<Vertex>(vertexElement);
+  const std::vector<Vertex> result = plyFile.read<Vertex, float, float, float>(vertexElement);
   const std::vector<Vertex> expected = {{0, 0, 0}, {1, 0, 0}, {1, 1, 0}, {0, 1, 0},
                                         {0, 0, 1}, {1, 0, 1}, {1, 1, 1}, {0, 1, 1}};
   CHECK(result == expected);

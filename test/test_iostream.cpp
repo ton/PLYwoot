@@ -24,11 +24,11 @@ TEST_CASE("Test reading and writing all property types", "[iostream]")
   struct Element
   {
     char a;
-    unsigned char b;
-    short c;
-    unsigned short d;
-    int e;
-    unsigned int f;
+    char b;
+    char c;
+    unsigned char d;
+    short e;
+    unsigned short f;
     float g;
     double h;
 
@@ -41,21 +41,25 @@ TEST_CASE("Test reading and writing all property types", "[iostream]")
   };
 
   const std::vector<Element> expected{
-      {std::numeric_limits<char>::min(), std::numeric_limits<unsigned char>::max(),
-       std::numeric_limits<short>::min(), std::numeric_limits<unsigned short>::max(),
-       std::numeric_limits<int>::min(), std::numeric_limits<unsigned int>::max(),
-       std::numeric_limits<float>::epsilon(), std::numeric_limits<double>::epsilon()}};
+      {std::numeric_limits<char>::min(), std::numeric_limits<char>::min(), std::numeric_limits<char>::min(),
+       std::numeric_limits<unsigned char>::max(), std::numeric_limits<short>::min(),
+       std::numeric_limits<unsigned short>::max(), std::numeric_limits<float>::epsilon(),
+       std::numeric_limits<double>::epsilon()}};
+
+  using Layout =
+      plywoot::reflect::Layout<char, char, char, unsigned char, short, unsigned short, float, double>;
 
   std::stringstream oss;
   plywoot::OStream plyos{plywoot::PlyFormat::Ascii};
-  plyos.add(element, expected);
+  plyos.add(element, Layout{expected});
   plyos.write(oss);
 
   const std::string ascii{oss.str()};
   std::stringstream iss{ascii, std::ios::in};
   plywoot::IStream plyis{iss};
 
-  std::vector<Element> elements{plyis.read<Element>(element)};
+  std::vector<Element> elements{
+      plyis.read<Element, char, char, char, unsigned char, short, unsigned short, float, double>(element)};
   REQUIRE(expected == elements);
 }
 
@@ -75,9 +79,11 @@ TEST_CASE("Test reading and writing of a list", "[iostream]")
 
   const std::vector<Triangle> expected{Triangle{0, 1, 2}, Triangle{5, 4, 3}, Triangle{6, 7, 8}};
 
+  using Layout = plywoot::reflect::Layout<plywoot::reflect::Array<int, 3>>;
+
   std::stringstream oss;
   plywoot::OStream plyos{plywoot::PlyFormat::Ascii};
-  plyos.add(element, expected);
+  plyos.add(element, Layout{expected});
   plyos.write(oss);
 
   const std::string ascii{oss.str()};
@@ -88,58 +94,7 @@ TEST_CASE("Test reading and writing of a list", "[iostream]")
   REQUIRE(expected == triangles);
 }
 
-TEST_CASE("Test reading and writing all property types with casts", "[iostream][casts]")
-{
-  const plywoot::PlyProperty a{"a", plywoot::PlyDataType::Char};
-  const plywoot::PlyProperty b{"b", plywoot::PlyDataType::UChar};
-  const plywoot::PlyProperty c{"c", plywoot::PlyDataType::Short};
-  const plywoot::PlyProperty d{"d", plywoot::PlyDataType::UShort};
-  const plywoot::PlyProperty e{"e", plywoot::PlyDataType::Int};
-  const plywoot::PlyProperty f{"f", plywoot::PlyDataType::UInt};
-  const plywoot::PlyProperty g{"g", plywoot::PlyDataType::Float};
-  const plywoot::PlyProperty h{"h", plywoot::PlyDataType::Double};
-  const plywoot::PlyElement element{"e", 1, {a, b, c, d, e, f, g, h}};
-
-  struct Element
-  {
-    char a;
-    char b;
-    char c;
-    unsigned char d;
-    short e;
-    unsigned short f;
-    float g;
-    float h;
-
-    bool operator==(const Element &el) const
-    {
-      return a == el.a && b == el.b && c == el.c && d == el.d && e == el.e && f == el.f &&
-             std::abs(g - el.g) < std::numeric_limits<float>::epsilon() &&
-             std::abs(h - el.h) < std::numeric_limits<float>::epsilon();
-    }
-  };
-
-  const std::vector<Element> expected{
-      {std::numeric_limits<char>::min(), std::numeric_limits<char>::min(), std::numeric_limits<char>::min(),
-       std::numeric_limits<unsigned char>::max(), std::numeric_limits<short>::min(),
-       std::numeric_limits<unsigned short>::max(), std::numeric_limits<float>::epsilon(),
-       std::numeric_limits<float>::epsilon()}};
-
-  std::stringstream oss;
-  plywoot::OStream plyos{plywoot::PlyFormat::Ascii};
-  plyos.add<Element, char, char, char, unsigned char, short, unsigned short, float, float>(element, expected);
-  plyos.write(oss);
-
-  const std::string ascii{oss.str()};
-  std::stringstream iss{ascii, std::ios::in};
-  plywoot::IStream plyis{iss};
-
-  std::vector<Element> elements{
-      plyis.read<Element, char, char, char, unsigned char, short, unsigned short, float, float>(element)};
-  REQUIRE(expected == elements);
-}
-
-TEST_CASE("Tests reading and writing vertex and face data", "[iostream][casts]")
+TEST_CASE("Tests reading and writing vertex and face data", "[iostream]")
 {
   std::ifstream ifs{"test/input/cube.ply"};
   const plywoot::IStream plyFile{ifs};
@@ -168,13 +123,14 @@ TEST_CASE("Tests reading and writing vertex and face data", "[iostream][casts]")
   const std::vector<Face> faces = plyFile.read<Face>(faceElement);
   CHECK(faces.size() == 12);
 
+  using VertexLayout = plywoot::reflect::Layout<float, float, float>;
+  using FaceLayout = plywoot::reflect::Layout<plywoot::reflect::Array<int, 3>>;
+
   // Now write the data to a string stream, read it back in again, and compare.
   std::stringstream oss;
-  plywoot::PlyElement faceElementWithSizeHint{faceElement.setSizeHint("vertex_indices", 3)};
-
   plywoot::OStream plyos{plywoot::PlyFormat::Ascii};
-  plyos.add<Vertex, float, float, float>(vertexElement, vertices);
-  plyos.add(faceElementWithSizeHint, faces);
+  plyos.add(vertexElement, VertexLayout{vertices});
+  plyos.add(faceElement, FaceLayout{faces});
   plyos.write(oss);
 
   {

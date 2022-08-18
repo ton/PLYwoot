@@ -4,6 +4,7 @@
 #include "plywoot/exceptions.hpp"
 #include "plywoot/header_parser.hpp"
 #include "plywoot/header_scanner.hpp"
+#include "plywoot/reflect.hpp"
 #include "plywoot/std.hpp"
 #include "plywoot/types.hpp"
 
@@ -14,6 +15,7 @@
 #include <iostream>
 #include <string>
 #include <tuple>
+#include <type_traits>
 #include <vector>
 
 namespace plywoot {
@@ -332,60 +334,12 @@ public:
   OStream(PlyFormat format) : format_{format} {}
 
   /// Queues an element with the associated data for writing. Elements will be
-  /// stored in the same order they are queued. List properties require a size
-  /// hint for now.
-  ///
-  /// \throw MissingSizeHint in case a property is present without a size hint
-  template<typename T>
-  void add(const PlyElement &element, const std::vector<T> &values)
+  /// stored in the same order they are queued.
+  template<typename... Ts>
+  void add(const PlyElement &element, const reflect::Layout<Ts...> &layout)
   {
-    add(element, reinterpret_cast<const std::uint8_t *>(values.data()), values.size());
-  }
-
-  /// Queues an element with the associated data for writing. Elements will be
-  /// stored in the same order they are queued. List properties require a size
-  /// hint for now.
-  ///
-  /// \throw MissingSizeHint in case a property is present without a size hint
-  void add(const PlyElement &element, const std::uint8_t *src, std::size_t n)
-  {
-    for (const PlyProperty &p : element.properties())
-    {
-      if (p.isList() && p.sizeHint() == 0) { throw MissingSizeHint(p.name()); }
-    }
-
     elementWriteClosures_.emplace_back(
-        element, [this, src, n](std::ostream &os, const PlyElement &e) { write(os, e, src, n); });
-  }
-
-  /// Queues an element with the associated data for writing. Elements will be
-  /// stored in the same order they are queued. List properties require a size
-  /// hint for now.
-  ///
-  /// \throw MissingSizeHint in case a property is present without a size hint
-  template<typename T, typename PropertyType, typename... PropertyTypes>
-  void add(const PlyElement &element, const std::vector<T> &values)
-  {
-    add<PropertyType, PropertyTypes...>(
-        element, reinterpret_cast<const std::uint8_t *>(values.data()), values.size());
-  }
-
-  /// Queues an element with the associated data for writing. Elements will be
-  /// stored in the same order they are queued. List properties require a size
-  /// hint for now.
-  ///
-  /// \throw MissingSizeHint in case a property is present without a size hint
-  template<typename PropertyType, typename... PropertyTypes>
-  void add(const PlyElement &element, const std::uint8_t *src, std::size_t n)
-  {
-    for (const PlyProperty &p : element.properties())
-    {
-      if (p.isList() && p.sizeHint() == 0) { throw MissingSizeHint(p.name()); }
-    }
-
-    elementWriteClosures_.emplace_back(element, [this, src, n](std::ostream &os, const PlyElement &e) {
-      write<PropertyType, PropertyTypes...>(os, e, src, n);
-    });
+        element, [this, &layout](std::ostream &os, const PlyElement &e) { write(os, e, layout); });
   }
 
   /// Writes all data as a PLY file queued through `addElement()` to the given
@@ -440,101 +394,30 @@ private:
     os << "end_header\n";
   }
 
-  void write(std::ostream &os, const PlyElement &element, const std::uint8_t *src, std::size_t n)
+  template<typename... Ts>
+  void write(std::ostream &os, const PlyElement &element, const reflect::Layout<Ts...> &layout)
   {
     switch (format_)
     {
       case PlyFormat::Ascii:
-        writeAscii(os, element, src, n);
+        writeAscii<Ts...>(os, element, layout.data(), layout.size());
         break;
       default:
         break;
     }
   }
 
-  template<typename PropertyType, typename... PropertyTypes>
-  void write(std::ostream &os, const PlyElement &element, const std::uint8_t *src, std::size_t n)
-  {
-    switch (format_)
-    {
-      case PlyFormat::Ascii:
-        writeAscii<PropertyType, PropertyTypes...>(os, element, src, n);
-        break;
-      default:
-        break;
-    }
-  }
-
-  void
-  writeAscii(std::ostream &os, const PlyElement &element, const std::uint8_t *src, std::size_t numElements)
-  {
-    for (std::size_t i{0}; i < numElements; ++i)
-    {
-      std::size_t j{0};
-      for (const PlyProperty &property : element.properties())
-      {
-        size_t n{1};
-        if (property.isList())
-        {
-          assert(property.sizeHint() > 0);
-          os << int(property.sizeHint()) << ' ';
-          n = property.sizeHint();
-        }
-
-        switch (property.type())
-        {
-          case PlyDataType::Char:
-            src = streamNumbers<std::int8_t>(os, n, src);
-            break;
-          case PlyDataType::UChar:
-            src = streamNumbers<std::uint8_t>(os, n, src);
-            break;
-          case PlyDataType::Short:
-            src = streamNumbers<std::int16_t>(os, n, src);
-            break;
-          case PlyDataType::UShort:
-            src = streamNumbers<std::uint16_t>(os, n, src);
-            break;
-          case PlyDataType::Int:
-            src = streamNumbers<std::int32_t>(os, n, src);
-            break;
-          case PlyDataType::UInt:
-            src = streamNumbers<std::uint32_t>(os, n, src);
-            break;
-          case PlyDataType::Float:
-            src = streamNumbers<float>(os, n, src);
-            break;
-          case PlyDataType::Double:
-            src = streamNumbers<double>(os, n, src);
-            break;
-        }
-
-        if (j++ < element.properties().size() - 1) { os.put(' '); }
-      }
-
-      os.put('\n');
-    }
-  }
-
-  template<typename PropertyType, typename... PropertyTypes>
-  void writeAscii(std::ostream &os, const PlyElement &element, const std::uint8_t *src, std::size_t n)
-  {
-    for (std::size_t i{0}; i < n; ++i)
-    {
-      src = writeAsciiCastedProperty<PropertyType, PropertyTypes...>(os, src, element, 0);
-      os.put('\n');
-    }
-  }
-
-  template<typename T>
-  const std::uint8_t *writeAsciiCastedProperty(
+  /// TODO
+  template<typename T, typename TypeTag, typename std::enable_if<std::is_arithmetic<T>::value, int>::type = 0>
+  const std::uint8_t *writeAsciiArithmeticProperty(
       std::ostream &os,
       const std::uint8_t *src,
-      const PlyElement &element,
-      std::size_t propertyIndex)
+      const PlyProperty &property,
+      TypeTag)
   {
     src = static_cast<const std::uint8_t *>(detail::align(src, alignof(T)));
-    switch (element.properties()[propertyIndex].type())
+
+    switch (property.type())
     {
       // Note all data types that 'fit' are just casted to int here, to
       // prevent having issues with 'char' being interpreted as ASCII
@@ -560,31 +443,121 @@ private:
     return src + sizeof(T);
   }
 
-  template<typename T, typename U, typename... PropertyTypes>
-  const std::uint8_t *writeAsciiCastedProperty(
+  /// TODO
+  template<
+      typename T,
+      typename TypeTag,
+      typename std::enable_if<!std::is_arithmetic<T>::value, int>::type = 0>
+  const std::uint8_t *writeAsciiArithmeticProperty(
       std::ostream &os,
       const std::uint8_t *src,
-      const PlyElement &element,
-      const std::size_t propertyIndex)
+      const PlyProperty &property,
+      TypeTag)
   {
-    src = writeAsciiCastedProperty<T>(os, src, element, propertyIndex);
-    os.put(' ');
-    return writeAsciiCastedProperty<U, PropertyTypes...>(os, src, element, propertyIndex + 1);
+    return static_cast<const std::uint8_t *>(detail::align(src, alignof(T))) + sizeof(T);
   }
 
-  template<typename Number>
-  const std::uint8_t *streamNumbers(std::ostream &os, size_t n, const std::uint8_t *data) const
+  /// Note; type tag parameter is merely to facility overloading based on the
+  /// template type.
+  template<typename T, typename TypeTag>
+  const std::uint8_t *
+  writeAsciiProperty(std::ostream &os, const std::uint8_t *src, const PlyProperty &property, TypeTag tag)
   {
-    for (size_t i{0}; i < n; ++i)
+    return writeAsciiArithmeticProperty<T>(os, src, property, tag);
+  }
+
+  /// Specialization for the meta property type `Stride<T>`, this will just skip
+  /// over a member variable of type `T` in the source buffer.
+  template<typename, typename T>
+  const std::uint8_t *writeAsciiProperty(
+      std::ostream &,
+      const std::uint8_t *src,
+      const PlyProperty &property,
+      detail::Type<reflect::Stride<T>>)
+  {
+    return static_cast<const std::uint8_t *>(detail::align(src, alignof(T))) + sizeof(T);
+  }
+
+  /// Specialization for the meta property type `Array<T, N>`, this will write a
+  /// list of N properties of type T.
+  template<typename, typename T, size_t N>
+  const std::uint8_t *writeAsciiProperty(
+      std::ostream &os,
+      const std::uint8_t *src,
+      const PlyProperty &property,
+      detail::Type<reflect::Array<T, N>>)
+  {
+    static_assert(N > 0, "invalid array size specified (needs to be larger than zero)");
+
+    // Write the size of the list, followed by all comma separated elements.
+    os << int(N) << ' ';
+    for (std::size_t i = 0; i < N - 1; ++i)
     {
-      data = static_cast<const std::uint8_t *>(detail::align(data, alignof(Number)));
-      os << detail::CharToInt<Number>{}(*reinterpret_cast<const Number *>(data));
-      data += sizeof(Number);
-
-      if (i < n - 1) { os.put(' '); }
+      src = writeAsciiProperty<T>(os, src, property, detail::Type<T>{});
+      os.put(' ');
     }
+    src = writeAsciiProperty<T>(os, src, property, detail::Type<T>{});
 
-    return data;
+    return src;
+  }
+
+  /// Writes all properties of the given element, iterating over all types
+  /// specified in the source type layout, matching them with properties defined
+  /// for the element. This is the bottom case and ends the recursion.
+  const std::uint8_t *
+  writeAsciiElement(std::ostream &, const std::uint8_t *src, ConstPropertyIterator, ConstPropertyIterator)
+  {
+    return src;
+  }
+
+  /// Reads a single object of type `T` from the input buffer `src`. In case a
+  /// corresponding element property is defined for it (`first` < `last`),
+  /// writes that property to the output stream. Otherwise, it will skip over
+  /// the object in the input buffer.
+  template<typename T>
+  const std::uint8_t *writeAsciiElement(
+      std::ostream &os,
+      const std::uint8_t *src,
+      ConstPropertyIterator first,
+      ConstPropertyIterator last)
+  {
+    return first < last
+               ? writeAsciiProperty<T>(os, src, *first, detail::Type<T>{})
+               : writeAsciiProperty<reflect::Stride<T>>(os, src, {}, detail::Type<reflect::Stride<T>>{});
+  }
+
+  /// Reads an  object of type `T` from the input buffer `src`, and writes it.
+  template<typename T, typename U, typename... Ts>
+  const std::uint8_t *writeAsciiElement(
+      std::ostream &os,
+      const std::uint8_t *src,
+      ConstPropertyIterator first,
+      ConstPropertyIterator last)
+  {
+    src = writeAsciiElement<T>(os, src, first++, last);
+    if (first < last) os.put(' ');
+    return writeAsciiElement<U, Ts...>(os, src, first, last);
+  }
+
+  template<typename... Ts>
+  void writeAscii(std::ostream &os, const PlyElement &element, const std::uint8_t *src, std::size_t n)
+  {
+    const auto first{element.properties().begin()};
+    const auto last{element.properties().end()};
+
+    for (std::size_t i{0}; i < n; ++i)
+    {
+      src = writeAsciiElement<Ts...>(os, src, first, last);
+
+      // In case the element defines more properties than the source data,
+      // append the missing properties with a default value of zero.
+      if (sizeof...(Ts) < static_cast<std::size_t>(std::distance(first, last)))
+      {
+        const std::size_t numExtra{std::distance(first, last) - sizeof...(Ts)};
+        for (size_t j = 0; j < numExtra; ++j) os.write(" 0", 2);
+      }
+      os.put('\n');
+    }
   }
 
   using ElementWriteClosure = std::function<void(std::ostream &, const PlyElement &)>;

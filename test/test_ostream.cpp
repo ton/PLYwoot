@@ -18,6 +18,32 @@ TEST_CASE("Write empty PLY file", "[ostream][ascii]")
   REQUIRE(expected == ss.str());
 }
 
+TEST_CASE("Write PLY file with a single element and a single property", "[ostream][ascii]")
+{
+  std::stringstream ss;
+  plywoot::OStream plyos{plywoot::PlyFormat::Ascii};
+
+  const plywoot::PlyProperty f{"f", plywoot::PlyDataType::Float};
+  const plywoot::PlyElement element{"e", 3, {f}};
+
+  using Layout = plywoot::reflect::Layout<int>;
+
+  std::vector<int> values{1, 4, 7};
+  plyos.add(element, Layout{values});
+  plyos.write(ss);
+
+  const std::string expected{
+      "ply\n"
+      "format ascii 1.0\n"
+      "element e 3\n"
+      "property float f\n"
+      "end_header\n"
+      "1\n"
+      "4\n"
+      "7\n"};
+  REQUIRE(expected == ss.str());
+}
+
 TEST_CASE("Write PLY file with a single element and some properties", "[ostream][ascii]")
 {
   std::stringstream ss;
@@ -28,10 +54,11 @@ TEST_CASE("Write PLY file with a single element and some properties", "[ostream]
   const plywoot::PlyProperty z{"z", plywoot::PlyDataType::Double};
   const plywoot::PlyElement element{"vertex", 3, {x, y, z}};
 
+  using Layout = plywoot::reflect::Layout<double, double, double>;
   using Vertex = DoubleVertex;
 
   std::vector<Vertex> vertices{{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
-  plyos.add(element, vertices);
+  plyos.add(element, Layout{vertices});
   plyos.write(ss);
 
   const std::string expected{
@@ -49,9 +76,8 @@ TEST_CASE("Write PLY file with a single element and some properties", "[ostream]
 }
 
 TEST_CASE(
-    "Write PLY file with a single element and some properties without using explicit casting which "
-    "should fail",
-    "[ostream][ascii][casts]")
+    "Test writing an element with less properties than defined in the memory layout",
+    "[ostream][ascii]")
 {
   std::stringstream ss;
   plywoot::OStream plyos{plywoot::PlyFormat::Ascii};
@@ -59,35 +85,18 @@ TEST_CASE(
   const plywoot::PlyProperty f{"f", plywoot::PlyDataType::Float};
   const plywoot::PlyElement element{"e", 3, {f}};
 
-  std::vector<int> values{1, 4, 7};
-  plyos.add(element, values);
-  plyos.write(ss);
+  using Layout = plywoot::reflect::Layout<int, float, double, std::string>;
 
-  const std::string expected{
-      "ply\n"
-      "format ascii 1.0\n"
-      "element e 3\n"
-      "property float f\n"
-      "end_header\n"
-      "1\n"
-      "4\n"
-      "7\n"};
-  REQUIRE(expected != ss.str());
-}
+  struct MyPair
+  {
+    int i;
+    float f;
+    double d;
+    std::string s;
+  };
 
-TEST_CASE(
-    "Write PLY file with a single element and some properties using explicit casting which should "
-    "succeed",
-    "[ostream][ascii][casts]")
-{
-  std::stringstream ss;
-  plywoot::OStream plyos{plywoot::PlyFormat::Ascii};
-
-  const plywoot::PlyProperty f{"f", plywoot::PlyDataType::Float};
-  const plywoot::PlyElement element{"e", 3, {f}};
-
-  std::vector<int> values{1, 4, 7};
-  plyos.add<int, int>(element, values);
+  std::vector<MyPair> values{{1, 3.0, 0.0, "skip"}, {4, 86.0, 0.0, "this"}, {7, 42.0, 0.0, "please"}};
+  plyos.add(element, Layout{values});
   plyos.write(ss);
 
   const std::string expected{
@@ -102,19 +111,53 @@ TEST_CASE(
   REQUIRE(expected == ss.str());
 }
 
+TEST_CASE(
+    "Test writing an element with more properties than defined in the memory layout",
+    "[ostream][ascii]")
+{
+  std::stringstream ss;
+  plywoot::OStream plyos{plywoot::PlyFormat::Ascii};
+
+  const plywoot::PlyProperty f{"f", plywoot::PlyDataType::Float};
+  const plywoot::PlyProperty g{"g", plywoot::PlyDataType::Double};
+  const plywoot::PlyProperty h{"h", plywoot::PlyDataType::Int};
+  const plywoot::PlyElement element{"e", 3, {f, g, h}};
+
+  using Layout = plywoot::reflect::Layout<int>;
+
+  std::vector<int> values{1, 4, 7};
+  plyos.add(element, Layout{values});
+  plyos.write(ss);
+
+  const std::string expected{
+    "ply\n"
+      "format ascii 1.0\n"
+      "element e 3\n"
+      "property float f\n"
+      "property double g\n"
+      "property int h\n"
+      "end_header\n"
+      "1 0 0\n"
+      "4 0 0\n"
+      "7 0 0\n"};
+  REQUIRE(expected == ss.str());
+}
+
 TEST_CASE("Write PLY file with a single element with a list property", "[ostream][ascii]")
 {
   std::stringstream ss;
   plywoot::OStream plyos{plywoot::PlyFormat::Ascii};
 
   const auto sizeType{plywoot::PlyDataType::Char};
-  const std::size_t sizeHint{3};
+  constexpr std::size_t sizeHint{3};
 
   const plywoot::PlyProperty faceIndices{"vertex_indices", plywoot::PlyDataType::Int, sizeType, sizeHint};
   const plywoot::PlyElement element{"face", 10, {faceIndices}};
 
-  std::vector<int> values;
-  plyos.add(element, values);
+  using Layout = plywoot::reflect::Layout<plywoot::reflect::Array<int, sizeHint>>;
+
+  std::vector<Face> faces;
+  plyos.add(element, Layout{faces});
   plyos.write(ss);
 
   const std::string expected{
