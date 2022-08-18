@@ -182,7 +182,7 @@ private:
     }
     *head = '\0';
 
-    return detail::to_number<Number>(buf);
+    return detail::to_number<Number>(buf, buf + sizeof(buf));
   }
 
   void skipNumber() const

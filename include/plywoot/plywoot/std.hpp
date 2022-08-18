@@ -1,6 +1,10 @@
 #ifndef PLYWOOT_STD_HPP
 #define PLYWOOT_STD_HPP
 
+#ifdef PLYWOOT_HAS_FAST_FLOAT
+#include <fast_float/fast_float.h>
+#endif
+
 #include <cstdlib>
 #include <cstring>
 #include <sstream>
@@ -56,21 +60,33 @@ struct CharToInt
 };
 
 template<typename Number>
-inline Number to_number(char *buf)
+inline Number to_number(char *first, char *)
 {
-  return std::atoi(buf);
+  return std::atoi(first);
 }
 
 template<>
-inline float to_number<>(char *buf)
+inline float to_number<>(char *first, char *last)
 {
-  return std::atof(buf);
+#ifdef PLYWOOT_HAS_FAST_FLOAT
+  float x;
+  fast_float::from_chars(first, last, x);
+  return x;
+#else
+  return std::atof(first);
+#endif
 }
 
 template<>
-inline double to_number<double>(char *buf)
+inline double to_number<double>(char *first, char *last)
 {
-  return std::atof(buf);
+#ifdef PLYWOOT_HAS_FAST_FLOAT
+  double x;
+  fast_float::from_chars(first, last, x);
+  return x;
+#else
+  return std::atof(first);
+#endif
 }
 
 /// Returns whether the given string starts with the given prefix.
