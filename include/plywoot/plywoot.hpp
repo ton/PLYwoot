@@ -280,8 +280,6 @@ private:
   /// Note that the invariant allows for one character lookahead without the
   /// need to check whether we need to read data from disk.
   mutable const char *c_{buffer_ + BufferSize};
-  /// Text representation of the current number.
-  std::string numberString_;
 };
 
 // TODO(ton): documentation
