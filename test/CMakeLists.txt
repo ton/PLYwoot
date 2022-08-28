@@ -1,7 +1,15 @@
 find_package(Catch2 3 REQUIRED)
 
 # Main test executable; depends on Catch2, requires C++14 support.
-add_executable(tests main.cpp test_istream.cpp test_ostream.cpp test_iostream.cpp)
+add_executable(tests
+  main.cpp
+  test_istream.cpp
+  test_istream_ascii.cpp
+  test_istream_binary_little_endian.cpp
+  test_ostream_ascii.cpp
+  test_iostream_ascii.cpp
+  test_iostream_binary_little_endian.cpp
+)
 target_link_libraries(tests
   PRIVATE
   plywoot

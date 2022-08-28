@@ -4,6 +4,7 @@
 #include "std.hpp"
 
 #include <cstdint>
+#include <cstring>
 #include <istream>
 #include <string>
 
@@ -190,6 +191,7 @@ public:
       case '7':
       case '8':
       case '9':
+        // TODO(ton): scientific notation for floating point numbers?
         token_ = (tokenString_.find('.') != std::string::npos) ? Token::FloatingPointNumber : Token::Number;
         break;
       case EOF:

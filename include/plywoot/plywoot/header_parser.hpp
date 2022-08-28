@@ -8,7 +8,9 @@
 #include "types.hpp"
 
 #include <cstdint>
+#include <istream>
 #include <string>
+#include <utility>
 #include <vector>
 
 namespace plywoot {
@@ -92,6 +94,8 @@ public:
         format_ = PlyFormat::Ascii;
         break;
       case Token::BinaryLittleEndian:
+        format_ = PlyFormat::BinaryLittleEndian;
+        break;
       case Token::BinaryBigEndian:
         throw UnsupportedFormat(scanner_.tokenString());
       default:

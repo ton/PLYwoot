@@ -1,6 +1,8 @@
 #ifndef PLYWOOT_TEST_TYPES_HPP
 #define PLYWOOT_TEST_TYPES_HPP
 
+#include <iostream>
+
 template<typename T>
 struct VertexT
 {
@@ -13,11 +15,16 @@ struct VertexT
 using FloatVertex = VertexT<float>;
 using DoubleVertex = VertexT<double>;
 
-struct Face
+struct Triangle
 {
   int a, b, c;
 
-  bool operator==(const Face &f) const { return a == f.a && b == f.b && c == f.c; }
+  bool operator==(const Triangle &f) const { return a == f.a && b == f.b && c == f.c; }
 };
+
+inline std::ostream &operator<<(std::ostream &os, const Triangle &t)
+{
+  return os << '[' << t.a << ", " << t.b << ", " << t.c << ']';
+}
 
 #endif

@@ -5,6 +5,7 @@
 #include "plywoot/exceptions.hpp"
 #include "plywoot/header_parser.hpp"
 #include "plywoot/header_scanner.hpp"
+#include "plywoot/io.hpp"
 #include "plywoot/reflect.hpp"
 #include "plywoot/std.hpp"
 #include "plywoot/types.hpp"
@@ -13,10 +14,12 @@
 #include <cassert>
 #include <cstdint>
 #include <functional>
+#include <map>
 #include <iostream>
+#include <iterator>
 #include <string>
-#include <tuple>
 #include <type_traits>
+#include <utility>
 #include <vector>
 
 namespace plywoot {
@@ -30,7 +33,6 @@ public:
   // TODO(ton): add support for storing comments
 
   /// Returns all elements associated with this PLY file.
-  std::vector<PlyElement> elements() { return elements_; }
   const std::vector<PlyElement> &elements() const { return elements_; }
 
   /// Returns a pair where the first element is a copy of the element with the
@@ -79,26 +81,35 @@ public:
   template<typename... Ts>
   void read(const PlyElement &element, reflect::Layout<Ts...> layout) const
   {
-    if (format_ == PlyFormat::Ascii) { readAscii<Ts...>(element, layout.data()); }
+    switch (format_)
+    {
+      case PlyFormat::Ascii:
+        read<PlyFormat::Ascii, Ts...>(element, layout.data());
+        break;
+      case PlyFormat::BinaryLittleEndian:
+        read<PlyFormat::BinaryLittleEndian, Ts...>(element, layout.data());
+        break;
+      default:
+        break;
+    }
   }
 
 private:
   /// Constructs a PLY file from the given input stream and header parser.
   IStream(std::istream &is, const detail::HeaderParser &parser)
-      : is_{is},
-        elements_{parser.elements()},
-        format_{parser.format()}
+      : is_{is}, elements_{parser.elements()}, format_{parser.format()}
   {
   }
 
-  template<typename... Ts>
-  std::uint8_t *readAscii(const PlyElement &element, std::uint8_t *dest) const
+  template<PlyFormat format, typename... Ts>
+  std::uint8_t *read(const PlyElement &element, std::uint8_t *dest) const
   {
-    if (seekTo(element))
+    if (seekTo<format>(element))
     {
+      const std::uint8_t *start = dest;
       for (std::size_t i{0}; i < element.size(); ++i)
       {
-        dest = readAsciiElement<Ts...>(dest);
+        dest = readElement<format, Ts...>(dest);
 
         // In case the number of properties in the element exceeds the number of
         // properties to read, ignore the remainder of the element.
@@ -106,99 +117,114 @@ private:
         // default behavior be? Skipping or adding without a cast?
         if (sizeof...(Ts) < element.properties().size()) { is_.skipLines(1); }
       }
+
+      elementSize_.emplace(element.name(), dest - start);
     }
 
     return dest;
   }
 
   template<
+      PlyFormat format,
       typename T,
       typename TypeTag,
       typename std::enable_if<std::is_arithmetic<T>::value, std::size_t>::type = 0>
-  std::uint8_t *readAsciiProperty(std::uint8_t *dest, TypeTag) const
+  std::uint8_t *readProperty(std::uint8_t *dest, TypeTag) const
   {
     dest = static_cast<std::uint8_t *>(detail::align(dest, alignof(T)));
-    *reinterpret_cast<T *>(dest) = readNumber<T>();
+    *reinterpret_cast<T *>(dest) = detail::io::readNumber<format, T>(is_);
     return dest + sizeof(T);
   }
 
   template<
+      PlyFormat,
       typename T,
       typename TypeTag,
       typename std::enable_if<!std::is_arithmetic<T>::value, std::size_t>::type = 0>
-  std::uint8_t *readAsciiProperty(std::uint8_t *dest, TypeTag) const
+  std::uint8_t *readProperty(std::uint8_t *dest, TypeTag) const
   {
     return static_cast<std::uint8_t *>(detail::align(dest, alignof(T))) + sizeof(T);
   }
 
-  template<typename, typename T, size_t N, typename SizeT>
-  std::uint8_t *readAsciiProperty(std::uint8_t *dest, detail::Type<reflect::Array<T, N, SizeT>>) const
+  template<PlyFormat format, typename, typename T, size_t N, typename SizeT>
+  std::uint8_t *readProperty(std::uint8_t *dest, detail::Type<reflect::Array<T, N, SizeT>>) const
   {
     // TODO(ton): skip the number that defines the list in the PLY data, we
     // expect it to be of length N; throw an exception here in case they do no match?
-    skipToken();
-    for (size_t i = 0; i < N; ++i) { dest = readAsciiProperty<T>(dest, detail::Type<T>{}); }
+    detail::io::skipNumber<format, SizeT>(is_);
+    for (size_t i = 0; i < N; ++i) { dest = readProperty<format, T>(dest, detail::Type<T>{}); }
     return dest;
   }
 
-  template<typename, typename T>
-  std::uint8_t *readAsciiProperty(std::uint8_t *dest, detail::Type<reflect::Stride<T>>) const
+  template<PlyFormat, typename, typename T>
+  std::uint8_t *readProperty(std::uint8_t *dest, detail::Type<reflect::Stride<T>>) const
   {
     return static_cast<std::uint8_t *>(detail::align(dest, alignof(T))) + sizeof(T);
   }
 
-  std::uint8_t *readAsciiElement(std::uint8_t *dest) const { return dest; }
-
-  template<typename T>
-  std::uint8_t *readAsciiElement(std::uint8_t *dest) const
+  template<PlyFormat>
+  std::uint8_t *readElement(std::uint8_t *dest) const
   {
-    return readAsciiProperty<T>(dest, detail::Type<T>{});
+    return dest;
   }
 
-  template<typename T, typename U, typename... Ts>
-  std::uint8_t *readAsciiElement(std::uint8_t *dest) const
+  template<PlyFormat format, typename T>
+  std::uint8_t *readElement(std::uint8_t *dest) const
   {
-    return readAsciiElement<U, Ts...>(readAsciiProperty<T>(dest, detail::Type<T>{}));
+    return readProperty<format, T>(dest, detail::Type<T>{});
   }
 
-  template<typename Number>
-  Number readNumber() const
+  template<PlyFormat format, typename T, typename U, typename... Ts>
+  std::uint8_t *readElement(std::uint8_t *dest) const
   {
-    is_.skipWhitespace();
-    if (is_.eof()) { throw UnexpectedEof(); }
-
-    is_.bufferData(256);
-    return detail::to_number<Number>(is_.data(), is_.data() + 256, &is_.data());
+    return readElement<format, U, Ts...>(readProperty<format, T>(dest, detail::Type<T>{}));
   }
-
-  void skipToken() const
-  {
-    is_.skipWhitespace();
-    is_.skipNonWhitespace();
-  }
-
-  void readBinary(const PlyElement &element, void *data, std::size_t size);
 
   /// Seeks to the start of the data for the given element. Returns whether
   /// seeking was successful.
-  bool seekTo(const PlyElement &element) const
+  /// @{
+  template<PlyFormat format>
+  typename std::enable_if<format == PlyFormat::Ascii, bool>::type seekTo(const PlyElement &element) const
   {
-    // Skip all element data for elements that come before the given element.
     std::size_t numLines{0};
     auto first{elements().begin()};
     const auto last{elements().end()};
     while (first != last && *first != element) { numLines += first++->size(); }
 
-    if (first != last)
-    {
-      is_.seekToBegin();
-      is_.skipLines(numLines);
-    }
+    is_.seekToBegin();
+    if (first != last) is_.skipLines(numLines);
 
     return first != last;
   }
 
+  template<PlyFormat format>
+  typename std::enable_if<format != PlyFormat::Ascii, bool>::type seekTo(const PlyElement &element) const
+  {
+    is_.seekToBegin();
+
+    auto first{elements().begin()};
+    const auto last{elements().end()};
+    while (first != last && *first != element)
+    {
+      // TODO(ton): skipping previously parsed elements is not supported; this
+      // implies that out-of-order reading of elements for binary inputs is not
+      // supported...:( We need to add `setLayout()` or something for this to
+      // work properly, but it is quite ugly.
+      auto it = elementSize_.find(first->name());
+      if (it != elementSize_.end())
+      {
+        is_.skip(it->second);
+      }
+      ++first;
+    }
+
+    return first != last;
+  }
+  /// @}
+
   mutable detail::BufferedIStream is_;
+  mutable std::map<std::string, std::ptrdiff_t> elementSize_;
+
   std::vector<PlyElement> elements_;
   PlyFormat format_;
 };
@@ -216,8 +242,21 @@ public:
   template<typename... Ts>
   void add(const PlyElement &element, const reflect::Layout<Ts...> &layout)
   {
-    elementWriteClosures_.emplace_back(
-        element, [this, &layout](std::ostream &os, const PlyElement &e) { write(os, e, layout); });
+    // TODO(ton): test what happens if you pass in an rvalue layout; likely this
+    // would result in a crash? Better to copy data/size into the closure to
+    // prevent this.
+    elementWriteClosures_.emplace_back(element, [this, &layout](std::ostream &os, const PlyElement &e) {
+      switch (format_)
+      {
+        case PlyFormat::Ascii:
+          write<PlyFormat::Ascii, Ts...>(os, e, layout.data(), layout.size());
+          break;
+        case PlyFormat::BinaryLittleEndian:
+          write<PlyFormat::BinaryLittleEndian, Ts...>(os, e, layout.data(), layout.size());
+        default:
+          break;
+      }
+    });
   }
 
   /// Writes all data as a PLY file queued through `addElement()` to the given
@@ -272,61 +311,30 @@ private:
     os << "end_header\n";
   }
 
-  template<typename... Ts>
-  void write(std::ostream &os, const PlyElement &element, const reflect::Layout<Ts...> &layout)
-  {
-    switch (format_)
-    {
-      case PlyFormat::Ascii:
-        writeAscii<Ts...>(os, element, layout.data(), layout.size());
-        break;
-      default:
-        break;
-    }
-  }
-
   /// TODO
-  template<typename T, typename TypeTag, typename std::enable_if<std::is_arithmetic<T>::value, int>::type = 0>
-  const std::uint8_t *writeAsciiArithmeticProperty(
+  template<
+      PlyFormat format,
+      typename T,
+      typename TypeTag,
+      typename std::enable_if<std::is_arithmetic<T>::value, int>::type = 0>
+  const std::uint8_t *writeArithmeticProperty(
       std::ostream &os,
       const std::uint8_t *src,
       const PlyProperty &property,
       TypeTag)
   {
     src = static_cast<const std::uint8_t *>(detail::align(src, alignof(T)));
-
-    switch (property.type())
-    {
-      // Note all data types that 'fit' are just casted to int here, to
-      // prevent having issues with 'char' being interpreted as ASCII
-      // characters instead of numbers.
-      case PlyDataType::Char:
-      case PlyDataType::UChar:
-      case PlyDataType::Short:
-      case PlyDataType::UShort:
-      case PlyDataType::Int:
-        os << static_cast<const int>(*reinterpret_cast<const T *>(src));
-        break;
-      case PlyDataType::UInt:
-        os << static_cast<const unsigned int>(*reinterpret_cast<const T *>(src));
-        break;
-      case PlyDataType::Float:
-        os << static_cast<const float>(*reinterpret_cast<const T *>(src));
-        break;
-      case PlyDataType::Double:
-        os << static_cast<const double>(*reinterpret_cast<const T *>(src));
-        break;
-    }
-
+    detail::io::writeNumber<format>(os, *reinterpret_cast<const T *>(src));
     return src + sizeof(T);
   }
 
   /// TODO
   template<
+      PlyFormat format,
       typename T,
       typename TypeTag,
       typename std::enable_if<!std::is_arithmetic<T>::value, int>::type = 0>
-  const std::uint8_t *writeAsciiArithmeticProperty(
+  const std::uint8_t *writeArithmeticProperty(
       std::ostream &os,
       const std::uint8_t *src,
       const PlyProperty &property,
@@ -337,20 +345,20 @@ private:
 
   /// Note; type tag parameter is merely to facility overloading based on the
   /// template type.
-  template<typename T, typename TypeTag>
-  const std::uint8_t *writeAsciiProperty(
+  template<PlyFormat format, typename T, typename TypeTag>
+  const std::uint8_t *writeProperty(
       std::ostream &os,
       const std::uint8_t *src,
       const PlyProperty &property,
       TypeTag tag)
   {
-    return writeAsciiArithmeticProperty<T>(os, src, property, tag);
+    return writeArithmeticProperty<format, T>(os, src, property, tag);
   }
 
   /// Specialization for the meta property type `Stride<T>`, this will just skip
   /// over a member variable of type `T` in the source buffer.
-  template<typename, typename T>
-  const std::uint8_t *writeAsciiProperty(
+  template<PlyFormat format, typename, typename T>
+  const std::uint8_t *writeProperty(
       std::ostream &,
       const std::uint8_t *src,
       const PlyProperty &property,
@@ -361,8 +369,10 @@ private:
 
   /// Specialization for the meta property type `Array<T, N, SizeT>`, this will
   /// write a list of N properties of type T.
-  template<typename, typename T, size_t N, typename SizeT>
-  const std::uint8_t *writeAsciiProperty(
+  // TODO(ton): reimplement for binary, gets rid of
+  // `detail::io::writeTokenSeparator()` and likely improves performance.
+  template<PlyFormat format, typename, typename T, size_t N, typename SizeT>
+  const std::uint8_t *writeProperty(
       std::ostream &os,
       const std::uint8_t *src,
       const PlyProperty &property,
@@ -370,22 +380,22 @@ private:
   {
     static_assert(N > 0, "invalid array size specified (needs to be larger than zero)");
 
-    // Write the size of the list, followed by all comma separated elements.
-    os << int(N) << ' ';
+    detail::io::writeNumber<format>(os, *reinterpret_cast<const SizeT *>(src));
+    detail::io::writeTokenSeparator<format>(os);
     for (std::size_t i = 0; i < N - 1; ++i)
     {
-      src = writeAsciiProperty<T>(os, src, property, detail::Type<T>{});
-      os.put(' ');
+      src = writeProperty<format, T>(os, src, property, detail::Type<T>{});
+      detail::io::writeTokenSeparator<format>(os);
     }
-    src = writeAsciiProperty<T>(os, src, property, detail::Type<T>{});
+    src = writeProperty<format, T>(os, src, property, detail::Type<T>{});
 
     return src;
   }
 
-  /// Writes all properties of the given element, iterating over all types
-  /// specified in the source type layout, matching them with properties defined
-  /// for the element. This is the bottom case and ends the recursion.
-  const std::uint8_t *writeAsciiElement(
+  /// Bottom case of the function recursively defined on a list of input property
+  /// types to write, this is simply a no-op.
+  template<PlyFormat format>
+  const std::uint8_t *writeElement(
       std::ostream &,
       const std::uint8_t *src,
       ConstPropertyIterator,
@@ -394,53 +404,56 @@ private:
     return src;
   }
 
-  /// Reads a single object of type `T` from the input buffer `src`. In case a
-  /// corresponding element property is defined for it (`first` < `last`),
+  /// Reads a single object of type `T` from the input buffer `src` and in case
+  /// a corresponding element property is defined for it (`first` < `last`),
   /// writes that property to the output stream. Otherwise, it will skip over
   /// the object in the input buffer.
-  template<typename T>
-  const std::uint8_t *writeAsciiElement(
+  template<PlyFormat format, typename T>
+  const std::uint8_t *writeElement(
       std::ostream &os,
       const std::uint8_t *src,
       ConstPropertyIterator first,
       ConstPropertyIterator last)
   {
     return first < last
-               ? writeAsciiProperty<T>(os, src, *first, detail::Type<T>{})
-               : writeAsciiProperty<reflect::Stride<T>>(os, src, {}, detail::Type<reflect::Stride<T>>{});
+               ? writeProperty<format, T>(os, src, *first, detail::Type<T>{})
+               : writeProperty<format, reflect::Stride<T>>(os, src, {}, detail::Type<reflect::Stride<T>>{});
   }
 
   /// Reads an  object of type `T` from the input buffer `src`, and writes it.
-  template<typename T, typename U, typename... Ts>
-  const std::uint8_t *writeAsciiElement(
+  // TODO(ton): reimplement for binary, gets rid of
+  // `detail::io::writeTokenSeparator()` and likely improves performance.
+  template<PlyFormat format, typename T, typename U, typename... Ts>
+  const std::uint8_t *writeElement(
       std::ostream &os,
       const std::uint8_t *src,
       ConstPropertyIterator first,
       ConstPropertyIterator last)
   {
-    src = writeAsciiElement<T>(os, src, first++, last);
-    if (first < last) os.put(' ');
-    return writeAsciiElement<U, Ts...>(os, src, first, last);
+    src = writeElement<format, T>(os, src, first++, last);
+    if (first < last) detail::io::writeTokenSeparator<format>(os);
+    return writeElement<format, U, Ts...>(os, src, first, last);
   }
 
-  template<typename... Ts>
-  void writeAscii(std::ostream &os, const PlyElement &element, const std::uint8_t *src, std::size_t n)
+  template<PlyFormat format, typename... Ts>
+  void write(std::ostream &os, const PlyElement &element, const std::uint8_t *src, std::size_t n)
   {
     const auto first{element.properties().begin()};
     const auto last{element.properties().end()};
 
     for (std::size_t i{0}; i < n; ++i)
     {
-      src = writeAsciiElement<Ts...>(os, src, first, last);
+      src = writeElement<format, Ts...>(os, src, first, last);
 
       // In case the element defines more properties than the source data,
       // append the missing properties with a default value of zero.
+      // TODO(ton): ASCII specific code
       if (sizeof...(Ts) < static_cast<std::size_t>(std::distance(first, last)))
       {
         const std::size_t numExtra{std::distance(first, last) - sizeof...(Ts)};
         for (size_t j = 0; j < numExtra; ++j) os.write(" 0", 2);
       }
-      os.put('\n');
+      detail::io::writeNewline<format>(os);
     }
   }
 

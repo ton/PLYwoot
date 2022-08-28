@@ -1,4 +1,4 @@
-#include "test_types.hpp"
+#include "types.hpp"
 #include "util.hpp"
 
 #include <plywoot/plywoot.hpp>
@@ -8,65 +8,73 @@
 #include <fstream>
 #include <numeric>
 
-TEST_CASE("Input file does not exist", "[istream][error]")
+TEST_CASE("Input file does not exist", "[header][istream][error]")
 {
-  std::ifstream ifs{"test/input/missing.ply", std::ios::in};
+  std::ifstream ifs{"test/input/header/missing.ply", std::ios::in};
   REQUIRE_THROWS_AS(plywoot::IStream(ifs), plywoot::UnexpectedToken);
 }
 
-TEST_CASE("Input file is not a PLY file", "[istream][error]")
+TEST_CASE("Input file is not a PLY file", "[header][istream][error]")
 {
-  std::ifstream ifs{"test/input/invalid.ply"};
+  std::ifstream ifs{"test/input/header/invalid.ply"};
   REQUIRE_THROWS_AS(plywoot::IStream(ifs), plywoot::UnexpectedToken);
 }
 
-TEST_CASE("Input file does not contain a format definition", "[istream][error][format]")
+TEST_CASE("Input file does not contain a format definition", "[header][istream][error]")
 {
-  std::ifstream ifs{"test/input/missing_format.ply"};
+  std::ifstream ifs{"test/input/header/missing_format.ply"};
   REQUIRE_THROWS_AS(plywoot::IStream(ifs), plywoot::UnexpectedToken);
 }
 
 TEST_CASE(
     "Input file does contain a format definition, but not in the right order",
-    "[istream][error][format]")
+    "[header][istream][error]")
 {
-  std::ifstream ifs{"test/input/format_in_wrong_order.ply"};
+  std::ifstream ifs{"test/input/header/format_in_wrong_order.ply"};
   REQUIRE_THROWS_AS(plywoot::IStream(ifs), plywoot::UnexpectedToken);
 }
 
 TEST_CASE(
     "Input file does contain a format definition, but for some invalid format",
-    "[istream][error][format]")
+    "[header][istream][error]")
 {
-  std::ifstream ifs{"test/input/invalid_format.ply"};
+  std::ifstream ifs{"test/input/header/invalid_format.ply"};
   REQUIRE_THROWS_AS(plywoot::IStream(ifs), plywoot::InvalidFormat);
 }
 
 TEST_CASE(
-    "Input file does contains a binary little endian format definition, which is not supported",
-    "[istream][error][format]")
+    "Input file contains a binary big endian format definition, which is not supported",
+    "[header][istream][error]")
 {
-  std::ifstream ifs{"test/input/binary_little_endian.ply"};
+  std::ifstream ifs{"test/input/header/binary_big_endian.ply"};
   REQUIRE_THROWS_AS(plywoot::IStream(ifs), plywoot::UnsupportedFormat);
 }
 
-TEST_CASE(
-    "Input file contains a binary little endian format definition, which is not supported",
-    "[istream][error][format]")
+TEST_CASE("Input file contains an ASCII format definition", "[header][istream][error]")
 {
-  std::ifstream ifs{"test/input/binary_big_endian.ply"};
-  REQUIRE_THROWS_AS(plywoot::IStream(ifs), plywoot::UnsupportedFormat);
+  std::ifstream ifs{"test/input/header/ascii.ply"};
+
+  const plywoot::IStream plyFile{ifs};
+  REQUIRE(plywoot::PlyFormat::Ascii == plyFile.format());
 }
 
-TEST_CASE("Element definition does not contain the number of elements", "[istream][error][ascii]")
+TEST_CASE("Input file contains a binary little endian format definition", "[header][istream][error]")
 {
-  std::ifstream ifs{"test/input/missing_element_size.ply"};
+  std::ifstream ifs{"test/input/header/binary_little_endian.ply"};
+
+  const plywoot::IStream plyFile{ifs};
+  REQUIRE(plywoot::PlyFormat::BinaryLittleEndian == plyFile.format());
+}
+
+TEST_CASE("Element definition does not contain the number of elements", "[header][istream][error]")
+{
+  std::ifstream ifs{"test/input/header/missing_element_size.ply"};
   REQUIRE_THROWS_MATCHES(
       plywoot::IStream(ifs), plywoot::UnexpectedToken,
       MessageContains("'end_header'") && MessageContains("'<number>'"));
 }
 
-TEST_CASE("No property data for an element value", "[istream][error][ascii]")
+TEST_CASE("No property data for an element value", "[header][istream][error]")
 {
   struct S
   {
@@ -75,7 +83,7 @@ TEST_CASE("No property data for an element value", "[istream][error][ascii]")
 
   using Layout = plywoot::reflect::Layout<char, char>;
 
-  std::ifstream ifs{"test/input/missing_element_property_data.ply"};
+  std::ifstream ifs{"test/input/header/missing_element_property_data.ply"};
   const plywoot::IStream plyFile{ifs};
   const std::vector<plywoot::PlyElement> elements{plyFile.elements()};
   REQUIRE(elements.size() == 1);
@@ -84,7 +92,7 @@ TEST_CASE("No property data for an element value", "[istream][error][ascii]")
   REQUIRE_THROWS_AS((plyFile.read<S, Layout>(elements.front())), plywoot::UnexpectedEof);
 }
 
-TEST_CASE("Missing property data for an element value", "[istream][error][ascii]")
+TEST_CASE("Missing property data for an element value", "[header][istream][error]")
 {
   struct S
   {
@@ -93,7 +101,7 @@ TEST_CASE("Missing property data for an element value", "[istream][error][ascii]
 
   using Layout = plywoot::reflect::Layout<char, char>;
 
-  std::ifstream ifs{"test/input/missing_element_property_data_2.ply"};
+  std::ifstream ifs{"test/input/header/missing_element_property_data_2.ply"};
   const plywoot::IStream plyFile{ifs};
   const std::vector<plywoot::PlyElement> elements{plyFile.elements()};
   REQUIRE(elements.size() == 1);
@@ -102,9 +110,9 @@ TEST_CASE("Missing property data for an element value", "[istream][error][ascii]
   REQUIRE_THROWS_AS((plyFile.read<S, Layout>(elements.front())), plywoot::UnexpectedEof);
 }
 
-TEST_CASE("A single element definition without properties is correctly parsed", "[istream][ascii]")
+TEST_CASE("A single element definition without properties is correctly parsed", "[header][istream]")
 {
-  std::ifstream ifs{"test/input/single_element.ply"};
+  std::ifstream ifs{"test/input/header/single_element.ply"};
   const plywoot::IStream plyFile{ifs};
   const std::vector<plywoot::PlyElement> elements{plyFile.elements()};
   REQUIRE(elements.size() == 1);
@@ -112,9 +120,9 @@ TEST_CASE("A single element definition without properties is correctly parsed", 
   REQUIRE(elements.front().size() == 0);
 }
 
-TEST_CASE("Multiple element definitions without properties are correctly parsed", "[istream][ascii]")
+TEST_CASE("Multiple element definitions without properties are correctly parsed", "[header][istream]")
 {
-  std::ifstream ifs{"test/input/multiple_elements.ply"};
+  std::ifstream ifs{"test/input/header/multiple_elements.ply"};
   const plywoot::IStream plyFile{ifs};
   const std::vector<plywoot::PlyElement> elements{plyFile.elements()};
   REQUIRE(elements.size() == 2);
@@ -124,9 +132,9 @@ TEST_CASE("Multiple element definitions without properties are correctly parsed"
   REQUIRE(elements.back().size() == 0);
 }
 
-TEST_CASE("A single element definition with properties is correctly parsed", "[istream][ascii]")
+TEST_CASE("A single element definition with properties is correctly parsed", "[header][istream]")
 {
-  std::ifstream ifs{"test/input/single_element_with_properties.ply"};
+  std::ifstream ifs{"test/input/header/single_element_with_properties.ply"};
   const plywoot::IStream plyFile{ifs};
   const std::vector<plywoot::PlyElement> elements{plyFile.elements()};
   REQUIRE(elements.size() == 1);
@@ -175,180 +183,18 @@ TEST_CASE("A single element definition with properties is correctly parsed", "[i
   REQUIRE(properties[8].sizeType() == plywoot::PlyDataType::UChar);
 }
 
-TEST_CASE("Read an element with a single property from an ASCII PLY file", "[istream][ascii]")
+TEST_CASE("Read a PLY file with a comment section", "[header][comments]")
 {
-  std::ifstream ifs{"test/input/single_element_with_single_property.ply"};
-  const plywoot::IStream plyFile{ifs};
-  const std::vector<plywoot::PlyElement> elements{plyFile.elements()};
-  REQUIRE(elements.size() == 1);
-
-  struct X
-  {
-    char c{0};
-  };
-
-  using Layout = plywoot::reflect::Layout<char>;
-
-  const std::vector<X> xs = plyFile.read<X, Layout>(elements.front());
-  REQUIRE(xs.size() == 1);
-  REQUIRE(xs.front().c == 86);
-}
-
-TEST_CASE("Read multiple elements with a single property from an ASCII PLY file", "[istream][ascii]")
-{
-  std::ifstream ifs{"test/input/multiple_elements_with_single_property.ply"};
-  const plywoot::IStream plyFile{ifs};
-  const std::vector<plywoot::PlyElement> elements{plyFile.elements()};
-  REQUIRE(elements.size() == 1);
-
-  struct X
-  {
-    char c{0};
-  };
-
-  using Layout = plywoot::reflect::Layout<char>;
-
-  const std::vector<X> xs = plyFile.read<X, Layout>(elements.front());
-  REQUIRE(xs.size() == 10);
-
-  std::vector<char> expected(10);
-  std::iota(expected.begin(), expected.end(), 86);
-  REQUIRE(std::equal(expected.begin(), expected.end(), xs.begin(), [](char c, X x) { return c == x.c; }));
-}
-
-TEST_CASE("Read multiple elements with two properties from an ASCII PLY file", "[istream][ascii]")
-{
-  std::ifstream ifs{"test/input/multiple_elements_with_two_properties.ply"};
-  const plywoot::IStream plyFile{ifs};
-  const std::vector<plywoot::PlyElement> elements{plyFile.elements()};
-  REQUIRE(elements.size() == 1);
-
-  struct X
-  {
-    int c{0};
-    unsigned char u{0};
-  };
-
-  using Layout = plywoot::reflect::Layout<int, unsigned char>;
-
-  const std::vector<X> xs = plyFile.read<X, Layout>(elements.front());
-  REQUIRE(xs.size() == 10);
-
-  // c
-  {
-    std::vector<int> expected(10);
-    std::iota(expected.begin(), expected.end(), 86);
-    REQUIRE(std::equal(expected.begin(), expected.end(), xs.begin(), [](int c, X x) { return c == x.c; }));
-  }
-
-  // u
-  {
-    std::vector<unsigned char> expected(10);
-    std::iota(expected.begin(), expected.end(), 246);
-    std::reverse(expected.begin(), expected.end());
-    REQUIRE(std::equal(
-        expected.begin(), expected.end(), xs.begin(), [](unsigned char u, X x) { return u == x.u; }));
-  }
-}
-
-TEST_CASE(
-    "Retrieve a element and property definition from an IStream given an element name",
-    "[istream][ascii]")
-{
-  std::ifstream ifs{"test/input/cube.ply"};
-  const plywoot::IStream plyFile{ifs};
-
-  plywoot::PlyElement faceElement;
-  bool isFaceElementFound{false};
-  std::tie(faceElement, isFaceElementFound) = plyFile.element("face");
-
-  CHECK(isFaceElementFound);
-  CHECK(faceElement.name() == "face");
-  CHECK(faceElement.size() == 12);
-
-  plywoot::PlyProperty vertexIndicesProperty;
-  bool isVertexIndicesPropertyFound{false};
-  std::tie(vertexIndicesProperty, isVertexIndicesPropertyFound) = faceElement.property("vertex_indices");
-
-  CHECK(vertexIndicesProperty.name() == "vertex_indices");
-  CHECK(vertexIndicesProperty.type() == plywoot::PlyDataType::Int);
-  CHECK(vertexIndicesProperty.isList());
-  CHECK(vertexIndicesProperty.sizeType() == plywoot::PlyDataType::UChar);
-
-  plywoot::PlyElement vertexElement;
-  bool isVertexElementFound{false};
-  std::tie(vertexElement, isVertexElementFound) = plyFile.element("vertex");
-
-  CHECK(isVertexElementFound);
-  CHECK(vertexElement.name() == "vertex");
-  CHECK(vertexElement.size() == 8);
-  CHECK(vertexElement.properties().size() == 3);
-
-  plywoot::PlyElement fooElement;
-  bool isFooElementFound{false};
-  std::tie(fooElement, isFooElementFound) = plyFile.element("foo");
-
-  CHECK(fooElement.size() == 0);
-  CHECK(!isFooElementFound);
-}
-
-TEST_CASE("Test out of order retrieval of element data", "[istream][ascii]")
-{
-  std::ifstream ifs{"test/input/cube_faces_before_vertices.ply"};
-  const plywoot::IStream plyFile{ifs};
-
-  plywoot::PlyElement faceElement;
-  bool isFaceElementFound{false};
-  std::tie(faceElement, isFaceElementFound) = plyFile.element("face");
-  REQUIRE(isFaceElementFound);
-
-  plywoot::PlyElement vertexElement;
-  bool isVertexElementFound{false};
-  std::tie(vertexElement, isVertexElementFound) = plyFile.element("vertex");
-  REQUIRE(isVertexElementFound);
-
-  using Vertex = DoubleVertex;
-  using VertexLayout = plywoot::reflect::Layout<double, double, double>;
-
-  const std::vector<Vertex> result = plyFile.read<Vertex, VertexLayout>(vertexElement);
-  const std::vector<Vertex> expected = {{0, 0, 0}, {1, 0, 0}, {1, 1, 0}, {0, 1, 0},
-                                        {0, 0, 1}, {1, 0, 1}, {1, 1, 1}, {0, 1, 1}};
-  CHECK(result == expected);
-}
-
-TEST_CASE("Read a PLY file with a comment section", "[ascii][comments]")
-{
-  std::ifstream ifs{"test/input/single_line_comment.ply"};
+  std::ifstream ifs{"test/input/header/single_line_comment.ply"};
   const plywoot::IStream plyFile{ifs};
   REQUIRE(plyFile.elements().size() == 1);
   CHECK(plyFile.elements().front().name() == "vertex");
 }
 
-TEST_CASE("Read a PLY file with a comment section consisting of multiple lines", "[ascii][comments]")
+TEST_CASE("Read a PLY file with a comment section consisting of multiple lines", "[header][comments]")
 {
-  std::ifstream ifs{"test/input/multi_line_comment.ply"};
+  std::ifstream ifs{"test/input/header/multi_line_comment.ply"};
   const plywoot::IStream plyFile{ifs};
   REQUIRE(plyFile.elements().size() == 1);
   CHECK(plyFile.elements().front().name() == "vertex");
-}
-
-TEST_CASE(
-    "Read elements from a PLY file by only partially retrieving all properties set for it",
-    "[istream][ascii]")
-{
-  std::ifstream ifs{"test/input/cube_with_material_data.ply"};
-  const plywoot::IStream plyFile{ifs};
-
-  plywoot::PlyElement vertexElement;
-  bool isVertexElementFound{false};
-  std::tie(vertexElement, isVertexElementFound) = plyFile.element("vertex");
-  REQUIRE(isVertexElementFound);
-
-  using Vertex = FloatVertex;
-  using VertexLayout = plywoot::reflect::Layout<float, float, float>;
-
-  const std::vector<Vertex> result = plyFile.read<Vertex, VertexLayout>(vertexElement);
-  const std::vector<Vertex> expected = {{0, 0, 0}, {1, 0, 0}, {1, 1, 0}, {0, 1, 0},
-                                        {0, 0, 1}, {1, 0, 1}, {1, 1, 1}, {0, 1, 1}};
-  CHECK(result == expected);
 }

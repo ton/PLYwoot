@@ -1,4 +1,4 @@
-#include "test_types.hpp"
+#include "types.hpp"
 
 #include <plywoot/plywoot.hpp>
 
@@ -8,8 +8,10 @@
 #include <limits>
 #include <numeric>
 #include <sstream>
+#include <string>
+#include <vector>
 
-TEST_CASE("Test reading and writing all property types", "[iostream]")
+TEST_CASE("Test reading and writing all property types", "[iostream][ascii]")
 {
   const plywoot::PlyProperty a{"a", plywoot::PlyDataType::Char};
   const plywoot::PlyProperty b{"b", plywoot::PlyDataType::UChar};
@@ -62,22 +64,15 @@ TEST_CASE("Test reading and writing all property types", "[iostream]")
   REQUIRE(expected == elements);
 }
 
-TEST_CASE("Test reading and writing of a list", "[iostream]")
+TEST_CASE("Test reading and writing of a list", "[iostream][ascii]")
 {
   const auto sizeType{plywoot::PlyDataType::Char};
   const plywoot::PlyProperty vertexIndices{"vertex_indices", plywoot::PlyDataType::Int, sizeType};
   const plywoot::PlyElement element{"triangle", 3, {vertexIndices}};
 
-  struct Triangle
-  {
-    int a, b, c;
-
-    bool operator==(const Triangle &t) const { return a == t.a && b == t.b && c == t.c; }
-  };
-
   const std::vector<Triangle> expected{Triangle{0, 1, 2}, Triangle{5, 4, 3}, Triangle{6, 7, 8}};
 
-  using Layout = plywoot::reflect::Layout<plywoot::reflect::Array<int, 3>>;
+  using Layout = plywoot::reflect::Layout<plywoot::reflect::Array<int, 3, char>>;
 
   std::stringstream oss;
   plywoot::OStream plyos{plywoot::PlyFormat::Ascii};
@@ -92,9 +87,9 @@ TEST_CASE("Test reading and writing of a list", "[iostream]")
   REQUIRE(expected == triangles);
 }
 
-TEST_CASE("Tests reading and writing vertex and face data", "[iostream]")
+TEST_CASE("Tests reading and writing vertex and face data", "[iostream][ascii]")
 {
-  std::ifstream ifs{"test/input/cube.ply"};
+  std::ifstream ifs{"test/input/ascii/cube.ply"};
   const plywoot::IStream plyFile{ifs};
 
   using Vertex = FloatVertex;
@@ -117,17 +112,22 @@ TEST_CASE("Tests reading and writing vertex and face data", "[iostream]")
 
   using VertexLayout = plywoot::reflect::Layout<float, float, float>;
   const std::vector<Vertex> vertices = plyFile.read<Vertex, VertexLayout>(vertexElement);
-  CHECK(vertices.size() == 8);
+  const std::vector<Vertex> expectedVertices{{0, 0, 0}, {1, 0, 0}, {1, 1, 0}, {0, 1, 0},
+                                             {0, 0, 1}, {1, 0, 1}, {1, 1, 1}, {0, 1, 1}};
+  REQUIRE(expectedVertices == vertices);
 
-  using FaceLayout = plywoot::reflect::Layout<plywoot::reflect::Array<int, 3>>;
-  const std::vector<Face> faces = plyFile.read<Face, FaceLayout>(faceElement);
-  CHECK(faces.size() == 12);
+  using TriangleLayout = plywoot::reflect::Layout<plywoot::reflect::Array<int, 3, char>>;
+  const std::vector<Triangle> triangles = plyFile.read<Triangle, TriangleLayout>(faceElement);
+  const std::vector<Triangle> expectedTriangles{{0, 2, 1}, {0, 3, 2}, {4, 5, 6}, {4, 6, 7},
+                                                {0, 1, 5}, {0, 5, 4}, {2, 3, 7}, {2, 7, 6},
+                                                {3, 0, 4}, {3, 4, 7}, {1, 2, 6}, {1, 6, 5}};
+  REQUIRE(expectedTriangles == triangles);
 
   // Now write the data to a string stream, read it back in again, and compare.
   std::stringstream oss;
   plywoot::OStream plyos{plywoot::PlyFormat::Ascii};
   plyos.add(vertexElement, VertexLayout{vertices});
-  plyos.add(faceElement, FaceLayout{faces});
+  plyos.add(faceElement, TriangleLayout{triangles});
   plyos.write(oss);
 
   {
@@ -136,7 +136,7 @@ TEST_CASE("Tests reading and writing vertex and face data", "[iostream]")
     const std::vector<Vertex> writtenVertices = plyis.read<Vertex, VertexLayout>(vertexElement);
     CHECK(vertices == writtenVertices);
 
-    const std::vector<Face> writtenFaces = plyis.read<Face, FaceLayout>(faceElement);
-    CHECK(faces == writtenFaces);
+    const std::vector<Triangle> writtenTriangles = plyis.read<Triangle, TriangleLayout>(faceElement);
+    CHECK(triangles == writtenTriangles);
   }
 }

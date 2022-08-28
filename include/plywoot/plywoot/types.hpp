@@ -2,6 +2,10 @@
 #define PLYWOOT_TYPES_HPP
 
 #include <algorithm>
+#include <cstdint>
+#include <ostream>
+#include <string>
+#include <utility>
 #include <vector>
 
 namespace plywoot {
@@ -56,25 +60,6 @@ struct PlyProperty
   bool isList() const { return isList_; }
   /// Returns the size type of this property.
   PlyDataType sizeType() const { return sizeType_; }
-
-  size_t numBytes() const
-  {
-    switch (type_)
-    {
-      case PlyDataType::Char:
-      case PlyDataType::UChar:
-        return 1;
-      case PlyDataType::Short:
-      case PlyDataType::UShort:
-        return 2;
-      case PlyDataType::Int:
-      case PlyDataType::UInt:
-      case PlyDataType::Float:
-        return 4;
-      case PlyDataType::Double:
-        return 8;
-    }
-  }
 
   inline friend bool operator==(const PlyProperty &x, const PlyProperty &y)
   {

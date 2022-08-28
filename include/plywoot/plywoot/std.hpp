@@ -9,8 +9,10 @@
 #include <fast_int/fast_int.hpp>
 #endif
 
+#include <algorithm>
 #include <cstdlib>
 #include <cstring>
+#include <iterator>
 #include <sstream>
 #include <string>
 
@@ -49,19 +51,6 @@ inline const void *align(const void *ptr, std::size_t alignment)
   const auto uintptr = reinterpret_cast<uintptr_t>(ptr);
   return reinterpret_cast<const void *>((uintptr + alignment - 1u) & -alignment);
 }
-
-template<typename T>
-struct CharToInt
-{
-  template<typename U>
-  T operator()(U &&u) const
-  {
-    return u;
-  }
-
-  int operator()(signed char c) const { return static_cast<int>(c); }
-  unsigned operator()(unsigned char c) const { return static_cast<unsigned>(c); }
-};
 
 template<typename Number>
 inline Number to_number(const char *first, const char *last, const char **end)

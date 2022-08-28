@@ -19,15 +19,16 @@ public:
   const char *data() const { return c_; }
   const char *&data() { return c_; }
 
+  // Positions the read head at the start of the data just after the header.
+  // Resets any buffered data.
   void seekToBegin()
   {
-    // Position the read head at the start of the data just after the header.
-    // Resets any buffered data.
-    c_ = buffer_;
-
-    is_.clear();  // need to clear eofbit() in case it is set, otherwise the
-                  // first read after the seek will fail
+    // Need to clear eofbit() in case it is set,
+    // otherwise the first read after the seek will fail.
+    is_.clear();
     is_.seekg(headerOffset_);
+
+    buffer();
   }
 
   void skip(std::size_t n)
@@ -89,7 +90,7 @@ public:
   /// In case it already does, this does nothing, otherwise, it will shift the
   /// data remaining in the buffer to the front, then refill the remaining part
   /// of the buffer.
-  void bufferData(size_t minimum)
+  void buffer(size_t minimum)
   {
     assert(minimum < BufferSize / 2);
     const size_t remaining = (buffer_ + BufferSize - c_);
