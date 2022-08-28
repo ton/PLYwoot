@@ -92,6 +92,8 @@ public:
         format_ = PlyFormat::Ascii;
         break;
       case Token::BinaryLittleEndian:
+        format_ = PlyFormat::BinaryLittleEndian;
+        break;
       case Token::BinaryBigEndian:
         throw UnsupportedFormat(scanner_.tokenString());
       default:

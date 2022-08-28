@@ -9,7 +9,7 @@
 #include <numeric>
 #include <sstream>
 
-TEST_CASE("Test reading and writing all property types", "[iostream]")
+TEST_CASE("Test reading and writing all property types", "[iostream][binary-little-endian]")
 {
   const plywoot::PlyProperty a{"a", plywoot::PlyDataType::Char};
   const plywoot::PlyProperty b{"b", plywoot::PlyDataType::UChar};
@@ -50,7 +50,7 @@ TEST_CASE("Test reading and writing all property types", "[iostream]")
       plywoot::reflect::Layout<char, char, char, unsigned char, short, unsigned short, float, double>;
 
   std::stringstream oss;
-  plywoot::OStream plyos{plywoot::PlyFormat::Ascii};
+  plywoot::OStream plyos{plywoot::PlyFormat::BinaryLittleEndian};
   plyos.add(element, Layout{expected});
   plyos.write(oss);
 
@@ -59,10 +59,16 @@ TEST_CASE("Test reading and writing all property types", "[iostream]")
   plywoot::IStream plyis{iss};
 
   std::vector<Element> elements{plyis.read<Element, Layout>(element)};
+  for (Element ee : elements)
+  {
+    std::cout << int(ee.a) << '\n';
+  }
+
   REQUIRE(expected == elements);
 }
 
-TEST_CASE("Test reading and writing of a list", "[iostream]")
+/*
+TEST_CASE("Test reading and writing of a list", "[iostream][ascii]")
 {
   const auto sizeType{plywoot::PlyDataType::Char};
   const plywoot::PlyProperty vertexIndices{"vertex_indices", plywoot::PlyDataType::Int, sizeType};
@@ -92,9 +98,9 @@ TEST_CASE("Test reading and writing of a list", "[iostream]")
   REQUIRE(expected == triangles);
 }
 
-TEST_CASE("Tests reading and writing vertex and face data", "[iostream]")
+TEST_CASE("Tests reading and writing vertex and face data", "[iostream][ascii]")
 {
-  std::ifstream ifs{"test/input/cube.ply"};
+  std::ifstream ifs{"test/input/ascii/cube.ply"};
   const plywoot::IStream plyFile{ifs};
 
   using Vertex = FloatVertex;
@@ -140,3 +146,4 @@ TEST_CASE("Tests reading and writing vertex and face data", "[iostream]")
     CHECK(faces == writtenFaces);
   }
 }
+*/

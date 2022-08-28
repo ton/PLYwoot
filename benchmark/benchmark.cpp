@@ -53,7 +53,7 @@ static void BM_plywoot_ascii(benchmark::State &state, const std::string &filenam
     const std::vector<Vertex> vertices{plyIn.read<Vertex, VertexLayout>(vertexElement)};
     benchmark::DoNotOptimize(vertices);
 
-    using TriangleLayout = plywoot::reflect::Layout<plywoot::reflect::Array<int, 3>>;
+    using TriangleLayout = plywoot::reflect::Layout<plywoot::reflect::Array<int, 3, char>>;
     const std::vector<Triangle> triangles{plyIn.read<Triangle, TriangleLayout>(faceElement)};
     benchmark::DoNotOptimize(triangles);
   }
