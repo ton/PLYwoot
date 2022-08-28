@@ -18,7 +18,7 @@ namespace plywoot { namespace detail {
 
 inline std::size_t roundup(std::size_t num, std::size_t multiple)
 {
-  std::size_t mod = num % multiple;
+  const std::size_t mod = num % multiple;
   return mod == 0 ? num : num + multiple - mod;
 }
 
