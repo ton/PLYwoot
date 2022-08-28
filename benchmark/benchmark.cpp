@@ -49,13 +49,13 @@ static void BM_plywoot_ascii(benchmark::State &state, const std::string &filenam
       state.SkipWithError("could not load triangle data; face element not found in input data");
     }
 
-    using TriangleLayout = plywoot::reflect::Layout<plywoot::reflect::Array<int, 3>>;
-    const std::vector<Triangle> triangles{plyIn.read<Triangle, TriangleLayout>(faceElement)};
-    benchmark::DoNotOptimize(triangles);
-
     using VertexLayout = plywoot::reflect::Layout<float, float, float>;
     const std::vector<Vertex> vertices{plyIn.read<Vertex, VertexLayout>(vertexElement)};
     benchmark::DoNotOptimize(vertices);
+
+    using TriangleLayout = plywoot::reflect::Layout<plywoot::reflect::Array<int, 3>>;
+    const std::vector<Triangle> triangles{plyIn.read<Triangle, TriangleLayout>(faceElement)};
+    benchmark::DoNotOptimize(triangles);
   }
 }
 
