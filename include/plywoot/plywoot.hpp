@@ -166,17 +166,9 @@ private:
     while (0 <= *c_ && *c_ <= 0x20) { readCharacter(); }
     if (*c_ == EOF) { throw UnexpectedEof(); }
 
-    // ..then read number.
-    char buf[128];
-    char *head{buf};
-    while (*c_ > 0x20)
-    {
-      *head++ = *c_;
-      readCharacter();
-    }
-    *head = '\0';
-
-    return detail::to_number<Number>(buf, buf + sizeof(buf));
+    // Ensure at least 256 bytes are present in the buffer.
+    bufferData(256);
+    return detail::to_number<Number>(c_, c_ + 256, &c_);
   }
 
   void skipToken() const
@@ -216,6 +208,7 @@ private:
     return first != last;
   }
 
+  /// Unconditionally buffers data from the input stream.
   void bufferData() const
   {
     if (!is_.read(buffer_, BufferSize))
@@ -225,6 +218,28 @@ private:
     }
     else { bufferedBytes_ = BufferSize; }
     c_ = buffer_;
+  }
+
+  /// Ensures that the buffer contains at least the given number of characters.
+  /// In case it already does, this does nothing, otherwise, it will shift the
+  /// data remaining in the buffer to the front, then refill the remaining part
+  /// of the buffer.
+  void bufferData(size_t minimum) const
+  {
+    assert(minimum < BufferSize / 2);
+    const size_t remaining = (buffer_ + BufferSize - c_);
+    if (remaining >= minimum) { return; }
+    else
+    {
+      std::memcpy(buffer_, c_, remaining);
+      if (!is_.read(buffer_ + remaining, BufferSize - remaining))
+      {
+        bufferedBytes_ = is_.gcount() + remaining;
+        buffer_[bufferedBytes_] = EOF;
+      }
+      else { bufferedBytes_ = BufferSize; }
+      c_ = buffer_;
+    }
   }
 
   /// Skips `n` lines in the input, places the read head at the first
