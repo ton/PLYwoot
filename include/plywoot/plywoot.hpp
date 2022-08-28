@@ -235,7 +235,7 @@ private:
     if (c_ >= buffer_ + bufferedBytes_) { bufferData(); }
     while (*c_ != EOF && n > 0)
     {
-      auto first = static_cast<char *>(std::memchr(c_, '\n', bufferedBytes_ - (c_ - buffer_)));
+      auto first = static_cast<const char *>(std::memchr(c_, '\n', bufferedBytes_ - (c_ - buffer_)));
       if (first)
       {
         c_ = first + 1;
@@ -264,7 +264,7 @@ private:
   ///
   /// Note that the invariant allows for one character lookahead without the
   /// need to check whether we need to read data from disk.
-  mutable char *c_{buffer_ + BufferSize};
+  mutable const char *c_{buffer_ + BufferSize};
   /// Text representation of the current number.
   std::string numberString_;
 };
