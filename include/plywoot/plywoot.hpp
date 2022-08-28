@@ -79,13 +79,7 @@ public:
   template<typename... Ts>
   void read(const PlyElement &element, reflect::Layout<Ts...> layout) const
   {
-    const auto first = elements().begin();
-    const auto last = elements().end();
-    if (std::find(first, last, element) != last)
-    {
-      // Calculate the number of properties to skip from the input file.
-      if (format_ == PlyFormat::Ascii) { readAscii<Ts...>(element, layout.data()); }
-    }
+    if (format_ == PlyFormat::Ascii) { readAscii<Ts...>(element, layout.data()); }
   }
 
 private:
