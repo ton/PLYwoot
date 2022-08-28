@@ -11,3 +11,7 @@ target_link_libraries(benchmarks
   plywoot
   PkgConfig::profiler
 )
+target_compile_options(benchmarks
+  PRIVATE
+  -g
+)
