@@ -64,38 +64,38 @@ struct CharToInt
 };
 
 template<typename Number>
-inline Number to_number(char *first, char *last)
+inline Number to_number(const char *first, const char *last, const char **end)
 {
 #ifdef PLYWOOT_HAS_FAST_INT
   Number n{};
-  fast_int::from_chars(first, last, n);
+  *end = fast_int::from_chars(first, last, n).ptr;
   return n;
 #else
-  return std::atoi(first);
+  return std::strtoll(first, const_cast<char **>(end), 10);
 #endif
 }
 
 template<>
-inline float to_number<>(char *first, char *last)
+inline float to_number<>(const char *first, const char *last, const char **end)
 {
 #ifdef PLYWOOT_HAS_FAST_FLOAT
   float x;
-  fast_float::from_chars(first, last, x);
+  *end = fast_float::from_chars(first, last, x).ptr;
   return x;
 #else
-  return std::atof(first);
+  return std::strtof(first, const_cast<char **>(end));
 #endif
 }
 
 template<>
-inline double to_number<double>(char *first, char *last)
+inline double to_number<double>(const char *first, const char *last, const char **end)
 {
 #ifdef PLYWOOT_HAS_FAST_FLOAT
   double x;
-  fast_float::from_chars(first, last, x);
+  *end = fast_float::from_chars(first, last, x).ptr;
   return x;
 #else
-  return std::atof(first);
+  return std::strtof(first, const_cast<char **>(end));
 #endif
 }
 
