@@ -5,10 +5,14 @@
 
 namespace plywoot { namespace reflect {
 
-template<typename U, std::size_t N>
+/// Can be embedded in a `Layout` type to read an element list property of some
+/// fixed size `N`, with elements of type `T`. The size type is used in the PLY
+/// format to store the type of the length of the list.
+template<typename T, std::size_t N, typename SizeT = int>
 struct Array
 {
-  using value_type = U;
+  using value_type = T;
+  using size_type = SizeT;
 };
 
 /// Can be embedded in a `Layout` type to skip an element property in the input

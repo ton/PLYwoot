@@ -129,8 +129,8 @@ private:
     return static_cast<std::uint8_t *>(detail::align(dest, alignof(T))) + sizeof(T);
   }
 
-  template<typename, typename T, size_t N>
-  std::uint8_t *readAsciiProperty(std::uint8_t *dest, detail::Type<reflect::Array<T, N>>) const
+  template<typename, typename T, size_t N, typename SizeT>
+  std::uint8_t *readAsciiProperty(std::uint8_t *dest, detail::Type<reflect::Array<T, N, SizeT>>) const
   {
     // TODO(ton): skip the number that defines the list in the PLY data, we
     // expect it to be of length N; throw an exception here in case they do no match?
@@ -440,14 +440,14 @@ private:
     return static_cast<const std::uint8_t *>(detail::align(src, alignof(T))) + sizeof(T);
   }
 
-  /// Specialization for the meta property type `Array<T, N>`, this will write a
-  /// list of N properties of type T.
-  template<typename, typename T, size_t N>
+  /// Specialization for the meta property type `Array<T, N, SizeT>`, this will
+  /// write a list of N properties of type T.
+  template<typename, typename T, size_t N, typename SizeT>
   const std::uint8_t *writeAsciiProperty(
       std::ostream &os,
       const std::uint8_t *src,
       const PlyProperty &property,
-      detail::Type<reflect::Array<T, N>>)
+      detail::Type<reflect::Array<T, N, SizeT>>)
   {
     static_assert(N > 0, "invalid array size specified (needs to be larger than zero)");
 
