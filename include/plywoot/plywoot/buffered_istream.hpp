@@ -1,6 +1,7 @@
 #ifndef PLYWOOT_BUFFERED_ISTREAM_HPP
 #define PLYWOOT_BUFFERED_ISTREAM_HPP
 
+#include <algorithm>
 #include <cassert>
 #include <cstring>
 #include <istream>
@@ -22,7 +23,6 @@ public:
   {
     // Position the read head at the start of the data just after the header.
     // Resets any buffered data.
-    bufferedBytes_ = 0;
     c_ = buffer_;
 
     is_.clear();  // need to clear eofbit() in case it is set, otherwise the
@@ -32,17 +32,17 @@ public:
 
   void skip(std::size_t n)
   {
-    const std::size_t remaining = (buffer_ + bufferedBytes_) - c_;
+    const std::size_t remaining = (buffer_ + BufferSize) - c_;
     if (remaining <= n)
     {
       buffer();
       n -= remaining;
     }
 
-    while (n >= bufferedBytes_)
+    while (n >= BufferSize)
     {
-      n -= bufferedBytes_;
       buffer();
+      n -= BufferSize;
     }
 
     c_ += n;
@@ -53,14 +53,14 @@ public:
   /// or in case that character does not exist, at EOF.
   void skipLines(std::size_t n)
   {
-    if (c_ >= buffer_ + bufferedBytes_) { buffer(); }
+    if (c_ >= buffer_ + BufferSize) { buffer(); }
     while (*c_ != EOF && n > 0)
     {
-      auto first = static_cast<const char *>(std::memchr(c_, '\n', bufferedBytes_ - (c_ - buffer_)));
+      auto first = static_cast<const char *>(std::memchr(c_, '\n', (buffer_ + BufferSize) - c_));
       if (first)
       {
         c_ = first + 1;
-        if (c_ >= buffer_ + bufferedBytes_) { buffer(); }
+        if (c_ >= buffer_ + BufferSize) { buffer(); }
         --n;
       }
       else { buffer(); }
@@ -82,7 +82,7 @@ public:
   inline void readCharacter()
   {
     ++c_;
-    if (c_ >= buffer_ + bufferedBytes_) { buffer(); }
+    if (c_ >= buffer_ + BufferSize) { buffer(); }
   }
 
   /// Ensures that the buffer contains at least the given number of characters.
@@ -99,10 +99,12 @@ public:
       std::memcpy(buffer_, c_, remaining);
       if (!is_.read(buffer_ + remaining, BufferSize - remaining))
       {
-        bufferedBytes_ = is_.gcount() + remaining;
-        buffer_[bufferedBytes_] = EOF;
+        // In case the buffer is only partially filled, fill the remainder with
+        // EOF characters.
+        auto bufferedBytes = is_.gcount() + remaining;
+        std::fill_n(buffer_ + bufferedBytes, BufferSize - bufferedBytes, EOF);
       }
-      else { bufferedBytes_ = BufferSize; }
+
       c_ = buffer_;
     }
   }
@@ -113,10 +115,12 @@ private:
   {
     if (!is_.read(buffer_, BufferSize))
     {
-      bufferedBytes_ = is_.gcount();
-      buffer_[bufferedBytes_] = EOF;
+      // In case the buffer is only partially filled, fill the remainder with
+      // EOF characters.
+      auto bufferedBytes = is_.gcount();
+      std::fill_n(buffer_ + bufferedBytes, BufferSize - bufferedBytes, EOF);
     }
-    else { bufferedBytes_ = BufferSize; }
+
     c_ = buffer_;
   }
 
@@ -126,8 +130,6 @@ private:
   constexpr static size_t BufferSize{8192};
   /// Buffered data, always a null terminated string.
   char buffer_[BufferSize] = {};
-  /// Number of bytes in the input buffer retrieved from disk.
-  size_t bufferedBytes_{0};
   /// Character the scanner's read head is currently pointing to. Invariant
   /// after construction of the scanner is:
   ///
