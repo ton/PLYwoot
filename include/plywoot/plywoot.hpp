@@ -1,6 +1,7 @@
 #ifndef PLYWOOT_HPP
 #define PLYWOOT_HPP
 
+#include "plywoot/buffered_istream.hpp"
 #include "plywoot/exceptions.hpp"
 #include "plywoot/header_parser.hpp"
 #include "plywoot/header_scanner.hpp"
@@ -24,7 +25,6 @@ namespace plywoot {
 class IStream
 {
 public:
-  IStream() = default;
   IStream(std::istream &is) : IStream{is, detail::HeaderParser{is}} {}
 
   // TODO(ton): add support for storing comments
@@ -85,7 +85,9 @@ public:
 private:
   /// Constructs a PLY file from the given input stream and header parser.
   IStream(std::istream &is, const detail::HeaderParser &parser)
-      : is_{is}, headerOffset_{is_.tellg()}, elements_{parser.elements()}, format_{parser.format()}
+      : is_{is},
+        elements_{parser.elements()},
+        format_{parser.format()}
   {
   }
 
@@ -102,7 +104,7 @@ private:
         // properties to read, ignore the remainder of the element.
         // TODO(ton): maybe we need to make this more explicit; what should the
         // default behavior be? Skipping or adding without a cast?
-        if (sizeof...(Ts) < element.properties().size()) { skipLines(1); }
+        if (sizeof...(Ts) < element.properties().size()) { is_.skipLines(1); }
       }
     }
 
@@ -162,27 +164,17 @@ private:
   template<typename Number>
   Number readNumber() const
   {
-    // Ignore whitespace and throw in case EOF was found...
-    while (0 <= *c_ && *c_ <= 0x20) { readCharacter(); }
-    if (*c_ == EOF) { throw UnexpectedEof(); }
+    is_.skipWhitespace();
+    if (is_.eof()) { throw UnexpectedEof(); }
 
-    // Ensure at least 256 bytes are present in the buffer.
-    bufferData(256);
-    return detail::to_number<Number>(c_, c_ + 256, &c_);
+    is_.bufferData(256);
+    return detail::to_number<Number>(is_.data(), is_.data() + 256, &is_.data());
   }
 
   void skipToken() const
   {
-    while (0 <= *c_ && *c_ <= 0x20) readCharacter();
-    while (*c_ > 0x20) readCharacter();
-  }
-
-  /// Reads the next character in the input stream and advances the read head by
-  /// one character.
-  void readCharacter() const
-  {
-    ++c_;
-    if (c_ >= buffer_ + bufferedBytes_) { bufferData(); }
+    is_.skipWhitespace();
+    is_.skipNonWhitespace();
   }
 
   void readBinary(const PlyElement &element, void *data, std::size_t size);
@@ -191,95 +183,24 @@ private:
   /// seeking was successful.
   bool seekTo(const PlyElement &element) const
   {
-    // Position the read head at the start of the data just after the header.
-    // Resets any buffered data.
-    bufferedBytes_ = 0;
-    c_ = buffer_;
-
-    is_.clear();  // need to clear eofbit() in case it is set, otherwise the
-                  // first read after the seek will fail
-    is_.seekg(headerOffset_);
-
     // Skip all element data for elements that come before the given element.
+    std::size_t numLines{0};
     auto first{elements().begin()};
     const auto last{elements().end()};
-    while (first != last && *first != element) { skipLines(first++->size()); }
+    while (first != last && *first != element) { numLines += first++->size(); }
+
+    if (first != last)
+    {
+      is_.seekToBegin();
+      is_.skipLines(numLines);
+    }
 
     return first != last;
   }
 
-  /// Unconditionally buffers data from the input stream.
-  void bufferData() const
-  {
-    if (!is_.read(buffer_, BufferSize))
-    {
-      bufferedBytes_ = is_.gcount();
-      buffer_[bufferedBytes_] = EOF;
-    }
-    else { bufferedBytes_ = BufferSize; }
-    c_ = buffer_;
-  }
-
-  /// Ensures that the buffer contains at least the given number of characters.
-  /// In case it already does, this does nothing, otherwise, it will shift the
-  /// data remaining in the buffer to the front, then refill the remaining part
-  /// of the buffer.
-  void bufferData(size_t minimum) const
-  {
-    assert(minimum < BufferSize / 2);
-    const size_t remaining = (buffer_ + BufferSize - c_);
-    if (remaining >= minimum) { return; }
-    else
-    {
-      std::memcpy(buffer_, c_, remaining);
-      if (!is_.read(buffer_ + remaining, BufferSize - remaining))
-      {
-        bufferedBytes_ = is_.gcount() + remaining;
-        buffer_[bufferedBytes_] = EOF;
-      }
-      else { bufferedBytes_ = BufferSize; }
-      c_ = buffer_;
-    }
-  }
-
-  /// Skips `n` lines in the input, places the read head at the first
-  /// character after the `n`-th newline character that as found in the input,
-  /// or in case that character does not exist, at EOF.
-  void skipLines(std::size_t n) const
-  {
-    if (c_ >= buffer_ + bufferedBytes_) { bufferData(); }
-    while (*c_ != EOF && n > 0)
-    {
-      auto first = static_cast<const char *>(std::memchr(c_, '\n', bufferedBytes_ - (c_ - buffer_)));
-      if (first)
-      {
-        c_ = first + 1;
-        if (c_ >= buffer_ + bufferedBytes_) { bufferData(); }
-        --n;
-      }
-      else { bufferData(); }
-    }
-  }
-
-  std::istream &is_;
-  std::istream::pos_type headerOffset_;
-
+  mutable detail::BufferedIStream is_;
   std::vector<PlyElement> elements_;
   PlyFormat format_;
-
-  constexpr static size_t BufferSize{8192};
-  /// Buffered data, always a null terminated string.
-  mutable char buffer_[BufferSize] = {};
-  /// Number of bytes in the input buffer retrieved from disk.
-  mutable size_t bufferedBytes_{0};
-  /// Character the scanner's read head is currently pointing to. Invariant
-  /// after construction of the scanner is:
-  ///
-  ///       buffer_ <= c_ < (buffer_ + sizeof(buffer_) - 1)
-  ///
-  /// Note that the invariant allows for one character lookahead without the
-  /// need to check whether we need to read data from disk.
-  mutable const char *c_{buffer_ + BufferSize};
 };
 
 // TODO(ton): documentation
