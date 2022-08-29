@@ -55,11 +55,10 @@ public:
   {
     while (*c_ != EOF && n > 0)
     {
-      auto first = static_cast<const char *>(std::memchr(c_, '\n', (buffer_ + BufferSize) - c_));
-      if (first)
+      c_ = static_cast<const char *>(std::memchr(c_, '\n', (buffer_ + BufferSize) - c_));
+      if (c_)
       {
-        c_ = first + 1;
-        if (c_ >= buffer_ + BufferSize) { buffer(); }
+        readCharacter();
         --n;
       }
       else { buffer(); }
