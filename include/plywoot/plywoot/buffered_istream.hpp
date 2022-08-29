@@ -39,6 +39,8 @@ public:
       n -= remaining;
     }
 
+    // TODO(ton): this can be implemented much more efficiently by just seeking
+    // the underlying stream and buffer from the right offset.
     while (n >= BufferSize)
     {
       buffer();
