@@ -53,7 +53,6 @@ public:
   /// or in case that character does not exist, at EOF.
   void skipLines(std::size_t n)
   {
-    if (c_ >= buffer_ + BufferSize) { buffer(); }
     while (*c_ != EOF && n > 0)
     {
       auto first = static_cast<const char *>(std::memchr(c_, '\n', (buffer_ + BufferSize) - c_));
