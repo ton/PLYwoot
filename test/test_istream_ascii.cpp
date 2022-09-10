@@ -80,7 +80,7 @@ TEST_CASE("Read multiple elements with two properties from an ASCII PLY file", "
     std::iota(expected.begin(), expected.end(), 246);
     std::reverse(expected.begin(), expected.end());
     REQUIRE(std::equal(
-          expected.begin(), expected.end(), xs.begin(), [](unsigned char u, X x) { return u == x.u; }));
+        expected.begin(), expected.end(), xs.begin(), [](unsigned char u, X x) { return u == x.u; }));
   }
 }
 
@@ -145,7 +145,7 @@ TEST_CASE("Test out of order retrieval of element data", "[istream][ascii]")
 
   const std::vector<Vertex> result = plyFile.read<Vertex, VertexLayout>(vertexElement);
   const std::vector<Vertex> expected = {{0, 0, 0}, {1, 0, 0}, {1, 1, 0}, {0, 1, 0},
-    {0, 0, 1}, {1, 0, 1}, {1, 1, 1}, {0, 1, 1}};
+                                        {0, 0, 1}, {1, 0, 1}, {1, 1, 1}, {0, 1, 1}};
   CHECK(result == expected);
 }
 
@@ -166,6 +166,6 @@ TEST_CASE(
 
   const std::vector<Vertex> result = plyFile.read<Vertex, VertexLayout>(vertexElement);
   const std::vector<Vertex> expected = {{0, 0, 0}, {1, 0, 0}, {1, 1, 0}, {0, 1, 0},
-    {0, 0, 1}, {1, 0, 1}, {1, 1, 1}, {0, 1, 1}};
+                                        {0, 0, 1}, {1, 0, 1}, {1, 1, 1}, {0, 1, 1}};
   CHECK(result == expected);
 }
