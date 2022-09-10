@@ -89,7 +89,7 @@ TEST_CASE("Test reading and writing of a list", "[iostream][binary-little-endian
 
 TEST_CASE("Tests reading and writing vertex and face data", "[iostream][binary-little-endian]")
 {
-  std::ifstream ifs{"test/input/ascii/cube.ply"};
+  std::ifstream ifs{"test/input/binary_little_endian/cube.ply"};
   const plywoot::IStream plyFile{ifs};
 
   using Vertex = FloatVertex;
@@ -112,11 +112,16 @@ TEST_CASE("Tests reading and writing vertex and face data", "[iostream][binary-l
 
   using VertexLayout = plywoot::reflect::Layout<float, float, float>;
   const std::vector<Vertex> vertices = plyFile.read<Vertex, VertexLayout>(vertexElement);
-  CHECK(vertices.size() == 8);
+  const std::vector<Vertex> expectedVertices{{0, 0, 0}, {1, 0, 0}, {1, 1, 0}, {0, 1, 0},
+                                             {0, 0, 1}, {1, 0, 1}, {1, 1, 1}, {0, 1, 1}};
+  CHECK(vertices == expectedVertices);
 
   using TriangleLayout = plywoot::reflect::Layout<plywoot::reflect::Array<int, 3, unsigned char>>;
   const std::vector<Triangle> triangles = plyFile.read<Triangle, TriangleLayout>(faceElement);
-  CHECK(triangles.size() == 12);
+  const std::vector<Triangle> expectedTriangles{{0, 2, 1}, {0, 3, 2}, {4, 5, 6}, {4, 6, 7},
+                                                {0, 1, 5}, {0, 5, 4}, {2, 3, 7}, {2, 7, 6},
+                                                {3, 0, 4}, {3, 4, 7}, {1, 2, 6}, {1, 6, 5}};
+  REQUIRE(expectedTriangles == triangles);
 
   // Now write the data to a string stream, read it back in again, and compare.
   std::stringstream oss;
