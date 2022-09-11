@@ -4,7 +4,7 @@ find_package(Catch2 3 REQUIRED)
 add_executable(tests
   main.cpp
   test_istream.cpp
-  test_ostream_ascii.cpp
+  test_ostream.cpp
   test_iostream.cpp
 )
 target_link_libraries(tests
