@@ -1,0 +1,6 @@
+ply
+format binary_little_endian 1.0
+element vertex 10
+property char a
+end_header
+VWXYZ[\]^_

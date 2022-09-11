@@ -18,6 +18,16 @@ TEST_CASE("Write empty PLY file", "[ostream][ascii]")
   REQUIRE(expected == ss.str());
 }
 
+TEST_CASE("Write empty PLY file", "[ostream][binary-little-endian]")
+{
+  std::stringstream ss;
+  plywoot::OStream plyos{plywoot::PlyFormat::BinaryLittleEndian};
+  plyos.write(ss);
+
+  const std::string expected{"ply\nformat binary_little_endian 1.0\nend_header\n"};
+  REQUIRE(expected == ss.str());
+}
+
 TEST_CASE("Write PLY file with a single element and a single property", "[ostream][ascii]")
 {
   std::stringstream ss;

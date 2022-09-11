@@ -4,11 +4,8 @@ find_package(Catch2 3 REQUIRED)
 add_executable(tests
   main.cpp
   test_istream.cpp
-  test_istream_ascii.cpp
-  test_istream_binary_little_endian.cpp
   test_ostream_ascii.cpp
-  test_iostream_ascii.cpp
-  test_iostream_binary_little_endian.cpp
+  test_iostream.cpp
 )
 target_link_libraries(tests
   PRIVATE
