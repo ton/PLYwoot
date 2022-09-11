@@ -94,8 +94,7 @@ public:
   {
     assert(minimum < BufferSize / 2);
     const size_t remaining = (buffer_ + BufferSize - c_);
-    if (remaining >= minimum) { return; }
-    else
+    if (remaining < minimum)
     {
       std::memcpy(buffer_, c_, remaining);
       if (!is_.read(buffer_ + remaining, BufferSize - remaining))
