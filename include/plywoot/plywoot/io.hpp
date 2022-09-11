@@ -60,10 +60,7 @@ typename std::enable_if<format != PlyFormat::Ascii, void>::type skipProperty(
     BufferedIStream &is,
     const PlyProperty &property)
 {
-  if (!property.isList())
-  {
-    is.skip(sizeOf(property.type()));
-  }
+  if (!property.isList()) { is.skip(sizeOf(property.type())); }
 }
 
 /// Skips the remaining properties of an element, where the range of properties
