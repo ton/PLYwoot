@@ -200,7 +200,7 @@ TEST_CASE("Read a PLY file with a comment section consisting of multiple lines",
   CHECK(plyFile.elements().front().name() == "vertex");
 }
 
-TEST_CASE("Read an element with a single property from an ASCII PLY file", "[istream]")
+TEST_CASE("Read an element with a single property from a PLY file", "[istream]")
 {
   auto inputFilename = GENERATE(
       "test/input/ascii/single_element_with_single_property.ply",
@@ -223,7 +223,7 @@ TEST_CASE("Read an element with a single property from an ASCII PLY file", "[ist
   REQUIRE(xs.front().c == 86);
 }
 
-TEST_CASE("Read multiple elements with a single property from an ASCII PLY file", "[istream]")
+TEST_CASE("Read multiple elements with a single property from a PLY file", "[istream]")
 {
   auto inputFilename = GENERATE(
       "test/input/ascii/multiple_elements_with_single_property.ply",
@@ -249,7 +249,7 @@ TEST_CASE("Read multiple elements with a single property from an ASCII PLY file"
   REQUIRE(std::equal(expected.begin(), expected.end(), xs.begin(), [](char c, X x) { return c == x.c; }));
 }
 
-TEST_CASE("Read multiple elements with two properties from an ASCII PLY file", "[istream]")
+TEST_CASE("Read multiple elements with two properties from a PLY file", "[istream]")
 {
   auto inputFilename = GENERATE(
       "test/input/ascii/multiple_elements_with_two_properties.ply",
