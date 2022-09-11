@@ -84,10 +84,10 @@ public:
     switch (format_)
     {
       case PlyFormat::Ascii:
-        read<PlyFormat::Ascii, Ts...>(element, layout.data());
+        read<PlyFormat::Ascii, Ts...>(layout.data(), element);
         break;
       case PlyFormat::BinaryLittleEndian:
-        read<PlyFormat::BinaryLittleEndian, Ts...>(element, layout.data());
+        read<PlyFormat::BinaryLittleEndian, Ts...>(layout.data(), element);
         break;
       default:
         break;
@@ -102,23 +102,24 @@ private:
   }
 
   template<PlyFormat format, typename... Ts>
-  std::uint8_t *read(const PlyElement &element, std::uint8_t *dest) const
+  std::uint8_t *read(std::uint8_t *dest, const PlyElement &element) const
   {
     if (seekTo<format>(element))
     {
       const std::uint8_t *start = dest;
+
+      const PropertyConstIterator last = element.properties().end();
+
       for (std::size_t i{0}; i < element.size(); ++i)
       {
-        dest = readElement<format, Ts...>(dest);
+        dest = readElement<format, Ts...>(dest, element.properties().begin(), last);
 
-        // In case the number of properties in the element exceeds the number of
-        // properties to read, ignore the remainder of the element.
-        // TODO(ton): maybe we need to make this more explicit; what should the
-        // default behavior be? Skipping or adding without a cast?
-        if (sizeof...(Ts) < element.properties().size())
+        // In case the number of properties in the PLY element exceeds the
+        // number of properties to map to, ignore the remainder of the PLY
+        // element properties...
+        if (element.properties().size() > sizeof...(Ts))
         {
-          detail::io::skipProperties<format>(
-              is_, element.properties().begin() + sizeof...(Ts), element.properties().end());
+          detail::io::skipProperties<format>(is_, element.properties().begin() + sizeof...(Ts), last);
         }
       }
 
@@ -133,7 +134,7 @@ private:
       typename T,
       typename TypeTag,
       typename std::enable_if<std::is_arithmetic<T>::value, std::size_t>::type = 0>
-  std::uint8_t *readProperty(std::uint8_t *dest, TypeTag) const
+  std::uint8_t *readProperty(std::uint8_t *dest, const PlyProperty &, TypeTag) const
   {
     dest = static_cast<std::uint8_t *>(detail::align(dest, alignof(T)));
     *reinterpret_cast<T *>(dest) = detail::io::readNumber<format, T>(is_);
@@ -145,43 +146,68 @@ private:
       typename T,
       typename TypeTag,
       typename std::enable_if<!std::is_arithmetic<T>::value, std::size_t>::type = 0>
-  std::uint8_t *readProperty(std::uint8_t *dest, TypeTag) const
+  std::uint8_t *readProperty(std::uint8_t *dest, const PlyProperty &, TypeTag) const
   {
     return static_cast<std::uint8_t *>(detail::align(dest, alignof(T))) + sizeof(T);
   }
 
   template<PlyFormat format, typename, typename T, size_t N, typename SizeT>
-  std::uint8_t *readProperty(std::uint8_t *dest, detail::Type<reflect::Array<T, N, SizeT>>) const
+  std::uint8_t *readProperty(
+      std::uint8_t *dest,
+      const PlyProperty &property,
+      detail::Type<reflect::Array<T, N, SizeT>>) const
   {
     // TODO(ton): skip the number that defines the list in the PLY data, we
     // expect it to be of length N; throw an exception here in case they do no match?
     detail::io::skipNumber<format, SizeT>(is_);
-    for (size_t i = 0; i < N; ++i) { dest = readProperty<format, T>(dest, detail::Type<T>{}); }
+    for (size_t i = 0; i < N; ++i) { dest = readProperty<format, T>(dest, property, detail::Type<T>{}); }
     return dest;
   }
 
   template<PlyFormat, typename, typename T>
-  std::uint8_t *readProperty(std::uint8_t *dest, detail::Type<reflect::Stride<T>>) const
+  std::uint8_t *readProperty(std::uint8_t *dest, const PlyProperty &, detail::Type<reflect::Stride<T>>) const
   {
     return static_cast<std::uint8_t *>(detail::align(dest, alignof(T))) + sizeof(T);
   }
 
+  /// Skips the properties of the types given in the variadic template paramer
+  /// list of these function in the *destination* data pointed to by `dest`,
+  /// taking into account default alignment rules.
+  /// @{
+  template<typename T>
+  std::uint8_t *skipProperties(std::uint8_t *dest) const
+  {
+    dest = static_cast<std::uint8_t *>(detail::align(dest, alignof(T)));
+    return dest + sizeof(T);
+  }
+
+  template<typename T, typename U, typename... Ts>
+  std::uint8_t *skipProperties(std::uint8_t *dest) const
+  {
+    dest = static_cast<std::uint8_t *>(detail::align(dest, alignof(T)));
+    return skipProperties<U, Ts...>(dest + sizeof(T));
+  }
+  /// @}
+
   template<PlyFormat>
-  std::uint8_t *readElement(std::uint8_t *dest) const
+  std::uint8_t *readElement(std::uint8_t *dest, PlyPropertyConstIterator, PlyPropertyConstIterator) const
   {
     return dest;
   }
 
   template<PlyFormat format, typename T>
-  std::uint8_t *readElement(std::uint8_t *dest) const
+  std::uint8_t *readElement(std::uint8_t *dest, PlyPropertyConstIterator first, PlyPropertyConstIterator last)
+      const
   {
-    return readProperty<format, T>(dest, detail::Type<T>{});
+    return first < last ? readProperty<format, T>(dest, *first, detail::Type<T>{}) : skipProperties<T>(dest);
   }
 
   template<PlyFormat format, typename T, typename U, typename... Ts>
-  std::uint8_t *readElement(std::uint8_t *dest) const
+  std::uint8_t *readElement(std::uint8_t *dest, PropertyConstIterator first, PropertyConstIterator last) const
   {
-    return readElement<format, U, Ts...>(readProperty<format, T>(dest, detail::Type<T>{}));
+    return first < last ? readElement<format, U, Ts...>(
+                              readProperty<format, T>(dest, *first, detail::Type<T>{}), first + 1, last)
+                        : skipProperties<T, U, Ts...>(dest);
   }
 
   /// Seeks to the start of the data for the given element. Returns whether
@@ -399,8 +425,8 @@ private:
   const std::uint8_t *writeElement(
       std::ostream &,
       const std::uint8_t *src,
-      ConstPropertyIterator,
-      ConstPropertyIterator)
+      PropertyConstIterator,
+      PropertyConstIterator)
   {
     return src;
   }
@@ -413,8 +439,8 @@ private:
   const std::uint8_t *writeElement(
       std::ostream &os,
       const std::uint8_t *src,
-      ConstPropertyIterator first,
-      ConstPropertyIterator last)
+      PropertyConstIterator first,
+      PropertyConstIterator last)
   {
     return first < last
                ? writeProperty<format, T>(os, src, *first, detail::Type<T>{})
@@ -428,8 +454,8 @@ private:
   const std::uint8_t *writeElement(
       std::ostream &os,
       const std::uint8_t *src,
-      ConstPropertyIterator first,
-      ConstPropertyIterator last)
+      PropertyConstIterator first,
+      PropertyConstIterator last)
   {
     src = writeElement<format, T>(os, src, first++, last);
     if (first < last) detail::io::writeTokenSeparator<format>(os);

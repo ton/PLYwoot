@@ -25,7 +25,7 @@ struct Triangle
 template<typename T>
 inline std::ostream &operator<<(std::ostream &os, const VertexT<T> &v)
 {
-  return os << '(' << v.x << ", " << v.x << ", " << v.z << ')';
+  return os << '(' << v.x << ", " << v.y << ", " << v.z << ')';
 }
 
 inline std::ostream &operator<<(std::ostream &os, const Triangle &t)

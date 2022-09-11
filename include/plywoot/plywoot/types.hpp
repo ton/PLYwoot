@@ -97,6 +97,8 @@ private:
   PlyDataType sizeType_{PlyDataType::Char};
 };
 
+using PlyPropertyConstIterator = std::vector<PlyProperty>::const_iterator;
+
 struct PlyElement
 {
   /// Default constructor.
@@ -150,7 +152,7 @@ private:
   std::vector<PlyProperty> properties_;
 };
 
-using ConstPropertyIterator = std::vector<PlyProperty>::const_iterator;
+using PropertyConstIterator = std::vector<PlyProperty>::const_iterator;
 
 }
 

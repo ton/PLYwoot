@@ -148,3 +148,29 @@ TEST_CASE("Tests reading and writing vertex and face data", "[iostream]")
     CHECK(triangles == writtenTriangles);
   }
 }
+
+TEST_CASE("Skip input data that cannot be mapped while reading and writing", "[iostream]")
+{
+  const auto format = GENERATE(plywoot::PlyFormat::Ascii, plywoot::PlyFormat::BinaryLittleEndian);
+
+  using Vertex = FloatVertex;
+  const std::vector<Vertex> inputVertices{{1.0, 2.0, 3.0}, {4.0, 5.0, 6.0}, {7.0, 8.0, 9.0}};
+
+  using Layout = plywoot::reflect::Layout<float, float, float>;
+
+  const plywoot::PlyProperty x{"x", plywoot::PlyDataType::Float};
+  const plywoot::PlyProperty y{"y", plywoot::PlyDataType::Float};
+  const plywoot::PlyElement element{"e", 3, {x, y}};
+
+  std::stringstream oss;
+  plywoot::OStream plyos{format};
+  plyos.add(element, Layout{inputVertices});
+  plyos.write(oss);
+
+  std::stringstream iss{oss.str(), std::ios::in};
+  plywoot::IStream plyis{iss};
+  const std::vector<Vertex> outputVertices{plyis.read<Vertex, Layout>(element)};
+
+  const std::vector<Vertex> expectedOutputVertices{{1.0, 2.0, 0.0}, {4.0, 5.0, 0.0}, {7.0, 8.0, 0.0}};
+  CHECK(expectedOutputVertices == outputVertices);
+}
