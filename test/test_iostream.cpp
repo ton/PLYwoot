@@ -29,11 +29,11 @@ TEST_CASE("Test reading and writing all property types", "[iostream]")
   struct Element
   {
     char a;
-    char b;
-    char c;
-    unsigned char d;
-    short e;
-    unsigned short f;
+    unsigned char b;
+    short c;
+    unsigned short d;
+    int e;
+    unsigned int f;
     float g;
     double h;
 
@@ -46,13 +46,13 @@ TEST_CASE("Test reading and writing all property types", "[iostream]")
   };
 
   const std::vector<Element> expectedElements{
-      {std::numeric_limits<char>::min(), std::numeric_limits<char>::min(), std::numeric_limits<char>::min(),
-       std::numeric_limits<unsigned char>::max(), std::numeric_limits<short>::min(),
-       std::numeric_limits<unsigned short>::max(), std::numeric_limits<float>::epsilon(),
-       std::numeric_limits<double>::epsilon()}};
+      {std::numeric_limits<char>::min(), std::numeric_limits<unsigned char>::max(),
+       std::numeric_limits<short>::min(), std::numeric_limits<unsigned short>::max(),
+       std::numeric_limits<int>::min(), std::numeric_limits<unsigned int>::max(),
+       std::numeric_limits<float>::epsilon(), std::numeric_limits<double>::epsilon()}};
 
   using Layout =
-      plywoot::reflect::Layout<char, char, char, unsigned char, short, unsigned short, float, double>;
+      plywoot::reflect::Layout<char, unsigned char, short, unsigned short, int, unsigned int, float, double>;
 
   std::stringstream oss;
   plywoot::OStream plyos{format};
