@@ -338,11 +338,6 @@ TEST_CASE("Test out of order retrieval of element data", "[istream][!mayfail]")
   std::ifstream ifs{inputFilename};
   const plywoot::IStream plyFile{ifs};
 
-  plywoot::PlyElement faceElement;
-  bool isFaceElementFound{false};
-  std::tie(faceElement, isFaceElementFound) = plyFile.element("face");
-  REQUIRE(isFaceElementFound);
-
   plywoot::PlyElement vertexElement;
   bool isVertexElementFound{false};
   std::tie(vertexElement, isVertexElementFound) = plyFile.element("vertex");
