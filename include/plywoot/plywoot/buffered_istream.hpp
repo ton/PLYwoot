@@ -19,16 +19,12 @@ public:
   const char *data() const { return c_; }
   const char *&data() { return c_; }
 
-  // Positions the read head at the start of the data just after the header.
-  // Resets any buffered data.
-  void seekToBegin()
+  /// Reads the next character in the input stream and advances the read head by
+  /// one character.
+  inline void readCharacter()
   {
-    // Need to clear eofbit() in case it is set,
-    // otherwise the first read after the seek will fail.
-    is_.clear();
-    is_.seekg(headerOffset_);
-
-    buffer();
+    ++c_;
+    if (c_ >= buffer_ + BufferSize) { buffer(); }
   }
 
   void skip(std::size_t n)
@@ -78,12 +74,16 @@ public:
     while (*c_ > 0x20) readCharacter();
   }
 
-  /// Reads the next character in the input stream and advances the read head by
-  /// one character.
-  inline void readCharacter()
+  // Positions the read head at the start of the data just after the header.
+  // Resets any buffered data.
+  void seekToBegin()
   {
-    ++c_;
-    if (c_ >= buffer_ + BufferSize) { buffer(); }
+    // Need to clear eofbit() in case it is set,
+    // otherwise the first read after the seek will fail.
+    is_.clear();
+    is_.seekg(headerOffset_);
+
+    buffer();
   }
 
   /// Ensures that the buffer contains at least the given number of characters.
