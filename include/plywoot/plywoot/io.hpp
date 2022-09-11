@@ -55,14 +55,50 @@ typename std::enable_if<format != PlyFormat::Ascii, void>::type skipNumber(Buffe
   is.skip(sizeof(T));
 }
 
+template<PlyFormat format>
+typename std::enable_if<format != PlyFormat::Ascii, void>::type skipProperty(
+    BufferedIStream &is,
+    const PlyProperty &property)
+{
+  if (!property.isList())
+  {
+    is.skip(sizeOf(property.type()));
+  }
+}
+
+/// Skips the remaining properties of an element, where the range of properties
+/// to skip is given by the [first, last) PlyProperty  iterators.
+/// @{
+template<PlyFormat format, typename It>
+typename std::enable_if<format == PlyFormat::Ascii, void>::type skipProperties(BufferedIStream &is, It, It)
+{
+  // Skipping remaining properties for an ASCII input file boils down to
+  // skipping the remainder of the input line.
+  is.skipLines(1);
+}
+
+template<PlyFormat format, typename It>
+typename std::enable_if<format != PlyFormat::Ascii, void>::type skipProperties(
+    BufferedIStream &is,
+    It first,
+    It last)
+{
+  while (first != last) { skipProperty<format>(is, *first++); }
+}
+/// @}
+
 template<PlyFormat format, typename T>
-typename std::enable_if<format == PlyFormat::Ascii, void>::type skipElement(BufferedIStream &is, std::size_t size)
+typename std::enable_if<format == PlyFormat::Ascii, void>::type skipElement(
+    BufferedIStream &is,
+    std::size_t size)
 {
   is.skipLines(size);
 }
 
 template<PlyFormat format, typename T>
-typename std::enable_if<format != PlyFormat::Ascii, void>::type skipElement(BufferedIStream &is, std::size_t size)
+typename std::enable_if<format != PlyFormat::Ascii, void>::type skipElement(
+    BufferedIStream &is,
+    std::size_t size)
 {
   is.skip(size);
 }

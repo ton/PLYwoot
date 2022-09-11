@@ -357,9 +357,7 @@ TEST_CASE("Test out of order retrieval of element data", "[istream][!mayfail]")
   CHECK(result == expected);
 }
 
-TEST_CASE(
-    "Read elements from a PLY file by only partially retrieving all properties set for it",
-    "[istream][!mayfail]")
+TEST_CASE("Read elements from a PLY file by only partially retrieving all properties set for it", "[istream]")
 {
   auto inputFilename = GENERATE(
       "test/input/ascii/cube_with_material_data.ply",
@@ -376,8 +374,8 @@ TEST_CASE(
   using Vertex = FloatVertex;
   using VertexLayout = plywoot::reflect::Layout<float, float, float>;
 
-  const std::vector<Vertex> result = plyFile.read<Vertex, VertexLayout>(vertexElement);
-  const std::vector<Vertex> expected = {{0, 0, 0}, {1, 0, 0}, {1, 1, 0}, {0, 1, 0},
-                                        {0, 0, 1}, {1, 0, 1}, {1, 1, 1}, {0, 1, 1}};
-  CHECK(result == expected);
+  const std::vector<Vertex> vertices = plyFile.read<Vertex, VertexLayout>(vertexElement);
+  const std::vector<Vertex> expectedVertices = {{0, 0, 0}, {1, 0, 0}, {1, 1, 0}, {0, 1, 0},
+                                                {0, 0, 1}, {1, 0, 1}, {1, 1, 1}, {0, 1, 1}};
+  CHECK(expectedVertices == vertices);
 }

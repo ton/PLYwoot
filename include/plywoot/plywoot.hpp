@@ -14,9 +14,9 @@
 #include <cassert>
 #include <cstdint>
 #include <functional>
-#include <map>
 #include <iostream>
 #include <iterator>
+#include <map>
 #include <string>
 #include <type_traits>
 #include <utility>
@@ -115,7 +115,11 @@ private:
         // properties to read, ignore the remainder of the element.
         // TODO(ton): maybe we need to make this more explicit; what should the
         // default behavior be? Skipping or adding without a cast?
-        if (sizeof...(Ts) < element.properties().size()) { is_.skipLines(1); }
+        if (sizeof...(Ts) < element.properties().size())
+        {
+          detail::io::skipProperties<format>(
+              is_, element.properties().begin() + sizeof...(Ts), element.properties().end());
+        }
       }
 
       elementSize_.emplace(element.name(), dest - start);
@@ -211,10 +215,7 @@ private:
       // supported...:( We need to add `setLayout()` or something for this to
       // work properly, but it is quite ugly.
       auto it = elementSize_.find(first->name());
-      if (it != elementSize_.end())
-      {
-        is_.skip(it->second);
-      }
+      if (it != elementSize_.end()) { is_.skip(it->second); }
       ++first;
     }
 

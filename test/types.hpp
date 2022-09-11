@@ -22,6 +22,12 @@ struct Triangle
   bool operator==(const Triangle &f) const { return a == f.a && b == f.b && c == f.c; }
 };
 
+template<typename T>
+inline std::ostream &operator<<(std::ostream &os, const VertexT<T> &v)
+{
+  return os << '(' << v.x << ", " << v.x << ", " << v.z << ')';
+}
+
 inline std::ostream &operator<<(std::ostream &os, const Triangle &t)
 {
   return os << '[' << t.a << ", " << t.b << ", " << t.c << ']';
