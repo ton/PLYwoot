@@ -145,7 +145,7 @@ private:
     return dest;
   }
 
-  template<PlyFormat, typename PlyT, typename DestT>
+  template<PlyFormat, typename DestT>
   std::uint8_t *readProperty(std::uint8_t *dest, reflect::Type<reflect::Stride<DestT>>) const
   {
     return static_cast<std::uint8_t *>(detail::align(dest, alignof(DestT))) + sizeof(DestT);
@@ -177,25 +177,6 @@ private:
     return dest;
   }
 
-  /// Skips the properties of the types given in the variadic template parameter
-  /// list of these function in the *destination* data pointed to by `dest`,
-  /// taking into account default alignment rules.
-  /// @{
-  template<typename T>
-  std::uint8_t *skipProperties(std::uint8_t *dest) const
-  {
-    dest = static_cast<std::uint8_t *>(detail::align(dest, alignof(T)));
-    return dest + sizeof(T);
-  }
-
-  template<typename T, typename U, typename... Ts>
-  std::uint8_t *skipProperties(std::uint8_t *dest) const
-  {
-    dest = static_cast<std::uint8_t *>(detail::align(dest, alignof(T)));
-    return skipProperties<U, Ts...>(dest + sizeof(T));
-  }
-  /// @}
-
   template<PlyFormat>
   std::uint8_t *readElement(std::uint8_t *dest, PlyPropertyConstIterator, PlyPropertyConstIterator) const
   {
@@ -206,15 +187,17 @@ private:
   std::uint8_t *readElement(std::uint8_t *dest, PlyPropertyConstIterator first, PlyPropertyConstIterator last)
       const
   {
-    return first < last ? readProperty<format>(dest, *first, reflect::Type<T>{}) : skipProperties<T>(dest);
+    return first < last ? readProperty<format>(dest, *first, reflect::Type<T>{})
+                        : readProperty<format>(dest, reflect::Type<reflect::Stride<T>>{});
   }
 
   template<PlyFormat format, typename T, typename U, typename... Ts>
   std::uint8_t *readElement(std::uint8_t *dest, PropertyConstIterator first, PropertyConstIterator last) const
   {
-    return first < last ? readElement<format, U, Ts...>(
-                              readProperty<format>(dest, *first, reflect::Type<T>{}), first + 1, last)
-                        : skipProperties<T, U, Ts...>(dest);
+    return readElement<format, U, Ts...>(
+        first < last ? readProperty<format>(dest, *first, reflect::Type<T>{})
+                     : readProperty<format>(dest, reflect::Type<reflect::Stride<T>>{}),
+        first + 1, last);
   }
 
   /// Seeks to the start of the data for the given element. Returns whether
