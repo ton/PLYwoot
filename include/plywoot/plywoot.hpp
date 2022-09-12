@@ -254,6 +254,12 @@ private:
         {
           numBytes += sizeOf(p.type());
         }
+        else
+        {
+          // TODO(ton): implement this for both variable and fixed size
+          // lists...it is annoying we need to have a separate size hint for
+          // this most likely :(
+        }
       }
       it = elementSize_.insert(it, std::make_pair(element.name(), element.size() * numBytes));
     }
