@@ -250,10 +250,7 @@ private:
       std::size_t numBytes{0};
       for (const PlyProperty &p : element.properties())
       {
-        if (!p.isList())
-        {
-          numBytes += sizeOf(p.type());
-        }
+        if (!p.isList()) { numBytes += sizeOf(p.type()); }
         else
         {
           // TODO(ton): implement this for both variable and fixed size
