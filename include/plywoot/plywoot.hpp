@@ -123,24 +123,22 @@ private:
     }
   }
 
-  template<
-      PlyFormat format,
-      typename T,
-      typename TypeTag,
-      typename std::enable_if<std::is_arithmetic<T>::value, std::size_t>::type = 0>
-  std::uint8_t *readProperty(std::uint8_t *dest, const PlyProperty &, TypeTag) const
+  template<PlyFormat format, typename T, typename TypeTag>
+  typename std::enable_if<std::is_arithmetic<T>::value, std::uint8_t *>::type readProperty(
+      std::uint8_t *dest,
+      const PlyProperty &,
+      TypeTag) const
   {
     dest = static_cast<std::uint8_t *>(detail::align(dest, alignof(T)));
     *reinterpret_cast<T *>(dest) = detail::io::readNumber<format, T>(is_);
     return dest + sizeof(T);
   }
 
-  template<
-      PlyFormat,
-      typename T,
-      typename TypeTag,
-      typename std::enable_if<!std::is_arithmetic<T>::value, std::size_t>::type = 0>
-  std::uint8_t *readProperty(std::uint8_t *dest, const PlyProperty &, TypeTag) const
+  template<PlyFormat, typename T, typename TypeTag>
+  typename std::enable_if<!std::is_arithmetic<T>::value, std::uint8_t *>::type readProperty(
+      std::uint8_t *dest,
+      const PlyProperty &,
+      TypeTag) const
   {
     return static_cast<std::uint8_t *>(detail::align(dest, alignof(T))) + sizeof(T);
   }
