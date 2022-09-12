@@ -51,12 +51,9 @@ public:
   /// Returns the format of the input PLY data stream.
   PlyFormat format() const { return format_; }
 
-  /// Reads the given element from the PLY input data stream, expecting
-  /// elements where every property can be casted to the given property type
+  /// Reads the given element from the PLY input data stream, expecting elements
+  /// where every property can be statically casted to the given property type
   /// in the template argument list.
-  // TODO(ton): test what happens in case the number of property types given
-  // does not match the number of properties in the element; the remaining
-  // properties will be read 'uncasted'.
   template<typename T, typename Layout>
   std::vector<T> read(const PlyElement &element) const
   {
@@ -75,9 +72,6 @@ public:
   /// satisfy this precondition results in undefined behavior.
   // TODO(ton): probably better to add another parameter 'size' to guard
   // against overwriting the input buffer.
-  // TODO(ton): test what happens in case the number of property types given
-  // in the argument list *exceeds* the number of properties associated with
-  // the element.
   template<typename... Ts>
   void read(const PlyElement &element, reflect::Layout<Ts...> layout) const
   {
