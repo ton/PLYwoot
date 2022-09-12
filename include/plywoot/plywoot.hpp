@@ -102,7 +102,7 @@ private:
   }
 
   template<PlyFormat format, typename... Ts>
-  std::uint8_t *read(std::uint8_t *dest, const PlyElement &element) const
+  void read(std::uint8_t *dest, const PlyElement &element) const
   {
     if (seekTo<format>(element))
     {
@@ -125,8 +125,6 @@ private:
 
       elementSize_.emplace(element.name(), dest - start);
     }
-
-    return dest;
   }
 
   template<
