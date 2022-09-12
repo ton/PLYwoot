@@ -106,8 +106,6 @@ private:
   {
     if (seekTo<format>(element))
     {
-      const std::uint8_t *start = dest;
-
       const PropertyConstIterator last = element.properties().end();
 
       for (std::size_t i{0}; i < element.size(); ++i)
@@ -122,8 +120,6 @@ private:
           detail::io::skipProperties<format>(is_, element.properties().begin() + sizeof...(Ts), last);
         }
       }
-
-      elementSize_.emplace(element.name(), dest - start);
     }
   }
 
@@ -219,8 +215,11 @@ private:
     const auto last{elements().end()};
     while (first != last && *first != element) { numLines += first++->size(); }
 
-    is_.seekToBegin();
-    if (first != last) is_.skipLines(numLines);
+    if (first != last && *first == element)
+    {
+      is_.seekToBegin();
+      is_.skipLines(numLines);
+    }
 
     return first != last;
   }
@@ -228,24 +227,38 @@ private:
   template<PlyFormat format>
   typename std::enable_if<format != PlyFormat::Ascii, bool>::type seekTo(const PlyElement &element) const
   {
-    is_.seekToBegin();
-
+    std::size_t numBytes{0};
     auto first{elements().begin()};
     const auto last{elements().end()};
-    while (first != last && *first != element)
+    while (first != last && *first != element) { numBytes += elementSizeInBytes(*first++); }
+
+    if (first != last && *first == element)
     {
-      // TODO(ton): skipping previously parsed elements is not supported; this
-      // implies that out-of-order reading of elements for binary inputs is not
-      // supported...:( We need to add `setLayout()` or something for this to
-      // work properly, but it is quite ugly.
-      auto it = elementSize_.find(first->name());
-      if (it != elementSize_.end()) { is_.skip(it->second); }
-      ++first;
+      is_.seekToBegin();
+      is_.skip(numBytes);
     }
 
     return first != last;
   }
   /// @}
+
+  size_t elementSizeInBytes(const PlyElement &element) const
+  {
+    auto it = elementSize_.lower_bound(element.name());
+    if (it == elementSize_.end() || it->first != element.name())
+    {
+      std::size_t numBytes{0};
+      for (const PlyProperty &p : element.properties())
+      {
+        if (!p.isList())
+        {
+          numBytes += sizeOf(p.type());
+        }
+      }
+      it = elementSize_.insert(it, std::make_pair(element.name(), element.size() * numBytes));
+    }
+    return it->second;
+  }
 
   mutable detail::BufferedIStream is_;
   mutable std::map<std::string, std::ptrdiff_t> elementSize_;
