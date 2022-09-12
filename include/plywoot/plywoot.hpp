@@ -24,6 +24,8 @@
 
 namespace plywoot {
 
+// TODO(ton): documentation
+
 /// Represents an input PLY data stream that can be queried for data.
 class IStream
 {
@@ -266,7 +268,6 @@ private:
   PlyFormat format_;
 };
 
-// TODO(ton): documentation
 /// Represents an output PLY data stream that can be used to output data to a
 /// PLY format.
 class OStream
@@ -313,7 +314,6 @@ public:
 private:
   void writeHeader(std::ostream &os) const
   {
-    // TODO(ton): add support for comments
     os << "ply\n";
 
     switch (format_)
@@ -348,7 +348,6 @@ private:
     os << "end_header\n";
   }
 
-  /// TODO
   template<PlyFormat format, typename PlyT, typename SrcT>
   typename std::enable_if<std::is_arithmetic<SrcT>::value, const std::uint8_t *>::type writeProperty(
       std::ostream &os,
@@ -360,7 +359,6 @@ private:
     return src + sizeof(SrcT);
   }
 
-  /// TODO
   template<PlyFormat format, typename PlyT, typename SrcT>
   typename std::enable_if<!std::is_arithmetic<SrcT>::value, const std::uint8_t *>::type writeProperty(
       std::ostream &os,
