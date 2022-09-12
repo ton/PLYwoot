@@ -164,7 +164,7 @@ private:
     return static_cast<std::uint8_t *>(detail::align(dest, alignof(T))) + sizeof(T);
   }
 
-  /// Skips the properties of the types given in the variadic template paramer
+  /// Skips the properties of the types given in the variadic template parameter
   /// list of these function in the *destination* data pointed to by `dest`,
   /// taking into account default alignment rules.
   /// @{
