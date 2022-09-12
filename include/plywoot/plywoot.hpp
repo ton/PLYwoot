@@ -280,10 +280,7 @@ public:
   template<typename... Ts>
   void add(const PlyElement &element, const reflect::Layout<Ts...> &layout)
   {
-    // TODO(ton): test what happens if you pass in an rvalue layout; likely this
-    // would result in a crash? Better to copy data/size into the closure to
-    // prevent this.
-    elementWriteClosures_.emplace_back(element, [this, &layout](std::ostream &os, const PlyElement &e) {
+    elementWriteClosures_.emplace_back(element, [this, layout](std::ostream &os, const PlyElement &e) {
       switch (format_)
       {
         case PlyFormat::Ascii:
