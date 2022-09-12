@@ -484,12 +484,42 @@ private:
 
       // In case the element defines more properties than the source data,
       // append the missing properties with a default value of zero.
-      // TODO(ton): ASCII specific code
       if (sizeof...(Ts) < static_cast<std::size_t>(std::distance(first, last)))
       {
-        const std::size_t numExtra{std::distance(first, last) - sizeof...(Ts)};
-        for (size_t j = 0; j < numExtra; ++j) os.write(" 0", 2);
+        for (auto it = first + sizeof...(Ts); it < last; ++it)
+        {
+          detail::io::writeTokenSeparator<format>(os);
+
+          switch (it->type())
+          {
+            case PlyDataType::Char:
+              detail::io::writeNumber<format, char>(os, 0);
+              break;
+            case PlyDataType::UChar:
+              detail::io::writeNumber<format, unsigned char>(os, 0);
+              break;
+            case PlyDataType::Short:
+              detail::io::writeNumber<format, short>(os, 0);
+              break;
+            case PlyDataType::UShort:
+              detail::io::writeNumber<format, unsigned short>(os, 0);
+              break;
+            case PlyDataType::Int:
+              detail::io::writeNumber<format, int>(os, 0);
+              break;
+            case PlyDataType::UInt:
+              detail::io::writeNumber<format, unsigned int>(os, 0);
+              break;
+            case PlyDataType::Float:
+              detail::io::writeNumber<format, float>(os, 0);
+              break;
+            case PlyDataType::Double:
+              detail::io::writeNumber<format, double>(os, 0);
+              break;
+          }
+        }
       }
+
       detail::io::writeNewline<format>(os);
     }
   }

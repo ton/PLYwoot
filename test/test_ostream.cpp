@@ -135,7 +135,7 @@ TEST_CASE(
 
   using Layout = plywoot::reflect::Layout<int>;
 
-  std::vector<int> values{1, 4, 7};
+  const std::vector<int> values{1, 4, 7};
   plyos.add(element, Layout{values});
   plyos.write(ss);
 

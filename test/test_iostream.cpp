@@ -198,3 +198,27 @@ TEST_CASE("Test casting of input property from integer to some floating point ty
   const std::vector<int> outputNumbers{plyis.read<int, Layout>(element)};
   CHECK(numbers == outputNumbers);
 }
+
+TEST_CASE("Test writing an element with more properties than defined in the memory layout", "[ostream]")
+{
+  const auto format = GENERATE(plywoot::PlyFormat::Ascii, plywoot::PlyFormat::BinaryLittleEndian);
+
+  std::stringstream oss;
+  plywoot::OStream plyos{format};
+
+  const plywoot::PlyProperty f{"f", plywoot::PlyDataType::Float};
+  const plywoot::PlyProperty g{"g", plywoot::PlyDataType::Double};
+  const plywoot::PlyProperty h{"h", plywoot::PlyDataType::Int};
+  const plywoot::PlyElement element{"e", 3, {f, g, h}};
+
+  using Layout = plywoot::reflect::Layout<int>;
+
+  const std::vector<int> values{1, 4, 7};
+  plyos.add(element, Layout{values});
+  plyos.write(oss);
+
+  std::stringstream iss{oss.str(), std::ios::in};
+  plywoot::IStream plyis{iss};
+  const std::vector<int> outputValues{plyis.read<int, Layout>(element)};
+  CHECK(values == outputValues);
+}
