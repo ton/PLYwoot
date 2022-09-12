@@ -196,6 +196,11 @@ private:
   template<PlyFormat format, typename T, typename U, typename... Ts>
   std::uint8_t *readElement(std::uint8_t *dest, PropertyConstIterator first, PropertyConstIterator last) const
   {
+    // Note; it seems this generates better code than the cleaner:
+    //
+    //   return readElement<format, U, Ts...>(readElement<format, T>(dest, first, last), first + 1, last);
+    //
+    // Revisit this later.
     return readElement<format, U, Ts...>(
         first < last ? readProperty<format>(dest, *first, reflect::Type<T>{})
                      : readProperty<format>(dest, reflect::Type<reflect::Stride<T>>{}),
