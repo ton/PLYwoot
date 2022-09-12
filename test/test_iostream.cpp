@@ -174,3 +174,27 @@ TEST_CASE("Skip input data that cannot be mapped while reading and writing", "[i
   const std::vector<Vertex> expectedOutputVertices{{1.0, 2.0, 0.0}, {4.0, 5.0, 0.0}, {7.0, 8.0, 0.0}};
   CHECK(expectedOutputVertices == outputVertices);
 }
+
+TEST_CASE("Test casting of input property from integer to some floating point type", "[iostream]")
+{
+  const auto format = GENERATE(plywoot::PlyFormat::Ascii, plywoot::PlyFormat::BinaryLittleEndian);
+
+  const std::vector<int> numbers{1, 2, 3, 4, 5};
+
+  using Layout = plywoot::reflect::Layout<int>;
+
+  const plywoot::PlyProperty x{"x", plywoot::PlyDataType::Double};
+  // TODO(ton): inconvenient to have to specify the size below...add() should
+  // just override the element size by the amount of input data!
+  const plywoot::PlyElement element{"e", numbers.size(), {x}};
+
+  std::stringstream oss;
+  plywoot::OStream plyos{format};
+  plyos.add(element, Layout{numbers});
+  plyos.write(oss);
+
+  std::stringstream iss{oss.str(), std::ios::in};
+  plywoot::IStream plyis{iss};
+  const std::vector<int> outputNumbers{plyis.read<int, Layout>(element)};
+  CHECK(numbers == outputNumbers);
+}

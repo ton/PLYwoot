@@ -123,7 +123,7 @@ private:
       reflect::Type<DestT>) const
   {
     dest = static_cast<std::uint8_t *>(detail::align(dest, alignof(DestT)));
-    *reinterpret_cast<DestT *>(dest) = static_cast<DestT>(detail::io::readNumber<format, PlyT>(is_));
+    *reinterpret_cast<DestT *>(dest) = detail::io::readNumber<format, PlyT>(is_);
     return dest + sizeof(DestT);
   }
 
@@ -366,71 +366,47 @@ private:
   }
 
   /// TODO
-  template<
-      PlyFormat format,
-      typename T,
-      typename TypeTag,
-      typename std::enable_if<std::is_arithmetic<T>::value, int>::type = 0>
-  const std::uint8_t *writeArithmeticProperty(
+  template<PlyFormat format, typename PlyT, typename SrcT>
+  typename std::enable_if<std::is_arithmetic<SrcT>::value, const std::uint8_t *>::type writeProperty(
       std::ostream &os,
       const std::uint8_t *src,
-      const PlyProperty &property,
-      TypeTag)
+      reflect::Type<SrcT>)
   {
-    src = static_cast<const std::uint8_t *>(detail::align(src, alignof(T)));
-    detail::io::writeNumber<format>(os, *reinterpret_cast<const T *>(src));
-    return src + sizeof(T);
+    src = static_cast<const std::uint8_t *>(detail::align(src, alignof(SrcT)));
+    detail::io::writeNumber<format>(os, static_cast<PlyT>(*reinterpret_cast<const SrcT *>(src)));
+    return src + sizeof(SrcT);
   }
 
   /// TODO
-  template<
-      PlyFormat format,
-      typename T,
-      typename TypeTag,
-      typename std::enable_if<!std::is_arithmetic<T>::value, int>::type = 0>
-  const std::uint8_t *writeArithmeticProperty(
+  template<PlyFormat format, typename PlyT, typename SrcT>
+  typename std::enable_if<!std::is_arithmetic<SrcT>::value, const std::uint8_t *>::type writeProperty(
       std::ostream &os,
       const std::uint8_t *src,
-      const PlyProperty &property,
-      TypeTag)
+      reflect::Type<SrcT>)
   {
-    return static_cast<const std::uint8_t *>(detail::align(src, alignof(T))) + sizeof(T);
-  }
-
-  /// Note; type tag parameter is merely to facility overloading based on the
-  /// template type.
-  template<PlyFormat format, typename T, typename TypeTag>
-  const std::uint8_t *writeProperty(
-      std::ostream &os,
-      const std::uint8_t *src,
-      const PlyProperty &property,
-      TypeTag tag)
-  {
-    return writeArithmeticProperty<format, T>(os, src, property, tag);
+    return static_cast<const std::uint8_t *>(detail::align(src, alignof(SrcT))) + sizeof(SrcT);
   }
 
   /// Specialization for the meta property type `Stride<T>`, this will just skip
   /// over a member variable of type `T` in the source buffer.
-  template<PlyFormat format, typename, typename T>
+  template<PlyFormat format, typename SrcT>
   const std::uint8_t *writeProperty(
       std::ostream &,
       const std::uint8_t *src,
-      const PlyProperty &property,
-      reflect::Type<reflect::Stride<T>>)
+      reflect::Type<reflect::Stride<SrcT>>)
   {
-    return static_cast<const std::uint8_t *>(detail::align(src, alignof(T))) + sizeof(T);
+    return static_cast<const std::uint8_t *>(detail::align(src, alignof(SrcT))) + sizeof(SrcT);
   }
 
   /// Specialization for the meta property type `Array<T, N, SizeT>`, this will
   /// write a list of N properties of type T.
   // TODO(ton): reimplement for binary, gets rid of
   // `detail::io::writeTokenSeparator()` and likely improves performance.
-  template<PlyFormat format, typename, typename T, size_t N, typename SizeT>
+  template<PlyFormat format, typename PlyT, typename SrcT, size_t N, typename SizeT>
   const std::uint8_t *writeProperty(
       std::ostream &os,
       const std::uint8_t *src,
-      const PlyProperty &property,
-      reflect::Type<reflect::Array<T, N, SizeT>>)
+      reflect::Type<reflect::Array<SrcT, N, SizeT>>)
   {
     static_assert(N > 0, "invalid array size specified (needs to be larger than zero)");
 
@@ -438,10 +414,40 @@ private:
     detail::io::writeTokenSeparator<format>(os);
     for (std::size_t i = 0; i < N - 1; ++i)
     {
-      src = writeProperty<format, T>(os, src, property, reflect::Type<T>{});
+      src = writeProperty<format, PlyT>(os, src, reflect::Type<SrcT>{});
       detail::io::writeTokenSeparator<format>(os);
     }
-    src = writeProperty<format, T>(os, src, property, reflect::Type<T>{});
+    src = writeProperty<format, PlyT>(os, src, reflect::Type<SrcT>{});
+
+    return src;
+  }
+
+  template<PlyFormat format, typename TypeTag>
+  const std::uint8_t *writeProperty(
+      std::ostream &os,
+      const std::uint8_t *src,
+      const PlyProperty &property,
+      TypeTag tag)
+  {
+    switch (property.type())
+    {
+      case PlyDataType::Char:
+        return writeProperty<format, char>(os, src, tag);
+      case PlyDataType::UChar:
+        return writeProperty<format, unsigned char>(os, src, tag);
+      case PlyDataType::Short:
+        return writeProperty<format, short>(os, src, tag);
+      case PlyDataType::UShort:
+        return writeProperty<format, unsigned short>(os, src, tag);
+      case PlyDataType::Int:
+        return writeProperty<format, int>(os, src, tag);
+      case PlyDataType::UInt:
+        return writeProperty<format, unsigned int>(os, src, tag);
+      case PlyDataType::Float:
+        return writeProperty<format, float>(os, src, tag);
+      case PlyDataType::Double:
+        return writeProperty<format, double>(os, src, tag);
+    }
 
     return src;
   }
@@ -462,16 +468,15 @@ private:
   /// a corresponding element property is defined for it (`first` < `last`),
   /// writes that property to the output stream. Otherwise, it will skip over
   /// the object in the input buffer.
-  template<PlyFormat format, typename T>
+  template<PlyFormat format, typename SrcT>
   const std::uint8_t *writeElement(
       std::ostream &os,
       const std::uint8_t *src,
       PropertyConstIterator first,
       PropertyConstIterator last)
   {
-    return first < last
-               ? writeProperty<format, T>(os, src, *first, reflect::Type<T>{})
-               : writeProperty<format, reflect::Stride<T>>(os, src, {}, reflect::Type<reflect::Stride<T>>{});
+    return first < last ? writeProperty<format>(os, src, *first, reflect::Type<SrcT>{})
+                        : writeProperty<format>(os, src, reflect::Type<reflect::Stride<SrcT>>{});
   }
 
   /// Reads an  object of type `T` from the input buffer `src`, and writes it.
