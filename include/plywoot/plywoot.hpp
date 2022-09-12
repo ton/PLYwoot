@@ -491,6 +491,7 @@ private:
       // append the missing properties with a default value of zero.
       if (sizeof...(Ts) < static_cast<std::size_t>(std::distance(first, last)))
       {
+        // TODO(ton): broken in case the PLY property type is a list...
         for (auto it = first + sizeof...(Ts); it < last; ++it)
         {
           detail::io::writeTokenSeparator<format>(os);
