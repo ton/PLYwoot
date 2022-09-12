@@ -5,14 +5,36 @@
 
 namespace plywoot { namespace reflect {
 
+template<typename... Ts>
+struct Void
+{
+  typedef void type;
+};
+
+/// Type wrapper that wraps some type (`DestT`) that we need to serialize to. A
+/// specialization exists that extracts the destination type from some of the
+/// reflect helper types.
+/// @{
+template<typename DestT, typename = void>
+struct Type
+{
+  using dest_type = DestT;
+};
+
+template<typename HelperT>
+struct Type<HelperT, typename Void<typename HelperT::dest_type>::type>
+{
+  using dest_type = typename HelperT::dest_type;
+};
+/// @}
+
 /// Can be embedded in a `Layout` type to read an element list property of some
 /// fixed size `N`, with elements of type `T`. The size type is used in the PLY
 /// format to store the type of the length of the list.
 template<typename T, std::size_t N, typename SizeT>
 struct Array
 {
-  using value_type = T;
-  using size_type = SizeT;
+  using dest_type = T;
 };
 
 /// Can be embedded in a `Layout` type to skip an element property in the input
@@ -26,6 +48,7 @@ struct Skip
 template<typename T>
 struct Stride
 {
+  using dest_type = T;
 };
 
 /// Used to define the layout of some structure that is either read from or

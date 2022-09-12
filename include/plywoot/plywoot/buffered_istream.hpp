@@ -19,6 +19,16 @@ public:
   const char *data() const { return c_; }
   const char *&data() { return c_; }
 
+  /// Reads an object of the given type from the input data stream.
+  template<typename T>
+  inline T read()
+  {
+    buffer(sizeof(T));
+    const T t{*reinterpret_cast<const T *>(c_)};
+    skip(sizeof(T));
+    return t;
+  }
+
   /// Reads the next character in the input stream and advances the read head by
   /// one character.
   inline void readCharacter()

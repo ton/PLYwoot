@@ -123,43 +123,64 @@ private:
     }
   }
 
-  template<PlyFormat format, typename T, typename TypeTag>
-  typename std::enable_if<std::is_arithmetic<T>::value, std::uint8_t *>::type readProperty(
+  template<PlyFormat format, typename PlyT, typename DestT>
+  typename std::enable_if<std::is_arithmetic<DestT>::value, std::uint8_t *>::type readProperty(
       std::uint8_t *dest,
-      const PlyProperty &,
-      TypeTag) const
+      reflect::Type<DestT>) const
   {
-    dest = static_cast<std::uint8_t *>(detail::align(dest, alignof(T)));
-    *reinterpret_cast<T *>(dest) = detail::io::readNumber<format, T>(is_);
-    return dest + sizeof(T);
+    dest = static_cast<std::uint8_t *>(detail::align(dest, alignof(DestT)));
+    *reinterpret_cast<DestT *>(dest) = static_cast<DestT>(detail::io::readNumber<format, PlyT>(is_));
+    return dest + sizeof(DestT);
   }
 
-  template<PlyFormat, typename T, typename TypeTag>
-  typename std::enable_if<!std::is_arithmetic<T>::value, std::uint8_t *>::type readProperty(
+  template<PlyFormat, typename PlyT, typename DestT>
+  typename std::enable_if<!std::is_arithmetic<DestT>::value, std::uint8_t *>::type readProperty(
       std::uint8_t *dest,
-      const PlyProperty &,
-      TypeTag) const
+      reflect::Type<DestT>) const
   {
-    return static_cast<std::uint8_t *>(detail::align(dest, alignof(T))) + sizeof(T);
+    return static_cast<std::uint8_t *>(detail::align(dest, alignof(DestT))) + sizeof(DestT);
   }
 
-  template<PlyFormat format, typename, typename T, size_t N, typename SizeT>
-  std::uint8_t *readProperty(
-      std::uint8_t *dest,
-      const PlyProperty &property,
-      detail::Type<reflect::Array<T, N, SizeT>>) const
+  template<PlyFormat format, typename PlyT, typename DestT, size_t N, typename SizeT>
+  std::uint8_t *readProperty(std::uint8_t *dest, reflect::Type<reflect::Array<DestT, N, SizeT>>) const
   {
     // TODO(ton): skip the number that defines the list in the PLY data, we
     // expect it to be of length N; throw an exception here in case they do no match?
     detail::io::skipNumber<format, SizeT>(is_);
-    for (size_t i = 0; i < N; ++i) { dest = readProperty<format, T>(dest, property, detail::Type<T>{}); }
+    for (size_t i = 0; i < N; ++i) { dest = readProperty<format, PlyT>(dest, reflect::Type<DestT>{}); }
     return dest;
   }
 
-  template<PlyFormat, typename, typename T>
-  std::uint8_t *readProperty(std::uint8_t *dest, const PlyProperty &, detail::Type<reflect::Stride<T>>) const
+  template<PlyFormat, typename PlyT, typename DestT>
+  std::uint8_t *readProperty(std::uint8_t *dest, reflect::Type<reflect::Stride<DestT>>) const
   {
-    return static_cast<std::uint8_t *>(detail::align(dest, alignof(T))) + sizeof(T);
+    return static_cast<std::uint8_t *>(detail::align(dest, alignof(DestT))) + sizeof(DestT);
+  }
+
+  template<PlyFormat format, typename TypeTag>
+  std::uint8_t *readProperty(std::uint8_t *dest, const PlyProperty &property, TypeTag tag) const
+  {
+    switch (property.type())
+    {
+      case PlyDataType::Char:
+        return readProperty<format, char>(dest, tag);
+      case PlyDataType::UChar:
+        return readProperty<format, unsigned char>(dest, tag);
+      case PlyDataType::Short:
+        return readProperty<format, short>(dest, tag);
+      case PlyDataType::UShort:
+        return readProperty<format, unsigned short>(dest, tag);
+      case PlyDataType::Int:
+        return readProperty<format, int>(dest, tag);
+      case PlyDataType::UInt:
+        return readProperty<format, unsigned int>(dest, tag);
+      case PlyDataType::Float:
+        return readProperty<format, float>(dest, tag);
+      case PlyDataType::Double:
+        return readProperty<format, double>(dest, tag);
+    }
+
+    return dest;
   }
 
   /// Skips the properties of the types given in the variadic template parameter
@@ -191,14 +212,14 @@ private:
   std::uint8_t *readElement(std::uint8_t *dest, PlyPropertyConstIterator first, PlyPropertyConstIterator last)
       const
   {
-    return first < last ? readProperty<format, T>(dest, *first, detail::Type<T>{}) : skipProperties<T>(dest);
+    return first < last ? readProperty<format>(dest, *first, reflect::Type<T>{}) : skipProperties<T>(dest);
   }
 
   template<PlyFormat format, typename T, typename U, typename... Ts>
   std::uint8_t *readElement(std::uint8_t *dest, PropertyConstIterator first, PropertyConstIterator last) const
   {
     return first < last ? readElement<format, U, Ts...>(
-                              readProperty<format, T>(dest, *first, detail::Type<T>{}), first + 1, last)
+                              readProperty<format>(dest, *first, reflect::Type<T>{}), first + 1, last)
                         : skipProperties<T, U, Ts...>(dest);
   }
 
@@ -401,7 +422,7 @@ private:
       std::ostream &,
       const std::uint8_t *src,
       const PlyProperty &property,
-      detail::Type<reflect::Stride<T>>)
+      reflect::Type<reflect::Stride<T>>)
   {
     return static_cast<const std::uint8_t *>(detail::align(src, alignof(T))) + sizeof(T);
   }
@@ -415,7 +436,7 @@ private:
       std::ostream &os,
       const std::uint8_t *src,
       const PlyProperty &property,
-      detail::Type<reflect::Array<T, N, SizeT>>)
+      reflect::Type<reflect::Array<T, N, SizeT>>)
   {
     static_assert(N > 0, "invalid array size specified (needs to be larger than zero)");
 
@@ -423,10 +444,10 @@ private:
     detail::io::writeTokenSeparator<format>(os);
     for (std::size_t i = 0; i < N - 1; ++i)
     {
-      src = writeProperty<format, T>(os, src, property, detail::Type<T>{});
+      src = writeProperty<format, T>(os, src, property, reflect::Type<T>{});
       detail::io::writeTokenSeparator<format>(os);
     }
-    src = writeProperty<format, T>(os, src, property, detail::Type<T>{});
+    src = writeProperty<format, T>(os, src, property, reflect::Type<T>{});
 
     return src;
   }
@@ -455,8 +476,8 @@ private:
       PropertyConstIterator last)
   {
     return first < last
-               ? writeProperty<format, T>(os, src, *first, detail::Type<T>{})
-               : writeProperty<format, reflect::Stride<T>>(os, src, {}, detail::Type<reflect::Stride<T>>{});
+               ? writeProperty<format, T>(os, src, *first, reflect::Type<T>{})
+               : writeProperty<format, reflect::Stride<T>>(os, src, {}, reflect::Type<reflect::Stride<T>>{});
   }
 
   /// Reads an  object of type `T` from the input buffer `src`, and writes it.

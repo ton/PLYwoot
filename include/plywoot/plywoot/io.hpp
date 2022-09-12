@@ -34,10 +34,7 @@ typename std::enable_if<format == PlyFormat::Ascii, T>::type readNumber(Buffered
 template<PlyFormat format, typename T>
 typename std::enable_if<format != PlyFormat::Ascii, T>::type readNumber(BufferedIStream &is)
 {
-  is.buffer(sizeof(T));
-  T t = *reinterpret_cast<const T *>(is.data());
-  is.skip(sizeof(T));
-  return t;
+  return is.read<T>();
 }
 
 /// TODO
