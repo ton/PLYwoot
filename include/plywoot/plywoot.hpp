@@ -393,7 +393,7 @@ private:
   {
     static_assert(N > 0, "invalid array size specified (needs to be larger than zero)");
 
-    detail::io::writeNumber<format>(os, *reinterpret_cast<const SizeT *>(src));
+    detail::io::writeNumber<format>(os, static_cast<SizeT>(N));
     detail::io::writeTokenSeparator<format>(os);
     for (std::size_t i = 0; i < N - 1; ++i)
     {
