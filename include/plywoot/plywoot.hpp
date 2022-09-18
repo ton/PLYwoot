@@ -137,12 +137,25 @@ private:
     return static_cast<std::uint8_t *>(detail::align(dest, alignof(DestT))) + sizeof(DestT);
   }
 
-  template<PlyFormat format, typename PlyT, typename DestT, size_t N, typename SizeT>
-  std::uint8_t *readProperty(std::uint8_t *dest, reflect::Type<reflect::Array<DestT, N, SizeT>>) const
+  template<PlyFormat format, typename PlyT, typename PlySizeT, typename SrcT>
+  std::uint8_t *readListProperty(std::uint8_t *dest, reflect::Type<std::vector<SrcT>>) const
+  {
+    dest = static_cast<std::uint8_t *>(detail::align(dest, alignof(std::vector<SrcT>)));
+    std::vector<SrcT> &v = *reinterpret_cast<std::vector<SrcT> *>(dest);
+
+    const unsigned int size = detail::io::readNumber<format, PlySizeT>(is_);
+    v.reserve(size);
+    for (unsigned int i = 0; i < size; ++i) { v.push_back(detail::io::readNumber<format, PlyT>(is_)); }
+
+    return dest + sizeof(std::vector<SrcT>);
+  }
+
+  template<PlyFormat format, typename PlyT, typename PlySizeT, typename DestT, size_t N, typename SizeT>
+  std::uint8_t *readListProperty(std::uint8_t *dest, reflect::Type<reflect::Array<DestT, N, SizeT>>) const
   {
     // TODO(ton): skip the number that defines the list in the PLY data, we
     // expect it to be of length N; throw an exception here in case they do no match?
-    detail::io::skipNumber<format, SizeT>(is_);
+    detail::io::skipNumber<format, PlySizeT>(is_);
     for (size_t i = 0; i < N; ++i) { dest = readProperty<format, PlyT>(dest, reflect::Type<DestT>{}); }
     return dest;
   }
@@ -153,8 +166,66 @@ private:
     return static_cast<std::uint8_t *>(detail::align(dest, alignof(DestT))) + sizeof(DestT);
   }
 
+  template<PlyFormat format, typename PlyT, typename TypeTag>
+  std::uint8_t *readListProperty(std::uint8_t *dest, const PlyProperty &property, TypeTag tag) const
+  {
+    switch (property.sizeType())
+    {
+      case PlyDataType::Char:
+        return readListProperty<format, PlyT, char>(dest, tag);
+      case PlyDataType::UChar:
+        return readListProperty<format, PlyT, unsigned char>(dest, tag);
+      case PlyDataType::Short:
+        return readListProperty<format, PlyT, short>(dest, tag);
+      case PlyDataType::UShort:
+        return readListProperty<format, PlyT, unsigned short>(dest, tag);
+      case PlyDataType::Int:
+        return readListProperty<format, PlyT, int>(dest, tag);
+      case PlyDataType::UInt:
+        return readListProperty<format, PlyT, unsigned int>(dest, tag);
+      case PlyDataType::Float:
+        return readListProperty<format, PlyT, float>(dest, tag);
+      case PlyDataType::Double:
+        return readListProperty<format, PlyT, double>(dest, tag);
+    }
+
+    return dest;
+  }
+
   template<PlyFormat format, typename TypeTag>
-  std::uint8_t *readProperty(std::uint8_t *dest, const PlyProperty &property, TypeTag tag) const
+  typename std::enable_if<TypeTag::isList, std::uint8_t *>::type readProperty(
+      std::uint8_t *dest,
+      const PlyProperty &property,
+      TypeTag tag) const
+  {
+    switch (property.type())
+    {
+      case PlyDataType::Char:
+        return readListProperty<format, char>(dest, property, tag);
+      case PlyDataType::UChar:
+        return readListProperty<format, unsigned char>(dest, property, tag);
+      case PlyDataType::Short:
+        return readListProperty<format, short>(dest, property, tag);
+      case PlyDataType::UShort:
+        return readListProperty<format, unsigned short>(dest, property, tag);
+      case PlyDataType::Int:
+        return readListProperty<format, int>(dest, property, tag);
+      case PlyDataType::UInt:
+        return readListProperty<format, unsigned int>(dest, property, tag);
+      case PlyDataType::Float:
+        return readListProperty<format, float>(dest, property, tag);
+      case PlyDataType::Double:
+        return readListProperty<format, double>(dest, property, tag);
+    }
+
+    return dest;
+  }
+
+  template<PlyFormat format, typename TypeTag>
+  typename std::enable_if<!TypeTag::isList, std::uint8_t *>::type readProperty(
+      std::uint8_t *dest,
+      const PlyProperty &property,
+      TypeTag tag) const
   {
     switch (property.type())
     {
@@ -385,15 +456,15 @@ private:
   /// write a list of N properties of type T.
   // TODO(ton): reimplement for binary, gets rid of
   // `detail::io::writeTokenSeparator()` and likely improves performance.
-  template<PlyFormat format, typename PlyT, typename SrcT, size_t N, typename SizeT>
-  const std::uint8_t *writeProperty(
+  template<PlyFormat format, typename PlyT, typename PlySizeT, typename SrcT, size_t N, typename SizeT>
+  const std::uint8_t *writeListProperty(
       std::ostream &os,
       const std::uint8_t *src,
       reflect::Type<reflect::Array<SrcT, N, SizeT>>)
   {
     static_assert(N > 0, "invalid array size specified (needs to be larger than zero)");
 
-    detail::io::writeNumber<format>(os, static_cast<SizeT>(N));
+    detail::io::writeNumber<format, PlySizeT>(os, N);
     detail::io::writeTokenSeparator<format>(os);
     for (std::size_t i = 0; i < N - 1; ++i)
     {
@@ -405,8 +476,94 @@ private:
     return src;
   }
 
+  /// Specialization for a vector of type `T`.
+  template<PlyFormat format, typename PlyT, typename PlySizeT, typename SrcT>
+  const std::uint8_t *writeListProperty(
+      std::ostream &os,
+      const std::uint8_t *src,
+      reflect::Type<std::vector<SrcT>>)
+  {
+    const std::vector<SrcT> &v = *reinterpret_cast<const std::vector<SrcT> *>(src);
+
+    // TODO(ton): need to correctly cast this...
+    detail::io::writeNumber<format, PlySizeT>(os, v.size());
+    if (!v.empty())
+    {
+      detail::io::writeTokenSeparator<format>(os);
+      for (std::size_t i = 0; i < v.size() - 1; ++i)
+      {
+        detail::io::writeNumber<format, PlyT>(os, v[i]);
+        detail::io::writeTokenSeparator<format>(os);
+      }
+      detail::io::writeNumber<format, PlyT>(os, v.back());
+    }
+
+    return static_cast<const std::uint8_t *>(detail::align(src, alignof(std::vector<SrcT>))) +
+           sizeof(std::vector<SrcT>);
+  }
+
+  template<PlyFormat format, typename PlyT, typename TypeTag>
+  const std::uint8_t *writeListProperty(
+      std::ostream &os,
+      const std::uint8_t *src,
+      const PlyProperty &property,
+      TypeTag tag)
+  {
+    switch (property.sizeType())
+    {
+      case PlyDataType::Char:
+        return writeListProperty<format, PlyT, char>(os, src, tag);
+      case PlyDataType::UChar:
+        return writeListProperty<format, PlyT, unsigned char>(os, src, tag);
+      case PlyDataType::Short:
+        return writeListProperty<format, PlyT, short>(os, src, tag);
+      case PlyDataType::UShort:
+        return writeListProperty<format, PlyT, unsigned short>(os, src, tag);
+      case PlyDataType::Int:
+        return writeListProperty<format, PlyT, int>(os, src, tag);
+      case PlyDataType::UInt:
+        return writeListProperty<format, PlyT, unsigned int>(os, src, tag);
+      case PlyDataType::Float:
+        return writeListProperty<format, PlyT, float>(os, src, tag);
+      case PlyDataType::Double:
+        return writeListProperty<format, PlyT, double>(os, src, tag);
+    }
+
+    return src;
+  }
+
   template<PlyFormat format, typename TypeTag>
-  const std::uint8_t *writeProperty(
+  typename std::enable_if<TypeTag::isList, const std::uint8_t *>::type writeProperty(
+      std::ostream &os,
+      const std::uint8_t *src,
+      const PlyProperty &property,
+      TypeTag tag)
+  {
+    switch (property.type())
+    {
+      case PlyDataType::Char:
+        return writeListProperty<format, char>(os, src, property, tag);
+      case PlyDataType::UChar:
+        return writeListProperty<format, unsigned char>(os, src, property, tag);
+      case PlyDataType::Short:
+        return writeListProperty<format, short>(os, src, property, tag);
+      case PlyDataType::UShort:
+        return writeListProperty<format, unsigned short>(os, src, property, tag);
+      case PlyDataType::Int:
+        return writeListProperty<format, int>(os, src, property, tag);
+      case PlyDataType::UInt:
+        return writeListProperty<format, unsigned int>(os, src, property, tag);
+      case PlyDataType::Float:
+        return writeListProperty<format, float>(os, src, property, tag);
+      case PlyDataType::Double:
+        return writeListProperty<format, double>(os, src, property, tag);
+    }
+
+    return src;
+  }
+
+  template<PlyFormat format, typename TypeTag>
+  typename std::enable_if<!TypeTag::isList, const std::uint8_t *>::type writeProperty(
       std::ostream &os,
       const std::uint8_t *src,
       const PlyProperty &property,

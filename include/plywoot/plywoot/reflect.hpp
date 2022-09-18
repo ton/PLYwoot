@@ -2,6 +2,7 @@
 #define PLYWOOT_REFLECT_HPP
 
 #include <tuple>
+#include <vector>
 
 namespace plywoot { namespace reflect {
 
@@ -11,20 +12,43 @@ struct Void
   typedef void type;
 };
 
+/// Returns whether the given type `T` is considered to be a list.
+/// @{
+template<typename T, typename = void>
+struct IsList
+{
+  static constexpr bool value = false;
+};
+
+template<typename T>
+struct IsList<std::vector<T>>
+{
+  static constexpr bool value = true;
+};
+
+template<typename T>
+struct IsList<T, typename Void<decltype(T::isList)>::type>
+{
+  static constexpr bool value = T::isList;
+};
+/// @}
+
 /// Type wrapper that wraps some type (`DestT`) that we need to serialize to. A
 /// specialization exists that extracts the destination type from some of the
 /// reflect helper types.
 /// @{
-template<typename DestT, typename = void>
+template<typename T, typename = void>
 struct Type
 {
-  using dest_type = DestT;
+  using DestT = T;
+  static constexpr bool isList = IsList<T>::value;
 };
 
-template<typename HelperT>
-struct Type<HelperT, typename Void<typename HelperT::dest_type>::type>
+template<typename T>
+struct Type<T, typename Void<typename T::DestT>::type>
 {
-  using dest_type = typename HelperT::dest_type;
+  using DestT = typename T::DestT;
+  static constexpr bool isList = T::isList;
 };
 /// @}
 
@@ -34,7 +58,8 @@ struct Type<HelperT, typename Void<typename HelperT::dest_type>::type>
 template<typename T, std::size_t N, typename SizeT>
 struct Array
 {
-  using dest_type = T;
+  using DestT = T;
+  static constexpr bool isList = true;
 };
 
 /// Can be embedded in a `Layout` type to skip an element property in the input
@@ -48,7 +73,7 @@ struct Skip
 template<typename T>
 struct Stride
 {
-  using dest_type = T;
+  using DestT = T;
 };
 
 /// Used to define the layout of some structure that is either read from or

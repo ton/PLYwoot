@@ -92,6 +92,37 @@ TEST_CASE("Test reading and writing of a list", "[iostream]")
   CHECK(expectedTriangles == triangles);
 }
 
+TEST_CASE("Test reading and writing of variable length lists", "[iostream]")
+{
+  auto format = GENERATE(plywoot::PlyFormat::Ascii, plywoot::PlyFormat::BinaryLittleEndian);
+
+  const auto sizeType{plywoot::PlyDataType::Char};
+  const plywoot::PlyProperty numbers{"numbers", plywoot::PlyDataType::Int, sizeType};
+  const plywoot::PlyElement element{"e", 3, {numbers}};
+
+  struct Element
+  {
+    std::vector<int> numbers;
+
+    bool operator==(const Element &x) const { return x.numbers == numbers; }
+  };
+
+  const std::vector<Element> expectedElements{Element{{0, 1, 2}}, Element{{3, 4}}, Element{{5, 6, 7, 8}}};
+
+  using Layout = plywoot::reflect::Layout<std::vector<int>>;
+
+  std::stringstream oss;
+  plywoot::OStream plyos{format};
+  plyos.add(element, Layout{expectedElements});
+  plyos.write(oss);
+
+  std::stringstream iss{oss.str(), std::ios::in};
+  plywoot::IStream plyis{iss};
+
+  const std::vector<Element> elements{plyis.read<Element, Layout>(element)};
+  CHECK(expectedElements == elements);
+}
+
 TEST_CASE("Tests reading and writing vertex and face data", "[iostream]")
 {
   auto inputFilename = GENERATE("test/input/ascii/cube.ply", "test/input/binary_little_endian/cube.ply");
