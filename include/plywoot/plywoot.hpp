@@ -485,7 +485,6 @@ private:
   {
     const std::vector<SrcT> &v = *reinterpret_cast<const std::vector<SrcT> *>(src);
 
-    // TODO(ton): need to correctly cast this...
     detail::io::writeNumber<format, PlySizeT>(os, v.size());
     if (!v.empty())
     {
