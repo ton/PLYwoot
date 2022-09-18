@@ -77,7 +77,7 @@ TEST_CASE("Test reading and writing of a list", "[iostream]")
 
   const std::vector<Triangle> expectedTriangles{Triangle{0, 1, 2}, Triangle{5, 4, 3}, Triangle{6, 7, 8}};
 
-  using Layout = plywoot::reflect::Layout<plywoot::reflect::Array<int, 3, char>>;
+  using Layout = plywoot::reflect::Layout<plywoot::reflect::Array<int, 3>>;
 
   std::stringstream oss;
   plywoot::OStream plyos{format};
@@ -155,7 +155,7 @@ TEST_CASE("Tests reading and writing vertex and face data", "[iostream]")
                                              {0, 0, 1}, {1, 0, 1}, {1, 1, 1}, {0, 1, 1}};
   CHECK(vertices == expectedVertices);
 
-  using TriangleLayout = plywoot::reflect::Layout<plywoot::reflect::Array<int, 3, unsigned char>>;
+  using TriangleLayout = plywoot::reflect::Layout<plywoot::reflect::Array<int, 3>>;
   const std::vector<Triangle> triangles = plyFile.read<Triangle, TriangleLayout>(faceElement);
   const std::vector<Triangle> expectedTriangles{{0, 2, 1}, {0, 3, 2}, {4, 5, 6}, {4, 6, 7},
                                                 {0, 1, 5}, {0, 5, 4}, {2, 3, 7}, {2, 7, 6},

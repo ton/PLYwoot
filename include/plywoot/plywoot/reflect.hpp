@@ -55,7 +55,7 @@ struct Type<T, typename Void<typename T::DestT>::type>
 /// Can be embedded in a `Layout` type to read an element list property of some
 /// fixed size `N`, with elements of type `T`. The size type is used in the PLY
 /// format to store the type of the length of the list.
-template<typename T, std::size_t N, typename SizeT>
+template<typename T, std::size_t N>
 struct Array
 {
   using DestT = T;

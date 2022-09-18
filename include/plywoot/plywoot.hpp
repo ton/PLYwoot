@@ -150,8 +150,8 @@ private:
     return dest + sizeof(std::vector<SrcT>);
   }
 
-  template<PlyFormat format, typename PlyT, typename PlySizeT, typename DestT, size_t N, typename SizeT>
-  std::uint8_t *readListProperty(std::uint8_t *dest, reflect::Type<reflect::Array<DestT, N, SizeT>>) const
+  template<PlyFormat format, typename PlyT, typename PlySizeT, typename DestT, size_t N>
+  std::uint8_t *readListProperty(std::uint8_t *dest, reflect::Type<reflect::Array<DestT, N>>) const
   {
     // TODO(ton): skip the number that defines the list in the PLY data, we
     // expect it to be of length N; throw an exception here in case they do no match?
@@ -456,11 +456,11 @@ private:
   /// write a list of N properties of type T.
   // TODO(ton): reimplement for binary, gets rid of
   // `detail::io::writeTokenSeparator()` and likely improves performance.
-  template<PlyFormat format, typename PlyT, typename PlySizeT, typename SrcT, size_t N, typename SizeT>
+  template<PlyFormat format, typename PlyT, typename PlySizeT, typename SrcT, size_t N>
   const std::uint8_t *writeListProperty(
       std::ostream &os,
       const std::uint8_t *src,
-      reflect::Type<reflect::Array<SrcT, N, SizeT>>)
+      reflect::Type<reflect::Array<SrcT, N>>)
   {
     static_assert(N > 0, "invalid array size specified (needs to be larger than zero)");
 
