@@ -249,9 +249,8 @@ TEST_CASE("Read multiple elements with a single property from a PLY file", "[ist
   REQUIRE(std::equal(expected.begin(), expected.end(), xs.begin(), [](char c, X x) { return c == x.c; }));
 }
 
-TEST_CASE("Read multiple elements with two properties from a PLY file", "[istream][!mayfail]")
+TEST_CASE("Read multiple elements with two properties from a PLY file", "[istream]")
 {
-  // TODO(ton): binary file is incorrect
   auto inputFilename = GENERATE(
       "test/input/ascii/multiple_elements_with_two_properties.ply",
       "test/input/binary_little_endian/multiple_elements_with_two_properties.ply");
