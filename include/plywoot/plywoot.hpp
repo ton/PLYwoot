@@ -1,11 +1,13 @@
 #ifndef PLYWOOT_HPP
 #define PLYWOOT_HPP
 
+#include "plywoot/ascii_policy.hpp"
+#include "plywoot/binary_little_endian_policy.hpp"
 #include "plywoot/buffered_istream.hpp"
 #include "plywoot/exceptions.hpp"
 #include "plywoot/header_parser.hpp"
-#include "plywoot/header_scanner.hpp"
 #include "plywoot/io.hpp"
+#include "plywoot/parser.hpp"
 #include "plywoot/reflect.hpp"
 #include "plywoot/std.hpp"
 #include "plywoot/types.hpp"
@@ -16,7 +18,6 @@
 #include <functional>
 #include <iostream>
 #include <iterator>
-#include <map>
 #include <string>
 #include <type_traits>
 #include <utility>
@@ -79,12 +80,16 @@ public:
   {
     switch (format_)
     {
-      case PlyFormat::Ascii:
-        read<PlyFormat::Ascii, Ts...>(layout.data(), element);
-        break;
-      case PlyFormat::BinaryLittleEndian:
-        read<PlyFormat::BinaryLittleEndian, Ts...>(layout.data(), element);
-        break;
+      case PlyFormat::Ascii: {
+        detail::Parser<detail::AsciiPolicy> parser{is_, elements_};
+        parser.read<Ts...>(element, layout);
+      }
+      break;
+      case PlyFormat::BinaryLittleEndian: {
+        detail::Parser<detail::BinaryLittleEndianPolicy> parser{is_, elements_};
+        parser.read<Ts...>(element, layout);
+      }
+      break;
       default:
         break;
     }
@@ -97,286 +102,7 @@ private:
   {
   }
 
-  template<PlyFormat format, typename... Ts>
-  void read(std::uint8_t *dest, const PlyElement &element) const
-  {
-    if (seekTo<format>(element))
-    {
-      const PropertyConstIterator last = element.properties().end();
-
-      for (std::size_t i{0}; i < element.size(); ++i)
-      {
-        dest = readElement<format, Ts...>(dest, element.properties().begin(), last);
-
-        // In case the number of properties in the PLY element exceeds the
-        // number of properties to map to, ignore the remainder of the PLY
-        // element properties...
-        if (element.properties().size() > sizeof...(Ts))
-        {
-          detail::io::skipProperties<format>(is_, element.properties().begin() + sizeof...(Ts), last);
-        }
-      }
-    }
-  }
-
-  template<PlyFormat format, typename PlyT, typename DestT>
-  typename std::enable_if<std::is_arithmetic<DestT>::value, std::uint8_t *>::type readProperty(
-      std::uint8_t *dest,
-      reflect::Type<DestT>) const
-  {
-    dest = static_cast<std::uint8_t *>(detail::align(dest, alignof(DestT)));
-    *reinterpret_cast<DestT *>(dest) = detail::io::readNumber<format, PlyT>(is_);
-    return dest + sizeof(DestT);
-  }
-
-  template<PlyFormat, typename PlyT, typename DestT>
-  typename std::enable_if<!std::is_arithmetic<DestT>::value, std::uint8_t *>::type readProperty(
-      std::uint8_t *dest,
-      reflect::Type<DestT>) const
-  {
-    return static_cast<std::uint8_t *>(detail::align(dest, alignof(DestT))) + sizeof(DestT);
-  }
-
-  template<PlyFormat format, typename PlyT, typename PlySizeT, typename SrcT>
-  std::uint8_t *readListProperty(std::uint8_t *dest, reflect::Type<std::vector<SrcT>>) const
-  {
-    dest = static_cast<std::uint8_t *>(detail::align(dest, alignof(std::vector<SrcT>)));
-    std::vector<SrcT> &v = *reinterpret_cast<std::vector<SrcT> *>(dest);
-
-    const unsigned int size = detail::io::readNumber<format, PlySizeT>(is_);
-    v.reserve(size);
-    for (unsigned int i = 0; i < size; ++i) { v.push_back(detail::io::readNumber<format, PlyT>(is_)); }
-
-    return dest + sizeof(std::vector<SrcT>);
-  }
-
-  template<PlyFormat format, typename PlyT, typename PlySizeT, typename DestT, size_t N>
-  std::uint8_t *readListProperty(std::uint8_t *dest, reflect::Type<reflect::Array<DestT, N>>) const
-  {
-    // TODO(ton): skip the number that defines the list in the PLY data, we
-    // expect it to be of length N; throw an exception here in case they do no match?
-    detail::io::skipNumber<format, PlySizeT>(is_);
-    for (size_t i = 0; i < N; ++i) { dest = readProperty<format, PlyT>(dest, reflect::Type<DestT>{}); }
-    return dest;
-  }
-
-  template<PlyFormat, typename DestT>
-  std::uint8_t *readProperty(std::uint8_t *dest, reflect::Type<reflect::Stride<DestT>>) const
-  {
-    return static_cast<std::uint8_t *>(detail::align(dest, alignof(DestT))) + sizeof(DestT);
-  }
-
-  template<PlyFormat format, typename PlyT, typename TypeTag>
-  std::uint8_t *readListProperty(std::uint8_t *dest, const PlyProperty &property, TypeTag tag) const
-  {
-    switch (property.sizeType())
-    {
-      case PlyDataType::Char:
-        return readListProperty<format, PlyT, char>(dest, tag);
-      case PlyDataType::UChar:
-        return readListProperty<format, PlyT, unsigned char>(dest, tag);
-      case PlyDataType::Short:
-        return readListProperty<format, PlyT, short>(dest, tag);
-      case PlyDataType::UShort:
-        return readListProperty<format, PlyT, unsigned short>(dest, tag);
-      case PlyDataType::Int:
-        return readListProperty<format, PlyT, int>(dest, tag);
-      case PlyDataType::UInt:
-        return readListProperty<format, PlyT, unsigned int>(dest, tag);
-      case PlyDataType::Float:
-        return readListProperty<format, PlyT, float>(dest, tag);
-      case PlyDataType::Double:
-        return readListProperty<format, PlyT, double>(dest, tag);
-    }
-
-    return dest;
-  }
-
-  template<PlyFormat format, typename TypeTag>
-  typename std::enable_if<TypeTag::isList, std::uint8_t *>::type readProperty(
-      std::uint8_t *dest,
-      const PlyProperty &property,
-      TypeTag tag) const
-  {
-    switch (property.type())
-    {
-      case PlyDataType::Char:
-        return readListProperty<format, char>(dest, property, tag);
-      case PlyDataType::UChar:
-        return readListProperty<format, unsigned char>(dest, property, tag);
-      case PlyDataType::Short:
-        return readListProperty<format, short>(dest, property, tag);
-      case PlyDataType::UShort:
-        return readListProperty<format, unsigned short>(dest, property, tag);
-      case PlyDataType::Int:
-        return readListProperty<format, int>(dest, property, tag);
-      case PlyDataType::UInt:
-        return readListProperty<format, unsigned int>(dest, property, tag);
-      case PlyDataType::Float:
-        return readListProperty<format, float>(dest, property, tag);
-      case PlyDataType::Double:
-        return readListProperty<format, double>(dest, property, tag);
-    }
-
-    return dest;
-  }
-
-  template<PlyFormat format, typename TypeTag>
-  typename std::enable_if<!TypeTag::isList, std::uint8_t *>::type readProperty(
-      std::uint8_t *dest,
-      const PlyProperty &property,
-      TypeTag tag) const
-  {
-    switch (property.type())
-    {
-      case PlyDataType::Char:
-        return readProperty<format, char>(dest, tag);
-      case PlyDataType::UChar:
-        return readProperty<format, unsigned char>(dest, tag);
-      case PlyDataType::Short:
-        return readProperty<format, short>(dest, tag);
-      case PlyDataType::UShort:
-        return readProperty<format, unsigned short>(dest, tag);
-      case PlyDataType::Int:
-        return readProperty<format, int>(dest, tag);
-      case PlyDataType::UInt:
-        return readProperty<format, unsigned int>(dest, tag);
-      case PlyDataType::Float:
-        return readProperty<format, float>(dest, tag);
-      case PlyDataType::Double:
-        return readProperty<format, double>(dest, tag);
-    }
-
-    return dest;
-  }
-
-  template<PlyFormat>
-  std::uint8_t *readElement(std::uint8_t *dest, PlyPropertyConstIterator, PlyPropertyConstIterator) const
-  {
-    return dest;
-  }
-
-  template<PlyFormat format, typename T>
-  std::uint8_t *readElement(std::uint8_t *dest, PlyPropertyConstIterator first, PlyPropertyConstIterator last)
-      const
-  {
-    return first < last ? readProperty<format>(dest, *first, reflect::Type<T>{})
-                        : readProperty<format>(dest, reflect::Type<reflect::Stride<T>>{});
-  }
-
-  template<PlyFormat format, typename T, typename U, typename... Ts>
-  std::uint8_t *readElement(std::uint8_t *dest, PropertyConstIterator first, PropertyConstIterator last) const
-  {
-    // Note; it seems this generates better code than the cleaner:
-    //
-    //   return readElement<format, U, Ts...>(readElement<format, T>(dest, first, last), first + 1, last);
-    //
-    // Revisit this later.
-    return readElement<format, U, Ts...>(
-        first < last ? readProperty<format>(dest, *first, reflect::Type<T>{})
-                     : readProperty<format>(dest, reflect::Type<reflect::Stride<T>>{}),
-        first + 1, last);
-  }
-
-  /// Seeks to the start of the data for the given element. Returns whether
-  /// seeking was successful.
-  /// @{
-  template<PlyFormat format>
-  typename std::enable_if<format == PlyFormat::Ascii, bool>::type seekTo(const PlyElement &element) const
-  {
-    std::size_t numLines{0};
-    auto first{elements().begin()};
-    const auto last{elements().end()};
-    while (first != last && *first != element) { numLines += first++->size(); }
-
-    if (first != last && *first == element)
-    {
-      is_.seekToBegin();
-      is_.skipLines(numLines);
-    }
-
-    return first != last;
-  }
-
-  template<PlyFormat format>
-  typename std::enable_if<format != PlyFormat::Ascii, bool>::type seekTo(const PlyElement &element) const
-  {
-    std::size_t numBytes{0};
-    auto first{elements().begin()};
-    const auto last{elements().end()};
-    while (first != last && *first != element) { numBytes += elementSizeInBytes<format>(*first++); }
-
-    if (first != last && *first == element)
-    {
-      is_.seekToBegin();
-      is_.skip(numBytes);
-    }
-
-    return first != last;
-  }
-  /// @}
-
-  template<PlyFormat format>
-  size_t elementSizeInBytes(const PlyElement &element) const
-  {
-    auto it = elementSize_.lower_bound(element.name());
-    if (it == elementSize_.end() || it->first != element.name())
-    {
-      std::size_t numBytes{0};
-      for (const PlyProperty &p : element.properties())
-      {
-        if (!p.isList()) { numBytes += element.size() * sizeOf(p.type()); }
-        else
-        {
-          is_.seekToBegin();
-          is_.skip(numBytes);
-
-          std::size_t sizeSum = 0;
-          for (size_t i = 0; i < element.size(); ++i)
-          {
-            std::size_t size = 0;
-            switch (p.sizeType())
-            {
-              case PlyDataType::Char:
-                size = detail::io::readNumber<format, char>(is_);
-                break;
-              case PlyDataType::UChar:
-                size = detail::io::readNumber<format, unsigned char>(is_);
-                break;
-              case PlyDataType::Short:
-                size = detail::io::readNumber<format, short>(is_);
-                break;
-              case PlyDataType::UShort:
-                size = detail::io::readNumber<format, unsigned short>(is_);
-                break;
-              case PlyDataType::Int:
-                size = detail::io::readNumber<format, int>(is_);
-                break;
-              case PlyDataType::UInt:
-                size = detail::io::readNumber<format, unsigned int>(is_);
-                break;
-              case PlyDataType::Float:
-                size = detail::io::readNumber<format, float>(is_);
-                break;
-              case PlyDataType::Double:
-                size = detail::io::readNumber<format, double>(is_);
-                break;
-            }
-
-            sizeSum += size;
-            is_.skip(size * sizeOf(p.type()));
-          }
-
-          numBytes += element.size() * sizeOf(p.sizeType()) + sizeSum * sizeOf(p.type());
-        }
-      }
-      it = elementSize_.insert(it, std::make_pair(element.name(), numBytes));
-    }
-    return it->second;
-  }
-
   mutable detail::BufferedIStream is_;
-  mutable std::map<std::string, std::ptrdiff_t> elementSize_;
 
   std::vector<PlyElement> elements_;
   PlyFormat format_;

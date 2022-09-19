@@ -15,36 +15,37 @@
 
 namespace plywoot {
 
-// Base class for all parser exception.
-struct ParserException : Exception
+// Base class for all header parser exceptions.
+struct HeaderParserException : Exception
 {
-  ParserException(const std::string &message) : Exception("parser error: " + message) {}
+  HeaderParserException(const std::string &message) : Exception("parser error: " + message) {}
 };
 
 // Exception thrown in case some invalid format specification is found in the
 // input.
-struct InvalidFormat : ParserException
+struct InvalidFormat : HeaderParserException
 {
-  InvalidFormat(const std::string &format) : ParserException("invalid format found: " + format) {}
+  InvalidFormat(const std::string &format) : HeaderParserException("invalid format found: " + format) {}
 };
 
 // Exception thrown in case some valid but unsupported format specification is
 // found in the input.
-struct UnsupportedFormat : ParserException
+struct UnsupportedFormat : HeaderParserException
 {
-  UnsupportedFormat(const std::string &format) : ParserException("unsupported format definition: " + format)
+  UnsupportedFormat(const std::string &format)
+      : HeaderParserException("unsupported format definition: " + format)
   {
   }
 };
 
 // Exception thrown in case the input contains an unexpected token.
-struct UnexpectedToken : ParserException
+struct UnexpectedToken : HeaderParserException
 {
   UnexpectedToken(
       detail::HeaderScanner::Token expected,
       detail::HeaderScanner::Token found,
       const std::string &tokenString)
-      : ParserException(
+      : HeaderParserException(
             "unexpected token '" + detail::to_string(found) + "' found, expected '" +
             detail::to_string(expected) + "' (=" + tokenString + ") instead"),
         expected_{expected},
@@ -63,12 +64,6 @@ struct UnexpectedToken : ParserException
 private:
   detail::HeaderScanner::Token expected_;
   detail::HeaderScanner::Token found_;
-};
-
-// Unexpected end-of-file exception.
-struct UnexpectedEof : ParserException
-{
-  UnexpectedEof() : ParserException("unexpected end of file") {}
 };
 
 }
