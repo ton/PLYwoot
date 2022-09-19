@@ -329,7 +329,7 @@ TEST_CASE("Retrieve a element and property definition from an IStream given an e
   CHECK(!isFooElementFound);
 }
 
-TEST_CASE("Test out of order retrieval of element data", "[istream][!mayfail]")
+TEST_CASE("Test out of order retrieval of element data", "[istream]")
 {
   auto inputFilename = GENERATE(
       "test/input/ascii/cube_faces_before_vertices.ply",

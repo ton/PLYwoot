@@ -304,7 +304,7 @@ private:
     std::size_t numBytes{0};
     auto first{elements().begin()};
     const auto last{elements().end()};
-    while (first != last && *first != element) { numBytes += elementSizeInBytes(*first++); }
+    while (first != last && *first != element) { numBytes += elementSizeInBytes<format>(*first++); }
 
     if (first != last && *first == element)
     {
@@ -316,6 +316,7 @@ private:
   }
   /// @}
 
+  template<PlyFormat format>
   size_t elementSizeInBytes(const PlyElement &element) const
   {
     auto it = elementSize_.lower_bound(element.name());
@@ -324,15 +325,52 @@ private:
       std::size_t numBytes{0};
       for (const PlyProperty &p : element.properties())
       {
-        if (!p.isList()) { numBytes += sizeOf(p.type()); }
+        if (!p.isList()) { numBytes += element.size() * sizeOf(p.type()); }
         else
         {
-          // TODO(ton): implement this for both variable and fixed size
-          // lists...it is annoying we need to have a separate size hint for
-          // this most likely :(
+          is_.seekToBegin();
+          is_.skip(numBytes);
+
+          std::size_t sizeSum = 0;
+          for (size_t i = 0; i < element.size(); ++i)
+          {
+            std::size_t size = 0;
+            switch (p.sizeType())
+            {
+              case PlyDataType::Char:
+                size = detail::io::readNumber<format, char>(is_);
+                break;
+              case PlyDataType::UChar:
+                size = detail::io::readNumber<format, unsigned char>(is_);
+                break;
+              case PlyDataType::Short:
+                size = detail::io::readNumber<format, short>(is_);
+                break;
+              case PlyDataType::UShort:
+                size = detail::io::readNumber<format, unsigned short>(is_);
+                break;
+              case PlyDataType::Int:
+                size = detail::io::readNumber<format, int>(is_);
+                break;
+              case PlyDataType::UInt:
+                size = detail::io::readNumber<format, unsigned int>(is_);
+                break;
+              case PlyDataType::Float:
+                size = detail::io::readNumber<format, float>(is_);
+                break;
+              case PlyDataType::Double:
+                size = detail::io::readNumber<format, double>(is_);
+                break;
+            }
+
+            sizeSum += size;
+            is_.skip(size * sizeOf(p.type()));
+          }
+
+          numBytes += element.size() * sizeOf(p.sizeType()) + sizeSum * sizeOf(p.type());
         }
       }
-      it = elementSize_.insert(it, std::make_pair(element.name(), element.size() * numBytes));
+      it = elementSize_.insert(it, std::make_pair(element.name(), numBytes));
     }
     return it->second;
   }
@@ -693,7 +731,6 @@ private:
   /// Format the PLY data should be written in.
   PlyFormat format_;
 };
-
 }
 
 #endif
