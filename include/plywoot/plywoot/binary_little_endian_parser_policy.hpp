@@ -118,7 +118,7 @@ private:
           numBytes += element.size() * sizeOf(p.sizeType()) + sizeSum * sizeOf(p.type());
         }
       }
-      it = elementSize_.insert(it, std::make_pair(element.name(), numBytes));
+      it = elementSize_.emplace_hint(it, element.name(), numBytes);
     }
     return it->second;
   }
