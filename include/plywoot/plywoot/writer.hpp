@@ -6,6 +6,7 @@
 #include "types.hpp"
 
 #include <cstdint>
+#include <type_traits>
 
 namespace plywoot { namespace detail {
 
@@ -31,7 +32,7 @@ public:
 
     for (std::size_t i{0}; i < n; ++i)
     {
-      src = writeElement<Ts...>(os, src, first, last);
+      src = writeProperties<FormatWriterPolicy, Ts...>(os, src, first, last);
 
       // In case the element defines more properties than the source data,
       // append the missing properties with a default value of zero.
@@ -241,20 +242,45 @@ private:
                         : writeProperty(os, src, reflect::Type<reflect::Stride<SrcT>>{});
   }
 
-  /// Writes an object of type `T` read from the input buffer `src`.
-  // TODO(ton): reimplement for binary, gets rid of
-  // `detail::io::writeTokenSeparator()` and likely improves performance.
-  template<typename T, typename U, typename... Ts>
-  const std::uint8_t *writeElement(
+  /// Reads a list of objects of type `T`, `U`, and `Ts...` from the input
+  /// buffer `src` and writes them to the given output stream `os`. The objects
+  /// should have a corresponding property defined in the input buffer, the list
+  /// of properties is defined by the property range (`first`, `last`].
+  /// @{
+  template<typename Policy, typename T>
+  const std::uint8_t *writeProperties(
+      std::ostream &os,
+      const std::uint8_t *src,
+      PropertyConstIterator first,
+      PropertyConstIterator last) const
+  {
+    return writeElement<T>(os, src, first++, last);
+  }
+
+  template<typename Policy, typename T, typename U, typename... Ts>
+  typename std::enable_if<std::is_same<Policy, AsciiWriterPolicy>::value, const std::uint8_t *>::type
+  writeProperties(
       std::ostream &os,
       const std::uint8_t *src,
       PropertyConstIterator first,
       PropertyConstIterator last) const
   {
     src = writeElement<T>(os, src, first++, last);
-    if (first < last) this->template writeTokenSeparator(os);
-    return writeElement<U, Ts...>(os, src, first, last);
+    if (first < last) os.put(' ');
+    return writeProperties<Policy, U, Ts...>(os, src, first, last);
   }
+
+  template<typename Policy, typename T, typename U, typename... Ts>
+  typename std::enable_if<!std::is_same<Policy, AsciiWriterPolicy>::value, const std::uint8_t *>::type
+  writeProperties(
+      std::ostream &os,
+      const std::uint8_t *src,
+      PropertyConstIterator first,
+      PropertyConstIterator last) const
+  {
+    return writeProperties<Policy, U, Ts...>(os, writeElement<T>(os, src, first, last), first + 1, last);
+  }
+  /// @}
 };
 
 }}
