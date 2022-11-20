@@ -1,5 +1,5 @@
-#ifndef PLYWOOT_ISTREAM_ASCII_HPP
-#define PLYWOOT_ISTREAM_ASCII_HPP
+#ifndef PLYWOOT_ASCII_PARSER_POLICY_HPP
+#define PLYWOOT_ASCII_PARSER_POLICY_HPP
 
 #include "buffered_istream.hpp"
 #include "exceptions.hpp"
@@ -23,13 +23,11 @@ struct UnexpectedEof : ParserException
 
 namespace detail {
 
-// TODO(ton): documentation
-
-/// Represents an input PLY data stream that can be queried for data.
-class AsciiPolicy
+/// Defines a parser policy that deals with ASCII input streams.
+class AsciiParserPolicy
 {
 public:
-  AsciiPolicy(BufferedIStream &is, const std::vector<PlyElement> &elements) : is_{is}, elements_{elements} {}
+  AsciiParserPolicy(BufferedIStream &is, const std::vector<PlyElement> &elements) : is_{is}, elements_{elements} {}
 
   /// Seeks to the start of the data for the given element. Returns whether
   /// seeking was successful.
@@ -49,6 +47,7 @@ public:
     return first != last;
   }
 
+  /// Reads a number of the given type `T` from the input stream.
   template<typename T>
   T readNumber() const
   {
@@ -59,6 +58,7 @@ public:
     return detail::to_number<T>(is_.data(), is_.data() + 256, &is_.data());
   }
 
+  /// Skips a number of the given type `T` in the input stream.
   template<typename T>
   void skipNumber() const
   {
@@ -66,6 +66,8 @@ public:
     is_.skipNonWhitespace();
   }
 
+  /// Skips the data of all properties from `first` to `last` in the input
+  /// stream.
   void skipProperties(PlyPropertyConstIterator, PlyPropertyConstIterator) const { is_.skipLines(1); }
 
 private:

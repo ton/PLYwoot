@@ -10,7 +10,7 @@
 namespace plywoot { namespace detail {
 
 /// Represents a generic PLY parser that is parameterized with format specific
-/// functionality through the FormatPolicy type, which should adhere to the
+/// functionality through the FormatParserPolicy type, which should adhere to the
 /// following model requirements:
 ///
 ///   - bool seekTo(const PlyElement &element);
@@ -19,11 +19,11 @@ namespace plywoot { namespace detail {
 ///   - template<typename T> T skipNumber();
 ///
 ///   - void skipProperties(PlyPropertyConstIterator first, PlyPropertyConstIterator last);
-template<typename FormatPolicy>
-class Parser : private FormatPolicy
+template<typename FormatParserPolicy>
+class Parser : private FormatParserPolicy
 {
 public:
-  using FormatPolicy::FormatPolicy;
+  using FormatParserPolicy::FormatParserPolicy;
 
   /// Reads the given element from the PLY input data stream, storing data in
   /// the given destination buffer `dest` using the types given as

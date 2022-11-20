@@ -1,8 +1,8 @@
 #ifndef PLYWOOT_HPP
 #define PLYWOOT_HPP
 
-#include "plywoot/ascii_policy.hpp"
-#include "plywoot/binary_little_endian_policy.hpp"
+#include "plywoot/ascii_parser_policy.hpp"
+#include "plywoot/binary_little_endian_parser_policy.hpp"
 #include "plywoot/buffered_istream.hpp"
 #include "plywoot/exceptions.hpp"
 #include "plywoot/header_parser.hpp"
@@ -81,12 +81,12 @@ public:
     switch (format_)
     {
       case PlyFormat::Ascii: {
-        detail::Parser<detail::AsciiPolicy> parser{is_, elements_};
+        detail::Parser<detail::AsciiParserPolicy> parser{is_, elements_};
         parser.read<Ts...>(element, layout);
       }
       break;
       case PlyFormat::BinaryLittleEndian: {
-        detail::Parser<detail::BinaryLittleEndianPolicy> parser{is_, elements_};
+        detail::Parser<detail::BinaryLittleEndianParserPolicy> parser{is_, elements_};
         parser.read<Ts...>(element, layout);
       }
       break;

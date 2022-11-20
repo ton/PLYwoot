@@ -1,5 +1,5 @@
-#ifndef PLYWOOT_BINARY_LITTLE_ENDIAN_POLICY_HPP
-#define PLYWOOT_BINARY_LITTLE_ENDIAN_POLICY_HPP
+#ifndef PLYWOOT_BINARY_LITTLE_ENDIAN_PARSER_POLICY_HPP
+#define PLYWOOT_BINARY_LITTLE_ENDIAN_PARSER_POLICY_HPP
 
 #include "buffered_istream.hpp"
 
@@ -8,13 +8,12 @@
 
 namespace plywoot { namespace detail {
 
-// TODO(ton): documentation
-
-/// Represents an input PLY data stream that can be queried for data.
-class BinaryLittleEndianPolicy
+/// Defines a parser policy that deals with binary input streams.
+class BinaryLittleEndianParserPolicy
 {
 public:
-  BinaryLittleEndianPolicy(BufferedIStream &is, const std::vector<PlyElement> &elements)
+  /// Constructs a binary little endian parser policy.
+  BinaryLittleEndianParserPolicy(BufferedIStream &is, const std::vector<PlyElement> &elements)
       : is_{is}, elements_{elements}
   {
   }
@@ -37,18 +36,22 @@ public:
     return first != last;
   }
 
+  /// Reads a number of the given type `T` from the input stream.
   template<typename T>
   T readNumber() const
   {
     return is_.read<T>();
   }
 
+  /// Skips a number of the given type `T` in the input stream.
   template<typename T>
   void skipNumber() const
   {
     is_.skip(sizeof(T));
   }
 
+  /// Skips the data of all properties from `first` to `last` in the input
+  /// stream.
   void skipProperties(PlyPropertyConstIterator first, PlyPropertyConstIterator last) const
   {
     while (first != last)
@@ -59,6 +62,8 @@ public:
   }
 
 private:
+  /// Calculates and returns the size in bytes of the given PLY element. Uses
+  /// memoization; the size of every unique element is only calculated once
   size_t elementSizeInBytes(const PlyElement &element) const
   {
     auto it = elementSize_.lower_bound(element.name());
