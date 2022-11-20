@@ -37,39 +37,7 @@ public:
       // append the missing properties with a default value of zero.
       if (sizeof...(Ts) < static_cast<std::size_t>(std::distance(first, last)))
       {
-        // TODO(ton): broken in case the PLY property type is a list...
-        for (auto it = first + sizeof...(Ts); it < last; ++it)
-        {
-          this->template writeTokenSeparator(os);
-
-          switch (it->type())
-          {
-            case PlyDataType::Char:
-              this->template writeNumber<char>(os, 0);
-              break;
-            case PlyDataType::UChar:
-              this->template writeNumber<unsigned char>(os, 0);
-              break;
-            case PlyDataType::Short:
-              this->template writeNumber<short>(os, 0);
-              break;
-            case PlyDataType::UShort:
-              this->template writeNumber<unsigned short>(os, 0);
-              break;
-            case PlyDataType::Int:
-              this->template writeNumber<int>(os, 0);
-              break;
-            case PlyDataType::UInt:
-              this->template writeNumber<unsigned int>(os, 0);
-              break;
-            case PlyDataType::Float:
-              this->template writeNumber<float>(os, 0);
-              break;
-            case PlyDataType::Double:
-              this->template writeNumber<double>(os, 0);
-              break;
-          }
-        }
+        this->template writeMissingProperties(os, first + sizeof...(Ts), last);
       }
 
       this->template writeNewline(os);

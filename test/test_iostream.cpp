@@ -238,7 +238,7 @@ TEST_CASE("Test writing an element with more properties than defined in the memo
   plywoot::OStream plyos{format};
 
   const plywoot::PlyProperty f{"f", plywoot::PlyDataType::Float};
-  const plywoot::PlyProperty g{"g", plywoot::PlyDataType::Double};
+  const plywoot::PlyProperty g{"g", plywoot::PlyDataType::Double, plywoot::PlyDataType::Char};
   const plywoot::PlyProperty h{"h", plywoot::PlyDataType::Int};
   const plywoot::PlyElement element{"e", 3, {f, g, h}};
 

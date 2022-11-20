@@ -35,6 +35,16 @@ public:
     os << CharToInt<T>{}(t);
   }
 
+  /// Outputs empty data for the range of properties [`first`, `last`). Note
+  /// that a property that is undefined is always stored as a zero character in
+  /// ASCII mode; regardless whether the property is a list of a single element,
+  /// since in case of a list we store a zero-element list.
+  void writeMissingProperties(std::ostream &os, PlyPropertyConstIterator first, PlyPropertyConstIterator last)
+      const
+  {
+    while (first++ != last) { os.write(" 0", 2); }
+  }
+
   /// Writes a newline separate to the given output stream `os`.
   void writeNewline(std::ostream &os) const { os.put('\n'); }
 

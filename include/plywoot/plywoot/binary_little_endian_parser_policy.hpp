@@ -56,7 +56,7 @@ public:
   {
     while (first != last)
     {
-      if (!first->isList()) { is_.skip(sizeOf(first->type())); }
+      is_.skip(sizeOf(first->isList() ? first->sizeType() : first->type()));
       ++first;
     }
   }

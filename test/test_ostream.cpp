@@ -129,7 +129,7 @@ TEST_CASE(
   plywoot::OStream plyos{plywoot::PlyFormat::Ascii};
 
   const plywoot::PlyProperty f{"f", plywoot::PlyDataType::Float};
-  const plywoot::PlyProperty g{"g", plywoot::PlyDataType::Double};
+  const plywoot::PlyProperty g{"g", plywoot::PlyDataType::Double, plywoot::PlyDataType::Char};
   const plywoot::PlyProperty h{"h", plywoot::PlyDataType::Int};
   const plywoot::PlyElement element{"e", 3, {f, g, h}};
 
@@ -144,7 +144,7 @@ TEST_CASE(
       "format ascii 1.0\n"
       "element e 3\n"
       "property float f\n"
-      "property double g\n"
+      "property list char double g\n"
       "property int h\n"
       "end_header\n"
       "1 0 0\n"
