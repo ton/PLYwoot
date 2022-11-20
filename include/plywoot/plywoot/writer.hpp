@@ -24,7 +24,7 @@ public:
   using FormatWriterPolicy::FormatWriterPolicy;
 
   template<typename... Ts>
-  void write(std::ostream &os, const PlyElement &element, const std::uint8_t *src, std::size_t n)
+  void write(std::ostream &os, const PlyElement &element, const std::uint8_t *src, std::size_t n) const
   {
     const auto first{element.properties().begin()};
     const auto last{element.properties().end()};
@@ -81,7 +81,7 @@ private:
   typename std::enable_if<std::is_arithmetic<SrcT>::value, const std::uint8_t *>::type writeProperty(
       std::ostream &os,
       const std::uint8_t *src,
-      reflect::Type<SrcT>)
+      reflect::Type<SrcT>) const
   {
     src = static_cast<const std::uint8_t *>(detail::align(src, alignof(SrcT)));
     this->template writeNumber(os, static_cast<PlyT>(*reinterpret_cast<const SrcT *>(src)));
@@ -92,7 +92,7 @@ private:
   typename std::enable_if<!std::is_arithmetic<SrcT>::value, const std::uint8_t *>::type writeProperty(
       std::ostream &os,
       const std::uint8_t *src,
-      reflect::Type<SrcT>)
+      reflect::Type<SrcT>) const
   {
     return static_cast<const std::uint8_t *>(detail::align(src, alignof(SrcT))) + sizeof(SrcT);
   }
@@ -103,7 +103,7 @@ private:
   const std::uint8_t *writeProperty(
       std::ostream &,
       const std::uint8_t *src,
-      reflect::Type<reflect::Stride<SrcT>>)
+      reflect::Type<reflect::Stride<SrcT>>) const
   {
     return static_cast<const std::uint8_t *>(detail::align(src, alignof(SrcT))) + sizeof(SrcT);
   }
@@ -116,7 +116,7 @@ private:
   const std::uint8_t *writeListProperty(
       std::ostream &os,
       const std::uint8_t *src,
-      reflect::Type<reflect::Array<SrcT, N>>)
+      reflect::Type<reflect::Array<SrcT, N>>) const
   {
     static_assert(N > 0, "invalid array size specified (needs to be larger than zero)");
 
@@ -137,7 +137,7 @@ private:
   const std::uint8_t *writeListProperty(
       std::ostream &os,
       const std::uint8_t *src,
-      reflect::Type<std::vector<SrcT>>)
+      reflect::Type<std::vector<SrcT>>) const
   {
     const std::vector<SrcT> &v = *reinterpret_cast<const std::vector<SrcT> *>(src);
 
@@ -162,7 +162,7 @@ private:
       std::ostream &os,
       const std::uint8_t *src,
       const PlyProperty &property,
-      TypeTag tag)
+      TypeTag tag) const
   {
     switch (property.sizeType())
     {
@@ -192,7 +192,7 @@ private:
       std::ostream &os,
       const std::uint8_t *src,
       const PlyProperty &property,
-      TypeTag tag)
+      TypeTag tag) const
   {
     switch (property.type())
     {
@@ -222,7 +222,7 @@ private:
       std::ostream &os,
       const std::uint8_t *src,
       const PlyProperty &property,
-      TypeTag tag)
+      TypeTag tag) const
   {
     switch (property.type())
     {
@@ -253,7 +253,7 @@ private:
       std::ostream &,
       const std::uint8_t *src,
       PropertyConstIterator,
-      PropertyConstIterator)
+      PropertyConstIterator) const
   {
     return src;
   }
@@ -267,7 +267,7 @@ private:
       std::ostream &os,
       const std::uint8_t *src,
       PropertyConstIterator first,
-      PropertyConstIterator last)
+      PropertyConstIterator last) const
   {
     return first < last ? writeProperty(os, src, *first, reflect::Type<SrcT>{})
                         : writeProperty(os, src, reflect::Type<reflect::Stride<SrcT>>{});
@@ -281,7 +281,7 @@ private:
       std::ostream &os,
       const std::uint8_t *src,
       PropertyConstIterator first,
-      PropertyConstIterator last)
+      PropertyConstIterator last) const
   {
     src = writeElement<T>(os, src, first++, last);
     if (first < last) this->template writeTokenSeparator(os);
