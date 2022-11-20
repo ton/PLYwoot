@@ -3,6 +3,7 @@
 
 #include "buffered_istream.hpp"
 
+#include <cstdint>
 #include <map>
 #include <vector>
 

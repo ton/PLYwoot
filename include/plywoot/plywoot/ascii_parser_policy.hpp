@@ -7,6 +7,10 @@
 #include "std.hpp"
 #include "types.hpp"
 
+#include <cstdint>
+#include <string>
+#include <vector>
+
 namespace plywoot {
 
 // Base class for all parser exceptions.

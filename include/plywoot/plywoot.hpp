@@ -6,22 +6,17 @@
 #include "plywoot/binary_little_endian_parser_policy.hpp"
 #include "plywoot/binary_little_endian_writer_policy.hpp"
 #include "plywoot/buffered_istream.hpp"
-#include "plywoot/exceptions.hpp"
 #include "plywoot/header_parser.hpp"
 #include "plywoot/parser.hpp"
 #include "plywoot/reflect.hpp"
-#include "plywoot/std.hpp"
 #include "plywoot/types.hpp"
 #include "plywoot/writer.hpp"
 
 #include <algorithm>
-#include <cassert>
 #include <cstdint>
 #include <functional>
 #include <iostream>
-#include <iterator>
 #include <string>
-#include <type_traits>
 #include <utility>
 #include <vector>
 
