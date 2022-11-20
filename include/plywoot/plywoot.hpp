@@ -2,15 +2,17 @@
 #define PLYWOOT_HPP
 
 #include "plywoot/ascii_parser_policy.hpp"
+#include "plywoot/ascii_writer_policy.hpp"
 #include "plywoot/binary_little_endian_parser_policy.hpp"
+#include "plywoot/binary_little_endian_writer_policy.hpp"
 #include "plywoot/buffered_istream.hpp"
 #include "plywoot/exceptions.hpp"
 #include "plywoot/header_parser.hpp"
-#include "plywoot/io.hpp"
 #include "plywoot/parser.hpp"
 #include "plywoot/reflect.hpp"
 #include "plywoot/std.hpp"
 #include "plywoot/types.hpp"
+#include "plywoot/writer.hpp"
 
 #include <algorithm>
 #include <cassert>
@@ -120,18 +122,25 @@ public:
   template<typename... Ts>
   void add(const PlyElement &element, const reflect::Layout<Ts...> &layout)
   {
-    elementWriteClosures_.emplace_back(element, [this, layout](std::ostream &os, const PlyElement &e) {
-      switch (format_)
-      {
-        case PlyFormat::Ascii:
-          write<PlyFormat::Ascii, Ts...>(os, e, layout.data(), layout.size());
-          break;
-        case PlyFormat::BinaryLittleEndian:
-          write<PlyFormat::BinaryLittleEndian, Ts...>(os, e, layout.data(), layout.size());
-        default:
-          break;
+    switch (format_)
+    {
+      case PlyFormat::Ascii: {
+        static detail::Writer<detail::AsciiWriterPolicy> writer;
+        elementWriteClosures_.emplace_back(element, [this, layout](std::ostream &os, const PlyElement &e) {
+          writer.write<Ts...>(os, e, layout.data(), layout.size());
+        });
       }
-    });
+      break;
+      case PlyFormat::BinaryLittleEndian: {
+        static detail::Writer<detail::BinaryLittleEndianWriterPolicy> writer;
+        elementWriteClosures_.emplace_back(element, [this, layout](std::ostream &os, const PlyElement &e) {
+          writer.write<Ts...>(os, e, layout.data(), layout.size());
+        });
+      }
+      break;
+      case PlyFormat::BinaryBigEndian:
+        break;
+    }
   }
 
   /// Writes all data as a PLY file queued through `addElement()` to the given
@@ -183,271 +192,6 @@ private:
     }
 
     os << "end_header\n";
-  }
-
-  template<PlyFormat format, typename PlyT, typename SrcT>
-  typename std::enable_if<std::is_arithmetic<SrcT>::value, const std::uint8_t *>::type writeProperty(
-      std::ostream &os,
-      const std::uint8_t *src,
-      reflect::Type<SrcT>)
-  {
-    src = static_cast<const std::uint8_t *>(detail::align(src, alignof(SrcT)));
-    detail::io::writeNumber<format>(os, static_cast<PlyT>(*reinterpret_cast<const SrcT *>(src)));
-    return src + sizeof(SrcT);
-  }
-
-  template<PlyFormat format, typename PlyT, typename SrcT>
-  typename std::enable_if<!std::is_arithmetic<SrcT>::value, const std::uint8_t *>::type writeProperty(
-      std::ostream &os,
-      const std::uint8_t *src,
-      reflect::Type<SrcT>)
-  {
-    return static_cast<const std::uint8_t *>(detail::align(src, alignof(SrcT))) + sizeof(SrcT);
-  }
-
-  /// Specialization for the meta property type `Stride<T>`, this will just skip
-  /// over a member variable of type `T` in the source buffer.
-  template<PlyFormat format, typename SrcT>
-  const std::uint8_t *writeProperty(
-      std::ostream &,
-      const std::uint8_t *src,
-      reflect::Type<reflect::Stride<SrcT>>)
-  {
-    return static_cast<const std::uint8_t *>(detail::align(src, alignof(SrcT))) + sizeof(SrcT);
-  }
-
-  /// Specialization for the meta property type `Array<T, N, SizeT>`, this will
-  /// write a list of N properties of type T.
-  // TODO(ton): reimplement for binary, gets rid of
-  // `detail::io::writeTokenSeparator()` and likely improves performance.
-  template<PlyFormat format, typename PlyT, typename PlySizeT, typename SrcT, size_t N>
-  const std::uint8_t *writeListProperty(
-      std::ostream &os,
-      const std::uint8_t *src,
-      reflect::Type<reflect::Array<SrcT, N>>)
-  {
-    static_assert(N > 0, "invalid array size specified (needs to be larger than zero)");
-
-    detail::io::writeNumber<format, PlySizeT>(os, N);
-    detail::io::writeTokenSeparator<format>(os);
-    for (std::size_t i = 0; i < N - 1; ++i)
-    {
-      src = writeProperty<format, PlyT>(os, src, reflect::Type<SrcT>{});
-      detail::io::writeTokenSeparator<format>(os);
-    }
-    src = writeProperty<format, PlyT>(os, src, reflect::Type<SrcT>{});
-
-    return src;
-  }
-
-  /// Specialization for a vector of type `T`.
-  template<PlyFormat format, typename PlyT, typename PlySizeT, typename SrcT>
-  const std::uint8_t *writeListProperty(
-      std::ostream &os,
-      const std::uint8_t *src,
-      reflect::Type<std::vector<SrcT>>)
-  {
-    const std::vector<SrcT> &v = *reinterpret_cast<const std::vector<SrcT> *>(src);
-
-    detail::io::writeNumber<format, PlySizeT>(os, v.size());
-    if (!v.empty())
-    {
-      detail::io::writeTokenSeparator<format>(os);
-      for (std::size_t i = 0; i < v.size() - 1; ++i)
-      {
-        detail::io::writeNumber<format, PlyT>(os, v[i]);
-        detail::io::writeTokenSeparator<format>(os);
-      }
-      detail::io::writeNumber<format, PlyT>(os, v.back());
-    }
-
-    return static_cast<const std::uint8_t *>(detail::align(src, alignof(std::vector<SrcT>))) +
-           sizeof(std::vector<SrcT>);
-  }
-
-  template<PlyFormat format, typename PlyT, typename TypeTag>
-  const std::uint8_t *writeListProperty(
-      std::ostream &os,
-      const std::uint8_t *src,
-      const PlyProperty &property,
-      TypeTag tag)
-  {
-    switch (property.sizeType())
-    {
-      case PlyDataType::Char:
-        return writeListProperty<format, PlyT, char>(os, src, tag);
-      case PlyDataType::UChar:
-        return writeListProperty<format, PlyT, unsigned char>(os, src, tag);
-      case PlyDataType::Short:
-        return writeListProperty<format, PlyT, short>(os, src, tag);
-      case PlyDataType::UShort:
-        return writeListProperty<format, PlyT, unsigned short>(os, src, tag);
-      case PlyDataType::Int:
-        return writeListProperty<format, PlyT, int>(os, src, tag);
-      case PlyDataType::UInt:
-        return writeListProperty<format, PlyT, unsigned int>(os, src, tag);
-      case PlyDataType::Float:
-        return writeListProperty<format, PlyT, float>(os, src, tag);
-      case PlyDataType::Double:
-        return writeListProperty<format, PlyT, double>(os, src, tag);
-    }
-
-    return src;
-  }
-
-  template<PlyFormat format, typename TypeTag>
-  typename std::enable_if<TypeTag::isList, const std::uint8_t *>::type writeProperty(
-      std::ostream &os,
-      const std::uint8_t *src,
-      const PlyProperty &property,
-      TypeTag tag)
-  {
-    switch (property.type())
-    {
-      case PlyDataType::Char:
-        return writeListProperty<format, char>(os, src, property, tag);
-      case PlyDataType::UChar:
-        return writeListProperty<format, unsigned char>(os, src, property, tag);
-      case PlyDataType::Short:
-        return writeListProperty<format, short>(os, src, property, tag);
-      case PlyDataType::UShort:
-        return writeListProperty<format, unsigned short>(os, src, property, tag);
-      case PlyDataType::Int:
-        return writeListProperty<format, int>(os, src, property, tag);
-      case PlyDataType::UInt:
-        return writeListProperty<format, unsigned int>(os, src, property, tag);
-      case PlyDataType::Float:
-        return writeListProperty<format, float>(os, src, property, tag);
-      case PlyDataType::Double:
-        return writeListProperty<format, double>(os, src, property, tag);
-    }
-
-    return src;
-  }
-
-  template<PlyFormat format, typename TypeTag>
-  typename std::enable_if<!TypeTag::isList, const std::uint8_t *>::type writeProperty(
-      std::ostream &os,
-      const std::uint8_t *src,
-      const PlyProperty &property,
-      TypeTag tag)
-  {
-    switch (property.type())
-    {
-      case PlyDataType::Char:
-        return writeProperty<format, char>(os, src, tag);
-      case PlyDataType::UChar:
-        return writeProperty<format, unsigned char>(os, src, tag);
-      case PlyDataType::Short:
-        return writeProperty<format, short>(os, src, tag);
-      case PlyDataType::UShort:
-        return writeProperty<format, unsigned short>(os, src, tag);
-      case PlyDataType::Int:
-        return writeProperty<format, int>(os, src, tag);
-      case PlyDataType::UInt:
-        return writeProperty<format, unsigned int>(os, src, tag);
-      case PlyDataType::Float:
-        return writeProperty<format, float>(os, src, tag);
-      case PlyDataType::Double:
-        return writeProperty<format, double>(os, src, tag);
-    }
-
-    return src;
-  }
-
-  /// Bottom case of the function recursively defined on a list of input property
-  /// types to write, this is simply a no-op.
-  template<PlyFormat format>
-  const std::uint8_t *writeElement(
-      std::ostream &,
-      const std::uint8_t *src,
-      PropertyConstIterator,
-      PropertyConstIterator)
-  {
-    return src;
-  }
-
-  /// Reads a single object of type `T` from the input buffer `src` and in case
-  /// a corresponding element property is defined for it (`first` < `last`),
-  /// writes that property to the output stream. Otherwise, it will skip over
-  /// the object in the input buffer.
-  template<PlyFormat format, typename SrcT>
-  const std::uint8_t *writeElement(
-      std::ostream &os,
-      const std::uint8_t *src,
-      PropertyConstIterator first,
-      PropertyConstIterator last)
-  {
-    return first < last ? writeProperty<format>(os, src, *first, reflect::Type<SrcT>{})
-                        : writeProperty<format>(os, src, reflect::Type<reflect::Stride<SrcT>>{});
-  }
-
-  /// Reads an  object of type `T` from the input buffer `src`, and writes it.
-  // TODO(ton): reimplement for binary, gets rid of
-  // `detail::io::writeTokenSeparator()` and likely improves performance.
-  template<PlyFormat format, typename T, typename U, typename... Ts>
-  const std::uint8_t *writeElement(
-      std::ostream &os,
-      const std::uint8_t *src,
-      PropertyConstIterator first,
-      PropertyConstIterator last)
-  {
-    src = writeElement<format, T>(os, src, first++, last);
-    if (first < last) detail::io::writeTokenSeparator<format>(os);
-    return writeElement<format, U, Ts...>(os, src, first, last);
-  }
-
-  template<PlyFormat format, typename... Ts>
-  void write(std::ostream &os, const PlyElement &element, const std::uint8_t *src, std::size_t n)
-  {
-    const auto first{element.properties().begin()};
-    const auto last{element.properties().end()};
-
-    for (std::size_t i{0}; i < n; ++i)
-    {
-      src = writeElement<format, Ts...>(os, src, first, last);
-
-      // In case the element defines more properties than the source data,
-      // append the missing properties with a default value of zero.
-      if (sizeof...(Ts) < static_cast<std::size_t>(std::distance(first, last)))
-      {
-        // TODO(ton): broken in case the PLY property type is a list...
-        for (auto it = first + sizeof...(Ts); it < last; ++it)
-        {
-          detail::io::writeTokenSeparator<format>(os);
-
-          switch (it->type())
-          {
-            case PlyDataType::Char:
-              detail::io::writeNumber<format, char>(os, 0);
-              break;
-            case PlyDataType::UChar:
-              detail::io::writeNumber<format, unsigned char>(os, 0);
-              break;
-            case PlyDataType::Short:
-              detail::io::writeNumber<format, short>(os, 0);
-              break;
-            case PlyDataType::UShort:
-              detail::io::writeNumber<format, unsigned short>(os, 0);
-              break;
-            case PlyDataType::Int:
-              detail::io::writeNumber<format, int>(os, 0);
-              break;
-            case PlyDataType::UInt:
-              detail::io::writeNumber<format, unsigned int>(os, 0);
-              break;
-            case PlyDataType::Float:
-              detail::io::writeNumber<format, float>(os, 0);
-              break;
-            case PlyDataType::Double:
-              detail::io::writeNumber<format, double>(os, 0);
-              break;
-          }
-        }
-      }
-
-      detail::io::writeNewline<format>(os);
-    }
   }
 
   using ElementWriteClosure = std::function<void(std::ostream &, const PlyElement &)>;
