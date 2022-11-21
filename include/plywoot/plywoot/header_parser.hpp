@@ -28,16 +28,6 @@ struct InvalidFormat : HeaderParserException
   InvalidFormat(const std::string &format) : HeaderParserException("invalid format found: " + format) {}
 };
 
-// Exception thrown in case some valid but unsupported format specification is
-// found in the input.
-struct UnsupportedFormat : HeaderParserException
-{
-  UnsupportedFormat(const std::string &format)
-      : HeaderParserException("unsupported format definition: " + format)
-  {
-  }
-};
-
 // Exception thrown in case the input contains an unexpected token.
 struct UnexpectedToken : HeaderParserException
 {
@@ -92,7 +82,8 @@ public:
         format_ = PlyFormat::BinaryLittleEndian;
         break;
       case Token::BinaryBigEndian:
-        throw UnsupportedFormat(scanner_.tokenString());
+        format_ = PlyFormat::BinaryBigEndian;
+        break;
       default:
         throw InvalidFormat(scanner_.tokenString());
     }

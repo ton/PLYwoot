@@ -1,21 +1,38 @@
-#ifndef PLYWOOT_BINARY_LITTLE_ENDIAN_WRITER_POLICY_HPP
-#define PLYWOOT_BINARY_LITTLE_ENDIAN_WRITER_POLICY_HPP
+#ifndef PLYWOOT_BINARY_WRITER_POLICY_HPP
+#define PLYWOOT_BINARY_WRITER_POLICY_HPP
+
+#include "endian.hpp"
 
 #include <ostream>
 
 namespace plywoot { namespace detail {
 
 /// Defines a writer policy that deals with binary output streams.
-class BinaryLittleEndianWriterPolicy
+template<typename Endianness>
+class BinaryWriterPolicy
 {
 public:
   /// Writes the number `t` of the given type `T` to the given binary output
   /// stream in little endian format.
-  template<typename T>
-  void writeNumber(std::ostream &os, T t) const
+  /// @{
+  template<typename T, typename EndiannessDependent = Endianness>
+  typename std::enable_if<std::is_same<EndiannessDependent, LittleEndian>::value, void>::type writeNumber(
+      std::ostream &os,
+      T t) const
   {
+    // TODO(ton): this assumes the target architecture is little endian.
     os.write(reinterpret_cast<const char *>(&t), sizeof(T));
   }
+
+  template<typename T, typename EndiannessDependent = Endianness>
+  typename std::enable_if<std::is_same<EndiannessDependent, BigEndian>::value, void>::type writeNumber(
+      std::ostream &os,
+      T t) const
+  {
+    const auto be{htobe(t)};
+    os.write(reinterpret_cast<const char *>(&be), sizeof(T));
+  }
+  /// @}
 
   /// Outputs empty data for the range of properties [`first`, `last`). Note
   /// that a property that is undefined is always stored as a zero number, where
@@ -64,6 +81,9 @@ public:
   /// Writes a token separator, ignored for binary output formats.
   void writeTokenSeparator(std::ostream &) const {}
 };
+
+using BinaryLittleEndianWriterPolicy = BinaryWriterPolicy<LittleEndian>;
+using BinaryBigEndianWriterPolicy = BinaryWriterPolicy<BigEndian>;
 
 }}
 

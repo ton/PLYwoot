@@ -43,14 +43,6 @@ TEST_CASE(
   REQUIRE_THROWS_AS(plywoot::IStream(ifs), plywoot::InvalidFormat);
 }
 
-TEST_CASE(
-    "Input file contains a binary big endian format definition, which is not supported",
-    "[header][istream][error]")
-{
-  std::ifstream ifs{"test/input/header/binary_big_endian.ply"};
-  REQUIRE_THROWS_AS(plywoot::IStream(ifs), plywoot::UnsupportedFormat);
-}
-
 TEST_CASE("Input file contains an ASCII format definition", "[header][istream][error]")
 {
   std::ifstream ifs{"test/input/header/ascii.ply"};
@@ -59,12 +51,20 @@ TEST_CASE("Input file contains an ASCII format definition", "[header][istream][e
   REQUIRE(plywoot::PlyFormat::Ascii == plyFile.format());
 }
 
-TEST_CASE("Input file contains a binary little endian format definition", "[header][istream][error]")
+TEST_CASE("Input file contains a binary little endian format definition", "[header][istream]")
 {
   std::ifstream ifs{"test/input/header/binary_little_endian.ply"};
 
   const plywoot::IStream plyFile{ifs};
   REQUIRE(plywoot::PlyFormat::BinaryLittleEndian == plyFile.format());
+}
+
+TEST_CASE("Input file contains a binary big endian format definition", "[header][istream]")
+{
+  std::ifstream ifs{"test/input/header/binary_big_endian.ply"};
+
+  const plywoot::IStream plyFile{ifs};
+  REQUIRE(plywoot::PlyFormat::BinaryBigEndian == plyFile.format());
 }
 
 TEST_CASE("Element definition does not contain the number of elements", "[header][istream][error]")
@@ -204,7 +204,7 @@ TEST_CASE("Read an element with a single property from a PLY file", "[istream]")
 {
   auto inputFilename = GENERATE(
       "test/input/ascii/single_element_with_single_property.ply",
-      "test/input/binary_little_endian/single_element_with_single_property.ply");
+      "test/input/binary/little_endian/single_element_with_single_property.ply");
 
   std::ifstream ifs{inputFilename};
   const plywoot::IStream plyFile{ifs};
@@ -227,7 +227,7 @@ TEST_CASE("Read multiple elements with a single property from a PLY file", "[ist
 {
   auto inputFilename = GENERATE(
       "test/input/ascii/multiple_elements_with_single_property.ply",
-      "test/input/binary_little_endian/multiple_elements_with_single_property.ply");
+      "test/input/binary/little_endian/multiple_elements_with_single_property.ply");
 
   std::ifstream ifs{inputFilename};
   const plywoot::IStream plyFile{ifs};
@@ -253,7 +253,7 @@ TEST_CASE("Read multiple elements with two properties from a PLY file", "[istrea
 {
   auto inputFilename = GENERATE(
       "test/input/ascii/multiple_elements_with_two_properties.ply",
-      "test/input/binary_little_endian/multiple_elements_with_two_properties.ply");
+      "test/input/binary/little_endian/multiple_elements_with_two_properties.ply");
 
   std::ifstream ifs{inputFilename};
   const plywoot::IStream plyFile{ifs};
@@ -290,7 +290,7 @@ TEST_CASE("Read multiple elements with two properties from a PLY file", "[istrea
 
 TEST_CASE("Retrieve a element and property definition from an IStream given an element name", "[istream]")
 {
-  auto inputFilename = GENERATE("test/input/ascii/cube.ply", "test/input/binary_little_endian/cube.ply");
+  auto inputFilename = GENERATE("test/input/ascii/cube.ply", "test/input/binary/little_endian/cube.ply");
 
   std::ifstream ifs{inputFilename};
   const plywoot::IStream plyFile{ifs};
@@ -333,7 +333,7 @@ TEST_CASE("Test out of order retrieval of element data", "[istream]")
 {
   auto inputFilename = GENERATE(
       "test/input/ascii/cube_faces_before_vertices.ply",
-      "test/input/binary_little_endian/cube_faces_before_vertices.ply");
+      "test/input/binary/little_endian/cube_faces_before_vertices.ply");
 
   std::ifstream ifs{inputFilename};
   const plywoot::IStream plyFile{ifs};
@@ -356,7 +356,7 @@ TEST_CASE("Read elements from a PLY file by only partially retrieving all proper
 {
   auto inputFilename = GENERATE(
       "test/input/ascii/cube_with_material_data.ply",
-      "test/input/binary_little_endian/cube_with_material_data.ply");
+      "test/input/binary/little_endian/cube_with_material_data.ply");
 
   std::ifstream ifs{inputFilename};
   const plywoot::IStream plyFile{ifs};
@@ -377,7 +377,7 @@ TEST_CASE("Read elements from a PLY file by only partially retrieving all proper
 
 TEST_CASE("Test casting of input property from float to double", "[istream]")
 {
-  auto inputFilename = GENERATE("test/input/ascii/cube.ply", "test/input/binary_little_endian/cube.ply");
+  auto inputFilename = GENERATE("test/input/ascii/cube.ply", "test/input/binary/little_endian/cube.ply");
 
   std::ifstream ifs{inputFilename};
   const plywoot::IStream plyFile{ifs};
@@ -393,5 +393,28 @@ TEST_CASE("Test casting of input property from float to double", "[istream]")
   const std::vector<Vertex> result = plyFile.read<Vertex, VertexLayout>(vertexElement);
   const std::vector<Vertex> expected = {{0, 0, 0}, {1, 0, 0}, {1, 1, 0}, {0, 1, 0},
                                         {0, 0, 1}, {1, 0, 1}, {1, 1, 1}, {0, 1, 1}};
+  CHECK(result == expected);
+}
+
+// Note; this test case exists to not solely rely on the binary big endian
+// writer to generate input for the parser.
+TEST_CASE("Test reading a random binary big endian PLY file found somewhere on the internet", "[istream]")
+{
+  auto inputFilename = "test/input/binary/big_endian/cube.ply";
+
+  std::ifstream ifs{inputFilename};
+  const plywoot::IStream plyFile{ifs};
+
+  plywoot::PlyElement vertexElement;
+  bool isVertexElementFound{false};
+  std::tie(vertexElement, isVertexElementFound) = plyFile.element("vertex");
+  REQUIRE(isVertexElementFound);
+
+  using Vertex = FloatVertex;
+  using VertexLayout = plywoot::reflect::Layout<float, float, float>;
+
+  const std::vector<Vertex> result = plyFile.read<Vertex, VertexLayout>(vertexElement);
+  const std::vector<Vertex> expected = {{0, 0, 0}, {0, 1, 0}, {1, 0, 0}, {1, 1, 0},
+                                        {0, 0, 1}, {0, 1, 1}, {1, 0, 1}, {1, 1, 1}};
   CHECK(result == expected);
 }

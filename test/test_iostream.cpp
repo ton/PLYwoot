@@ -14,7 +14,8 @@
 
 TEST_CASE("Test reading and writing all property types", "[iostream]")
 {
-  auto format = GENERATE(plywoot::PlyFormat::Ascii, plywoot::PlyFormat::BinaryLittleEndian);
+  auto format = GENERATE(
+      plywoot::PlyFormat::Ascii, plywoot::PlyFormat::BinaryLittleEndian, plywoot::PlyFormat::BinaryBigEndian);
 
   const plywoot::PlyProperty a{"a", plywoot::PlyDataType::Char};
   const plywoot::PlyProperty b{"b", plywoot::PlyDataType::UChar};
@@ -69,7 +70,8 @@ TEST_CASE("Test reading and writing all property types", "[iostream]")
 
 TEST_CASE("Test reading and writing of a list", "[iostream]")
 {
-  auto format = GENERATE(plywoot::PlyFormat::Ascii, plywoot::PlyFormat::BinaryLittleEndian);
+  auto format = GENERATE(
+      plywoot::PlyFormat::Ascii, plywoot::PlyFormat::BinaryLittleEndian, plywoot::PlyFormat::BinaryBigEndian);
 
   const auto sizeType{plywoot::PlyDataType::Char};
   const plywoot::PlyProperty vertexIndices{"vertex_indices", plywoot::PlyDataType::Int, sizeType};
@@ -94,7 +96,8 @@ TEST_CASE("Test reading and writing of a list", "[iostream]")
 
 TEST_CASE("Test reading and writing of variable length lists", "[iostream]")
 {
-  auto format = GENERATE(plywoot::PlyFormat::Ascii, plywoot::PlyFormat::BinaryLittleEndian);
+  auto format = GENERATE(
+      plywoot::PlyFormat::Ascii, plywoot::PlyFormat::BinaryLittleEndian, plywoot::PlyFormat::BinaryBigEndian);
 
   const auto sizeType{plywoot::PlyDataType::Char};
   const plywoot::PlyProperty numbers{"numbers", plywoot::PlyDataType::Int, sizeType};
@@ -125,7 +128,7 @@ TEST_CASE("Test reading and writing of variable length lists", "[iostream]")
 
 TEST_CASE("Tests reading and writing vertex and face data", "[iostream]")
 {
-  auto inputFilename = GENERATE("test/input/ascii/cube.ply", "test/input/binary_little_endian/cube.ply");
+  auto inputFilename = GENERATE("test/input/ascii/cube.ply", "test/input/binary/little_endian/cube.ply");
   auto format = GENERATE(plywoot::PlyFormat::Ascii, plywoot::PlyFormat::BinaryLittleEndian);
 
   std::ifstream ifs{inputFilename};
@@ -182,7 +185,8 @@ TEST_CASE("Tests reading and writing vertex and face data", "[iostream]")
 
 TEST_CASE("Skip input data that cannot be mapped while reading and writing", "[iostream]")
 {
-  const auto format = GENERATE(plywoot::PlyFormat::Ascii, plywoot::PlyFormat::BinaryLittleEndian);
+  const auto format = GENERATE(
+      plywoot::PlyFormat::Ascii, plywoot::PlyFormat::BinaryLittleEndian, plywoot::PlyFormat::BinaryBigEndian);
 
   using Vertex = FloatVertex;
   const std::vector<Vertex> inputVertices{{1.0, 2.0, 3.0}, {4.0, 5.0, 6.0}, {7.0, 8.0, 9.0}};
@@ -208,7 +212,8 @@ TEST_CASE("Skip input data that cannot be mapped while reading and writing", "[i
 
 TEST_CASE("Test casting of input property from integer to some floating point type", "[iostream]")
 {
-  const auto format = GENERATE(plywoot::PlyFormat::Ascii, plywoot::PlyFormat::BinaryLittleEndian);
+  const auto format = GENERATE(
+      plywoot::PlyFormat::Ascii, plywoot::PlyFormat::BinaryLittleEndian, plywoot::PlyFormat::BinaryBigEndian);
 
   const std::vector<int> numbers{1, 2, 3, 4, 5};
 
@@ -232,7 +237,8 @@ TEST_CASE("Test casting of input property from integer to some floating point ty
 
 TEST_CASE("Test writing an element with more properties than defined in the memory layout", "[ostream]")
 {
-  const auto format = GENERATE(plywoot::PlyFormat::Ascii, plywoot::PlyFormat::BinaryLittleEndian);
+  const auto format = GENERATE(
+      plywoot::PlyFormat::Ascii, plywoot::PlyFormat::BinaryLittleEndian, plywoot::PlyFormat::BinaryBigEndian);
 
   std::stringstream oss;
   plywoot::OStream plyos{format};

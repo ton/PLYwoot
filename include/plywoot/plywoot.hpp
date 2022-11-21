@@ -3,8 +3,8 @@
 
 #include "plywoot/ascii_parser_policy.hpp"
 #include "plywoot/ascii_writer_policy.hpp"
-#include "plywoot/binary_little_endian_parser_policy.hpp"
-#include "plywoot/binary_little_endian_writer_policy.hpp"
+#include "plywoot/binary_parser_policy.hpp"
+#include "plywoot/binary_writer_policy.hpp"
 #include "plywoot/buffered_istream.hpp"
 #include "plywoot/header_parser.hpp"
 #include "plywoot/parser.hpp"
@@ -87,8 +87,11 @@ public:
         parser.read<Ts...>(element, layout);
       }
       break;
-      default:
-        break;
+      case PlyFormat::BinaryBigEndian: {
+        detail::Parser<detail::BinaryBigEndianParserPolicy> parser{is_, elements_};
+        parser.read<Ts...>(element, layout);
+      }
+      break;
     }
   }
 
@@ -133,8 +136,13 @@ public:
         });
       }
       break;
-      case PlyFormat::BinaryBigEndian:
-        break;
+      case PlyFormat::BinaryBigEndian: {
+        static detail::Writer<detail::BinaryBigEndianWriterPolicy> writer;
+        elementWriteClosures_.emplace_back(element, [this, layout](std::ostream &os, const PlyElement &e) {
+          writer.write<Ts...>(os, e, layout.data(), layout.size());
+        });
+      }
+      break;
     }
   }
 

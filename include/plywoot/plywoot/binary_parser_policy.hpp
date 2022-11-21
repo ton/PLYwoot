@@ -1,7 +1,8 @@
-#ifndef PLYWOOT_BINARY_LITTLE_ENDIAN_PARSER_POLICY_HPP
-#define PLYWOOT_BINARY_LITTLE_ENDIAN_PARSER_POLICY_HPP
+#ifndef PLYWOOT_BINARY_PARSER_POLICY_HPP
+#define PLYWOOT_BINARY_PARSER_POLICY_HPP
 
 #include "buffered_istream.hpp"
+#include "endian.hpp"
 
 #include <cstdint>
 #include <map>
@@ -10,11 +11,12 @@
 namespace plywoot { namespace detail {
 
 /// Defines a parser policy that deals with binary input streams.
-class BinaryLittleEndianParserPolicy
+template<typename Endianness>
+class BinaryParserPolicy
 {
 public:
   /// Constructs a binary little endian parser policy.
-  BinaryLittleEndianParserPolicy(BufferedIStream &is, const std::vector<PlyElement> &elements)
+  BinaryParserPolicy(BufferedIStream &is, const std::vector<PlyElement> &elements)
       : is_{is}, elements_{elements}
   {
   }
@@ -38,11 +40,20 @@ public:
   }
 
   /// Reads a number of the given type `T` from the input stream.
-  template<typename T>
-  T readNumber() const
+  /// @{
+  template<typename T, typename EndiannessDependent = Endianness>
+  typename std::enable_if<std::is_same<EndiannessDependent, LittleEndian>::value, T>::type readNumber() const
   {
+    // TODO(ton): this assumes the target architecture is little endian.
     return is_.read<T>();
   }
+
+  template<typename T, typename EndiannessDependent = Endianness>
+  typename std::enable_if<std::is_same<EndiannessDependent, BigEndian>::value, T>::type readNumber() const
+  {
+    return betoh(is_.read<T>());
+  }
+  /// @}
 
   /// Skips a number of the given type `T` in the input stream.
   template<typename T>
@@ -86,28 +97,28 @@ private:
             switch (p.sizeType())
             {
               case PlyDataType::Char:
-                size = is_.read<char>();
+                size = readNumber<char>();
                 break;
               case PlyDataType::UChar:
-                size = is_.read<unsigned char>();
+                size = readNumber<unsigned char>();
                 break;
               case PlyDataType::Short:
-                size = is_.read<short>();
+                size = readNumber<short>();
                 break;
               case PlyDataType::UShort:
-                size = is_.read<unsigned short>();
+                size = readNumber<unsigned short>();
                 break;
               case PlyDataType::Int:
-                size = is_.read<int>();
+                size = readNumber<int>();
                 break;
               case PlyDataType::UInt:
-                size = is_.read<unsigned int>();
+                size = readNumber<unsigned int>();
                 break;
               case PlyDataType::Float:
-                size = is_.read<float>();
+                size = readNumber<float>();
                 break;
               case PlyDataType::Double:
-                size = is_.read<double>();
+                size = readNumber<double>();
                 break;
             }
 
@@ -127,6 +138,9 @@ private:
   const std::vector<PlyElement> &elements_;
   mutable std::map<std::string, std::ptrdiff_t> elementSize_;
 };
+
+using BinaryLittleEndianParserPolicy = BinaryParserPolicy<LittleEndian>;
+using BinaryBigEndianParserPolicy = BinaryParserPolicy<BigEndian>;
 
 }}
 
