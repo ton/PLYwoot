@@ -427,10 +427,9 @@ TEST_CASE("Test reading comments interspersed in a PLY header", "[istream]")
   const plywoot::IStream plyFile{ifs};
 
   const std::vector<plywoot::Comment> expected{
-    {2, "comment on the third line"},
-    {3, "comment on the fourth line"},
-    {5, "comment inside an element definition"},
-    {7, ""}
-  };
+      {2, "comment on the third line"},
+      {3, "comment on the fourth line"},
+      {5, "comment inside an element definition"},
+      {7, ""}};
   CHECK(plyFile.comments() == expected);
 }

@@ -12,21 +12,22 @@
 #include <string>
 #include <vector>
 
-namespace
+namespace {
+
+std::string readAll(const std::string &filename)
 {
-  std::string readAll(const std::string &filename)
-  {
-    std::ifstream ifs{filename};
+  std::ifstream ifs{filename};
 
-    ifs.seekg(0, std::ios_base::end);
-    const auto size = ifs.tellg();
-    ifs.seekg(0, std::ios_base::beg);
+  ifs.seekg(0, std::ios_base::end);
+  const auto size = ifs.tellg();
+  ifs.seekg(0, std::ios_base::beg);
 
-    std::string text(size, '\0');
-    ifs.read(&text[0], size);
+  std::string text(size, '\0');
+  ifs.read(&text[0], size);
 
-    return text;
-  }
+  return text;
+}
+
 }
 
 TEST_CASE("Test reading and writing all property types", "[iostream]")
