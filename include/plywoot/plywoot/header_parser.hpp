@@ -15,20 +15,20 @@
 
 namespace plywoot {
 
-// Base class for all header parser exceptions.
+/// Base class for all header parser exceptions.
 struct HeaderParserException : Exception
 {
   HeaderParserException(const std::string &message) : Exception("parser error: " + message) {}
 };
 
-// Exception thrown in case some invalid format specification is found in the
-// input.
+/// Exception thrown in case some invalid format specification is found in the
+/// input.
 struct InvalidFormat : HeaderParserException
 {
   InvalidFormat(const std::string &format) : HeaderParserException("invalid format found: " + format) {}
 };
 
-// Exception thrown in case the input contains an unexpected token.
+/// Exception thrown in case the input contains an unexpected token.
 struct UnexpectedToken : HeaderParserException
 {
   UnexpectedToken(
@@ -60,8 +60,8 @@ private:
 
 namespace plywoot { namespace detail {
 
-// Parser implementation for a PLY header. Results in a list of PLY element
-// specifications.
+/// Parser implementation for a PLY header. Results in a list of PLY element
+/// specifications.
 class HeaderParser
 {
   using Token = detail::HeaderScanner::Token;
@@ -114,8 +114,8 @@ public:
   PlyFormat format() const { return format_; }
 
 private:
-  // Asks the scanner for the next token, and verifies that it matches the
-  // given expected token. In case it fails, throws `UnexpectedToken`.
+  /// Asks the scanner for the next token, and verifies that it matches the
+  /// given expected token. In case it fails, throws `UnexpectedToken`.
   void accept(Token expected)
   {
     if (scanner_.nextToken() != expected)
@@ -124,8 +124,8 @@ private:
     }
   }
 
-  // Converts a scanner token type to a data type, in case the token
-  // represents a data type. Otherwise, this throws `UnexpectedToken`.
+  /// Converts a scanner token type to a data type, in case the token
+  /// represents a data type. Otherwise, this throws `UnexpectedToken`.
   PlyDataType tokenToDataType(Token t) const
   {
     switch (t)
@@ -152,7 +152,7 @@ private:
     }
   }
 
-  // Parses an element definition together with its associated properties.
+  /// Parses an element definition together with its associated properties.
   PlyElement parseElement()
   {
     accept(Token::Identifier);  // name of the elements
@@ -188,11 +188,11 @@ private:
     return result;
   }
 
-  // Format the data is stored in.
+  /// Format the data is stored in.
   PlyFormat format_;
-  // PLY elements defined in the header.
+  /// PLY elements defined in the header.
   std::vector<PlyElement> elements_;
-  // Reference to the wrapped input stream.
+  /// Reference to the wrapped input stream.
   detail::HeaderScanner scanner_;
 };
 

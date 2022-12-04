@@ -12,15 +12,15 @@ namespace plywoot { namespace detail {
 
 static constexpr const char endHeaderToken[] = "end_header";
 
-// Lookup table to check whether a character is a token delimiter.
-// The following characters are token delimiters:
-//
-//  1. <space> (32)
-//  2. \t      (9)
-//  3. \n      (10)
-//  4. \r      (13)
-//  5. EOF     (255)
-//
+/// Lookup table to check whether a character is a token delimiter.
+/// The following characters are token delimiters:
+///
+///  1. <space> (32)
+///  2. \t      (9)
+///  3. \n      (10)
+///  4. \r      (13)
+///  5. EOF     (255)
+///
 // clang-format off
 constexpr bool isTokenDelimiter[256] = {
   // 0      1      2      3      4      5      6      7      8      9     10     11     12     13     14     15
@@ -43,9 +43,11 @@ constexpr bool isTokenDelimiter[256] = {
 };
 // clang-format on
 
+/// TODO(ton): add documentation.
 class HeaderScanner
 {
 public:
+  /// TODO(ton): add documentation.
   HeaderScanner(std::istream &is) : is_{is}
   {
     std::string line;
@@ -66,7 +68,7 @@ public:
     c_ = buffer_.data();
   }
 
-  // Enumeration of all PLY header token types.
+  /// Enumeration of all PLY header token types.
   enum class Token {
     Unknown = 0,
     Ascii,
@@ -216,19 +218,21 @@ public:
     return token_;
   }
 
-  // Returns the most recently scanned token.
+  /// Returns the most recently scanned token.
   Token token() const noexcept { return token_; }
-  // Converts the current token string to a number of the given type.
+
+  /// Converts the current token string to a number of the given type.
   std::size_t tokenNumber() const noexcept
   {
     return static_cast<std::size_t>(std::strtoull(tokenString_.data(), nullptr, 10));
   }
-  // Returns the string representation of the current token.
+
+  /// Returns the string representation of the current token.
   std::string tokenString() const noexcept { return std::string(tokenString_.data(), tokenString_.size()); }
 
 private:
-  // Reads the remainder of the line as a comment. The comment itself is set
-  // as the token string.
+  /// Reads the remainder of the line as a comment. The comment itself is set
+  /// as the token string.
   void readComment()
   {
     const std::size_t remainingBytes = buffer_.size() - (c_ - buffer_.data());
@@ -236,21 +240,21 @@ private:
     if (last != nullptr) { tokenString_ = detail::string_view(c_, last); }
   }
 
-  // Buffered data, always a null terminated string.
+  /// Buffered data, always a null terminated string.
   std::string buffer_;
-  // Character the scanner's read head is currently pointing to. Invariant
-  // after construction of the scanner is:
-  //
-  //       buffer_.data() <= c_ < (buffer_.data() + buffer_.size())
-  //
+  /// Character the scanner's read head is currently pointing to. Invariant
+  /// after construction of the scanner is:
+  ///
+  ///       buffer_.data() <= c_ < (buffer_.data() + buffer_.size())
+  ///
   const char *c_{buffer_.data()};
 
-  // Most recently scanned token.
+  /// Most recently scanned token.
   Token token_{Token::Unknown};
-  // String representation of the current token in case it is not predefined.
+  /// String representation of the current token in case it is not predefined.
   detail::string_view tokenString_;
 
-  // Reference to the wrapped input stream.
+  /// Reference to the wrapped input stream.
   std::istream &is_;
 };
 
