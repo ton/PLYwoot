@@ -12,6 +12,23 @@
 #include <string>
 #include <vector>
 
+namespace
+{
+  std::string readAll(const std::string &filename)
+  {
+    std::ifstream ifs{filename};
+
+    ifs.seekg(0, std::ios_base::end);
+    const auto size = ifs.tellg();
+    ifs.seekg(0, std::ios_base::beg);
+
+    std::string text(size, '\0');
+    ifs.read(&text[0], size);
+
+    return text;
+  }
+}
+
 TEST_CASE("Test reading and writing all property types", "[iostream]")
 {
   auto format = GENERATE(
@@ -258,4 +275,22 @@ TEST_CASE("Test writing an element with more properties than defined in the memo
   plywoot::IStream plyis{iss};
   const std::vector<int> outputValues{plyis.read<int, Layout>(element)};
   CHECK(values == outputValues);
+}
+
+TEST_CASE("Test reading and writing of comments", "[iostream]")
+{
+  std::ifstream ifs{"test/input/ascii/comments.ply"};
+  const plywoot::IStream plyFile{ifs};
+  const std::vector<plywoot::PlyElement> elements{plyFile.elements()};
+  REQUIRE(elements.size() == 1);
+
+  std::stringstream oss;
+  plywoot::OStream plyos{plywoot::PlyFormat::Ascii, plyFile.comments()};
+  // TODO(ton): it should be possible to instantiate an empty layout.
+  plyos.add(elements.front(), plywoot::reflect::Layout<int>{});
+  plyos.write(oss);
+
+  // The text written by the writer should be equal to the text in the original
+  // input file.
+  CHECK(readAll("test/input/ascii/comments.ply") == oss.str());
 }

@@ -90,9 +90,10 @@ public:
     scanner_.nextToken();  // ignore the format version
 
     // Ignore comment section for now.
-    // TODO(ton): better to store the comments so that we can recreate the
-    // original input when writing is implemented.
-    while (scanner_.nextToken() == Token::Comment) { scanner_.skipLines(1); }
+    while (scanner_.nextToken() == Token::Comment)
+    {
+      comments_.push_back(scanner_.comment());
+    }
 
     // Parse elements.
     do {
@@ -103,6 +104,10 @@ public:
         case Token::Element:
           elements_.push_back(parseElement());
           break;
+        case Token::Comment:
+          comments_.push_back(scanner_.comment());
+          scanner_.nextToken();
+          break;
         default:
           throw UnexpectedToken(scanner_.token(), scanner_.tokenString());
           break;
@@ -110,6 +115,7 @@ public:
     } while (scanner_.token() != Token::EndHeader);
   }
 
+  const std::vector<Comment> &comments() const { return comments_; }
   const std::vector<PlyElement> &elements() const { return elements_; }
   PlyFormat format() const { return format_; }
 
@@ -162,32 +168,44 @@ private:
     std::size_t size{scanner_.tokenNumber()};
 
     PlyElement result{std::move(name), size};
-    while (scanner_.nextToken() == Token::Property)
-    {
-      PlyDataType type;
-      PlyDataType sizeType;
 
-      // TODO(ton): probably reserved keywords may be used as names as well,
-      // just accept every token here, even numbers?
-      switch (scanner_.nextToken())
+    // Parse properties.
+    while (scanner_.nextToken() == Token::Property || scanner_.token() == Token::Comment)
+    {
+      if (scanner_.token() == Token::Property)
       {
-        case Token::List:
-          sizeType = tokenToDataType(scanner_.nextToken());
-          type = tokenToDataType(scanner_.nextToken());
-          accept(Token::Identifier);
-          result.addProperty(scanner_.tokenString(), type, sizeType);
-          break;
-        default:
-          type = tokenToDataType(scanner_.token());
-          accept(Token::Identifier);
-          result.addProperty(scanner_.tokenString(), type);
-          break;
+        PlyDataType type;
+        PlyDataType sizeType;
+
+        // TODO(ton): probably reserved keywords may be used as names as well,
+        // just accept every token here, even numbers?
+        switch (scanner_.nextToken())
+        {
+          case Token::List:
+            sizeType = tokenToDataType(scanner_.nextToken());
+            type = tokenToDataType(scanner_.nextToken());
+            accept(Token::Identifier);
+            result.addProperty(scanner_.tokenString(), type, sizeType);
+            break;
+          default:
+            type = tokenToDataType(scanner_.token());
+            accept(Token::Identifier);
+            result.addProperty(scanner_.tokenString(), type);
+            break;
+        }
+      }
+      else
+      {
+        assert(scanner_.token() == Token::Comment);
+        comments_.push_back(scanner_.comment());
       }
     }
 
     return result;
   }
 
+  /// Comment line in the header.
+  std::vector<Comment> comments_;
   /// Format the data is stored in.
   PlyFormat format_;
   /// PLY elements defined in the header.

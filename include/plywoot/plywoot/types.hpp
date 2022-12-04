@@ -154,6 +154,20 @@ private:
 
 using PropertyConstIterator = std::vector<PlyProperty>::const_iterator;
 
+/// A comment represents a single line of comment in some PLY file, with an
+/// associated line number.
+struct Comment
+{
+  std::uint32_t line;
+  std::string text;
+
+  inline friend bool operator==(const Comment &x, const Comment &y)
+  {
+    return x.line == y.line && x.text == y.text;
+  }
+  inline friend bool operator!=(const Comment &x, const Comment &y) { return !(x == y); }
+};
+
 }
 
 #endif

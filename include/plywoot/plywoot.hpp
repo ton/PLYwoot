@@ -30,7 +30,8 @@ class IStream
 public:
   IStream(std::istream &is) : IStream{is, detail::HeaderParser{is}} {}
 
-  // TODO(ton): add support for storing comments
+  /// Returns all comment lines.
+  const std::vector<Comment> &comments() const { return comments_; }
 
   /// Returns all elements associated with this PLY file.
   const std::vector<PlyElement> &elements() const { return elements_; }
@@ -98,12 +99,13 @@ public:
 private:
   /// Constructs a PLY file from the given input stream and header parser.
   IStream(std::istream &is, const detail::HeaderParser &parser)
-      : is_{is}, elements_{parser.elements()}, format_{parser.format()}
+      : is_{is}, comments_{parser.comments()}, elements_{parser.elements()}, format_{parser.format()}
   {
   }
 
   mutable detail::BufferedIStream is_;
 
+  std::vector<Comment> comments_;
   std::vector<PlyElement> elements_;
   PlyFormat format_;
 };
@@ -114,6 +116,9 @@ class OStream
 {
 public:
   OStream(PlyFormat format) : format_{format} {}
+  OStream(PlyFormat format, std::vector<Comment> comments) : format_{format}, comments_{std::move(comments)}
+  {
+  }
 
   /// Queues an element with the associated data for writing. Elements will be
   /// stored in the same order they are queued.
@@ -178,13 +183,31 @@ private:
         break;
     }
 
+    // Maintain line number to be able to serialize comments at the right
+    // location in the header. Comments may only occur after the 'ply' magic
+    // 'number', and the format specification. Ideally this state should be
+    // limited to the scope of the closure, but that is not supported in C++11.
+    std::uint32_t line = 2;
+    auto first = comments_.begin();
+    const auto last = comments_.end();
+    const auto maybeWriteComments = [&]() {
+      while (first != last && first->line == line++)
+      {
+        if (first->text.empty()) { os << "comment\n"; }
+        else { os << "comment " << first->text << '\n'; }
+        ++first;
+      }
+    };
+
     for (const auto &elementClosurePair : elementWriteClosures_)
     {
+      maybeWriteComments();
       const PlyElement &element{elementClosurePair.first};
       os << "element " << element.name() << ' ' << element.size() << '\n';
 
       for (const PlyProperty &property : element.properties())
       {
+        maybeWriteComments();
         if (property.isList())
         {
           os << "property list " << property.sizeType() << ' ' << property.type() << ' ' << property.name()
@@ -194,6 +217,7 @@ private:
       }
     }
 
+    maybeWriteComments();
     os << "end_header\n";
   }
 
@@ -203,6 +227,8 @@ private:
   std::vector<std::pair<PlyElement, ElementWriteClosure>> elementWriteClosures_;
   /// Format the PLY data should be written in.
   PlyFormat format_;
+  /// Comments to write out to the PLY file.
+  std::vector<Comment> comments_;
 };
 }
 

@@ -95,25 +95,16 @@ public:
     UShort,
   };
 
-  /// Skips all input data and puts the read head just after the n-th newline
-  /// character it encounters, or at EOF in case no such newline character is
-  /// present in the input stream.
-  void skipLines(std::size_t n)
-  {
-    const char *last{buffer_.data() + buffer_.size()};
-    while (c_ && n > 0)
-    {
-      c_ = static_cast<const char *>(std::memchr(c_, '\n', (last - c_)));
-      --n;
-    }
-  }
-
   /// Returns the next token type in the input stream.
   Token nextToken() noexcept
   {
     // Ignore all whitespace, read upto the first non-whitespace character.
     const char *last = buffer_.data() + buffer_.size();
-    while (c_ < last && 0 <= *c_ && *c_ <= 0x20) { ++c_; }
+    while (c_ < last && 0 <= *c_ && *c_ <= 0x20)
+    {
+      if (*c_ == '\n') ++line_;
+      ++c_;
+    }
 
     // Read an identifier. After an identifier is read, the read head is
     // positioned at the start of the next token or whitespace.
@@ -218,6 +209,11 @@ public:
     return token_;
   }
 
+  /// In case the current token represents a comment, returns a comment
+  /// instance, containing the line number the comment is defined on, and the
+  /// comment text.
+  Comment comment() const { return {line_, tokenString()}; }
+
   /// Returns the most recently scanned token.
   Token token() const noexcept { return token_; }
 
@@ -235,9 +231,17 @@ private:
   /// as the token string.
   void readComment()
   {
+    // Skip spaces and tabs and the first non-whitespace character.
+    const char *end = buffer_.data() + buffer_.size();
+    while (c_ < end && (*c_ == ' ' || *c_ == '\t')) { ++c_; }
+
     const std::size_t remainingBytes = buffer_.size() - (c_ - buffer_.data());
     const char *last = static_cast<const char *>(::memchr(c_, '\n', remainingBytes));
-    if (last != nullptr) { tokenString_ = detail::string_view(c_, last); }
+    if (last != nullptr)
+    {
+      tokenString_ = detail::string_view(c_, last);
+      c_ = last;
+    }
   }
 
   /// Buffered data, always a null terminated string.
@@ -253,6 +257,8 @@ private:
   Token token_{Token::Unknown};
   /// String representation of the current token in case it is not predefined.
   detail::string_view tokenString_;
+  /// Current line number.
+  std::uint32_t line_{0};
 
   /// Reference to the wrapped input stream.
   std::istream &is_;

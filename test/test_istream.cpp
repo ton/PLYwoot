@@ -418,3 +418,19 @@ TEST_CASE("Test reading a random binary big endian PLY file found somewhere on t
                                         {0, 0, 1}, {0, 1, 1}, {1, 0, 1}, {1, 1, 1}};
   CHECK(result == expected);
 }
+
+TEST_CASE("Test reading comments interspersed in a PLY header", "[istream]")
+{
+  auto inputFilename = "test/input/ascii/comments.ply";
+
+  std::ifstream ifs{inputFilename};
+  const plywoot::IStream plyFile{ifs};
+
+  const std::vector<plywoot::Comment> expected{
+    {2, "comment on the third line"},
+    {3, "comment on the fourth line"},
+    {5, "comment inside an element definition"},
+    {7, ""}
+  };
+  CHECK(plyFile.comments() == expected);
+}

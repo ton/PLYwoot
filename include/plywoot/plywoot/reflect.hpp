@@ -83,6 +83,9 @@ template<typename... Ts>
 class Layout : public std::tuple<Ts...>
 {
 public:
+  /// Constructor for an empty layout (no data will be written).
+  Layout() = default;
+
   template<typename T>
   Layout(std::vector<T> &v)
       : data_{reinterpret_cast<std::uint8_t *>(v.data())}, cdata_{data_}, size_{v.size()}
