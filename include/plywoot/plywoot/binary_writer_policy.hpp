@@ -29,7 +29,7 @@ public:
       std::ostream &os,
       T t) const
   {
-    const auto be{htobe(t)};
+    const auto be = htobe(t);
     os.write(reinterpret_cast<const char *>(&be), sizeof(T));
   }
   /// @}

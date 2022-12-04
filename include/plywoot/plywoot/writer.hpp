@@ -27,8 +27,8 @@ public:
   template<typename... Ts>
   void write(std::ostream &os, const PlyElement &element, const std::uint8_t *src, std::size_t n) const
   {
-    const auto first{element.properties().begin()};
-    const auto last{element.properties().end()};
+    const auto first = element.properties().begin();
+    const auto last = element.properties().end();
 
     for (std::size_t i{0}; i < n; ++i)
     {

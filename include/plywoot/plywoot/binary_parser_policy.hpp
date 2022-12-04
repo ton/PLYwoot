@@ -26,8 +26,8 @@ public:
   bool seekTo(const PlyElement &element) const
   {
     std::size_t numBytes{0};
-    auto first{elements_.begin()};
-    const auto last{elements_.end()};
+    auto first = elements_.begin();
+    const auto last = elements_.end();
     while (first != last && *first != element) { numBytes += elementSizeInBytes(*first++); }
 
     if (first != last && *first == element)

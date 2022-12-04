@@ -38,8 +38,8 @@ public:
   bool seekTo(const PlyElement &element) const
   {
     std::size_t numLines{0};
-    auto first{elements_.begin()};
-    const auto last{elements_.end()};
+    auto first = elements_.begin();
+    const auto last = elements_.end();
     while (first != last && *first != element) { numLines += first++->size(); }
 
     if (first != last && *first == element)

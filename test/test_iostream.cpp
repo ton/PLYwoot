@@ -92,7 +92,7 @@ TEST_CASE("Test reading and writing of a list", "[iostream]")
   auto format = GENERATE(
       plywoot::PlyFormat::Ascii, plywoot::PlyFormat::BinaryLittleEndian, plywoot::PlyFormat::BinaryBigEndian);
 
-  const auto sizeType{plywoot::PlyDataType::Char};
+  const auto sizeType = plywoot::PlyDataType::Char;
   const plywoot::PlyProperty vertexIndices{"vertex_indices", plywoot::PlyDataType::Int, sizeType};
   const plywoot::PlyElement element{"triangle", 3, {vertexIndices}};
 
@@ -118,7 +118,7 @@ TEST_CASE("Test reading and writing of variable length lists", "[iostream]")
   auto format = GENERATE(
       plywoot::PlyFormat::Ascii, plywoot::PlyFormat::BinaryLittleEndian, plywoot::PlyFormat::BinaryBigEndian);
 
-  const auto sizeType{plywoot::PlyDataType::Char};
+  const auto sizeType = plywoot::PlyDataType::Char;
   const plywoot::PlyProperty numbers{"numbers", plywoot::PlyDataType::Int, sizeType};
   const plywoot::PlyElement element{"e", 3, {numbers}};
 

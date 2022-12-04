@@ -164,7 +164,7 @@ public:
     for (const auto &elementClosurePair : elementWriteClosures_)
     {
       const PlyElement &element{elementClosurePair.first};
-      const auto &writeFn{elementClosurePair.second};
+      const auto &writeFn = elementClosurePair.second;
       writeFn(os, element);
     }
   }
