@@ -41,6 +41,7 @@ constexpr bool isTokenDelimiter[256] = {
   false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, // 224 - 239
   false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, true , // 240 - 255
 };
+// clang-format on
 
 class HeaderScanner
 {
@@ -59,18 +60,14 @@ public:
       buffer_.append(line);
       buffer_.push_back('\n');
     }
-    else
-    {
-      buffer_.push_back(EOF);
-    }
+    else { buffer_.push_back(EOF); }
 
     // Initialize the read head to the start of the buffered data.
     c_ = buffer_.data();
   }
 
   // Enumeration of all PLY header token types.
-  enum class Token
-  {
+  enum class Token {
     Unknown = 0,
     Ascii,
     BinaryBigEndian,
@@ -114,18 +111,12 @@ public:
   {
     // Ignore all whitespace, read upto the first non-whitespace character.
     const char *last = buffer_.data() + buffer_.size();
-    while (c_ < last && 0 <= *c_ && *c_ <= 0x20)
-    {
-      ++c_;
-    }
+    while (c_ < last && 0 <= *c_ && *c_ <= 0x20) { ++c_; }
 
     // Read an identifier. After an identifier is read, the read head is
     // positioned at the start of the next token or whitespace.
     const char *tokenStart = c_;
-    while (!isTokenDelimiter[(unsigned char)*c_])
-    {
-      c_++;
-    }
+    while (!isTokenDelimiter[(unsigned char)*c_]) { c_++; }
     tokenString_ = detail::string_view(tokenStart, c_);
 
     // In case the identifier is one of the reserved keywords, handle it as
@@ -136,27 +127,40 @@ public:
         token_ = !tokenString_.compare("ascii") ? Token::Ascii : Token::Identifier;
         break;
       case 'b':
-        if (!tokenString_.compare("binary_big_endian")) token_ = Token::BinaryBigEndian;
-        else if (!tokenString_.compare("binary_little_endian")) token_ = Token::BinaryLittleEndian;
-        else token_ = Token::Identifier;
+        if (!tokenString_.compare("binary_big_endian"))
+          token_ = Token::BinaryBigEndian;
+        else if (!tokenString_.compare("binary_little_endian"))
+          token_ = Token::BinaryLittleEndian;
+        else
+          token_ = Token::Identifier;
         break;
       case 'c':
         if (!tokenString_.compare("char")) { token_ = Token::Char; }
-        else if (!tokenString_.compare("comment")) { token_ = Token::Comment; readComment(); }
+        else if (!tokenString_.compare("comment"))
+        {
+          token_ = Token::Comment;
+          readComment();
+        }
         else { token_ = Token::Identifier; }
         break;
       case 'd':
         token_ = (!tokenString_.compare("double") ? Token::Double : Token::Identifier);
         break;
       case 'e':
-        if (!tokenString_.compare("element")) token_ = Token::Element;
-        else if (!tokenString_.compare("end_header")) token_ = Token::EndHeader;
-        else token_ = Token::Identifier;
+        if (!tokenString_.compare("element"))
+          token_ = Token::Element;
+        else if (!tokenString_.compare("end_header"))
+          token_ = Token::EndHeader;
+        else
+          token_ = Token::Identifier;
         break;
       case 'f':
-        if (!tokenString_.compare("format")) token_ = Token::Format;
-        else if (!tokenString_.compare("float")) token_ = Token::Float;
-        else token_ = Token::Identifier;
+        if (!tokenString_.compare("format"))
+          token_ = Token::Format;
+        else if (!tokenString_.compare("float"))
+          token_ = Token::Float;
+        else
+          token_ = Token::Identifier;
         break;
       case 'l':
         token_ = (!tokenString_.compare("list") ? Token::List : Token::Identifier);
@@ -165,18 +169,25 @@ public:
         token_ = (!tokenString_.compare("int") ? Token::Int : Token::Identifier);
         break;
       case 'p':
-        if (!tokenString_.compare("ply")) token_ = Token::MagicNumber;
-        else if (!tokenString_.compare("property")) token_ = Token::Property;
-        else token_ = Token::Identifier;
+        if (!tokenString_.compare("ply"))
+          token_ = Token::MagicNumber;
+        else if (!tokenString_.compare("property"))
+          token_ = Token::Property;
+        else
+          token_ = Token::Identifier;
         break;
       case 's':
         token_ = (!tokenString_.compare("short") ? Token::Short : Token::Identifier);
         break;
       case 'u':
-        if (!tokenString_.compare("uchar")) token_ = Token::UChar;
-        else if (!tokenString_.compare("uint")) token_ = Token::UInt;
-        else if (!tokenString_.compare("ushort")) token_ = Token::UShort;
-        else token_ = Token::Identifier;
+        if (!tokenString_.compare("uchar"))
+          token_ = Token::UChar;
+        else if (!tokenString_.compare("uint"))
+          token_ = Token::UInt;
+        else if (!tokenString_.compare("ushort"))
+          token_ = Token::UShort;
+        else
+          token_ = Token::Identifier;
         break;
       case '-':
       case '+':
@@ -213,10 +224,7 @@ public:
     return static_cast<std::size_t>(std::strtoull(tokenString_.data(), nullptr, 10));
   }
   // Returns the string representation of the current token.
-  std::string tokenString() const noexcept
-  {
-    return std::string(tokenString_.data(), tokenString_.size());
-  }
+  std::string tokenString() const noexcept { return std::string(tokenString_.data(), tokenString_.size()); }
 
 private:
   // Reads the remainder of the line as a comment. The comment itself is set
@@ -224,11 +232,8 @@ private:
   void readComment()
   {
     const std::size_t remainingBytes = buffer_.size() - (c_ - buffer_.data());
-    const char *last = static_cast<const char*>(::memchr(c_, '\n', remainingBytes));
-    if (last != nullptr)
-    {
-      tokenString_ = detail::string_view(c_, last);
-    }
+    const char *last = static_cast<const char *>(::memchr(c_, '\n', remainingBytes));
+    if (last != nullptr) { tokenString_ = detail::string_view(c_, last); }
   }
 
   // Buffered data, always a null terminated string.
@@ -238,7 +243,7 @@ private:
   //
   //       buffer_.data() <= c_ < (buffer_.data() + buffer_.size())
   //
-  const char* c_{buffer_.data()};
+  const char *c_{buffer_.data()};
 
   // Most recently scanned token.
   Token token_{Token::Unknown};
