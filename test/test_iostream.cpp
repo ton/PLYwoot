@@ -8,6 +8,7 @@
 #include <fstream>
 #include <limits>
 #include <numeric>
+#include <random>
 #include <sstream>
 #include <string>
 #include <vector>
@@ -285,8 +286,12 @@ TEST_CASE("Test reading and writing of comments", "[iostream]")
   const std::vector<plywoot::PlyElement> elements{plyFile.elements()};
   REQUIRE(elements.size() == 1);
 
+  std::vector<plywoot::Comment> comments{plyFile.comments()};
+  std::random_device rd;
+  std::shuffle(comments.begin(), comments.end(), std::mt19937{rd()});
+
   std::stringstream oss;
-  plywoot::OStream plyos{plywoot::PlyFormat::Ascii, plyFile.comments()};
+  plywoot::OStream plyos{plywoot::PlyFormat::Ascii, comments};
   // TODO(ton): it should be possible to instantiate an empty layout.
   plyos.add(elements.front(), plywoot::reflect::Layout<int>{});
   plyos.write(oss);

@@ -118,6 +118,10 @@ public:
   OStream(PlyFormat format) : format_{format} {}
   OStream(PlyFormat format, std::vector<Comment> comments) : format_{format}, comments_{std::move(comments)}
   {
+    // Ensure comments are sorted on line number, ascendingly.
+    std::stable_sort(comments_.begin(), comments_.end(), [](const Comment &x, const Comment &y) {
+      return x.line < y.line;
+    });
   }
 
   /// Queues an element with the associated data for writing. Elements will be
@@ -227,7 +231,8 @@ private:
   std::vector<std::pair<PlyElement, ElementWriteClosure>> elementWriteClosures_;
   /// Format the PLY data should be written in.
   PlyFormat format_;
-  /// Comments to write out to the PLY file.
+  /// Comments to write out to the PLY file. Invariant is that comments are
+  /// sorted ascending based on their associated line number.
   std::vector<Comment> comments_;
 };
 }
