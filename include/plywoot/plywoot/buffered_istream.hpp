@@ -17,7 +17,7 @@ class BufferedIStream
 {
 public:
   /// Constructs a buffered input stream wrapper around the given input stream.
-  explicit BufferedIStream(std::istream &is) : is_{is}, headerOffset_{is_.tellg()} {}
+  explicit BufferedIStream(std::istream &is) : is_{is}, initialOffset_{is_.tellg()} {}
 
   /// Returns whether the read head is at the end of the stream.
   bool eof() const { return *c_ == EOF; }
@@ -108,7 +108,7 @@ public:
     // Need to clear eofbit() in case it is set,
     // otherwise the first read after the seek will fail.
     is_.clear();
-    is_.seekg(headerOffset_);
+    is_.seekg(initialOffset_);
 
     buffer();
   }
@@ -155,7 +155,7 @@ private:
   std::istream &is_;
   /// Initial offset in the input stream at the time of construction of this
   /// buffered stream.
-  std::istream::pos_type headerOffset_;
+  std::istream::pos_type initialOffset_;
 
   /// Default buffer size; may need tweaking.
   constexpr static size_t BufferSize{8192};
