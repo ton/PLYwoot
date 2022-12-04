@@ -1,0 +1,13 @@
+ply
+format ascii 1.0
+element vertex 0
+property int8 a
+property uint8 b
+property int16 c
+property uint16 d
+property int32 e
+property uint32 f
+property float32 g
+property float64 h
+property list uint8 int32 i
+end_header

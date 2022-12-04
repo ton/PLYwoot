@@ -150,8 +150,10 @@ public:
       case 'f':
         if (!tokenString_.compare("format"))
           token_ = Token::Format;
-        else if (!tokenString_.compare("float"))
+        else if (!tokenString_.compare("float") || !tokenString_.compare("float32"))
           token_ = Token::Float;
+        else if (!tokenString_.compare("float64"))
+          token_ = Token::Double;
         else
           token_ = Token::Identifier;
         break;
@@ -159,7 +161,14 @@ public:
         token_ = (!tokenString_.compare("list") ? Token::List : Token::Identifier);
         break;
       case 'i':
-        token_ = (!tokenString_.compare("int") ? Token::Int : Token::Identifier);
+        if (!tokenString_.compare("int") || !tokenString_.compare("int32"))
+          token_ = Token::Int;
+        else if (!tokenString_.compare("int8"))
+          token_ = Token::Char;
+        else if (!tokenString_.compare("int16"))
+          token_ = Token::Short;
+        else
+          token_ = Token::Identifier;
         break;
       case 'p':
         if (!tokenString_.compare("ply"))
@@ -173,12 +182,12 @@ public:
         token_ = (!tokenString_.compare("short") ? Token::Short : Token::Identifier);
         break;
       case 'u':
-        if (!tokenString_.compare("uchar"))
+        if (!tokenString_.compare("uint8") || !tokenString_.compare("uchar"))
           token_ = Token::UChar;
-        else if (!tokenString_.compare("uint"))
-          token_ = Token::UInt;
-        else if (!tokenString_.compare("ushort"))
+        else if (!tokenString_.compare("uint16") || !tokenString_.compare("ushort"))
           token_ = Token::UShort;
+        else if (!tokenString_.compare("uint32") || !tokenString_.compare("uint"))
+          token_ = Token::UInt;
         else
           token_ = Token::Identifier;
         break;

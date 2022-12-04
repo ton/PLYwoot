@@ -184,6 +184,57 @@ TEST_CASE("A single element definition with properties is correctly parsed", "[h
   REQUIRE(properties[8].sizeType() == plywoot::PlyDataType::UChar);
 }
 
+TEST_CASE("A single element definition with properties is correctly parsed using alternate type names", "[header][istream]")
+{
+  std::ifstream ifs{"test/input/header/single_element_with_properties_using_type_aliases.ply"};
+  const plywoot::IStream plyFile{ifs};
+  const std::vector<plywoot::PlyElement> elements{plyFile.elements()};
+  REQUIRE(elements.size() == 1);
+
+  const plywoot::PlyElement &element{elements.front()};
+  REQUIRE(element.name() == "vertex");
+  REQUIRE(element.size() == 0);
+  REQUIRE(element.properties().size() == 9);
+
+  const std::vector<plywoot::PlyProperty> &properties{element.properties()};
+  REQUIRE(properties[0].name() == "a");
+  REQUIRE_FALSE(properties[0].isList());
+  REQUIRE(properties[0].type() == plywoot::PlyDataType::Char);
+
+  REQUIRE(properties[1].name() == "b");
+  REQUIRE_FALSE(properties[1].isList());
+  REQUIRE(properties[1].type() == plywoot::PlyDataType::UChar);
+
+  REQUIRE(properties[2].name() == "c");
+  REQUIRE_FALSE(properties[2].isList());
+  REQUIRE(properties[2].type() == plywoot::PlyDataType::Short);
+
+  REQUIRE(properties[3].name() == "d");
+  REQUIRE_FALSE(properties[3].isList());
+  REQUIRE(properties[3].type() == plywoot::PlyDataType::UShort);
+
+  REQUIRE(properties[4].name() == "e");
+  REQUIRE_FALSE(properties[4].isList());
+  REQUIRE(properties[4].type() == plywoot::PlyDataType::Int);
+
+  REQUIRE(properties[5].name() == "f");
+  REQUIRE_FALSE(properties[5].isList());
+  REQUIRE(properties[5].type() == plywoot::PlyDataType::UInt);
+
+  REQUIRE(properties[6].name() == "g");
+  REQUIRE_FALSE(properties[6].isList());
+  REQUIRE(properties[6].type() == plywoot::PlyDataType::Float);
+
+  REQUIRE(properties[7].name() == "h");
+  REQUIRE_FALSE(properties[7].isList());
+  REQUIRE(properties[7].type() == plywoot::PlyDataType::Double);
+
+  REQUIRE(properties[8].name() == "i");
+  REQUIRE(properties[8].isList());
+  REQUIRE(properties[8].type() == plywoot::PlyDataType::Int);
+  REQUIRE(properties[8].sizeType() == plywoot::PlyDataType::UChar);
+}
+
 TEST_CASE("Read a PLY file with a comment section", "[header][comments]")
 {
   std::ifstream ifs{"test/input/header/single_line_comment.ply"};
