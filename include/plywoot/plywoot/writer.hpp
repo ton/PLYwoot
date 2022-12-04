@@ -247,6 +247,16 @@ private:
   /// should have a corresponding property defined in the input buffer, the list
   /// of properties is defined by the property range (`first`, `last`].
   /// @{
+  template<typename Policy>
+  const std::uint8_t *writeProperties(
+      std::ostream &,
+      const std::uint8_t *src,
+      PropertyConstIterator,
+      PropertyConstIterator) const
+  {
+    return src;
+  }
+
   template<typename Policy, typename T>
   const std::uint8_t *writeProperties(
       std::ostream &os,

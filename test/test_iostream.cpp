@@ -292,8 +292,7 @@ TEST_CASE("Test reading and writing of comments", "[iostream]")
 
   std::stringstream oss;
   plywoot::OStream plyos{plywoot::PlyFormat::Ascii, comments};
-  // TODO(ton): it should be possible to instantiate an empty layout.
-  plyos.add(elements.front(), plywoot::reflect::Layout<int>{});
+  plyos.add(elements.front(), plywoot::reflect::Layout<>{});
   plyos.write(oss);
 
   // The text written by the writer should be equal to the text in the original
