@@ -10,7 +10,7 @@ namespace plywoot { namespace reflect {
 template<typename... Ts>
 struct Void
 {
-  typedef void type;
+  using type = void;
 };
 
 /// Returns whether the given type `T` is considered to be a list.
