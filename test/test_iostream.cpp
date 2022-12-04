@@ -254,7 +254,7 @@ TEST_CASE("Test casting of input property from integer to some floating point ty
   CHECK(numbers == outputNumbers);
 }
 
-TEST_CASE("Test writing an element with more properties than defined in the memory layout", "[ostream]")
+TEST_CASE("Test writing an element with more properties than defined in the memory layout", "[iostream]")
 {
   const auto format = GENERATE(
       plywoot::PlyFormat::Ascii, plywoot::PlyFormat::BinaryLittleEndian, plywoot::PlyFormat::BinaryBigEndian);
