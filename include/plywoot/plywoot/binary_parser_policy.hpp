@@ -23,6 +23,7 @@ public:
 
   /// Seeks to the start of the data for the given element. Returns whether
   /// seeking was successful.
+  // TODO(ton): skipping elements is inefficient; find a better solution.
   bool seekTo(const PlyElement &element) const
   {
     std::size_t numBytes{0};
