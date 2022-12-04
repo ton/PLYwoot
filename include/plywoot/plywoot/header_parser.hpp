@@ -7,6 +7,7 @@
 #include "std.hpp"
 #include "types.hpp"
 
+#include <cassert>
 #include <cstdint>
 #include <istream>
 #include <string>
@@ -69,6 +70,8 @@ class HeaderParser
 public:
   HeaderParser(std::istream &is) : scanner_{is}
   {
+    assert(is.good());
+
     accept(Token::MagicNumber);
 
     // Parse the format section.

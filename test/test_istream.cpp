@@ -12,7 +12,7 @@
 TEST_CASE("Input file does not exist", "[header][istream][error]")
 {
   std::ifstream ifs{"test/input/header/missing.ply", std::ios::in};
-  REQUIRE_THROWS_AS(plywoot::IStream(ifs), plywoot::UnexpectedToken);
+  REQUIRE_THROWS_AS(plywoot::IStream(ifs), plywoot::InvalidInputStream);
 }
 
 TEST_CASE("Input file is not a PLY file", "[header][istream][error]")

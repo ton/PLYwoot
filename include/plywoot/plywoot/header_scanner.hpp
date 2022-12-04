@@ -8,6 +8,23 @@
 #include <istream>
 #include <string>
 
+namespace plywoot {
+
+/// Base class for all header scanner exceptions.
+struct HeaderScannerException : Exception
+{
+  HeaderScannerException(const std::string &message) : Exception("scanner error: " + message) {}
+};
+
+/// Exception thrown in case some stream in an invalid state was passed to the
+/// header parser.
+struct InvalidInputStream : HeaderScannerException
+{
+  InvalidInputStream() : HeaderScannerException("invalid input stream") {}
+};
+
+}
+
 namespace plywoot { namespace detail {
 
 static constexpr const char endHeaderToken[] = "end_header";
@@ -50,6 +67,8 @@ public:
   /// TODO(ton): add documentation.
   HeaderScanner(std::istream &is) : is_{is}
   {
+    if (!is) { throw InvalidInputStream{}; }
+
     std::string line;
     while (bool(std::getline(is, line)) && line != endHeaderToken)
     {
