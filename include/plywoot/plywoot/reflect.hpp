@@ -102,8 +102,6 @@ public:
 
   std::size_t size() const { return size_; }
 
-  constexpr std::size_t numProperties() const { return std::tuple_size<std::tuple<Ts...>>::value; }
-
 private:
   /// Pointer to the writable memory area that contains `n` number of structures
   /// made up of the types associated with this layout.
