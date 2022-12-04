@@ -22,12 +22,12 @@
 
 namespace plywoot {
 
-// TODO(ton): documentation
-
 /// Represents an input PLY data stream that can be queried for data.
 class IStream
 {
 public:
+  /// Constructs an input PLY data stream from the given input stream. This will
+  /// automatically trigger parsing of all PLY data in the input stream.
   IStream(std::istream &is) : IStream{is, detail::HeaderParser{is}} {}
 
   /// Returns all comment lines.
@@ -105,8 +105,11 @@ private:
 
   mutable detail::BufferedIStream is_;
 
+  /// All comments defines in the header.
   std::vector<Comment> comments_;
+  /// All PLY elements defined in the header.
   std::vector<PlyElement> elements_;
+  /// Format of the PLY input data, either ASCII, little-, or big-endian binary.
   PlyFormat format_;
 };
 
@@ -115,10 +118,16 @@ private:
 class OStream
 {
 public:
+  /// Constructs an output PLY data stream of the given format type.
   OStream(PlyFormat format) : format_{format} {}
+  /// Constructs an output PLY data stream of the given format type, with the
+  /// specified comments that should be written to the header. Line numbers of
+  /// the comments should start from line 2, since according to the
+  /// specification, comments may not occur in the first two lines of the
+  /// header.
   OStream(PlyFormat format, std::vector<Comment> comments) : format_{format}, comments_{std::move(comments)}
   {
-    // Ensure comments are sorted on line number, ascendingly.
+    // Ensure comments are sorted on line number (ascending).
     std::stable_sort(comments_.begin(), comments_.end(), [](const Comment &x, const Comment &y) {
       return x.line < y.line;
     });
@@ -170,6 +179,8 @@ public:
   }
 
 private:
+  /// Writes the ASCII PLY header, which defines the format of the PLY data, the
+  /// elements and element properties that occur in the data.
   void writeHeader(std::ostream &os) const
   {
     os << "ply\n";

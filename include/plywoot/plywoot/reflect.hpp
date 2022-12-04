@@ -6,6 +6,7 @@
 
 namespace plywoot { namespace reflect {
 
+/// Meta type that is used to help with SFINAE resolution.
 template<typename... Ts>
 struct Void
 {
@@ -77,29 +78,44 @@ struct Stride
 };
 
 /// Used to define the layout of some structure that is either read from or
-/// written to by the PLY I/O functions.
-// TODO
+/// written to by the PLY I/O functions. Note that it is important that the
+/// order of data types specified in the layout matches the order of the data
+/// types in the data type that is read from or written to. This will
+/// automatically take default C/C++ padding into account. In case not all
+/// properties in some layout structure are written, use `reflect::Stride` to
+/// skip properties.
 template<typename... Ts>
 class Layout : public std::tuple<Ts...>
 {
 public:
-  /// Constructor for an empty layout (no data will be written).
+  /// Constructor for an empty layout (no data will be read/written).
   Layout() = default;
 
+  /// Constructs a layout representation of some element, and specifies a target
+  /// list of elements that will be written to by the PLY parser.
   template<typename T>
   Layout(std::vector<T> &v)
       : data_{reinterpret_cast<std::uint8_t *>(v.data())}, cdata_{data_}, size_{v.size()}
   {
   }
+
+  /// Constructs a layout representation of some element, and specifies a target
+  /// list of elements that will be read from by the PLY writer.
   template<typename T>
   Layout(const std::vector<T> &v)
       : data_{nullptr}, cdata_{reinterpret_cast<const std::uint8_t *>(v.data())}, size_{v.size()}
   {
   }
 
+  /// Returns a pointer to the read-only memory area that contains `n` number of
+  /// structures made up of the types associated with this layout.
+  /// @{
   std::uint8_t *data() { return data_; }
   const std::uint8_t *data() const { return cdata_; }
+  /// @}
 
+  /// Returns the number of elements that are or may be stored in the memory
+  /// block pointer to by the associated data block.
   std::size_t size() const { return size_; }
 
 private:

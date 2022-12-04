@@ -8,16 +8,26 @@
 
 namespace plywoot { namespace detail {
 
-/// TODO
+/// Wrapper around some input stream that provides buffered input functionality.
+/// This will always buffer some compile-time given size of bytes up front, and
+/// data is read from this buffer until the buffer is exhausted, at which point
+/// it is refilled again with the next block of data from the wrapped input
+/// stream. This improves reading from file-backed input streams considerably.
 class BufferedIStream
 {
 public:
+  /// Constructs a buffered input stream wrapper around the given input stream.
   explicit BufferedIStream(std::istream &is) : is_{is}, headerOffset_{is_.tellg()} {}
 
+  /// Returns whether the read head is at the end of the stream.
   bool eof() const { return *c_ == EOF; }
 
+  /// Returns a raw character pointer representing the current read head in the
+  /// stream.
+  /// @{
   const char *data() const { return c_; }
   const char *&data() { return c_; }
+  /// @}
 
   /// Reads an object of the given type from the input data stream.
   template<typename T>
@@ -37,6 +47,7 @@ public:
     if (c_ >= buffer_ + BufferSize) { buffer(); }
   }
 
+  /// Skips the given number of bytes in the input stream.
   void skip(std::size_t n)
   {
     const std::size_t remaining = (buffer_ + BufferSize) - c_;
@@ -74,11 +85,17 @@ public:
     }
   }
 
+  /// Skips whitespace in the input stream, and positions the read head on the
+  /// first non-whitespace character in the input stream relative from the
+  /// current read head.
   inline void skipWhitespace()
   {
     while (0 <= *c_ && *c_ <= 0x20) { readCharacter(); }
   }
 
+  /// Skips non-whitespace in the input stream, and positions the read head on
+  /// the first whitespace character in the input stream relative from the
+  /// current read head.
   inline void skipNonWhitespace()
   {
     while (*c_ > 0x20) readCharacter();
@@ -134,9 +151,13 @@ private:
     c_ = buffer_;
   }
 
+  /// Reference to the wrapper standard input stream.
   std::istream &is_;
+  /// Initial offset in the input stream at the time of construction of this
+  /// buffered stream.
   std::istream::pos_type headerOffset_;
 
+  /// Default buffer size; may need tweaking.
   constexpr static size_t BufferSize{8192};
   /// Buffered data, always a null terminated string.
   char buffer_[BufferSize] = {};

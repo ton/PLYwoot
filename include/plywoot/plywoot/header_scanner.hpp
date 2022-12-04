@@ -60,11 +60,13 @@ constexpr bool isTokenDelimiter[256] = {
 };
 // clang-format on
 
-/// TODO(ton): add documentation.
+/// Tokenizes the header data of an input PLY data stream. The scanner is
+/// automatically constructed by the parser.
 class HeaderScanner
 {
 public:
-  /// TODO(ton): add documentation.
+  /// Constructs a header scanner for the PLY header defined in the given input
+  /// stream. Throws `InvalidInputStream` in case the input stream is not valid.
   HeaderScanner(std::istream &is) : is_{is}
   {
     if (!is) { throw InvalidInputStream{}; }
