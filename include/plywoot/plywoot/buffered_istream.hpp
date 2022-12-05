@@ -53,21 +53,16 @@ public:
   void skip(std::size_t n)
   {
     const std::size_t remaining = (buffer_ + BufferSize) - c_;
-    if (remaining <= n)
+    if (remaining > n)
     {
-      buffer();
+      c_ += n;
+    }
+    else
+    {
       n -= remaining;
-    }
-
-    // TODO(ton): this can be implemented much more efficiently by just seeking
-    // the underlying stream and buffer from the right offset.
-    while (n >= BufferSize)
-    {
+      is_.seekg(n, std::ios_base::cur);
       buffer();
-      n -= BufferSize;
     }
-
-    c_ += n;
   }
 
   /// Skips `n` lines in the input, places the read head at the first
