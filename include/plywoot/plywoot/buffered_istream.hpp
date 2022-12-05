@@ -33,9 +33,11 @@ public:
   template<typename T>
   inline T read()
   {
-    buffer(sizeof(T));
+    // Note; buffer a bit more than strictly necessary, so that we can move the
+    // read head unconditionally after reading the object of type T.
+    buffer(sizeof(T) * 2);
     const T t{*reinterpret_cast<const T *>(c_)};
-    skip(sizeof(T));
+    c_ += sizeof(T);
     return t;
   }
 
