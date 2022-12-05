@@ -160,7 +160,7 @@ private:
   std::istream::pos_type initialOffset_;
 
   /// Default buffer size; may need tweaking.
-  constexpr static size_t BufferSize{8192};
+  constexpr static size_t BufferSize{1024 * 1024};
   /// Buffered data, always a null terminated string.
   char buffer_[BufferSize] = {};
   /// Character the scanner's read head is currently pointing to. Invariant
