@@ -6,6 +6,13 @@
 #include <cstring>
 #include <istream>
 
+namespace {
+
+/// Default buffer size; may need tweaking.
+constexpr size_t BufferSize{1024 * 1024};
+
+}
+
 namespace plywoot { namespace detail {
 
 /// Wrapper around some input stream that provides buffered input functionality.
@@ -40,9 +47,9 @@ public:
     // Note; buffer a bit more than strictly necessary, so that we can move the
     // read head unconditionally after reading the object of type T.
     buffer(sizeof(T) * 2);
-    const T t{*reinterpret_cast<const T *>(c_)};
+    const char *t = c_;
     c_ += sizeof(T);
-    return t;
+    return *reinterpret_cast<const T *>(t);
   }
 
   /// Reads the next character in the input stream and advances the read head by
@@ -50,13 +57,13 @@ public:
   inline void readCharacter()
   {
     ++c_;
-    if (c_ >= buffer_ + BufferSize) { buffer(); }
+    if (c_ >= eob_) { buffer(); }
   }
 
   /// Skips the given number of bytes in the input stream.
   void skip(std::size_t n)
   {
-    const std::size_t remaining = (buffer_ + BufferSize) - c_;
+    const std::size_t remaining = eob_ - c_;
     if (remaining > n)
     {
       c_ += n;
@@ -76,7 +83,7 @@ public:
   {
     while (*c_ != EOF && n > 0)
     {
-      c_ = static_cast<const char *>(std::memchr(c_, '\n', (buffer_ + BufferSize) - c_));
+      c_ = static_cast<const char *>(std::memchr(c_, '\n', eob_ - c_));
       if (c_)
       {
         readCharacter();
@@ -121,7 +128,7 @@ public:
   void buffer(size_t minimum)
   {
     assert(minimum < BufferSize / 2);
-    const size_t remaining = (buffer_ + BufferSize - c_);
+    const size_t remaining = eob_ - c_;
     if (remaining < minimum)
     {
       std::memcpy(buffer_, c_, remaining);
@@ -152,16 +159,6 @@ private:
     c_ = buffer_;
   }
 
-  /// Reference to the wrapper standard input stream.
-  std::istream &is_;
-  /// Initial offset in the input stream at the time of construction of this
-  /// buffered stream.
-  std::istream::pos_type initialOffset_;
-
-  /// Default buffer size; may need tweaking.
-  constexpr static size_t BufferSize{1024 * 1024};
-  /// Buffered data, always a null terminated string.
-  char buffer_[BufferSize] = {};
   /// Character the scanner's read head is currently pointing to. Invariant
   /// after construction of the scanner is:
   ///
@@ -170,6 +167,17 @@ private:
   /// Note that the invariant allows for one character lookahead without the
   /// need to check whether we need to read data from disk.
   const char *c_{buffer_ + BufferSize};
+  /// End-of-buffer pointer.
+  const char *eob_{c_};
+
+  /// Reference to the wrapper standard input stream.
+  std::istream &is_;
+  /// Initial offset in the input stream at the time of construction of this
+  /// buffered stream.
+  const std::istream::pos_type initialOffset_;
+
+  /// Buffered data, always a null terminated string.
+  alignas(64) char buffer_[BufferSize] = {};
 };
 
 }}
