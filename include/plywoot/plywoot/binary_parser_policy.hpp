@@ -16,8 +16,8 @@ class BinaryParserPolicy
 {
 public:
   /// Constructs a binary little endian parser policy.
-  BinaryParserPolicy(BufferedIStream &is, const std::vector<PlyElement> &elements)
-      : is_{is}, elements_{elements}
+  BinaryParserPolicy(BufferedIStream &is, std::vector<PlyElement> elements)
+      : is_{is}, elements_{std::move(elements)}
   {
   }
 
@@ -136,7 +136,7 @@ private:
   }
 
   mutable detail::BufferedIStream is_;
-  const std::vector<PlyElement> &elements_;
+  std::vector<PlyElement> elements_;
   mutable std::map<std::string, std::ptrdiff_t> elementSize_;
 };
 
