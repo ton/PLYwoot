@@ -70,8 +70,6 @@ class HeaderParser
 public:
   HeaderParser(std::istream &is) : scanner_{is}
   {
-    assert(is.good());
-
     accept(Token::MagicNumber);
 
     // Parse the format section.
