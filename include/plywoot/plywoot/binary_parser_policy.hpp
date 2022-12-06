@@ -76,7 +76,7 @@ public:
 
 private:
   /// Calculates and returns the size in bytes of the given PLY element. Uses
-  /// memoization; the size of every unique element is only calculated once
+  /// memoization; the size of every unique element is only calculated once.
   size_t elementSizeInBytes(const PlyElement &element) const
   {
     auto it = elementSize_.lower_bound(element.name());
