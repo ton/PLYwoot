@@ -5,7 +5,6 @@
 #include "plywoot/ascii_writer_policy.hpp"
 #include "plywoot/binary_parser_policy.hpp"
 #include "plywoot/binary_writer_policy.hpp"
-#include "plywoot/buffered_istream.hpp"
 #include "plywoot/header_parser.hpp"
 #include "plywoot/parser.hpp"
 #include "plywoot/reflect.hpp"
@@ -76,6 +75,10 @@ public:
   template<typename... Ts>
   void read(const PlyElement &element, reflect::Layout<Ts...> layout) const
   {
+    // Note; need to clear any eof() flags being set to ensure seeking succeeds.
+    is_.clear();
+    is_.seekg(endOfHeaderOffset_);
+
     switch (format_)
     {
       case PlyFormat::Ascii: {
@@ -99,11 +102,19 @@ public:
 private:
   /// Constructs a PLY file from the given input stream and header parser.
   IStream(std::istream &is, const detail::HeaderParser &parser)
-      : is_{is}, comments_{parser.comments()}, elements_{parser.elements()}, format_{parser.format()}
+      : is_{is},
+        endOfHeaderOffset_{is.tellg()},
+        comments_{parser.comments()},
+        elements_{parser.elements()},
+        format_{parser.format()}
   {
   }
 
-  mutable detail::BufferedIStream is_;
+  /// Input stream containing the PLY data.
+  std::istream &is_;
+  /// Offset in the input stream where the header data ends and the element data
+  /// starts.
+  std::istream::pos_type endOfHeaderOffset_;
 
   /// All comments defines in the header.
   std::vector<Comment> comments_;

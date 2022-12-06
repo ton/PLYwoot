@@ -16,7 +16,7 @@ class BinaryParserPolicy
 {
 public:
   /// Constructs a binary little endian parser policy.
-  BinaryParserPolicy(BufferedIStream &is, std::vector<PlyElement> elements)
+  BinaryParserPolicy(std::istream &is, std::vector<PlyElement> elements)
       : is_{is}, elements_{std::move(elements)}
   {
   }

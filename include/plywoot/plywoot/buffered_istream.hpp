@@ -19,6 +19,10 @@ public:
   /// Constructs a buffered input stream wrapper around the given input stream.
   explicit BufferedIStream(std::istream &is) : is_{is}, initialOffset_{is_.tellg()} {}
 
+  /// No copy semantics allowed.
+  BufferedIStream(const BufferedIStream &) = delete;
+  BufferedIStream &operator=(const BufferedIStream &) = delete;
+
   /// Returns whether the read head is at the end of the stream.
   bool eof() const { return *c_ == EOF; }
 

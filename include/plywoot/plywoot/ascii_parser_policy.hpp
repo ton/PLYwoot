@@ -31,7 +31,7 @@ namespace detail {
 class AsciiParserPolicy
 {
 public:
-  AsciiParserPolicy(BufferedIStream &is, std::vector<PlyElement> elements) : is_{is}, elements_{std::move(elements)} {}
+  AsciiParserPolicy(std::istream &is, std::vector<PlyElement> elements) : is_{is}, elements_{std::move(elements)} {}
 
   /// Seeks to the start of the data for the given element. Returns whether
   /// seeking was successful.
