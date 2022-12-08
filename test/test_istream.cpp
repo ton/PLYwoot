@@ -184,7 +184,9 @@ TEST_CASE("A single element definition with properties is correctly parsed", "[h
   REQUIRE(properties[8].sizeType() == plywoot::PlyDataType::UChar);
 }
 
-TEST_CASE("A single element definition with properties is correctly parsed using alternate type names", "[header][istream]")
+TEST_CASE(
+    "A single element definition with properties is correctly parsed using alternate type names",
+    "[header][istream]")
 {
   std::ifstream ifs{"test/input/header/single_element_with_properties_using_type_aliases.ply"};
   const plywoot::IStream plyFile{ifs};
