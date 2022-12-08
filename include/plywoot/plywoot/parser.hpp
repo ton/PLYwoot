@@ -16,6 +16,7 @@ namespace plywoot { namespace detail {
 ///   - bool seekTo(const PlyElement &element);
 ///
 ///   - template<typename T> T readNumber();
+///   - template<typename T> std::uint8_t *readNumbers(std::uint8_t *dest, std::size_t n);
 ///   - template<typename T> T skipNumber();
 ///
 ///   - void skipProperties(PlyPropertyConstIterator first, PlyPropertyConstIterator last);
@@ -93,13 +94,25 @@ private:
   }
 
   template<typename PlyT, typename PlySizeT, typename DestT, std::size_t N>
-  std::uint8_t *readListProperty(std::uint8_t *dest, reflect::Type<reflect::Array<DestT, N>>) const
+  typename std::enable_if<!std::is_same<PlyT, DestT>::value, std::uint8_t *>::type readListProperty(std::uint8_t *dest, reflect::Type<reflect::Array<DestT, N>>) const
   {
     // TODO(ton): skip the number that defines the list in the PLY data, we
     // expect it to be of length N; throw an exception here in case they do no match?
     this->template skipNumber<PlySizeT>();
     for (std::size_t i = 0; i < N; ++i) { dest = readProperty<PlyT>(dest, reflect::Type<DestT>{}); }
     return dest;
+  }
+
+  template<typename PlyT, typename PlySizeT, typename DestT, std::size_t N>
+  typename std::enable_if<std::is_same<PlyT, DestT>::value, std::uint8_t *>::type readListProperty(std::uint8_t *dest, reflect::Type<reflect::Array<DestT, N>>) const
+  {
+    static_assert(std::is_arithmetic<PlyT>::value, "unexpected PLY data type");
+
+    // TODO(ton): skip the number that defines the list in the PLY data, we
+    // expect it to be of length N; throw an exception here in case they do no match?
+    this->template skipNumber<PlySizeT>();
+    dest = static_cast<std::uint8_t *>(detail::align(dest, alignof(DestT)));
+    return this->template readNumbers<DestT>(dest, N);
   }
 
   template<typename PlyT, typename TypeTag>

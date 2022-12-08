@@ -53,6 +53,21 @@ public:
     return *reinterpret_cast<const T *>(t);
   }
 
+  /// Reads `n` objects of the given type from the input data stream, and stores
+  /// them in the given destination.
+  template<typename T>
+  inline std::uint8_t *read(std::uint8_t *dest, std::size_t n)
+  {
+    // Note; buffer a bit more than strictly necessary, so that we can move the
+    // read head unconditionally after reading the object of type T.
+    const std::size_t bytesToRead = n * sizeof(T);
+    if (remaining_ < bytesToRead) buffer(bytesToRead);
+    std::memcpy(dest, c_, bytesToRead);
+    remaining_ -= bytesToRead;
+    c_ += bytesToRead;
+    return dest + bytesToRead;
+  }
+
   /// Reads the next character in the input stream and advances the read head by
   /// one character.
   inline void readCharacter()

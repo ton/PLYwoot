@@ -56,6 +56,27 @@ public:
   }
   /// @}
 
+  /// Reads `n` numbers of the given type `T` from the input stream.
+  /// @{
+  template<typename T, typename EndiannessDependent = Endianness>
+  typename std::enable_if<std::is_same<EndiannessDependent, LittleEndian>::value, std::uint8_t *>::type readNumbers(std::uint8_t *dest, std::size_t n) const
+  {
+    return is_.read<T>(dest, n);
+  }
+
+  template<typename T, typename EndiannessDependent = Endianness>
+  typename std::enable_if<std::is_same<EndiannessDependent, BigEndian>::value, std::uint8_t *>::type readNumbers(std::uint8_t *dest, std::size_t n) const
+  {
+    is_.read<T>(dest, n);
+    for (std::size_t i = 0; i < n; ++i, dest += sizeof(T))
+    {
+      T &t = *reinterpret_cast<T *>(dest);
+      t = betoh(t);
+    }
+    return dest;
+  }
+  /// @}
+
   /// Skips a number of the given type `T` in the input stream.
   template<typename T>
   void skipNumber() const
