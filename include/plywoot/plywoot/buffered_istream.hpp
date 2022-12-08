@@ -9,7 +9,7 @@
 namespace {
 
 /// Default buffer size; may need tweaking.
-constexpr size_t BufferSize{1024 * 1024};
+constexpr std::size_t BufferSize{1024 * 1024};
 
 }
 
@@ -127,7 +127,7 @@ public:
   /// In case it already does, this does nothing, otherwise, it will shift the
   /// data remaining in the buffer to the front, then refill the remaining part
   /// of the buffer.
-  void buffer(size_t minimum)
+  void buffer(std::size_t minimum)
   {
     assert(minimum < BufferSize / 2);
     if (remaining_ < minimum)

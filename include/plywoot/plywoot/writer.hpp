@@ -81,7 +81,7 @@ private:
   /// write a list of N properties of type T.
   // TODO(ton): reimplement for binary, gets rid of
   // `detail::io::writeTokenSeparator()` and likely improves performance.
-  template<typename PlyT, typename PlySizeT, typename SrcT, size_t N>
+  template<typename PlyT, typename PlySizeT, typename SrcT, std::size_t N>
   const std::uint8_t *writeListProperty(
       std::ostream &os,
       const std::uint8_t *src,

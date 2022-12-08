@@ -77,7 +77,7 @@ public:
 private:
   /// Calculates and returns the size in bytes of the given PLY element. Uses
   /// memoization; the size of every unique element is only calculated once.
-  size_t elementSizeInBytes(const PlyElement &element) const
+  std::size_t elementSizeInBytes(const PlyElement &element) const
   {
     auto it = elementSize_.lower_bound(element.name());
     if (it == elementSize_.end() || it->first != element.name())
@@ -92,7 +92,7 @@ private:
           is_.skip(numBytes);
 
           std::size_t sizeSum = 0;
-          for (size_t i = 0; i < element.size(); ++i)
+          for (std::size_t i = 0; i < element.size(); ++i)
           {
             std::size_t size = 0;
             switch (p.sizeType())
