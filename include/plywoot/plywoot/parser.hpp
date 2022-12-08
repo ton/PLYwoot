@@ -85,9 +85,9 @@ private:
     dest = static_cast<std::uint8_t *>(detail::align(dest, alignof(std::vector<SrcT>)));
     std::vector<SrcT> &v = *reinterpret_cast<std::vector<SrcT> *>(dest);
 
-    const unsigned int size = this->template readNumber<PlySizeT>();
+    const PlySizeT size = this->template readNumber<PlySizeT>();
     v.reserve(size);
-    for (unsigned int i = 0; i < size; ++i) { v.push_back(this->template readNumber<PlyT>()); }
+    for (PlySizeT i = 0; i < size; ++i) { v.push_back(this->template readNumber<PlyT>()); }
 
     return dest + sizeof(std::vector<SrcT>);
   }
