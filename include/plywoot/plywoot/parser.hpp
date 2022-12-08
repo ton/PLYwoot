@@ -79,17 +79,17 @@ private:
     return readElement<U, Ts...>(readElement<T>(dest, first, last), first + 1, last);
   }
 
-  template<typename PlyT, typename PlySizeT, typename SrcT>
-  std::uint8_t *readListProperty(std::uint8_t *dest, reflect::Type<std::vector<SrcT>>) const
+  template<typename PlyT, typename PlySizeT, typename DestT>
+  std::uint8_t *readListProperty(std::uint8_t *dest, reflect::Type<std::vector<DestT>>) const
   {
-    dest = static_cast<std::uint8_t *>(detail::align(dest, alignof(std::vector<SrcT>)));
-    std::vector<SrcT> &v = *reinterpret_cast<std::vector<SrcT> *>(dest);
+    dest = static_cast<std::uint8_t *>(detail::align(dest, alignof(std::vector<DestT>)));
+    std::vector<DestT> &v = *reinterpret_cast<std::vector<DestT> *>(dest);
 
     const PlySizeT size = this->template readNumber<PlySizeT>();
     v.reserve(size);
     for (PlySizeT i = 0; i < size; ++i) { v.push_back(this->template readNumber<PlyT>()); }
 
-    return dest + sizeof(std::vector<SrcT>);
+    return dest + sizeof(std::vector<DestT>);
   }
 
   template<typename PlyT, typename PlySizeT, typename DestT, size_t N>
