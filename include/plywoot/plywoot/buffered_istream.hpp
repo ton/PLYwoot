@@ -102,7 +102,7 @@ public:
       c_ = static_cast<const char *>(std::memchr(c_, '\n', remaining_));
       if (c_)
       {
-        remaining_ = eob_ - c_;
+        remaining_ = (buffer_ + BufferSize) - c_;
         readCharacter();
         --n;
       }
@@ -191,8 +191,6 @@ private:
   /// Note that the invariant allows for one character lookahead without the
   /// need to check whether we need to read data from disk.
   const char *c_{buffer_ + BufferSize};
-  /// End-of-buffer pointer.
-  const char *eob_{c_};
   /// Number of bytes remaining in the buffer.
   std::size_t remaining_{0};
 
