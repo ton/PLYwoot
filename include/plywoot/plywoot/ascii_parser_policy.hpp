@@ -82,9 +82,8 @@ public:
     is_.skipNonWhitespace();
   }
 
-  /// Skips the data of all properties from `first` to `last` in the input
-  /// stream.
-  void skipProperties(PlyPropertyConstIterator, PlyPropertyConstIterator) const { is_.skipLines(1); }
+  /// Skips property data, totaling `n` bytes.
+  void skipProperties(size_t n) const { if (n > 0) is_.skipLines(1); }
 
 private:
   mutable detail::BufferedIStream is_;

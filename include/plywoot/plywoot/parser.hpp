@@ -6,6 +6,7 @@
 #include "types.hpp"
 
 #include <cstdint>
+#include <numeric>
 
 namespace plywoot { namespace detail {
 
@@ -19,7 +20,7 @@ namespace plywoot { namespace detail {
 ///   - template<typename T> std::uint8_t *readNumbers(std::uint8_t *dest, std::size_t n);
 ///   - template<typename T> T skipNumber();
 ///
-///   - void skipProperties(PlyPropertyConstIterator first, PlyPropertyConstIterator last);
+///   - void skipProperties(size_t numBytes);
 template<typename FormatParserPolicy>
 class Parser : private FormatParserPolicy
 {
@@ -48,20 +49,22 @@ private:
   {
     if (this->seekTo(element))
     {
+      const PropertyConstIterator first = element.properties().begin();
       const PropertyConstIterator last = element.properties().end();
+      const PropertyConstIterator firstToSkip = first + reflect::numProperties<Ts...>();
+
+      const std::size_t numBytesToSkip =
+          firstToSkip < last ? std::accumulate(
+                                   firstToSkip, last, 0ul,
+                                   [](std::size_t acc, const PlyProperty &p) {
+                                     return acc + sizeOf(p.isList() ? p.sizeType() : p.type());
+                                   })
+                             : 0;
 
       for (std::size_t i{0}; i < element.size(); ++i)
       {
-        dest = readElement<Ts...>(dest, element.properties().begin(), last);
-
-        // In case the number of properties in the PLY element exceeds the
-        // number of properties to map to, ignore the remainder of the PLY
-        // element properties...
-        if (element.properties().size() > reflect::numProperties<Ts...>())
-        {
-          this->skipProperties(
-              element.properties().begin() + reflect::numProperties<Ts...>(), element.properties().end());
-        }
+        dest = readElement<Ts...>(dest, first, last);
+        this->skipProperties(numBytesToSkip);
       }
     }
   }

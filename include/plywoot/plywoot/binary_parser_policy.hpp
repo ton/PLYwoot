@@ -86,15 +86,10 @@ public:
     is_.skip(sizeof(T));
   }
 
-  /// Skips the data of all properties from `first` to `last` in the input
-  /// stream.
-  void skipProperties(PlyPropertyConstIterator first, PlyPropertyConstIterator last) const
+  /// Skips property data, totaling `n` bytes.
+  void skipProperties(std::size_t n) const
   {
-    while (first != last)
-    {
-      is_.skip(sizeOf(first->isList() ? first->sizeType() : first->type()));
-      ++first;
-    }
+    is_.skip(n);
   }
 
 private:
