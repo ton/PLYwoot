@@ -121,7 +121,7 @@ public:
   }
 
   // Returns the first position of the given character in this string_view.
-  size_type find(char c, size_type pos = 0)
+  size_type find(char c)
   {
     const char *first = static_cast<const char *>(::memchr(data_, c, size_));
     return first != nullptr ? std::distance(data_, first) : std::string::npos;
