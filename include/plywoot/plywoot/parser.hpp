@@ -75,13 +75,19 @@ private:
   }
 
   template<typename T, typename U, typename... Ts>
-  typename std::enable_if<!reflect::IsPack<T>::value, std::uint8_t *>::type readElement(std::uint8_t *dest, PropertyConstIterator first, PropertyConstIterator last) const
+  typename std::enable_if<!reflect::IsPack<T>::value, std::uint8_t *>::type readElement(
+      std::uint8_t *dest,
+      PropertyConstIterator first,
+      PropertyConstIterator last) const
   {
     return readElement<U, Ts...>(readElement<T>(dest, first, last), first + 1, last);
   }
 
   template<typename T, typename U, typename... Ts>
-  typename std::enable_if<reflect::IsPack<T>::value, std::uint8_t *>::type readElement(std::uint8_t *dest, PropertyConstIterator first, PropertyConstIterator last) const
+  typename std::enable_if<reflect::IsPack<T>::value, std::uint8_t *>::type readElement(
+      std::uint8_t *dest,
+      PropertyConstIterator first,
+      PropertyConstIterator last) const
   {
     return readElement<U, Ts...>(readElement<T>(dest, first, last), first + T::size, last);
   }
@@ -158,7 +164,9 @@ private:
   }
 
   template<typename PlyT, typename DestT>
-  typename std::enable_if<std::is_arithmetic<DestT>::value, std::uint8_t *>::type readProperty(std::uint8_t *dest, reflect::Type<DestT>) const
+  typename std::enable_if<std::is_arithmetic<DestT>::value, std::uint8_t *>::type readProperty(
+      std::uint8_t *dest,
+      reflect::Type<DestT>) const
   {
     dest = static_cast<std::uint8_t *>(detail::align(dest, alignof(DestT)));
     *reinterpret_cast<DestT *>(dest) = this->template readNumber<PlyT>();

@@ -31,7 +31,10 @@ namespace detail {
 class AsciiParserPolicy
 {
 public:
-  AsciiParserPolicy(std::istream &is, std::vector<PlyElement> elements) : is_{is}, elements_{std::move(elements)} {}
+  AsciiParserPolicy(std::istream &is, std::vector<PlyElement> elements)
+      : is_{is}, elements_{std::move(elements)}
+  {
+  }
 
   /// Seeks to the start of the data for the given element. Returns whether
   /// seeking was successful.
@@ -67,10 +70,7 @@ public:
   std::uint8_t *readNumbers(std::uint8_t *dest, std::size_t n) const
   {
     // TODO(ton): needs to be specialized for improved performance.
-    for (std::size_t i = 0; i < n; ++i, dest += sizeof(T))
-    {
-      *reinterpret_cast<T *>(dest) = readNumber<T>();
-    }
+    for (std::size_t i = 0; i < n; ++i, dest += sizeof(T)) { *reinterpret_cast<T *>(dest) = readNumber<T>(); }
     return dest;
   }
 
