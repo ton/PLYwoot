@@ -59,7 +59,7 @@ private:
         // element properties...
         if (element.properties().size() > reflect::numProperties<Ts...>())
         {
-          this->template skipProperties(
+          this->skipProperties(
               element.properties().begin() + reflect::numProperties<Ts...>(), element.properties().end());
         }
       }

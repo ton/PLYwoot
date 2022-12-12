@@ -38,10 +38,10 @@ public:
       // append the missing properties with a default value of zero.
       if (sizeof...(Ts) < static_cast<std::size_t>(std::distance(first, last)))
       {
-        this->template writeMissingProperties(os, first + sizeof...(Ts), last);
+        this->writeMissingProperties(os, first + sizeof...(Ts), last);
       }
 
-      this->template writeNewline(os);
+      this->writeNewline(os);
     }
   }
 
@@ -53,7 +53,7 @@ private:
       reflect::Type<SrcT>) const
   {
     src = static_cast<const std::uint8_t *>(detail::align(src, alignof(SrcT)));
-    this->template writeNumber(os, static_cast<PlyT>(*reinterpret_cast<const SrcT *>(src)));
+    this->writeNumber(os, static_cast<PlyT>(*reinterpret_cast<const SrcT *>(src)));
     return src + sizeof(SrcT);
   }
 
@@ -90,11 +90,11 @@ private:
     static_assert(N > 0, "invalid array size specified (needs to be larger than zero)");
 
     this->template writeNumber<PlySizeT>(os, N);
-    this->template writeTokenSeparator(os);
+    this->writeTokenSeparator(os);
     for (std::size_t i = 0; i < N - 1; ++i)
     {
       src = writeProperty<PlyT>(os, src, reflect::Type<SrcT>{});
-      this->template writeTokenSeparator(os);
+      this->writeTokenSeparator(os);
     }
     src = writeProperty<PlyT>(os, src, reflect::Type<SrcT>{});
 
@@ -113,11 +113,11 @@ private:
     this->template writeNumber<PlySizeT>(os, v.size());
     if (!v.empty())
     {
-      this->template writeTokenSeparator(os);
+      this->writeTokenSeparator(os);
       for (std::size_t i = 0; i < v.size() - 1; ++i)
       {
         this->template writeNumber<PlyT>(os, v[i]);
-        this->template writeTokenSeparator(os);
+        this->writeTokenSeparator(os);
       }
       this->template writeNumber<PlyT>(os, v.back());
     }
