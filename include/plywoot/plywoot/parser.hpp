@@ -57,10 +57,10 @@ private:
         // In case the number of properties in the PLY element exceeds the
         // number of properties to map to, ignore the remainder of the PLY
         // element properties...
-        if (element.properties().size() > sizeof...(Ts))
+        if (element.properties().size() > reflect::numProperties<Ts...>())
         {
           this->template skipProperties(
-              element.properties().begin() + sizeof...(Ts), element.properties().end());
+              element.properties().begin() + reflect::numProperties<Ts...>(), element.properties().end());
         }
       }
     }
@@ -75,9 +75,15 @@ private:
   }
 
   template<typename T, typename U, typename... Ts>
-  std::uint8_t *readElement(std::uint8_t *dest, PropertyConstIterator first, PropertyConstIterator last) const
+  typename std::enable_if<!reflect::IsPack<T>::value, std::uint8_t *>::type readElement(std::uint8_t *dest, PropertyConstIterator first, PropertyConstIterator last) const
   {
     return readElement<U, Ts...>(readElement<T>(dest, first, last), first + 1, last);
+  }
+
+  template<typename T, typename U, typename... Ts>
+  typename std::enable_if<reflect::IsPack<T>::value, std::uint8_t *>::type readElement(std::uint8_t *dest, PropertyConstIterator first, PropertyConstIterator last) const
+  {
+    return readElement<U, Ts...>(readElement<T>(dest, first, last), first + T::size, last);
   }
 
   template<typename PlyT, typename PlySizeT, typename DestT>
@@ -94,7 +100,9 @@ private:
   }
 
   template<typename PlyT, typename PlySizeT, typename DestT, std::size_t N>
-  typename std::enable_if<!std::is_same<PlyT, DestT>::value, std::uint8_t *>::type readListProperty(std::uint8_t *dest, reflect::Type<reflect::Array<DestT, N>>) const
+  typename std::enable_if<!std::is_same<PlyT, DestT>::value, std::uint8_t *>::type readListProperty(
+      std::uint8_t *dest,
+      reflect::Type<reflect::Array<DestT, N>>) const
   {
     // TODO(ton): skip the number that defines the list in the PLY data, we
     // expect it to be of length N; throw an exception here in case they do no match?
@@ -104,7 +112,9 @@ private:
   }
 
   template<typename PlyT, typename PlySizeT, typename DestT, std::size_t N>
-  typename std::enable_if<std::is_same<PlyT, DestT>::value, std::uint8_t *>::type readListProperty(std::uint8_t *dest, reflect::Type<reflect::Array<DestT, N>>) const
+  typename std::enable_if<std::is_same<PlyT, DestT>::value, std::uint8_t *>::type readListProperty(
+      std::uint8_t *dest,
+      reflect::Type<reflect::Array<DestT, N>>) const
   {
     static_assert(std::is_arithmetic<PlyT>::value, "unexpected PLY data type");
 
@@ -148,9 +158,7 @@ private:
   }
 
   template<typename PlyT, typename DestT>
-  typename std::enable_if<std::is_arithmetic<DestT>::value, std::uint8_t *>::type readProperty(
-      std::uint8_t *dest,
-      reflect::Type<DestT>) const
+  typename std::enable_if<std::is_arithmetic<DestT>::value, std::uint8_t *>::type readProperty(std::uint8_t *dest, reflect::Type<DestT>) const
   {
     dest = static_cast<std::uint8_t *>(detail::align(dest, alignof(DestT)));
     *reinterpret_cast<DestT *>(dest) = this->template readNumber<PlyT>();
@@ -163,6 +171,14 @@ private:
       reflect::Type<DestT>) const
   {
     return static_cast<std::uint8_t *>(detail::align(dest, alignof(DestT))) + sizeof(DestT);
+  }
+
+  template<typename PlyT, typename DestT, size_t N>
+  std::uint8_t *readProperty(std::uint8_t *dest, reflect::Type<reflect::Pack<DestT, N>>) const
+  {
+    static_assert(std::is_arithmetic<PlyT>::value, "unexpected PLY data type");
+    dest = static_cast<std::uint8_t *>(detail::align(dest, alignof(DestT)));
+    return this->template readNumbers<DestT>(dest, N);
   }
 
   template<typename TypeTag>

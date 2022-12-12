@@ -428,6 +428,29 @@ TEST_CASE("Read elements from a PLY file by only partially retrieving all proper
   CHECK(expectedVertices == vertices);
 }
 
+TEST_CASE("Read elements from a PLY file by packing multiple properties together", "[istream]")
+{
+  auto inputFilename = GENERATE(
+      "test/input/ascii/cube.ply",
+      "test/input/binary/little_endian/cube.ply");
+
+  std::ifstream ifs{inputFilename};
+  const plywoot::IStream plyFile{ifs};
+
+  plywoot::PlyElement vertexElement;
+  bool isVertexElementFound{false};
+  std::tie(vertexElement, isVertexElementFound) = plyFile.element("vertex");
+  REQUIRE(isVertexElementFound);
+
+  using Vertex = FloatVertex;
+  using VertexLayout = plywoot::reflect::Layout<plywoot::reflect::Pack<float, 3>>;
+
+  const std::vector<Vertex> vertices = plyFile.read<Vertex, VertexLayout>(vertexElement);
+  const std::vector<Vertex> expectedVertices = {{0, 0, 0}, {1, 0, 0}, {1, 1, 0}, {0, 1, 0},
+                                                {0, 0, 1}, {1, 0, 1}, {1, 1, 1}, {0, 1, 1}};
+  CHECK(expectedVertices == vertices);
+}
+
 TEST_CASE("Test casting of input property from float to double", "[istream]")
 {
   auto inputFilename = GENERATE("test/input/ascii/cube.ply", "test/input/binary/little_endian/cube.ply");

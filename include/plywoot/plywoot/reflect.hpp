@@ -77,6 +77,67 @@ struct Stride
   using DestT = T;
 };
 
+/// Can be used in a `Layout` type to pack together a sequence of properties of
+/// the same type, such that they will be parsed in one go, speeding up parsing.
+template<typename T, std::size_t N>
+struct Pack
+{
+  using DestT = T;
+  static constexpr std::size_t size = N;
+  static constexpr bool isList = false;
+};
+
+/// Returns whether the given type `T` is considered to be a pack.
+/// @{
+template<typename T, typename = void>
+struct IsPack
+{
+  static constexpr bool value = false;
+};
+
+template<typename T, size_t N>
+struct IsPack<Pack<T, N>>
+{
+  static constexpr bool value = true;
+};
+/// @}
+
+namespace detail
+{
+  template<typename ...Ts>
+  struct NumProperties
+  {
+    static constexpr std::size_t size = 0;
+  };
+
+  template<typename T, typename ...Ts>
+  struct NumProperties<T, Ts...>
+  {
+    static constexpr std::size_t size = NumProperties<T>::size + NumProperties<Ts...>::size;
+  };
+
+  template<typename T, std::size_t N>
+  struct NumProperties<Pack<T, N>>
+  {
+    static constexpr std::size_t size = N;
+  };
+
+  template<typename T>
+  struct NumProperties<T>
+  {
+    static constexpr std::size_t size = 1;
+  };
+}
+
+/// Returns the number of properties spanned by the given list of reflection
+/// types. By default, every reflection type spans one property, except for
+/// `plywoot::reflect::Pack`, which may span multiple properties.
+template<typename ...Ts>
+std::size_t numProperties()
+{
+  return detail::NumProperties<Ts...>::size;
+}
+
 /// Used to define the layout of some structure that is either read from or
 /// written to by the PLY I/O functions. Note that it is important that the
 /// order of data types specified in the layout matches the order of the data
