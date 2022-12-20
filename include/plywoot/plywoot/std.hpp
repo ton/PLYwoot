@@ -1,11 +1,11 @@
 #ifndef PLYWOOT_STD_HPP
 #define PLYWOOT_STD_HPP
 
-#ifdef PLYWOOT_HAS_FAST_FLOAT
+#ifdef PLYWOOT_USE_FAST_FLOAT
 #include <fast_float/fast_float.h>
 #endif
 
-#ifdef PLYWOOT_HAS_FAST_INT
+#ifdef PLYWOOT_USE_FAST_INT
 #include <fast_int/fast_int.hpp>
 #endif
 
@@ -55,7 +55,7 @@ inline const void *align(const void *ptr, std::size_t alignment)
 template<typename Number>
 inline Number to_number(const char *first, const char *last, const char **end)
 {
-#ifdef PLYWOOT_HAS_FAST_INT
+#ifdef PLYWOOT_USE_FAST_INT
   Number n{};
   *end = fast_int::from_chars(first, last, n).ptr;
   return n;
@@ -67,7 +67,7 @@ inline Number to_number(const char *first, const char *last, const char **end)
 template<>
 inline float to_number<>(const char *first, const char *last, const char **end)
 {
-#ifdef PLYWOOT_HAS_FAST_FLOAT
+#ifdef PLYWOOT_USE_FAST_FLOAT
   float x;
   *end = fast_float::from_chars(first, last, x).ptr;
   return x;
@@ -79,7 +79,7 @@ inline float to_number<>(const char *first, const char *last, const char **end)
 template<>
 inline double to_number<double>(const char *first, const char *last, const char **end)
 {
-#ifdef PLYWOOT_HAS_FAST_FLOAT
+#ifdef PLYWOOT_USE_FAST_FLOAT
   double x;
   *end = fast_float::from_chars(first, last, x).ptr;
   return x;

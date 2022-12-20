@@ -48,8 +48,8 @@ target_compile_features(plywoot INTERFACE cxx_std_11)
 
 target_compile_definitions(plywoot
   INTERFACE
-  $<$<TARGET_EXISTS:FastFloat::fast_float>:PLYWOOT_HAS_FAST_FLOAT>
-  $<$<TARGET_EXISTS:fast_int::fast_int>:PLYWOOT_HAS_FAST_INT>
+  $<$<TARGET_EXISTS:FastFloat::fast_float>:PLYWOOT_USE_FAST_FLOAT>
+  $<$<TARGET_EXISTS:fast_int::fast_int>:PLYWOOT_USE_FAST_INT>
 )
 target_link_libraries(plywoot
   INTERFACE
