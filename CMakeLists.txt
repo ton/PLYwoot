@@ -7,12 +7,15 @@ project(plywoot
   DESCRIPTION "C++11 header-only PLY I/O library"
 )
 
-# Custom cmake modules
+# Custom cmake modules.
 set(PROJECT_CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/cmake")
 list(APPEND CMAKE_MODULE_PATH ${PROJECT_CMAKE_MODULE_PATH})
 
 # Require C++11 support.
 set(CMAKE_CXX_STANDARD 11)
+
+# For now, -O2 provides the best performance (at least for GCC).
+set(CMAKE_CXX_FLAGS_RELEASE "-O2")
 
 # Put all executables in build/.
 set (CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
@@ -43,27 +46,16 @@ target_include_directories(plywoot
 )
 target_compile_features(plywoot INTERFACE cxx_std_11)
 
-if(TARGET FastFloat::fast_float)
-  target_compile_definitions(plywoot
-    INTERFACE
-    PLYWOOT_HAS_FAST_FLOAT
-  )
-  target_link_libraries(plywoot
-    INTERFACE
-    FastFloat::fast_float
-  )
-endif()
-
-if(TARGET fast_int::fast_int)
-  target_compile_definitions(plywoot
-    INTERFACE
-    PLYWOOT_HAS_FAST_INT
-  )
-  target_link_libraries(plywoot
-    INTERFACE
-    fast_int::fast_int
-  )
-endif()
+target_compile_definitions(plywoot
+  INTERFACE
+  $<$<TARGET_EXISTS:FastFloat::fast_float>:PLYWOOT_HAS_FAST_FLOAT>
+  $<$<TARGET_EXISTS:fast_int::fast_int>:PLYWOOT_HAS_FAST_INT>
+)
+target_link_libraries(plywoot
+  INTERFACE
+  $<$<TARGET_EXISTS:FastFloat::fast_float>:FastFloat::fast_float>
+  $<$<TARGET_EXISTS:fast_int::fast_int>:fast_int::fast_int>
+)
 
 add_subdirectory(benchmark)
 add_subdirectory(test)
