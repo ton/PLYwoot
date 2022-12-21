@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.5)
 
-project(plywoot
+project(PLYwoot
   VERSION 0.0.1
   LANGUAGES CXX
   HOMEPAGE_URL "https://github.com/ton/plywoot"
@@ -80,7 +80,7 @@ install(TARGETS plywoot
 
 # Install a CMake config and version file.
 include(CMakePackageConfigHelpers)
-write_basic_package_version_file("plywootConfigVersion.cmake" VERSION ${PROJECT_VERSION} COMPATIBILITY SameMajorVersion)
+write_basic_package_version_file("${PROJECT_NAME}ConfigVersion.cmake" VERSION ${PROJECT_VERSION} COMPATIBILITY SameMajorVersion)
 configure_package_config_file(
   "${PROJECT_SOURCE_DIR}/cmake/${PROJECT_NAME}Config.cmake.in"
   "${PROJECT_BINARY_DIR}/${PROJECT_NAME}Config.cmake"
