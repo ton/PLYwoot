@@ -5,7 +5,6 @@
 #include "endian.hpp"
 
 #include <cstdint>
-#include <map>
 #include <vector>
 
 namespace plywoot { namespace detail {
@@ -86,75 +85,64 @@ public:
   }
 
   /// Skips property data, totaling `n` bytes.
-  void skipProperties(std::size_t n) const
-  {
-    is_.skip(n);
-  }
+  void skipProperties(std::size_t n) const { is_.skip(n); }
 
 private:
-  /// Calculates and returns the size in bytes of the given PLY element. Uses
-  /// memoization; the size of every unique element is only calculated once.
+  /// Calculates and returns the size in bytes of the given PLY element.
   std::size_t elementSizeInBytes(const PlyElement &element) const
   {
-    auto it = elementSize_.lower_bound(element.name());
-    if (it == elementSize_.end() || it->first != element.name())
+    std::size_t numBytes{0};
+    for (const PlyProperty &p : element.properties())
     {
-      std::size_t numBytes{0};
-      for (const PlyProperty &p : element.properties())
+      if (!p.isList()) { numBytes += element.size() * sizeOf(p.type()); }
+      else
       {
-        if (!p.isList()) { numBytes += element.size() * sizeOf(p.type()); }
-        else
+        is_.seekTo(numBytes);
+
+        std::size_t sizeSum = 0;
+        for (std::size_t i = 0; i < element.size(); ++i)
         {
-          is_.seekToBegin();
-          is_.skip(numBytes);
-
-          std::size_t sizeSum = 0;
-          for (std::size_t i = 0; i < element.size(); ++i)
+          std::size_t size = 0;
+          switch (p.sizeType())
           {
-            std::size_t size = 0;
-            switch (p.sizeType())
-            {
-              case PlyDataType::Char:
-                size = readNumber<char>();
-                break;
-              case PlyDataType::UChar:
-                size = readNumber<unsigned char>();
-                break;
-              case PlyDataType::Short:
-                size = readNumber<short>();
-                break;
-              case PlyDataType::UShort:
-                size = readNumber<unsigned short>();
-                break;
-              case PlyDataType::Int:
-                size = readNumber<int>();
-                break;
-              case PlyDataType::UInt:
-                size = readNumber<unsigned int>();
-                break;
-              case PlyDataType::Float:
-                size = readNumber<float>();
-                break;
-              case PlyDataType::Double:
-                size = readNumber<double>();
-                break;
-            }
-
-            sizeSum += size;
-            is_.skip(size * sizeOf(p.type()));
+            case PlyDataType::Char:
+              size = readNumber<char>();
+              break;
+            case PlyDataType::UChar:
+              size = readNumber<unsigned char>();
+              break;
+            case PlyDataType::Short:
+              size = readNumber<short>();
+              break;
+            case PlyDataType::UShort:
+              size = readNumber<unsigned short>();
+              break;
+            case PlyDataType::Int:
+              size = readNumber<int>();
+              break;
+            case PlyDataType::UInt:
+              size = readNumber<unsigned int>();
+              break;
+            case PlyDataType::Float:
+              size = readNumber<float>();
+              break;
+            case PlyDataType::Double:
+              size = readNumber<double>();
+              break;
           }
 
-          numBytes += element.size() * sizeOf(p.sizeType()) + sizeSum * sizeOf(p.type());
+          sizeSum += size;
+          is_.skip(size * sizeOf(p.type()));
         }
+
+        numBytes += element.size() * sizeOf(p.sizeType()) + sizeSum * sizeOf(p.type());
       }
-      it = elementSize_.emplace_hint(it, element.name(), numBytes);
     }
-    return it->second;
+    return numBytes;
   }
 
   mutable detail::BufferedIStream is_;
   std::vector<PlyElement> elements_;
-  mutable std::map<std::string, std::ptrdiff_t> elementSize_;
 };
 
 using BinaryLittleEndianParserPolicy = BinaryParserPolicy<LittleEndian>;
