@@ -33,8 +33,7 @@ public:
 
     if (first != last && *first == element)
     {
-      is_.seekToBegin();
-      is_.skip(numBytes);
+      is_.seekTo(numBytes);
     }
 
     return first != last;

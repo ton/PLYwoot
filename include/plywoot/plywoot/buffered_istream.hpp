@@ -138,6 +138,18 @@ public:
     buffer();
   }
 
+  // Positions the read head at the given offset relative from the end of the
+  // header.
+  void seekTo(const std::istream::pos_type offset)
+  {
+    // Need to clear eofbit() in case it is set,
+    // otherwise the first read after the seek will fail.
+    is_.clear();
+    is_.seekg(initialOffset_ + offset);
+
+    buffer();
+  }
+
   /// Ensures that the buffer contains at least the given number of characters.
   /// In case it already does, this does nothing, otherwise, it will shift the
   /// data remaining in the buffer to the front, then refill the remaining part
