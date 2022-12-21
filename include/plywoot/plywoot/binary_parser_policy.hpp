@@ -55,21 +55,21 @@ public:
   }
   /// @}
 
-  /// Reads `n` numbers of the given type `T` from the input stream.
+  /// Reads `N` numbers of the given type `T` from the input stream.
   /// @{
-  template<typename T, typename EndiannessDependent = Endianness>
+  template<typename T, std::size_t N, typename EndiannessDependent = Endianness>
   typename std::enable_if<std::is_same<EndiannessDependent, LittleEndian>::value, std::uint8_t *>::type
-  readNumbers(std::uint8_t *dest, std::size_t n) const
+  readNumbers(std::uint8_t *dest) const
   {
-    return is_.read<T>(dest, n);
+    return is_.read<T, N>(dest);
   }
 
-  template<typename T, typename EndiannessDependent = Endianness>
+  template<typename T, std::size_t N, typename EndiannessDependent = Endianness>
   typename std::enable_if<std::is_same<EndiannessDependent, BigEndian>::value, std::uint8_t *>::type
-  readNumbers(std::uint8_t *dest, std::size_t n) const
+  readNumbers(std::uint8_t *dest) const
   {
-    is_.read<T>(dest, n);
-    for (std::size_t i = 0; i < n; ++i, dest += sizeof(T))
+    is_.read<T, N>(dest);
+    for (std::size_t i = 0; i < N; ++i, dest += sizeof(T))
     {
       T &t = *reinterpret_cast<T *>(dest);
       t = betoh(t);
