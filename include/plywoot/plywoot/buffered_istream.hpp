@@ -66,14 +66,6 @@ public:
     return dest + bytesToRead;
   }
 
-  /// Reads the next character in the input stream and advances the read head by
-  /// one character.
-  inline void readCharacter()
-  {
-    ++c_;
-    if (c_ == eob_) { buffer(); }
-  }
-
   /// Skips the given number of bytes in the input stream.
   void skip(std::size_t n)
   {
@@ -182,6 +174,13 @@ private:
     }
 
     c_ = buffer_;
+  }
+
+  /// Reads the next character in the input stream and advances the read head by
+  /// one character.
+  inline void readCharacter()
+  {
+    if (c_++ == eob_) { buffer(); }
   }
 
   /// Character the scanner's read head is currently pointing to. Invariant
