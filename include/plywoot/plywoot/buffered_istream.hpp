@@ -24,7 +24,7 @@ class BufferedIStream
 {
 public:
   /// Constructs a buffered input stream wrapper around the given input stream.
-  explicit BufferedIStream(std::istream &is) : is_{is}, initialOffset_{is_.tellg()} {}
+  explicit BufferedIStream(std::istream &is) : is_{is} {}
 
   /// No copy semantics allowed.
   BufferedIStream(const BufferedIStream &) = delete;
@@ -114,30 +114,6 @@ public:
     while (*c_ > 0x20) readCharacter();
   }
 
-  // Positions the read head at the start of the data just after the header.
-  // Resets any buffered data.
-  void seekToBegin()
-  {
-    // Need to clear eofbit() in case it is set,
-    // otherwise the first read after the seek will fail.
-    is_.clear();
-    is_.seekg(initialOffset_);
-
-    buffer();
-  }
-
-  // Positions the read head at the given offset relative from the end of the
-  // header.
-  void seekTo(const std::istream::pos_type offset)
-  {
-    // Need to clear eofbit() in case it is set,
-    // otherwise the first read after the seek will fail.
-    is_.clear();
-    is_.seekg(initialOffset_ + offset);
-
-    buffer();
-  }
-
   /// Ensures that the buffer contains at least the given number of characters.
   /// In case it already does, this does nothing, otherwise, it will shift the
   /// data remaining in the buffer to the front, then refill the remaining part
@@ -196,9 +172,6 @@ private:
 
   /// Reference to the wrapper standard input stream.
   std::istream &is_;
-  /// Initial offset in the input stream at the time of construction of this
-  /// buffered stream.
-  const std::istream::pos_type initialOffset_;
 
   /// Buffered data, always a null terminated string.
   alignas(64) char buffer_[BufferSize] = {};

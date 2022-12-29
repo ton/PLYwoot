@@ -7,6 +7,7 @@
 #include "plywoot/binary_writer_policy.hpp"
 #include "plywoot/header_parser.hpp"
 #include "plywoot/parser.hpp"
+#include "plywoot/parser_variant.hpp"
 #include "plywoot/reflect.hpp"
 #include "plywoot/types.hpp"
 #include "plywoot/writer.hpp"
@@ -51,70 +52,56 @@ public:
   /// Returns the format of the input PLY data stream.
   PlyFormat format() const { return format_; }
 
-  /// Reads the given element from the PLY input data stream, expecting elements
-  /// where every property can be statically casted to the given property type
-  /// in the template argument list.
-  template<typename T, typename Layout>
-  std::vector<T> read(const PlyElement &element) const
+  /// Positions the read head at the start of the element with the given name,
+  /// or at the end of the stream in case the given element is not present in
+  /// the stream, skipping over elements that do not match \a elementName.
+  /// Returns \c true in case an element with the given name was found,
+  /// otherwise, returns \c false.
+  bool find(const std::string &elementName) const
   {
-    std::vector<T> result(element.size());
-    read(element, Layout{result});
+    while (currElement_ != elements_.end() && currElement_->name() != elementName) { skipElement(); }
+    return currElement_ != elements_.end();
+  }
+
+  /// Returns a copy of the current element that can be either read or skipped.
+  PlyElement element() const { return hasElement() ? *currElement_ : PlyElement{}; }
+  /// Returns whether there are still elements left to parse.
+  bool hasElement() const { return currElement_ != elements_.end(); }
+
+  /// Reads the current element from the PLY input data stream, returning a list
+  /// of objects of type `T`, where the `Layout` type is used to identify how
+  /// properties from the PLY element are mapped on objects of type `T`.
+  ///
+  /// TODO(ton): add more extensive documentation
+  // TODO(ton): probably better to add another parameter 'size' to guard
+  template<typename T, typename Layout>
+  std::vector<T> readElement() const
+  {
+    std::vector<T> result(currElement_->size());
+    parser_.read(*currElement_++, Layout{result});
     return result;
   }
 
-  /// Reads the given element from the PLY input data stream, storing data in
-  /// the given destination buffer `dest` using the types given as
-  /// `PropertyType`'s in the template argument list. In case the number of
-  /// properties for the element exceeds the number of properties in the
-  /// template argument list, the remaining properties are directly stored
-  /// using the property type as defined in the PLY header. This assumes that
-  /// the output buffer can hold the required amount of data; failing to
-  /// satisfy this precondition results in undefined behavior.
-  // TODO(ton): probably better to add another parameter 'size' to guard
-  // against overwriting the input buffer.
-  template<typename... Ts>
-  void read(const PlyElement &element, reflect::Layout<Ts...> layout) const
+  /// Skips the current element.
+  void skipElement() const
   {
-    // Note; need to clear any eof() flags being set to ensure seeking succeeds.
-    is_.clear();
-    is_.seekg(endOfHeaderOffset_);
-
-    switch (format_)
-    {
-      case PlyFormat::Ascii: {
-        detail::Parser<detail::AsciiParserPolicy> parser{is_, elements_};
-        parser.read<Ts...>(element, layout);
-      }
-      break;
-      case PlyFormat::BinaryLittleEndian: {
-        detail::Parser<detail::BinaryLittleEndianParserPolicy> parser{is_, elements_};
-        parser.read<Ts...>(element, layout);
-      }
-      break;
-      case PlyFormat::BinaryBigEndian: {
-        detail::Parser<detail::BinaryBigEndianParserPolicy> parser{is_, elements_};
-        parser.read<Ts...>(element, layout);
-      }
-      break;
-    }
+    parser_.skip(*currElement_++);
   }
 
 private:
   /// Constructs a PLY file from the given input stream and header parser.
-  IStream(std::istream &is, const detail::HeaderParser &parser)
-      : is_{is},
-        endOfHeaderOffset_{is.tellg()},
-        comments_{parser.comments()},
-        elements_{parser.elements()},
-        format_{parser.format()}
+  IStream(std::istream &is, const detail::HeaderParser &headerParser)
+      : parser_{is, headerParser.format()},
+        comments_{headerParser.comments()},
+        elements_{headerParser.elements()},
+        format_{headerParser.format()},
+        currElement_{elements_.begin()}
   {
   }
 
-  /// Input stream containing the PLY data.
-  std::istream &is_;
-  /// Offset in the input stream where the header data ends and the element data
-  /// starts.
-  std::istream::pos_type endOfHeaderOffset_;
+  /// Variant type around some parser type that represents that correct type for
+  /// the associated input PLY stream.
+  detail::ParserVariant parser_;
 
   /// All comments defines in the header.
   std::vector<Comment> comments_;
@@ -122,6 +109,9 @@ private:
   std::vector<PlyElement> elements_;
   /// Format of the PLY input data, either ASCII, little-, or big-endian binary.
   PlyFormat format_;
+
+  /// Iterator pointing to the current element.
+  mutable std::vector<PlyElement>::const_iterator currElement_;
 };
 
 /// Represents an output PLY data stream that can be used to output data to a

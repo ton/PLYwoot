@@ -90,7 +90,7 @@ TEST_CASE("No property data for an element value", "[header][istream][error]")
   REQUIRE(elements.size() == 1);
   REQUIRE(elements.front().name() == "e");
   REQUIRE(elements.front().size() == 1);
-  REQUIRE_THROWS_AS((plyFile.read<S, Layout>(elements.front())), plywoot::UnexpectedEof);
+  REQUIRE_THROWS_AS((plyFile.readElement<S, Layout>()), plywoot::UnexpectedEof);
 }
 
 TEST_CASE("Missing property data for an element value", "[header][istream][error]")
@@ -108,7 +108,7 @@ TEST_CASE("Missing property data for an element value", "[header][istream][error
   REQUIRE(elements.size() == 1);
   REQUIRE(elements.front().name() == "e");
   REQUIRE(elements.front().size() == 1);
-  REQUIRE_THROWS_AS((plyFile.read<S, Layout>(elements.front())), plywoot::UnexpectedEof);
+  REQUIRE_THROWS_AS((plyFile.readElement<S, Layout>()), plywoot::UnexpectedEof);
 }
 
 TEST_CASE("A single element definition without properties is correctly parsed", "[header][istream]")
@@ -271,7 +271,7 @@ TEST_CASE("Read an element with a single property from a PLY file", "[istream]")
 
   using Layout = plywoot::reflect::Layout<char>;
 
-  const std::vector<X> xs = plyFile.read<X, Layout>(elements.front());
+  const std::vector<X> xs = plyFile.readElement<X, Layout>();
   REQUIRE(xs.size() == 1);
   REQUIRE(xs.front().c == 86);
 }
@@ -294,7 +294,7 @@ TEST_CASE("Read multiple elements with a single property from a PLY file", "[ist
 
   using Layout = plywoot::reflect::Layout<char>;
 
-  const std::vector<X> xs = plyFile.read<X, Layout>(elements.front());
+  const std::vector<X> xs = plyFile.readElement<X, Layout>();
   REQUIRE(xs.size() == 10);
 
   std::vector<char> expected(10);
@@ -321,7 +321,7 @@ TEST_CASE("Read multiple elements with two properties from a PLY file", "[istrea
 
   using Layout = plywoot::reflect::Layout<int, unsigned char>;
 
-  const std::vector<X> xs = plyFile.read<X, Layout>(elements.front());
+  const std::vector<X> xs = plyFile.readElement<X, Layout>();
   REQUIRE(xs.size() == 10);
 
   // c
@@ -391,15 +391,12 @@ TEST_CASE("Test out of order retrieval of element data", "[istream]")
   std::ifstream ifs{inputFilename};
   const plywoot::IStream plyFile{ifs};
 
-  plywoot::PlyElement vertexElement;
-  bool isVertexElementFound{false};
-  std::tie(vertexElement, isVertexElementFound) = plyFile.element("vertex");
-  REQUIRE(isVertexElementFound);
+  REQUIRE(plyFile.find("vertex"));
 
   using Vertex = DoubleVertex;
   using VertexLayout = plywoot::reflect::Layout<double, double, double>;
 
-  const std::vector<Vertex> result = plyFile.read<Vertex, VertexLayout>(vertexElement);
+  const std::vector<Vertex> result = plyFile.readElement<Vertex, VertexLayout>();
   const std::vector<Vertex> expected = {{0, 0, 0}, {1, 0, 0}, {1, 1, 0}, {0, 1, 0},
                                         {0, 0, 1}, {1, 0, 1}, {1, 1, 1}, {0, 1, 1}};
   CHECK(result == expected);
@@ -414,15 +411,12 @@ TEST_CASE("Read elements from a PLY file by only partially retrieving all proper
   std::ifstream ifs{inputFilename};
   const plywoot::IStream plyFile{ifs};
 
-  plywoot::PlyElement vertexElement;
-  bool isVertexElementFound{false};
-  std::tie(vertexElement, isVertexElementFound) = plyFile.element("vertex");
-  REQUIRE(isVertexElementFound);
+  REQUIRE(plyFile.find("vertex"));
 
   using Vertex = FloatVertex;
   using VertexLayout = plywoot::reflect::Layout<float, float, float>;
 
-  const std::vector<Vertex> vertices = plyFile.read<Vertex, VertexLayout>(vertexElement);
+  const std::vector<Vertex> vertices = plyFile.readElement<Vertex, VertexLayout>();
   const std::vector<Vertex> expectedVertices = {{0, 0, 0}, {1, 0, 0}, {1, 1, 0}, {0, 1, 0},
                                                 {0, 0, 1}, {1, 0, 1}, {1, 1, 1}, {0, 1, 1}};
   CHECK(expectedVertices == vertices);
@@ -435,15 +429,12 @@ TEST_CASE("Read elements from a PLY file by packing multiple properties together
   std::ifstream ifs{inputFilename};
   const plywoot::IStream plyFile{ifs};
 
-  plywoot::PlyElement vertexElement;
-  bool isVertexElementFound{false};
-  std::tie(vertexElement, isVertexElementFound) = plyFile.element("vertex");
-  REQUIRE(isVertexElementFound);
+  REQUIRE(plyFile.find("vertex"));
 
   using Vertex = FloatVertex;
   using VertexLayout = plywoot::reflect::Layout<plywoot::reflect::Pack<float, 3>>;
 
-  const std::vector<Vertex> vertices = plyFile.read<Vertex, VertexLayout>(vertexElement);
+  const std::vector<Vertex> vertices = plyFile.readElement<Vertex, VertexLayout>();
   const std::vector<Vertex> expectedVertices = {{0, 0, 0}, {1, 0, 0}, {1, 1, 0}, {0, 1, 0},
                                                 {0, 0, 1}, {1, 0, 1}, {1, 1, 1}, {0, 1, 1}};
   CHECK(expectedVertices == vertices);
@@ -456,15 +447,12 @@ TEST_CASE("Test casting of input property from float to double", "[istream]")
   std::ifstream ifs{inputFilename};
   const plywoot::IStream plyFile{ifs};
 
-  plywoot::PlyElement vertexElement;
-  bool isVertexElementFound{false};
-  std::tie(vertexElement, isVertexElementFound) = plyFile.element("vertex");
-  REQUIRE(isVertexElementFound);
+  REQUIRE(plyFile.find("vertex"));
 
   using Vertex = DoubleVertex;
   using VertexLayout = plywoot::reflect::Layout<double, double, double>;
 
-  const std::vector<Vertex> result = plyFile.read<Vertex, VertexLayout>(vertexElement);
+  const std::vector<Vertex> result = plyFile.readElement<Vertex, VertexLayout>();
   const std::vector<Vertex> expected = {{0, 0, 0}, {1, 0, 0}, {1, 1, 0}, {0, 1, 0},
                                         {0, 0, 1}, {1, 0, 1}, {1, 1, 1}, {0, 1, 1}};
   CHECK(result == expected);
@@ -479,15 +467,12 @@ TEST_CASE("Test reading a random binary big endian PLY file found somewhere on t
   std::ifstream ifs{inputFilename};
   const plywoot::IStream plyFile{ifs};
 
-  plywoot::PlyElement vertexElement;
-  bool isVertexElementFound{false};
-  std::tie(vertexElement, isVertexElementFound) = plyFile.element("vertex");
-  REQUIRE(isVertexElementFound);
+  REQUIRE(plyFile.find("vertex"));
 
   using Vertex = FloatVertex;
   using VertexLayout = plywoot::reflect::Layout<float, float, float>;
 
-  const std::vector<Vertex> result = plyFile.read<Vertex, VertexLayout>(vertexElement);
+  const std::vector<Vertex> result = plyFile.readElement<Vertex, VertexLayout>();
   const std::vector<Vertex> expected = {{0, 0, 0}, {0, 1, 0}, {1, 0, 0}, {1, 1, 0},
                                         {0, 0, 1}, {0, 1, 1}, {1, 0, 1}, {1, 1, 1}};
   CHECK(result == expected);
@@ -510,28 +495,26 @@ TEST_CASE("Test reading comments interspersed in a PLY header", "[istream]")
 
 TEST_CASE("Test reading Standford Bunny", "[istream]")
 {
+  using Vertex = FloatVertex;
+  using VertexLayout = plywoot::reflect::Layout<float, float, float>;
+  using TriangleLayout = plywoot::reflect::Layout<plywoot::reflect::Array<int, 3>>;
+
   auto inputFilename = "test/input/ascii/bunny.ply";
 
   std::ifstream ifs{inputFilename};
   const plywoot::IStream plyFile{ifs};
 
-  plywoot::PlyElement vertexElement;
-  bool isVertexElementFound{false};
-  std::tie(vertexElement, isVertexElementFound) = plyFile.element("vertex");
-  REQUIRE(isVertexElementFound);
+  std::vector<Triangle> triangles;
+  std::vector<Vertex> vertices;
 
-  plywoot::PlyElement faceElement;
-  bool isFaceElementFound{false};
-  std::tie(faceElement, isFaceElementFound) = plyFile.element("face");
-  REQUIRE(isFaceElementFound);
+  while (plyFile.hasElement())
+  {
+    const plywoot::PlyElement element = plyFile.element();
+    if (element.name() == "vertex") { vertices = plyFile.readElement<Vertex, VertexLayout>(); }
+    else if (element.name() == "face") { triangles = plyFile.readElement<Triangle, TriangleLayout>(); }
+    else { plyFile.skipElement(); }
+  }
 
-  using Vertex = FloatVertex;
-  using VertexLayout = plywoot::reflect::Layout<float, float, float>;
-  using TriangleLayout = plywoot::reflect::Layout<plywoot::reflect::Array<int, 3>>;
-
-  const std::vector<Vertex> vertices = plyFile.read<Vertex, VertexLayout>(vertexElement);
-  const std::vector<Triangle> triangles = plyFile.read<Triangle, TriangleLayout>(faceElement);
-
-  CHECK(vertices.back() == Vertex{-0.0400442, 0.15362, -0.00816685});
   CHECK(triangles.back() == Triangle{17277, 17346, 17345});
+  CHECK(vertices.back() == Vertex{-0.0400442, 0.15362, -0.00816685});
 }

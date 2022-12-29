@@ -14,12 +14,11 @@ namespace plywoot { namespace detail {
 /// functionality through the FormatParserPolicy type, which should adhere to the
 /// following model requirements:
 ///
-///   - bool seekTo(const PlyElement &element);
-///
 ///   - template<typename T> T readNumber();
 ///   - template<typename T, std::size_t N> std::uint8_t *readNumbers(std::uint8_t *dest);
 ///   - template<typename T> T skipNumber();
 ///
+///   - void skipElement(const PlyElement &e);
 ///   - void skipProperties(size_t numBytes);
 template<typename FormatParserPolicy>
 class Parser : private FormatParserPolicy
@@ -43,29 +42,31 @@ public:
     readElements<Ts...>(layout.data(), element);
   }
 
+  void skip(const PlyElement &element) const
+  {
+    this->skipElement(element);
+  }
+
 private:
   template<typename... Ts>
   void readElements(std::uint8_t *dest, const PlyElement &element) const
   {
-    if (this->seekTo(element))
+    const PropertyConstIterator first = element.properties().begin();
+    const PropertyConstIterator last = element.properties().end();
+    const PropertyConstIterator firstToSkip = first + reflect::numProperties<Ts...>();
+
+    const std::size_t numBytesToSkip =
+        firstToSkip < last ? std::accumulate(
+                                  firstToSkip, last, 0ul,
+                                  [](std::size_t acc, const PlyProperty &p) {
+                                    return acc + sizeOf(p.isList() ? p.sizeType() : p.type());
+                                  })
+                            : 0;
+
+    for (std::size_t i{0}; i < element.size(); ++i)
     {
-      const PropertyConstIterator first = element.properties().begin();
-      const PropertyConstIterator last = element.properties().end();
-      const PropertyConstIterator firstToSkip = first + reflect::numProperties<Ts...>();
-
-      const std::size_t numBytesToSkip =
-          firstToSkip < last ? std::accumulate(
-                                   firstToSkip, last, 0ul,
-                                   [](std::size_t acc, const PlyProperty &p) {
-                                     return acc + sizeOf(p.isList() ? p.sizeType() : p.type());
-                                   })
-                             : 0;
-
-      for (std::size_t i{0}; i < element.size(); ++i)
-      {
-        dest = readElement<Ts...>(dest, first, last);
-        this->skipProperties(numBytesToSkip);
-      }
+      dest = readElement<Ts...>(dest, first, last);
+      this->skipProperties(numBytesToSkip);
     }
   }
 

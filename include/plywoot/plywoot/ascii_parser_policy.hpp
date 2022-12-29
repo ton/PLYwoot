@@ -9,7 +9,6 @@
 
 #include <cstdint>
 #include <string>
-#include <vector>
 
 namespace plywoot {
 
@@ -31,27 +30,13 @@ namespace detail {
 class AsciiParserPolicy
 {
 public:
-  AsciiParserPolicy(std::istream &is, std::vector<PlyElement> elements)
-      : is_{is}, elements_{std::move(elements)}
+  AsciiParserPolicy(std::istream &is) : is_{is} {}
+
+  /// Skips the given element in the current input stream, assuming the read
+  /// head is at the start of that element.
+  void skipElement(const PlyElement &e) const
   {
-  }
-
-  /// Seeks to the start of the data for the given element. Returns whether
-  /// seeking was successful.
-  bool seekTo(const PlyElement &element) const
-  {
-    std::size_t numLines{0};
-    auto first = elements_.begin();
-    const auto last = elements_.end();
-    while (first != last && *first != element) { numLines += first++->size(); }
-
-    if (first != last && *first == element)
-    {
-      is_.seekToBegin();
-      is_.skipLines(numLines);
-    }
-
-    return first != last;
+    is_.skipLines(e.size());
   }
 
   /// Reads a number of the given type `T` from the input stream.
@@ -85,11 +70,13 @@ public:
   }
 
   /// Skips property data, totaling `n` bytes.
-  void skipProperties(size_t n) const { if (n > 0) is_.skipLines(1); }
+  void skipProperties(size_t n) const
+  {
+    if (n > 0) is_.skipLines(1);
+  }
 
 private:
   mutable detail::BufferedIStream is_;
-  std::vector<PlyElement> elements_;
 };
 
 }

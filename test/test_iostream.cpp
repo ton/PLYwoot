@@ -83,7 +83,7 @@ TEST_CASE("Test reading and writing all property types", "[iostream]")
   std::stringstream iss{data, std::ios::in};
   plywoot::IStream plyis{iss};
 
-  const std::vector<Element> elements{plyis.read<Element, Layout>(element)};
+  const std::vector<Element> elements{plyis.readElement<Element, Layout>()};
   CHECK(expectedElements == elements);
 }
 
@@ -109,7 +109,7 @@ TEST_CASE("Test reading and writing of a list", "[iostream]")
   std::stringstream iss{data, std::ios::in};
   plywoot::IStream plyis{iss};
 
-  const std::vector<Triangle> triangles{plyis.read<Triangle, Layout>(element)};
+  const std::vector<Triangle> triangles{plyis.readElement<Triangle, Layout>()};
   CHECK(expectedTriangles == triangles);
 }
 
@@ -141,7 +141,7 @@ TEST_CASE("Test reading and writing of variable length lists", "[iostream]")
   std::stringstream iss{oss.str(), std::ios::in};
   plywoot::IStream plyis{iss};
 
-  const std::vector<Element> elements{plyis.read<Element, Layout>(element)};
+  const std::vector<Element> elements{plyis.readElement<Element, Layout>()};
   CHECK(expectedElements == elements);
 }
 
@@ -153,32 +153,26 @@ TEST_CASE("Tests reading and writing vertex and face data", "[iostream]")
   std::ifstream ifs{inputFilename};
   const plywoot::IStream plyFile{ifs};
 
+  using TriangleLayout = plywoot::reflect::Layout<plywoot::reflect::Array<int, 3>>;
   using Vertex = FloatVertex;
-
-  plywoot::PlyElement vertexElement;
-  bool isVertexElementFound{false};
-  std::tie(vertexElement, isVertexElementFound) = plyFile.element("vertex");
-
-  CHECK(isVertexElementFound);
-  CHECK(vertexElement.name() == "vertex");
-  CHECK(vertexElement.size() == 8);
-
-  plywoot::PlyElement faceElement;
-  bool isFaceElementFound{false};
-  std::tie(faceElement, isFaceElementFound) = plyFile.element("face");
-
-  CHECK(isFaceElementFound);
-  CHECK(faceElement.name() == "face");
-  CHECK(faceElement.size() == 12);
-
   using VertexLayout = plywoot::reflect::Layout<float, float, float>;
-  const std::vector<Vertex> vertices = plyFile.read<Vertex, VertexLayout>(vertexElement);
+
+  std::vector<Triangle> triangles;
+  std::vector<Vertex> vertices;
+
+  while (plyFile.hasElement())
+  {
+    const plywoot::PlyElement element{plyFile.element()};
+    if (element.name() == "vertex") { vertices = plyFile.readElement<Vertex, VertexLayout>(); }
+    else if (element.name() == "face") { triangles = plyFile.readElement<Triangle, TriangleLayout>(); }
+    else
+      plyFile.skipElement();
+  }
+
   const std::vector<Vertex> expectedVertices{{0, 0, 0}, {1, 0, 0}, {1, 1, 0}, {0, 1, 0},
                                              {0, 0, 1}, {1, 0, 1}, {1, 1, 1}, {0, 1, 1}};
   CHECK(vertices == expectedVertices);
 
-  using TriangleLayout = plywoot::reflect::Layout<plywoot::reflect::Array<int, 3>>;
-  const std::vector<Triangle> triangles = plyFile.read<Triangle, TriangleLayout>(faceElement);
   const std::vector<Triangle> expectedTriangles{{0, 2, 1}, {0, 3, 2}, {4, 5, 6}, {4, 6, 7},
                                                 {0, 1, 5}, {0, 5, 4}, {2, 3, 7}, {2, 7, 6},
                                                 {3, 0, 4}, {3, 4, 7}, {1, 2, 6}, {1, 6, 5}};
@@ -187,17 +181,19 @@ TEST_CASE("Tests reading and writing vertex and face data", "[iostream]")
   // Now write the data to a string stream, read it back in again, and compare.
   std::stringstream oss;
   plywoot::OStream plyos{format};
-  plyos.add(vertexElement, VertexLayout{vertices});
-  plyos.add(faceElement, TriangleLayout{triangles});
+  plyos.add(plyFile.element("vertex").first, VertexLayout{vertices});
+  plyos.add(plyFile.element("face").first, TriangleLayout{triangles});
   plyos.write(oss);
 
   {
     const plywoot::IStream plyis{oss};
 
-    const std::vector<Vertex> writtenVertices = plyis.read<Vertex, VertexLayout>(vertexElement);
+    REQUIRE(plyis.element().name() == "vertex");
+    const std::vector<Vertex> writtenVertices = plyis.readElement<Vertex, VertexLayout>();
     CHECK(vertices == writtenVertices);
 
-    const std::vector<Triangle> writtenTriangles = plyis.read<Triangle, TriangleLayout>(faceElement);
+    REQUIRE(plyis.element().name() == "face");
+    const std::vector<Triangle> writtenTriangles = plyis.readElement<Triangle, TriangleLayout>();
     CHECK(triangles == writtenTriangles);
   }
 }
@@ -223,7 +219,8 @@ TEST_CASE("Skip input data that cannot be mapped while reading and writing", "[i
 
   std::stringstream iss{oss.str(), std::ios::in};
   plywoot::IStream plyis{iss};
-  const std::vector<Vertex> outputVertices{plyis.read<Vertex, Layout>(element)};
+  REQUIRE(plyis.element().name() == "e");
+  const std::vector<Vertex> outputVertices{plyis.readElement<Vertex, Layout>()};
 
   const std::vector<Vertex> expectedOutputVertices{{1.0, 2.0, 0.0}, {4.0, 5.0, 0.0}, {7.0, 8.0, 0.0}};
   CHECK(expectedOutputVertices == outputVertices);
@@ -250,7 +247,9 @@ TEST_CASE("Test casting of input property from integer to some floating point ty
 
   std::stringstream iss{oss.str(), std::ios::in};
   plywoot::IStream plyis{iss};
-  const std::vector<int> outputNumbers{plyis.read<int, Layout>(element)};
+
+  REQUIRE(plyis.element().name() == "e");
+  const std::vector<int> outputNumbers{plyis.readElement<int, Layout>()};
   CHECK(numbers == outputNumbers);
 }
 
@@ -275,7 +274,9 @@ TEST_CASE("Test writing an element with more properties than defined in the memo
 
   std::stringstream iss{oss.str(), std::ios::in};
   plywoot::IStream plyis{iss};
-  const std::vector<int> outputValues{plyis.read<int, Layout>(element)};
+
+  REQUIRE(plyis.element().name() == "e");
+  const std::vector<int> outputValues{plyis.readElement<int, Layout>()};
   CHECK(values == outputValues);
 }
 

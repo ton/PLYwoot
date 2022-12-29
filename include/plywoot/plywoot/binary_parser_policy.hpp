@@ -5,7 +5,7 @@
 #include "endian.hpp"
 
 #include <cstdint>
-#include <vector>
+#include <numeric>
 
 namespace plywoot { namespace detail {
 
@@ -15,27 +15,65 @@ class BinaryParserPolicy
 {
 public:
   /// Constructs a binary little endian parser policy.
-  BinaryParserPolicy(std::istream &is, std::vector<PlyElement> elements)
-      : is_{is}, elements_{std::move(elements)}
-  {
-  }
+  BinaryParserPolicy(std::istream &is) : is_{is} {}
 
-  /// Seeks to the start of the data for the given element. Returns whether
-  /// seeking was successful.
-  // TODO(ton): skipping elements is inefficient; find a better solution.
-  bool seekTo(const PlyElement &element) const
+  /// Skips the given element in the current input stream, assuming the read
+  /// head is at the start of that element.
+  void skipElement(const PlyElement &e) const
   {
-    std::size_t numBytes{0};
-    auto first = elements_.begin();
-    const auto last = elements_.end();
-    while (first != last && *first != element) { numBytes += elementSizeInBytes(*first++); }
-
-    if (first != last && *first == element)
+    // In case all element properties are non-list properties, we can calculate
+    // the element size in one go.
+    const std::vector<PlyProperty> &properties = e.properties();
+    if (std::all_of(properties.begin(), properties.end(), [](const PlyProperty &p) { return !p.isList(); }))
     {
-      is_.seekTo(numBytes);
+      is_.skip(
+          e.size() * std::accumulate(
+                         properties.begin(), properties.end(), 0,
+                         [](std::size_t acc, const PlyProperty &p) { return acc + sizeOf(p.type()); }));
     }
+    else
+    {
+      for (std::size_t i = 0; i < e.size(); ++i)
+      {
+        for (const PlyProperty &p : e.properties())
+        {
+          if (!p.isList()) { is_.skip(sizeOf(p.type())); }
+          else
+          {
+            std::size_t size = 0;
+            switch (p.sizeType())
+            {
+              case PlyDataType::Char:
+                size = readNumber<char>();
+                break;
+              case PlyDataType::UChar:
+                size = readNumber<unsigned char>();
+                break;
+              case PlyDataType::Short:
+                size = readNumber<short>();
+                break;
+              case PlyDataType::UShort:
+                size = readNumber<unsigned short>();
+                break;
+              case PlyDataType::Int:
+                size = readNumber<int>();
+                break;
+              case PlyDataType::UInt:
+                size = readNumber<unsigned int>();
+                break;
+              case PlyDataType::Float:
+                size = readNumber<float>();
+                break;
+              case PlyDataType::Double:
+                size = readNumber<double>();
+                break;
+            }
 
-    return first != last;
+            is_.skip(size * sizeOf(p.type()));
+          }
+        }
+      }
+    }
   }
 
   /// Reads a number of the given type `T` from the input stream.
@@ -88,61 +126,7 @@ public:
   void skipProperties(std::size_t n) const { is_.skip(n); }
 
 private:
-  /// Calculates and returns the size in bytes of the given PLY element.
-  std::size_t elementSizeInBytes(const PlyElement &element) const
-  {
-    std::size_t numBytes{0};
-    for (const PlyProperty &p : element.properties())
-    {
-      if (!p.isList()) { numBytes += element.size() * sizeOf(p.type()); }
-      else
-      {
-        is_.seekTo(numBytes);
-
-        std::size_t sizeSum = 0;
-        for (std::size_t i = 0; i < element.size(); ++i)
-        {
-          std::size_t size = 0;
-          switch (p.sizeType())
-          {
-            case PlyDataType::Char:
-              size = readNumber<char>();
-              break;
-            case PlyDataType::UChar:
-              size = readNumber<unsigned char>();
-              break;
-            case PlyDataType::Short:
-              size = readNumber<short>();
-              break;
-            case PlyDataType::UShort:
-              size = readNumber<unsigned short>();
-              break;
-            case PlyDataType::Int:
-              size = readNumber<int>();
-              break;
-            case PlyDataType::UInt:
-              size = readNumber<unsigned int>();
-              break;
-            case PlyDataType::Float:
-              size = readNumber<float>();
-              break;
-            case PlyDataType::Double:
-              size = readNumber<double>();
-              break;
-          }
-
-          sizeSum += size;
-          is_.skip(size * sizeOf(p.type()));
-        }
-
-        numBytes += element.size() * sizeOf(p.sizeType()) + sizeSum * sizeOf(p.type());
-      }
-    }
-    return numBytes;
-  }
-
   mutable detail::BufferedIStream is_;
-  std::vector<PlyElement> elements_;
 };
 
 using BinaryLittleEndianParserPolicy = BinaryParserPolicy<LittleEndian>;
