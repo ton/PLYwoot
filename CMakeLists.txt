@@ -57,7 +57,6 @@ target_link_libraries(plywoot
   $<$<TARGET_EXISTS:fast_int::fast_int>:fast_int::fast_int>
 )
 
-add_subdirectory(benchmark)
 add_subdirectory(test)
 
 # install target
