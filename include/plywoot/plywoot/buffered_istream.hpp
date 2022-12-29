@@ -46,9 +46,8 @@ public:
   {
     // Note; buffer a bit more than strictly necessary, so that we can move the
     // read head unconditionally after reading the object of type T.
-    if (remaining_ < sizeof(T)) buffer(sizeof(T));
+    if (c_ + sizeof(T) > eob_) buffer(sizeof(T));
     const char *t = c_;
-    remaining_ -= sizeof(T);
     c_ += sizeof(T);
     return *reinterpret_cast<const T *>(t);
   }
@@ -61,9 +60,8 @@ public:
     // Note; buffer a bit more than strictly necessary, so that we can move the
     // read head unconditionally after reading the object of type T.
     constexpr std::size_t bytesToRead = N * sizeof(T);
-    if (remaining_ < bytesToRead) buffer(bytesToRead);
+    if (c_ + bytesToRead > eob_) buffer(bytesToRead);
     std::memcpy(dest, c_, bytesToRead);
-    remaining_ -= bytesToRead;
     c_ += bytesToRead;
     return dest + bytesToRead;
   }
@@ -73,21 +71,20 @@ public:
   inline void readCharacter()
   {
     ++c_;
-    --remaining_;
-    if (remaining_ == 0) { buffer(); }
+    if (c_ == eob_) { buffer(); }
   }
 
   /// Skips the given number of bytes in the input stream.
   void skip(std::size_t n)
   {
-    if (remaining_ > n)
+    std::size_t remaining = eob_ - c_;
+    if (remaining > n)
     {
       c_ += n;
-      remaining_ -= n;
     }
     else
     {
-      is_.seekg(n - remaining_, std::ios_base::cur);
+      is_.seekg(n - remaining, std::ios_base::cur);
       buffer();
     }
   }
@@ -99,10 +96,9 @@ public:
   {
     while (*c_ != EOF && n > 0)
     {
-      c_ = static_cast<const char *>(std::memchr(c_, '\n', remaining_));
+      c_ = static_cast<const char *>(std::memchr(c_, '\n', eob_ - c_));
       if (c_)
       {
-        remaining_ = (buffer_ + BufferSize) - c_;
         readCharacter();
         --n;
       }
@@ -157,19 +153,16 @@ public:
   void buffer(std::size_t minimum)
   {
     assert(minimum < BufferSize / 2);
-    if (remaining_ < minimum)
+    std::size_t remaining = eob_ - c_;
+    if (remaining < minimum)
     {
-      std::memcpy(buffer_, c_, remaining_);
-      if (!is_.read(buffer_ + remaining_, BufferSize - remaining_))
+      std::memcpy(buffer_, c_, remaining);
+      if (!is_.read(buffer_ + remaining, BufferSize - remaining))
       {
         // In case the buffer is only partially filled, fill the remainder with
         // EOF characters.
-        remaining_ = is_.gcount() + remaining_;
-        std::fill_n(buffer_ + remaining_, BufferSize - remaining_, EOF);
-      }
-      else
-      {
-        remaining_ = BufferSize;
+        remaining += is_.gcount();
+        std::fill_n(buffer_ + remaining, BufferSize - remaining, EOF);
       }
 
       c_ = buffer_;
@@ -184,12 +177,8 @@ private:
     {
       // In case the buffer is only partially filled, fill the remainder with
       // EOF characters.
-      remaining_ = is_.gcount();
-      std::fill_n(buffer_ + remaining_, BufferSize - remaining_, EOF);
-    }
-    else
-    {
-      remaining_ = BufferSize;
+      auto remaining = is_.gcount();
+      std::fill_n(buffer_ + remaining, BufferSize - remaining, EOF);
     }
 
     c_ = buffer_;
@@ -204,7 +193,7 @@ private:
   /// need to check whether we need to read data from disk.
   const char *c_{buffer_ + BufferSize};
   /// Number of bytes remaining in the buffer.
-  std::size_t remaining_{0};
+  const char *eob_{buffer_ + BufferSize};
 
   /// Reference to the wrapper standard input stream.
   std::istream &is_;

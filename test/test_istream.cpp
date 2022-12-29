@@ -430,9 +430,7 @@ TEST_CASE("Read elements from a PLY file by only partially retrieving all proper
 
 TEST_CASE("Read elements from a PLY file by packing multiple properties together", "[istream]")
 {
-  auto inputFilename = GENERATE(
-      "test/input/ascii/cube.ply",
-      "test/input/binary/little_endian/cube.ply");
+  auto inputFilename = GENERATE("test/input/ascii/cube.ply", "test/input/binary/little_endian/cube.ply");
 
   std::ifstream ifs{inputFilename};
   const plywoot::IStream plyFile{ifs};
@@ -508,4 +506,32 @@ TEST_CASE("Test reading comments interspersed in a PLY header", "[istream]")
       {5, "comment inside an element definition"},
       {7, ""}};
   CHECK(plyFile.comments() == expected);
+}
+
+TEST_CASE("Test reading Standford Bunny", "[istream]")
+{
+  auto inputFilename = "test/input/ascii/bunny.ply";
+
+  std::ifstream ifs{inputFilename};
+  const plywoot::IStream plyFile{ifs};
+
+  plywoot::PlyElement vertexElement;
+  bool isVertexElementFound{false};
+  std::tie(vertexElement, isVertexElementFound) = plyFile.element("vertex");
+  REQUIRE(isVertexElementFound);
+
+  plywoot::PlyElement faceElement;
+  bool isFaceElementFound{false};
+  std::tie(faceElement, isFaceElementFound) = plyFile.element("face");
+  REQUIRE(isFaceElementFound);
+
+  using Vertex = FloatVertex;
+  using VertexLayout = plywoot::reflect::Layout<float, float, float>;
+  using TriangleLayout = plywoot::reflect::Layout<plywoot::reflect::Array<int, 3>>;
+
+  const std::vector<Vertex> vertices = plyFile.read<Vertex, VertexLayout>(vertexElement);
+  const std::vector<Triangle> triangles = plyFile.read<Triangle, TriangleLayout>(faceElement);
+
+  CHECK(vertices.back() == Vertex{-0.0400442, 0.15362, -0.00816685});
+  CHECK(triangles.back() == Triangle{17277, 17346, 17345});
 }
