@@ -1,3 +1,4 @@
+find_package(Boost COMPONENTS iostreams REQUIRED)
 find_package(Catch2 3 REQUIRED)
 
 # Main test executable; depends on Catch2, requires C++14 support.
@@ -10,6 +11,7 @@ add_executable(tests
 target_link_libraries(tests
   PRIVATE
   plywoot
+  Boost::iostreams
   Catch2::Catch2WithMain
 )
 

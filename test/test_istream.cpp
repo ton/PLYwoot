@@ -3,6 +3,9 @@
 
 #include <plywoot/plywoot.hpp>
 
+#include <boost/iostreams/filtering_streambuf.hpp>
+#include <boost/iostreams/filter/gzip.hpp>
+
 #include <catch2/catch_test_macros.hpp>
 #include <catch2/generators/catch_generators.hpp>
 
@@ -503,6 +506,38 @@ TEST_CASE("Test reading Standford Bunny", "[istream]")
 
   std::ifstream ifs{inputFilename};
   const plywoot::IStream plyFile{ifs};
+
+  std::vector<Triangle> triangles;
+  std::vector<Vertex> vertices;
+
+  while (plyFile.hasElement())
+  {
+    const plywoot::PlyElement element = plyFile.element();
+    if (element.name() == "vertex") { vertices = plyFile.readElement<Vertex, VertexLayout>(); }
+    else if (element.name() == "face") { triangles = plyFile.readElement<Triangle, TriangleLayout>(); }
+    else { plyFile.skipElement(); }
+  }
+
+  CHECK(triangles.back() == Triangle{17277, 17346, 17345});
+  CHECK(vertices.back() == Vertex{-0.0400442, 0.15362, -0.00816685});
+}
+
+TEST_CASE("Test reading a zipped binary PLY file", "[istream]")
+{
+  using Vertex = FloatVertex;
+  using VertexLayout = plywoot::reflect::Layout<float, float, float>;
+  using TriangleLayout = plywoot::reflect::Layout<plywoot::reflect::Array<int, 3>>;
+
+  auto inputFilename = "test/input/ascii/bunny.ply.gz";
+
+  std::ifstream ifs{inputFilename};
+
+  boost::iostreams::filtering_streambuf<boost::iostreams::input> buf;
+  buf.push(boost::iostreams::gzip_decompressor());
+  buf.push(ifs);
+
+  std::istream is{&buf};
+  const plywoot::IStream plyFile{is};
 
   std::vector<Triangle> triangles;
   std::vector<Vertex> vertices;
