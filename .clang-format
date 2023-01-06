@@ -47,6 +47,6 @@ IncludeCategories:
       Priority: 2
     - Regex:  '^<catch2/.*>'
       Priority: 3
-    - Regex:  '^<.*\.h>'
+    - Regex:  '^<.*\.(h|hpp)>'
       Priority: 4
 ...
