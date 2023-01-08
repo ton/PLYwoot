@@ -1,6 +1,7 @@
 #ifndef PLYWOOT_ENDIAN_HPP
 #define PLYWOOT_ENDIAN_HPP
 
+#include <cstdint>
 #include <utility>
 
 #include <endian.h>

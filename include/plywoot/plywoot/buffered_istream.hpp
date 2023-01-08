@@ -1,6 +1,8 @@
 #ifndef PLYWOOT_BUFFERED_ISTREAM_HPP
 #define PLYWOOT_BUFFERED_ISTREAM_HPP
 
+#include "endian.hpp"
+
 #include <algorithm>
 #include <cassert>
 #include <cstring>
@@ -52,28 +54,93 @@ public:
     return *reinterpret_cast<const T *>(t);
   }
 
-  /// Reads `N` objects of the given type from the input data stream, and stores
-  /// them in the given destination.
-  template<typename T, size_t N>
-  inline std::uint8_t *read(std::uint8_t *dest)
+  /// Reads `N` objects of the given type `From` from the input data stream, and
+  /// stores them contiguously at the given destination in memory as numbers of
+  /// type `To`.
+  /// @{
+
+  // Little endian; source number type is equal to the destination number type.
+  template<typename From, typename To, size_t N, typename Endianess>
+  typename std::enable_if<
+      std::is_same<From, To>::value && std::is_same<Endianess, LittleEndian>::value,
+      std::uint8_t *>::type
+  read(std::uint8_t *dest)
   {
-    // Note; buffer a bit more than strictly necessary, so that we can move the
-    // read head unconditionally after reading the object of type T.
-    constexpr std::size_t bytesToRead = N * sizeof(T);
+    constexpr std::size_t bytesToRead = N * sizeof(From);
     if (c_ + bytesToRead > eob_) buffer(bytesToRead);
+
     std::memcpy(dest, c_, bytesToRead);
     c_ += bytesToRead;
+
     return dest + bytesToRead;
   }
+
+  // Big endian; source number type is equal to the destination number type.
+  template<typename From, typename To, size_t N, typename Endianess>
+  typename std::enable_if<
+      std::is_same<From, To>::value && std::is_same<Endianess, BigEndian>::value,
+      std::uint8_t *>::type
+  read(std::uint8_t *dest)
+  {
+    constexpr std::size_t bytesToRead = N * sizeof(From);
+    if (c_ + bytesToRead > eob_) buffer(bytesToRead);
+
+    std::memcpy(dest, c_, bytesToRead);
+    c_ += bytesToRead;
+
+    // Perform endianess conversion.
+    To *to = reinterpret_cast<To *>(dest);
+    for (size_t i = 0; i < N; ++i, ++to) { *to = betoh(*to); }
+
+    return reinterpret_cast<std::uint8_t *>(to);
+  }
+
+  // Little endian; source number type is different from the destination number
+  // type.
+  template<typename From, typename To, size_t N, typename Endianess>
+  typename std::enable_if<
+      !std::is_same<From, To>::value && std::is_same<Endianess, LittleEndian>::value,
+      std::uint8_t *>::type
+  read(std::uint8_t *dest)
+  {
+    constexpr std::size_t bytesToRead = N * sizeof(From);
+    if (c_ + bytesToRead > eob_) buffer(bytesToRead);
+
+    const From *from = reinterpret_cast<const From *>(c_);
+    To *to = reinterpret_cast<To *>(dest);
+    for (size_t i = 0; i < N; ++i) { *to++ = *from++; }
+
+    c_ += bytesToRead;
+
+    return reinterpret_cast<std::uint8_t *>(to);
+  }
+
+  // Big endian; source number type is different from the destination number
+  // type.
+  template<typename From, typename To, size_t N, typename Endianess>
+  typename std::enable_if<
+      !std::is_same<From, To>::value && std::is_same<Endianess, BigEndian>::value,
+      std::uint8_t *>::type
+  read(std::uint8_t *dest)
+  {
+    constexpr std::size_t bytesToRead = N * sizeof(From);
+    if (c_ + bytesToRead > eob_) buffer(bytesToRead);
+
+    const From *from = reinterpret_cast<const From *>(c_);
+    To *to = reinterpret_cast<To *>(dest);
+    for (size_t i = 0; i < N; ++i) { *to++ = betoh(*from++); }
+
+    c_ += bytesToRead;
+
+    return reinterpret_cast<std::uint8_t *>(to);
+  }
+  /// @}
 
   /// Skips the given number of bytes in the input stream.
   void skip(std::size_t n)
   {
     std::size_t remaining = eob_ - c_;
-    if (remaining > n)
-    {
-      c_ += n;
-    }
+    if (remaining > n) { c_ += n; }
     else
     {
       is_.seekg(n - remaining, std::ios_base::cur);

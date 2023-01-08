@@ -280,6 +280,66 @@ TEST_CASE("Test writing an element with more properties than defined in the memo
   CHECK(values == outputValues);
 }
 
+TEST_CASE("Test reading a double vertex from a PLY file that contains a float vertex.", "[iostream]")
+{
+  auto format = GENERATE(
+      plywoot::PlyFormat::Ascii, plywoot::PlyFormat::BinaryLittleEndian, plywoot::PlyFormat::BinaryBigEndian);
+
+  std::stringstream oss;
+  plywoot::OStream plyos{format};
+
+  const plywoot::PlyProperty x{"x", plywoot::PlyDataType::Float};
+  const plywoot::PlyProperty y{"y", plywoot::PlyDataType::Float};
+  const plywoot::PlyProperty z{"z", plywoot::PlyDataType::Float};
+  const plywoot::PlyElement element{"vertex", 1, {x, y, z}};
+
+  using FloatLayout = plywoot::reflect::Layout<float, float, float>;
+  using DoubleLayout = plywoot::reflect::Layout<double, double, double>;
+
+  std::vector<FloatVertex> vertices = {FloatVertex{1.0f, 2.0f, 3.0f}};
+  plyos.add(element, FloatLayout{vertices});
+  plyos.write(oss);
+
+  // Now read in the vertex using a pack of doubles.
+  const std::string data{oss.str()};
+  std::stringstream iss{data, std::ios::in};
+  plywoot::IStream plyis{iss};
+
+  const std::vector<DoubleVertex> expectedVertices = {DoubleVertex{1.0, 2.0, 3.0}};
+  CHECK(expectedVertices == plyis.readElement<DoubleVertex, DoubleLayout>());
+}
+
+TEST_CASE(
+    "Test reading a double vertex from a PLY file that contains a float vertex using a pack layout.",
+    "[iostream]")
+{
+  auto format = GENERATE(
+      plywoot::PlyFormat::Ascii, plywoot::PlyFormat::BinaryLittleEndian, plywoot::PlyFormat::BinaryBigEndian);
+
+  std::stringstream oss;
+  plywoot::OStream plyos{format};
+
+  const plywoot::PlyProperty x{"x", plywoot::PlyDataType::Float};
+  const plywoot::PlyProperty y{"y", plywoot::PlyDataType::Float};
+  const plywoot::PlyProperty z{"z", plywoot::PlyDataType::Float};
+  const plywoot::PlyElement element{"vertex", 1, {x, y, z}};
+
+  using FloatLayout = plywoot::reflect::Layout<float, float, float>;
+  using DoubleLayout = plywoot::reflect::Layout<plywoot::reflect::Pack<double, 3>>;
+
+  std::vector<FloatVertex> vertices = {FloatVertex{1.0f, 2.0f, 3.0f}};
+  plyos.add(element, FloatLayout{vertices});
+  plyos.write(oss);
+
+  // Now read in the vertex using a pack of doubles.
+  const std::string data{oss.str()};
+  std::stringstream iss{data, std::ios::in};
+  plywoot::IStream plyis{iss};
+
+  const std::vector<DoubleVertex> expectedVertices = {DoubleVertex{1.0, 2.0, 3.0}};
+  CHECK(expectedVertices == plyis.readElement<DoubleVertex, DoubleLayout>());
+}
+
 TEST_CASE("Test reading and writing of comments", "[iostream]")
 {
   std::ifstream ifs{"test/input/ascii/comments.ply"};

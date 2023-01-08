@@ -92,28 +92,15 @@ public:
   }
   /// @}
 
-  /// Reads `N` numbers of the given type `T` from the input stream.
-  /// @{
-  template<typename T, std::size_t N, typename EndiannessDependent = Endianness>
-  typename std::enable_if<std::is_same<EndiannessDependent, LittleEndian>::value, std::uint8_t *>::type
-  readNumbers(std::uint8_t *dest) const
+  /// Reads `N` numbers of the given type `From` from the input stream, and
+  /// stores them contiguous at the given destination in memory as numbers of
+  /// type `To`. Returns a pointer pointing just after the last number stored at
+  /// `dest`.
+  template<typename From, typename To, std::size_t N>
+  std::uint8_t *readNumbers(std::uint8_t *dest) const
   {
-    return is_.read<T, N>(dest);
+    return is_.read<From, To, N, Endianness>(dest);
   }
-
-  template<typename T, std::size_t N, typename EndiannessDependent = Endianness>
-  typename std::enable_if<std::is_same<EndiannessDependent, BigEndian>::value, std::uint8_t *>::type
-  readNumbers(std::uint8_t *dest) const
-  {
-    is_.read<T, N>(dest);
-    for (std::size_t i = 0; i < N; ++i, dest += sizeof(T))
-    {
-      T &t = *reinterpret_cast<T *>(dest);
-      t = betoh(t);
-    }
-    return dest;
-  }
-  /// @}
 
   /// Skips a number of the given type `T` in the input stream.
   template<typename T>

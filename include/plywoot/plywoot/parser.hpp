@@ -15,7 +15,7 @@ namespace plywoot { namespace detail {
 /// following model requirements:
 ///
 ///   - template<typename T> T readNumber();
-///   - template<typename T, std::size_t N> std::uint8_t *readNumbers(std::uint8_t *dest);
+///   - template<typename From, typename To, std::size_t N> std::uint8_t *readNumbers(std::uint8_t *dest);
 ///   - template<typename T> T skipNumber();
 ///
 ///   - void skipElement(const PlyElement &e);
@@ -132,7 +132,7 @@ private:
     // expect it to be of length N; throw an exception here in case they do no match?
     this->template skipNumber<PlySizeT>();
     dest = static_cast<std::uint8_t *>(detail::align(dest, alignof(DestT)));
-    return this->template readNumbers<DestT, N>(dest);
+    return this->template readNumbers<PlyT, DestT, N>(dest);
   }
 
   template<typename PlyT, typename TypeTag>
@@ -190,7 +190,7 @@ private:
   {
     static_assert(std::is_arithmetic<PlyT>::value, "unexpected PLY data type");
     dest = static_cast<std::uint8_t *>(detail::align(dest, alignof(DestT)));
-    return this->template readNumbers<DestT, N>(dest);
+    return this->template readNumbers<PlyT, DestT, N>(dest);
   }
 
   template<typename TypeTag>
