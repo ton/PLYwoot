@@ -263,7 +263,7 @@ private:
       PropertyConstIterator first,
       PropertyConstIterator last) const
   {
-    return writeElement<T>(os, src, first++, last);
+    return writeElement<T>(os, src, first, last);
   }
 
   template<typename Policy, typename T, typename U, typename... Ts>
