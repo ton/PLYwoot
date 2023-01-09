@@ -236,9 +236,7 @@ TEST_CASE("Test casting of input property from integer to some floating point ty
   using Layout = plywoot::reflect::Layout<int>;
 
   const plywoot::PlyProperty x{"x", plywoot::PlyDataType::Double};
-  // TODO(ton): inconvenient to have to specify the size below...add() should
-  // just override the element size by the amount of input data!
-  const plywoot::PlyElement element{"e", numbers.size(), {x}};
+  const plywoot::PlyElement element{"e", {x}};
 
   std::stringstream oss;
   plywoot::OStream plyos{format};

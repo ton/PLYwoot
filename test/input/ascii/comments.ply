@@ -2,7 +2,7 @@ ply
 format ascii 1.0
 comment comment on the third line
 comment comment on the fourth line
-element vertex 10
+element vertex 0
 comment comment inside an element definition
 property char a
 comment

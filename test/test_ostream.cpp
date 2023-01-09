@@ -170,7 +170,7 @@ TEST_CASE("Write PLY file with a single element with a list property", "[ostream
   plyos.write(ss);
 
   const std::string expected{
-      "ply\nformat ascii 1.0\nelement face 10\nproperty list char int vertex_indices\nend_header\n"};
+      "ply\nformat ascii 1.0\nelement face 0\nproperty list char int vertex_indices\nend_header\n"};
   REQUIRE(expected == ss.str());
 }
 

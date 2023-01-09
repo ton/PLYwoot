@@ -103,6 +103,12 @@ struct PlyElement
 {
   /// Default constructor.
   PlyElement() = default;
+  /// Constructor taking a name and a list of initial properties to associate
+  /// with this element.
+  PlyElement(std::string name, std::vector<PlyProperty> properties)
+      : name_{std::move(name)}, size_{0}, properties_{std::move(properties)}
+  {
+  }
   /// Constructor taking a name and size for this element.
   PlyElement(std::string name, std::size_t size) : name_{std::move(name)}, size_{size} {}
   /// Constructor taking a name and size for this element, as well as a list

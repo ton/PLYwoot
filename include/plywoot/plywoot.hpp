@@ -137,8 +137,12 @@ public:
   template<typename... Ts>
   void add(const PlyElement &element, const reflect::Layout<Ts...> &layout)
   {
+    // Note; create a copy of the element that specifies as size the number of
+    // items in the input layout.
+    PlyElement layoutElement{element.name(), layout.size(), element.properties()};
+
     elementWriteClosures_.emplace_back(
-        element, [this, layout](detail::WriterVariant &writer, const PlyElement &e) {
+        std::move(layoutElement), [this, layout](detail::WriterVariant &writer, const PlyElement &e) {
           writer.write<Ts...>(e, layout.data(), layout.size());
         });
   }
