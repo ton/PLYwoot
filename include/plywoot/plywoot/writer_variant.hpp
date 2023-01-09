@@ -40,19 +40,16 @@ public:
   template<typename... Ts>
   void write(const PlyElement &element, const std::uint8_t *src, std::size_t n) const
   {
-    const auto first = element.properties().begin();
-    const auto last = element.properties().end();
-
     switch (format_)
     {
       case PlyFormat::Ascii:
-        for (std::size_t i = 0; i < n; ++i) { src = variant_.ascii.writeElement<Ts...>(src, first, last); }
+        variant_.ascii.write<Ts...>(element, src, n);
         break;
       case PlyFormat::BinaryBigEndian:
-        for (std::size_t i = 0; i < n; ++i) { src = variant_.bbe.writeElement<Ts...>(src, first, last); }
+        variant_.bbe.write<Ts...>(element, src, n);
         break;
       case PlyFormat::BinaryLittleEndian:
-        for (std::size_t i = 0; i < n; ++i) { src = variant_.ble.writeElement<Ts...>(src, first, last); }
+        variant_.ble.write<Ts...>(element, src, n);
         break;
     }
   }

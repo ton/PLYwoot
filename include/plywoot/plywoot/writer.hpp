@@ -33,23 +33,12 @@ public:
   void close() { FormatWriterPolicy::close(); }
 
   template<typename... Ts>
-  const std::uint8_t *writeElement(
-      const std::uint8_t *src,
-      PropertyConstIterator first,
-      PropertyConstIterator last) const
+  void write(const PlyElement &element, const std::uint8_t *src, std::size_t n) const
   {
-    src = this->writeProperties<FormatWriterPolicy, Ts...>(src, first, last);
+    const auto first = element.properties().begin();
+    const auto last = element.properties().end();
 
-    // In case the element defines more properties than the source data,
-    // append the missing properties with a default value of zero.
-    if (reflect::numProperties<Ts...>() < static_cast<std::size_t>(std::distance(first, last)))
-    {
-      this->writeMissingProperties(first + reflect::numProperties<Ts...>(), last);
-    }
-
-    this->writeNewline();
-
-    return src;
+    for (std::size_t i = 0; i < n; ++i) { src = writeElement<Ts...>(src, first, last); }
   }
 
 private:
@@ -244,6 +233,26 @@ private:
   {
     return writeProperties<Policy, U, Ts...>(
         writeProperty<T>(src, first, last), first + reflect::numProperties<T>(), last);
+  }
+
+  template<typename... Ts>
+  const std::uint8_t *writeElement(
+      const std::uint8_t *src,
+      PropertyConstIterator first,
+      PropertyConstIterator last) const
+  {
+    src = this->writeProperties<FormatWriterPolicy, Ts...>(src, first, last);
+
+    // In case the element defines more properties than the source data,
+    // append the missing properties with a default value of zero.
+    if (reflect::numProperties<Ts...>() < static_cast<std::size_t>(std::distance(first, last)))
+    {
+      this->writeMissingProperties(first + reflect::numProperties<Ts...>(), last);
+    }
+
+    this->writeNewline();
+
+    return src;
   }
 };
 
