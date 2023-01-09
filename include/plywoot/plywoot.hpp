@@ -84,10 +84,7 @@ public:
   }
 
   /// Skips the current element.
-  void skipElement() const
-  {
-    parser_.skip(*currElement_++);
-  }
+  void skipElement() const { parser_.skip(*currElement_++); }
 
 private:
   /// Constructs a PLY file from the given input stream and header parser.
@@ -140,9 +137,10 @@ public:
   template<typename... Ts>
   void add(const PlyElement &element, const reflect::Layout<Ts...> &layout)
   {
-    elementWriteClosures_.emplace_back(element, [this, layout](detail::WriterVariant &writer, const PlyElement &e) {
-      writer.write<Ts...>(e, layout.data(), layout.size());
-    });
+    elementWriteClosures_.emplace_back(
+        element, [this, layout](detail::WriterVariant &writer, const PlyElement &e) {
+          writer.write<Ts...>(e, layout.data(), layout.size());
+        });
   }
 
   /// Writes all data as a PLY file queued through `addElement()` to the given
