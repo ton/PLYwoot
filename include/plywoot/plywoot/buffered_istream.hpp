@@ -226,8 +226,7 @@ private:
     if (c_++ == eob_) { buffer(); }
   }
 
-  /// Character the scanner's read head is currently pointing to. Invariant
-  /// after construction of the scanner is:
+  /// Character the scanner's read head is currently pointing to. Invariant:
   ///
   ///       buffer_ <= c_ < (buffer_ + sizeof(buffer_) - 1)
   ///
@@ -237,7 +236,7 @@ private:
   /// Number of bytes remaining in the buffer.
   const char *eob_{buffer_ + BufferSize};
 
-  /// Reference to the wrapper standard input stream.
+  /// Reference to the wrapped standard input stream.
   std::istream &is_;
 
   /// Buffered data, always a null terminated string.
