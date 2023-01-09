@@ -108,6 +108,8 @@ private:
   {
     static_assert(N > 0, "invalid array size specified (needs to be larger than zero)");
 
+    src = static_cast<const std::uint8_t *>(detail::align(src, alignof(SrcT)));
+
     this->template writeNumber<PlySizeT>(os, N);
     this->writeTokenSeparator(os);
     for (std::size_t i = 0; i < N - 1; ++i)
@@ -126,6 +128,7 @@ private:
       const std::uint8_t *src,
       reflect::Type<std::vector<SrcT>>) const
   {
+    src = static_cast<const std::uint8_t *>(detail::align(src, alignof(std::vector<SrcT>)));
     const std::vector<SrcT> &v = *reinterpret_cast<const std::vector<SrcT> *>(src);
 
     this->template writeNumber<PlySizeT>(os, v.size());
