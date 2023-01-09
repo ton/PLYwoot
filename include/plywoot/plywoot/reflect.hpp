@@ -87,21 +87,6 @@ struct Pack
   static constexpr bool isList = false;
 };
 
-/// Returns whether the given type `T` is considered to be a pack.
-/// @{
-template<typename T, typename = void>
-struct IsPack
-{
-  static constexpr bool value = false;
-};
-
-template<typename T, size_t N>
-struct IsPack<Pack<T, N>>
-{
-  static constexpr bool value = true;
-};
-/// @}
-
 namespace detail
 {
   template<typename ...Ts>

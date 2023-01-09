@@ -76,21 +76,10 @@ private:
   }
 
   template<typename T, typename U, typename... Ts>
-  typename std::enable_if<!reflect::IsPack<T>::value, std::uint8_t *>::type readElement(
-      std::uint8_t *dest,
-      PropertyConstIterator first,
-      PropertyConstIterator last) const
+  std::uint8_t *readElement(std::uint8_t *dest, PropertyConstIterator first, PropertyConstIterator last) const
   {
-    return readElement<U, Ts...>(readElement<T>(dest, first, last), first + 1, last);
-  }
-
-  template<typename T, typename U, typename... Ts>
-  typename std::enable_if<reflect::IsPack<T>::value, std::uint8_t *>::type readElement(
-      std::uint8_t *dest,
-      PropertyConstIterator first,
-      PropertyConstIterator last) const
-  {
-    return readElement<U, Ts...>(readElement<T>(dest, first, last), first + T::size, last);
+    return readElement<U, Ts...>(
+        readElement<T>(dest, first, last), first + reflect::numProperties<T>(), last);
   }
 
   template<typename PlyT, typename PlySizeT, typename DestT>
