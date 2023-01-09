@@ -96,9 +96,8 @@ private:
       src = writeProperty<PlyT>(os, src, reflect::Type<SrcT>{});
       this->writeTokenSeparator(os);
     }
-    src = writeProperty<PlyT>(os, src, reflect::Type<SrcT>{});
 
-    return src;
+    return writeProperty<PlyT>(os, src, reflect::Type<SrcT>{});
   }
 
   /// Specialization for a vector of type `T`.
