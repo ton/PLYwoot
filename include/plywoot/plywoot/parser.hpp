@@ -42,10 +42,7 @@ public:
     readElements<Ts...>(layout.data(), element);
   }
 
-  void skip(const PlyElement &element) const
-  {
-    this->skipElement(element);
-  }
+  void skip(const PlyElement &element) const { this->skipElement(element); }
 
 private:
   template<typename... Ts>
@@ -55,13 +52,13 @@ private:
     const PropertyConstIterator last = element.properties().end();
     const PropertyConstIterator firstToSkip = first + reflect::numProperties<Ts...>();
 
-    const std::size_t numBytesToSkip =
-        firstToSkip < last ? std::accumulate(
-                                  firstToSkip, last, 0ul,
-                                  [](std::size_t acc, const PlyProperty &p) {
-                                    return acc + sizeOf(p.isList() ? p.sizeType() : p.type());
-                                  })
-                            : 0;
+    const std::size_t numBytesToSkip = firstToSkip < last
+                                           ? std::accumulate(
+                                                 firstToSkip, last, 0ul,
+                                                 [](std::size_t acc, const PlyProperty &p) {
+                                                   return acc + sizeOf(p.isList() ? p.sizeType() : p.type());
+                                                 })
+                                           : 0;
 
     for (std::size_t i{0}; i < element.size(); ++i)
     {
