@@ -34,6 +34,45 @@ public:
   }
   /// @}
 
+  /// Writes a list of numbers of type `PlyT` to the given binary output stream,
+  /// either in little or big endian format, reading `n` numbers starting at
+  /// address `src`, of number type `SrcT`. This also writes the size of the
+  /// list to the output stream using number type `PlySizeT`.
+  template<typename PlySizeT, typename PlyT, typename SrcT, typename EndiannessDependent = Endianness>
+  void writeList(std::ostream &os, const SrcT *t, std::size_t n) const
+  {
+    writeNumber<PlySizeT>(os, n);
+    writeNumbers<PlyT, SrcT>(os, t, n);
+  }
+  /// @}
+
+  /// Writes `n` numbers of type `SrcT` to the given binary output stream, as
+  /// numbers of type `PlyT`, either in little or big endian format.
+  /// @{
+
+  // Little endian; source number type is equal to the destination number type.
+  template<typename PlyT, typename SrcT, typename EndiannessDependent = Endianness>
+  typename std::enable_if<
+      std::is_same<PlyT, SrcT>::value && std::is_same<EndiannessDependent, LittleEndian>::value,
+      void>::type
+  writeNumbers(std::ostream &os, const SrcT *t, std::size_t n) const
+  {
+    os.write(reinterpret_cast<const char *>(t), sizeof(SrcT) * n);
+  }
+
+  // Other cases (not optimized); that is, source number type is not equal to
+  // the destination number type, or we have to write big endian numbers.
+  template<typename PlyT, typename SrcT, typename EndiannessDependent = Endianness>
+  typename std::enable_if<
+      !std::is_same<PlyT, SrcT>::value || !std::is_same<EndiannessDependent, LittleEndian>::value,
+      void>::type
+  writeNumbers(std::ostream &os, const SrcT *t, std::size_t n) const
+  {
+    for (std::size_t i = 0; i < n; ++i) { writeNumber<PlyT>(os, *t++); }
+  }
+
+  /// @}
+
   /// Outputs empty data for the range of properties [`first`, `last`). Note
   /// that a property that is undefined is always stored as a zero number, where
   /// the type of the number depends on the underlying property; in case of a

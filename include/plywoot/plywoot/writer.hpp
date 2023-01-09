@@ -15,9 +15,12 @@ namespace plywoot { namespace detail {
 /// the following model requirements:
 ///
 ///   - template<typename T> void writeNumber(std::ostream &os, T t);
+///   - template<typename PlySizeT, typename PlyT, typename SrcT>
+///     void writeList(std::ostream &os, const SrcT *t, std::size_t n) const;
+///   - template<typename PlyT, typename SrcT>
+///     void writeNumbers(std::ostream &os, const SrcT *t, std::size_t n) const;
 ///
 ///   - void writeNewline(std::ostream &os);
-///   - void writeTokenSeparator(std::ostream &os);
 template<typename FormatWriterPolicy>
 class Writer : private FormatWriterPolicy
 {
@@ -74,15 +77,12 @@ private:
       const std::uint8_t *src,
       reflect::Type<reflect::Pack<SrcT, N>>) const
   {
+    static_assert(N > 0, "invalid pack size specified (needs to be larger than zero)");
+    static_assert(std::is_arithmetic<SrcT>::value, "it is not (yet) possible to write packs of non-numeric types");
+
     src = static_cast<const std::uint8_t *>(detail::align(src, alignof(SrcT)));
-
-    for (std::size_t i = 0; i < N - 1; ++i)
-    {
-      src = writeProperty<PlyT>(os, src, reflect::Type<SrcT>{});
-      this->writeTokenSeparator(os);
-    }
-
-    return writeProperty<PlyT>(os, src, reflect::Type<SrcT>{});
+    this->template writeNumbers<PlyT, SrcT>(os, reinterpret_cast<const SrcT *>(src), N);
+    return src + N * sizeof(SrcT);
   }
 
   /// Specialization for the meta property type `Stride<T>`, this will just skip
@@ -98,8 +98,6 @@ private:
 
   /// Specialization for the meta property type `Array<T, N, SizeT>`, this will
   /// write a list of N properties of type T.
-  // TODO(ton): reimplement for binary, gets rid of
-  // `detail::io::writeTokenSeparator()` and likely improves performance.
   template<typename PlyT, typename PlySizeT, typename SrcT, std::size_t N>
   const std::uint8_t *writeListProperty(
       std::ostream &os,
@@ -109,16 +107,8 @@ private:
     static_assert(N > 0, "invalid array size specified (needs to be larger than zero)");
 
     src = static_cast<const std::uint8_t *>(detail::align(src, alignof(SrcT)));
-
-    this->template writeNumber<PlySizeT>(os, N);
-    this->writeTokenSeparator(os);
-    for (std::size_t i = 0; i < N - 1; ++i)
-    {
-      src = writeProperty<PlyT>(os, src, reflect::Type<SrcT>{});
-      this->writeTokenSeparator(os);
-    }
-
-    return writeProperty<PlyT>(os, src, reflect::Type<SrcT>{});
+    this->template writeList<PlySizeT, PlyT, SrcT>(os, reinterpret_cast<const SrcT *>(src), N);
+    return src + N * sizeof(SrcT);
   }
 
   /// Specialization for a vector of type `T`.
@@ -130,21 +120,8 @@ private:
   {
     src = static_cast<const std::uint8_t *>(detail::align(src, alignof(std::vector<SrcT>)));
     const std::vector<SrcT> &v = *reinterpret_cast<const std::vector<SrcT> *>(src);
-
-    this->template writeNumber<PlySizeT>(os, v.size());
-    if (!v.empty())
-    {
-      this->writeTokenSeparator(os);
-      for (std::size_t i = 0; i < v.size() - 1; ++i)
-      {
-        this->template writeNumber<PlyT>(os, v[i]);
-        this->writeTokenSeparator(os);
-      }
-      this->template writeNumber<PlyT>(os, v.back());
-    }
-
-    return static_cast<const std::uint8_t *>(detail::align(src, alignof(std::vector<SrcT>))) +
-           sizeof(std::vector<SrcT>);
+    this->template writeList<PlySizeT, PlyT, SrcT>(os, v.data(), v.size());
+    return src + sizeof(std::vector<SrcT>);
   }
 
   template<typename PlyT, typename TypeTag>
