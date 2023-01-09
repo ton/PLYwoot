@@ -170,7 +170,54 @@ TEST_CASE("Write PLY file with a single element with a list property", "[ostream
   plyos.write(ss);
 
   const std::string expected{
-      "ply\nformat ascii 1.0\nelement face 10\nproperty list char int "
-      "vertex_indices\nend_header\n"};
+      "ply\nformat ascii 1.0\nelement face 10\nproperty list char int vertex_indices\nend_header\n"};
+  REQUIRE(expected == ss.str());
+}
+
+TEST_CASE("Write PLY file containing a single vertex using a pack of floats", "[ostream][ascii]")
+{
+  std::stringstream ss;
+  plywoot::OStream plyos{plywoot::PlyFormat::Ascii};
+
+  const plywoot::PlyProperty x{"x", plywoot::PlyDataType::Float};
+  const plywoot::PlyProperty y{"y", plywoot::PlyDataType::Float};
+  const plywoot::PlyProperty z{"z", plywoot::PlyDataType::Float};
+  const plywoot::PlyElement element{"vertex", 1, {x, y, z}};
+
+  using Layout = plywoot::reflect::Layout<plywoot::reflect::Pack<float, 3>>;
+  using Vertex = FloatVertex;
+
+  std::vector<Vertex> vertices = {Vertex{1, 2, 3}};
+  plyos.add(element, Layout{vertices});
+  plyos.write(ss);
+
+  const std::string expected{
+      "ply\nformat ascii 1.0\nelement vertex 1\nproperty float x\nproperty float y\nproperty float "
+      "z\nend_header\n"
+      "1 2 3\n"};
+  REQUIRE(expected == ss.str());
+}
+
+TEST_CASE("Write PLY file containing a single vertex using a pack of floats, followed by another property", "[ostream][ascii]")
+{
+  std::stringstream ss;
+  plywoot::OStream plyos{plywoot::PlyFormat::Ascii};
+
+  const plywoot::PlyProperty x{"x", plywoot::PlyDataType::Float};
+  const plywoot::PlyProperty y{"y", plywoot::PlyDataType::Float};
+  const plywoot::PlyProperty z{"z", plywoot::PlyDataType::Float};
+  const plywoot::PlyElement element{"vertex", 1, {x, y, z}};
+
+  using Layout = plywoot::reflect::Layout<plywoot::reflect::Pack<float, 2>, float>;
+  using Vertex = FloatVertex;
+
+  std::vector<Vertex> vertices = {Vertex{1, 2, 3}};
+  plyos.add(element, Layout{vertices});
+  plyos.write(ss);
+
+  const std::string expected{
+      "ply\nformat ascii 1.0\nelement vertex 1\nproperty float x\nproperty float y\nproperty float "
+      "z\nend_header\n"
+      "1 2 3\n"};
   REQUIRE(expected == ss.str());
 }

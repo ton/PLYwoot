@@ -36,7 +36,7 @@ public:
 
       // In case the element defines more properties than the source data,
       // append the missing properties with a default value of zero.
-      if (sizeof...(Ts) < static_cast<std::size_t>(std::distance(first, last)))
+      if (reflect::numProperties<Ts...>() < static_cast<std::size_t>(std::distance(first, last)))
       {
         this->writeMissingProperties(os, first + sizeof...(Ts), last);
       }
@@ -64,6 +64,25 @@ private:
       reflect::Type<SrcT>) const
   {
     return static_cast<const std::uint8_t *>(detail::align(src, alignof(SrcT))) + sizeof(SrcT);
+  }
+
+  /// Specialization for the meta property type `Pack<T, N>`, this will write N
+  /// numbers of type `T` to the output stream.
+  template<typename PlyT, typename SrcT, std::size_t N>
+  const std::uint8_t *writeProperty(
+      std::ostream &os,
+      const std::uint8_t *src,
+      reflect::Type<reflect::Pack<SrcT, N>>) const
+  {
+    src = static_cast<const std::uint8_t *>(detail::align(src, alignof(SrcT)));
+
+    for (std::size_t i = 0; i < N - 1; ++i)
+    {
+      src = writeProperty<PlyT>(os, src, reflect::Type<SrcT>{});
+      this->writeTokenSeparator(os);
+    }
+
+    return writeProperty<PlyT>(os, src, reflect::Type<SrcT>{});
   }
 
   /// Specialization for the meta property type `Stride<T>`, this will just skip
@@ -267,7 +286,9 @@ private:
   }
 
   template<typename Policy, typename T, typename U, typename... Ts>
-  typename std::enable_if<std::is_same<Policy, AsciiWriterPolicy>::value, const std::uint8_t *>::type
+  typename std::enable_if<
+      std::is_same<Policy, AsciiWriterPolicy>::value && !reflect::IsPack<T>::value,
+      const std::uint8_t *>::type
   writeProperties(
       std::ostream &os,
       const std::uint8_t *src,
@@ -280,7 +301,25 @@ private:
   }
 
   template<typename Policy, typename T, typename U, typename... Ts>
-  typename std::enable_if<!std::is_same<Policy, AsciiWriterPolicy>::value, const std::uint8_t *>::type
+  typename std::enable_if<
+      std::is_same<Policy, AsciiWriterPolicy>::value && reflect::IsPack<T>::value,
+      const std::uint8_t *>::type
+  writeProperties(
+      std::ostream &os,
+      const std::uint8_t *src,
+      PropertyConstIterator first,
+      PropertyConstIterator last) const
+  {
+    src = writeElement<T>(os, src, first, last);
+    first += T::size;
+    if (first < last) os.put(' ');
+    return writeProperties<Policy, U, Ts...>(os, src, first, last);
+  }
+
+  template<typename Policy, typename T, typename U, typename... Ts>
+  typename std::enable_if<
+      !std::is_same<Policy, AsciiWriterPolicy>::value && !reflect::IsPack<T>::value,
+      const std::uint8_t *>::type
   writeProperties(
       std::ostream &os,
       const std::uint8_t *src,
@@ -288,6 +327,20 @@ private:
       PropertyConstIterator last) const
   {
     return writeProperties<Policy, U, Ts...>(os, writeElement<T>(os, src, first, last), first + 1, last);
+  }
+
+  template<typename Policy, typename T, typename U, typename... Ts>
+  typename std::enable_if<
+      !std::is_same<Policy, AsciiWriterPolicy>::value && reflect::IsPack<T>::value,
+      const std::uint8_t *>::type
+  writeProperties(
+      std::ostream &os,
+      const std::uint8_t *src,
+      PropertyConstIterator first,
+      PropertyConstIterator last) const
+  {
+    return writeProperties<Policy, U, Ts...>(
+        os, writeElement<T>(os, src, first, last), first + T::size, last);
   }
   /// @}
 };
