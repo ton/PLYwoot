@@ -116,9 +116,6 @@ public:
 
   /// Writes a newline, ignored for binary output formats.
   void writeNewline(std::ostream &) const {}
-
-  /// Writes a token separator, ignored for binary output formats.
-  void writeTokenSeparator(std::ostream &) const {}
 };
 
 using BinaryLittleEndianWriterPolicy = BinaryWriterPolicy<LittleEndian>;
