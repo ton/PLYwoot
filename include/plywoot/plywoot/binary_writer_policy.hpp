@@ -1,6 +1,7 @@
 #ifndef PLYWOOT_BINARY_WRITER_POLICY_HPP
 #define PLYWOOT_BINARY_WRITER_POLICY_HPP
 
+#include "buffered_ostream.hpp"
 #include "endian.hpp"
 
 #include <ostream>
@@ -12,25 +13,27 @@ template<typename Endianness>
 class BinaryWriterPolicy
 {
 public:
+  BinaryWriterPolicy(std::ostream &os) : os_{os} {}
+
+  void close() { os_.close(); }
+
   /// Writes the number `t` of the given type `T` to the given binary output
   /// stream in little endian format.
   /// @{
   template<typename T, typename EndiannessDependent = Endianness>
   typename std::enable_if<std::is_same<EndiannessDependent, LittleEndian>::value, void>::type writeNumber(
-      std::ostream &os,
       T t) const
   {
     // TODO(ton): this assumes the target architecture is little endian.
-    os.write(reinterpret_cast<const char *>(&t), sizeof(T));
+    os_.write(reinterpret_cast<const char *>(&t), sizeof(T));
   }
 
   template<typename T, typename EndiannessDependent = Endianness>
   typename std::enable_if<std::is_same<EndiannessDependent, BigEndian>::value, void>::type writeNumber(
-      std::ostream &os,
       T t) const
   {
     const auto be = htobe(t);
-    os.write(reinterpret_cast<const char *>(&be), sizeof(T));
+    os_.write(reinterpret_cast<const char *>(&be), sizeof(T));
   }
   /// @}
 
@@ -39,10 +42,10 @@ public:
   /// address `src`, of number type `SrcT`. This also writes the size of the
   /// list to the output stream using number type `PlySizeT`.
   template<typename PlySizeT, typename PlyT, typename SrcT, typename EndiannessDependent = Endianness>
-  void writeList(std::ostream &os, const SrcT *t, std::size_t n) const
+  void writeList(const SrcT *t, std::size_t n) const
   {
-    writeNumber<PlySizeT>(os, n);
-    writeNumbers<PlyT, SrcT>(os, t, n);
+    writeNumber<PlySizeT>(n);
+    writeNumbers<PlyT, SrcT>(t, n);
   }
   /// @}
 
@@ -55,9 +58,9 @@ public:
   typename std::enable_if<
       std::is_same<PlyT, SrcT>::value && std::is_same<EndiannessDependent, LittleEndian>::value,
       void>::type
-  writeNumbers(std::ostream &os, const SrcT *t, std::size_t n) const
+  writeNumbers(const SrcT *t, std::size_t n) const
   {
-    os.write(reinterpret_cast<const char *>(t), sizeof(SrcT) * n);
+    os_.write(reinterpret_cast<const char *>(t), sizeof(SrcT) * n);
   }
 
   // Other cases (not optimized); that is, source number type is not equal to
@@ -66,9 +69,9 @@ public:
   typename std::enable_if<
       !std::is_same<PlyT, SrcT>::value || !std::is_same<EndiannessDependent, LittleEndian>::value,
       void>::type
-  writeNumbers(std::ostream &os, const SrcT *t, std::size_t n) const
+  writeNumbers(const SrcT *t, std::size_t n) const
   {
-    for (std::size_t i = 0; i < n; ++i) { writeNumber<PlyT>(os, *t++); }
+    for (std::size_t i = 0; i < n; ++i) { writeNumber<PlyT>(*t++); }
   }
 
   /// @}
@@ -78,36 +81,35 @@ public:
   /// the type of the number depends on the underlying property; in case of a
   /// list property the size type determines the number type, otherwise the
   /// regular property type is used.
-  void writeMissingProperties(std::ostream &os, PlyPropertyConstIterator first, PlyPropertyConstIterator last)
-      const
+  void writeMissingProperties(PlyPropertyConstIterator first, PlyPropertyConstIterator last) const
   {
     while (first != last)
     {
       switch (first->isList() ? first->sizeType() : first->type())
       {
         case PlyDataType::Char:
-          writeNumber<char>(os, 0);
+          writeNumber<char>(0);
           break;
         case PlyDataType::UChar:
-          writeNumber<unsigned char>(os, 0);
+          writeNumber<unsigned char>(0);
           break;
         case PlyDataType::Short:
-          writeNumber<short>(os, 0);
+          writeNumber<short>(0);
           break;
         case PlyDataType::UShort:
-          writeNumber<unsigned short>(os, 0);
+          writeNumber<unsigned short>(0);
           break;
         case PlyDataType::Int:
-          writeNumber<int>(os, 0);
+          writeNumber<int>(0);
           break;
         case PlyDataType::UInt:
-          writeNumber<unsigned int>(os, 0);
+          writeNumber<unsigned int>(0);
           break;
         case PlyDataType::Float:
-          writeNumber<float>(os, 0);
+          writeNumber<float>(0);
           break;
         case PlyDataType::Double:
-          writeNumber<double>(os, 0);
+          writeNumber<double>(0);
           break;
       }
       ++first;
@@ -115,7 +117,10 @@ public:
   }
 
   /// Writes a newline, ignored for binary output formats.
-  void writeNewline(std::ostream &) const {}
+  void writeNewline() const {}
+
+private:
+  mutable detail::BufferedOStream os_;
 };
 
 using BinaryLittleEndianWriterPolicy = BinaryWriterPolicy<LittleEndian>;

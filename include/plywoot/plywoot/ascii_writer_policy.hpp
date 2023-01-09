@@ -1,6 +1,8 @@
 #ifndef PLYWOOT_ASCII_WRITER_POLICY_HPP
 #define PLYWOOT_ASCII_WRITER_POLICY_HPP
 
+#include "buffered_ostream.hpp"
+
 #include <ostream>
 
 namespace plywoot { namespace detail {
@@ -27,12 +29,16 @@ struct CharToInt
 class AsciiWriterPolicy
 {
 public:
+  AsciiWriterPolicy(std::ostream &os) : os_{os} {}
+
+  void close() { os_.close(); }
+
   /// Writes the number `t` of the given type `T` to the given ASCII output
   /// stream.
   template<typename T>
-  void writeNumber(std::ostream &os, T t) const
+  void writeNumber(T t) const
   {
-    os << CharToInt<T>{}(t);
+    os_.writeAscii(CharToInt<T>{}(t));
   }
 
   /// Writes a list of numbers of type `SrcT` to the given ASCII output stream,
@@ -41,10 +47,11 @@ public:
   /// the output PLY file, which can be ignored for ASCII PLY formats, as is the
   /// type of the PLY number type.
   template<typename PlySizeT, typename PlyT, typename SrcT>
-  void writeList(std::ostream &os, const SrcT *t, std::size_t n) const
+  void writeList(const SrcT *t, std::size_t n) const
   {
-    os << n << ' ';
-    writeNumbers<PlyT, SrcT>(os, t, n);
+    os_.writeAscii(n);
+    os_.put(' ');
+    writeNumbers<PlyT, SrcT>(t, n);
   }
 
   /// Writes a list of numbers of type `SrcT` to the given ASCII output stream.
@@ -52,24 +59,33 @@ public:
   /// the output PLY file, which can be ignored for ASCII PLY formats, as is the
   /// type of the PLY number type.
   template<typename PlyT, typename SrcT>
-  void writeNumbers(std::ostream &os, const SrcT *t, std::size_t n) const
+  void writeNumbers(const SrcT *t, std::size_t n) const
   {
-    for (std::size_t i = 0; i < n - 1; ++i) { os << *t++ << ' '; }
-    os << *t;
+    for (std::size_t i = 0; i < n - 1; ++i)
+    {
+      os_.writeAscii(*t++);
+      os_.put(' ');
+    }
+    os_.writeAscii(*t);
   }
 
   /// Outputs empty data for the range of properties [`first`, `last`). Note
   /// that a property that is undefined is always stored as a zero character in
   /// ASCII mode; regardless whether the property is a list of a single element,
   /// since in case of a list we store a zero-element list.
-  void writeMissingProperties(std::ostream &os, PlyPropertyConstIterator first, PlyPropertyConstIterator last)
-      const
+  void writeMissingProperties(PlyPropertyConstIterator first, PlyPropertyConstIterator last) const
   {
-    while (first++ != last) { os.write(" 0", 2); }
+    while (first++ != last) { os_.write(" 0", 2); }
   }
 
-  /// Writes a newline separate to the given output stream `os`.
-  void writeNewline(std::ostream &os) const { os.put('\n'); }
+  /// Writes a newline separator.
+  void writeNewline() const { os_.put('\n'); }
+
+  /// Writes a token separator (a space).
+  void writeTokenSeparator() const { os_.put(' '); }
+
+private:
+  mutable detail::BufferedOStream os_;
 };
 
 }}

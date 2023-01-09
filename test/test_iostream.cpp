@@ -353,7 +353,7 @@ TEST_CASE("Test reading and writing of comments", "[iostream]")
 
   std::stringstream oss;
   plywoot::OStream plyos{plywoot::PlyFormat::Ascii, comments};
-  plyos.add(elements.front(), plywoot::reflect::Layout<>{});
+  plyos.add(elements.front(), plywoot::reflect::Layout<char>{});
   plyos.write(oss);
 
   // The text written by the writer should be equal to the text in the original

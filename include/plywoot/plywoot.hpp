@@ -11,6 +11,7 @@
 #include "plywoot/reflect.hpp"
 #include "plywoot/types.hpp"
 #include "plywoot/writer.hpp"
+#include "plywoot/writer_variant.hpp"
 
 #include <algorithm>
 #include <cstdint>
@@ -139,30 +140,9 @@ public:
   template<typename... Ts>
   void add(const PlyElement &element, const reflect::Layout<Ts...> &layout)
   {
-    switch (format_)
-    {
-      case PlyFormat::Ascii: {
-        static detail::Writer<detail::AsciiWriterPolicy> writer;
-        elementWriteClosures_.emplace_back(element, [this, layout](std::ostream &os, const PlyElement &e) {
-          writer.write<Ts...>(os, e, layout.data(), layout.size());
-        });
-      }
-      break;
-      case PlyFormat::BinaryLittleEndian: {
-        static detail::Writer<detail::BinaryLittleEndianWriterPolicy> writer;
-        elementWriteClosures_.emplace_back(element, [this, layout](std::ostream &os, const PlyElement &e) {
-          writer.write<Ts...>(os, e, layout.data(), layout.size());
-        });
-      }
-      break;
-      case PlyFormat::BinaryBigEndian: {
-        static detail::Writer<detail::BinaryBigEndianWriterPolicy> writer;
-        elementWriteClosures_.emplace_back(element, [this, layout](std::ostream &os, const PlyElement &e) {
-          writer.write<Ts...>(os, e, layout.data(), layout.size());
-        });
-      }
-      break;
-    }
+    elementWriteClosures_.emplace_back(element, [this, layout](detail::WriterVariant &writer, const PlyElement &e) {
+      writer.write<Ts...>(e, layout.data(), layout.size());
+    });
   }
 
   /// Writes all data as a PLY file queued through `addElement()` to the given
@@ -171,11 +151,12 @@ public:
   {
     writeHeader(os);
 
+    detail::WriterVariant writer{os, format_};
     for (const auto &elementClosurePair : elementWriteClosures_)
     {
       const PlyElement &element{elementClosurePair.first};
       const auto &writeFn = elementClosurePair.second;
-      writeFn(os, element);
+      writeFn(writer, element);
     }
   }
 
@@ -237,7 +218,7 @@ private:
     os << "end_header\n";
   }
 
-  using ElementWriteClosure = std::function<void(std::ostream &, const PlyElement &)>;
+  using ElementWriteClosure = std::function<void(detail::WriterVariant &, const PlyElement &)>;
 
   /// All queued elements with the associated data.
   std::vector<std::pair<PlyElement, ElementWriteClosure>> elementWriteClosures_;
