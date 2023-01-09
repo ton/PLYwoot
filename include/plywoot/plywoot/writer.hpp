@@ -23,6 +23,7 @@ namespace plywoot { namespace detail {
 ///     void writeNumbers(const SrcT *t, std::size_t n) const;
 ///
 ///   - void writeNewline();
+///   - void writeTokenSeparator();
 template<typename FormatWriterPolicy>
 class Writer : private FormatWriterPolicy
 {
