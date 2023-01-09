@@ -226,8 +226,8 @@ private:
     return src;
   }
 
-  /// Writes a single object of type `T` read from the input buffer `src` to the
-  /// given output stream `os` in case a corresponding element property is
+  /// Writes a single object of type `SrcT` read from the input buffer `src` to
+  /// the given output stream `os` in case a corresponding element property is
   /// defined for it (`first` < `last`). Otherwise, it will skip over the object
   /// in the input buffer.
   template<typename SrcT>
