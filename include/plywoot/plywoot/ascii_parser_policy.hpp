@@ -50,15 +50,15 @@ public:
     return detail::to_number<T>(is_.data(), is_.data() + 256, &is_.data());
   }
 
-  /// Reads `N` numbers of the given type `From` from the input stream, and
-  /// stores them contiguous at the given destination in memory as numbers of
-  /// type `To`. Returns a pointer pointing just after the last number stored at
-  /// `dest`.
-  template<typename From, typename To, std::size_t N>
+  /// Reads `N` numbers of the given type `PlyT` from the input stream, and
+  /// stores them contiguously at the given destination in memory as numbers of
+  /// type `DestT`. Returns a pointer pointing just after the last number stored
+  /// at `dest`.
+  template<typename PlyT, typename DestT, std::size_t N>
   std::uint8_t *readNumbers(std::uint8_t *dest) const
   {
     // TODO(ton): needs to be specialized for improved performance.
-    for (std::size_t i = 0; i < N; ++i, dest += sizeof(To)) { *reinterpret_cast<To *>(dest) = readNumber<From>(); }
+    for (std::size_t i = 0; i < N; ++i, dest += sizeof(DestT)) { *reinterpret_cast<DestT *>(dest) = readNumber<PlyT>(); }
     return dest;
   }
 

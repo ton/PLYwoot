@@ -15,7 +15,7 @@ namespace plywoot { namespace detail {
 /// following model requirements:
 ///
 ///   - template<typename T> T readNumber();
-///   - template<typename From, typename To, std::size_t N> std::uint8_t *readNumbers(std::uint8_t *dest);
+///   - template<typename PlyT, typename DestT, std::size_t N> std::uint8_t *readNumbers(std::uint8_t *dest);
 ///   - template<typename T> T skipNumber();
 ///
 ///   - void skipElement(const PlyElement &e);
