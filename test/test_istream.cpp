@@ -344,7 +344,9 @@ TEST_CASE("Read multiple elements with two properties from a PLY file", "[istrea
 
 TEST_CASE("Retrieve a element and property definition from an IStream given an element name", "[istream]")
 {
-  auto inputFilename = GENERATE("test/input/ascii/cube.ply", "test/input/binary/little_endian/cube.ply");
+  auto inputFilename = GENERATE(
+      "test/input/ascii/cube.ply", "test/input/binary/big_endian/cube.ply",
+      "test/input/binary/little_endian/cube.ply");
 
   std::ifstream ifs{inputFilename};
   const plywoot::IStream plyFile{ifs};
@@ -425,7 +427,9 @@ TEST_CASE("Read elements from a PLY file by only partially retrieving all proper
 
 TEST_CASE("Read elements from a PLY file by packing multiple properties together", "[istream]")
 {
-  auto inputFilename = GENERATE("test/input/ascii/cube.ply", "test/input/binary/little_endian/cube.ply");
+  auto inputFilename = GENERATE(
+      "test/input/ascii/cube.ply", "test/input/binary/big_endian/cube.ply",
+      "test/input/binary/little_endian/cube.ply");
 
   std::ifstream ifs{inputFilename};
   const plywoot::IStream plyFile{ifs};
@@ -443,8 +447,9 @@ TEST_CASE("Read elements from a PLY file by packing multiple properties together
 
 TEST_CASE("Test casting of input property from float to double", "[istream]")
 {
-  auto inputFilename = GENERATE("test/input/ascii/cube.ply", "test/input/binary/little_endian/cube.ply");
-
+  auto inputFilename = GENERATE(
+      "test/input/ascii/cube.ply", "test/input/binary/big_endian/cube.ply",
+      "test/input/binary/little_endian/cube.ply");
   std::ifstream ifs{inputFilename};
   const plywoot::IStream plyFile{ifs};
 
@@ -456,26 +461,6 @@ TEST_CASE("Test casting of input property from float to double", "[istream]")
   const std::vector<Vertex> result = plyFile.readElement<Vertex, VertexLayout>();
   const std::vector<Vertex> expected = {{0, 0, 0}, {1, 0, 0}, {1, 1, 0}, {0, 1, 0},
                                         {0, 0, 1}, {1, 0, 1}, {1, 1, 1}, {0, 1, 1}};
-  CHECK(result == expected);
-}
-
-// Note; this test case exists to not solely rely on the binary big endian
-// writer to generate input for the parser.
-TEST_CASE("Test reading a random binary big endian PLY file found somewhere on the internet", "[istream]")
-{
-  auto inputFilename = "test/input/binary/big_endian/cube.ply";
-
-  std::ifstream ifs{inputFilename};
-  const plywoot::IStream plyFile{ifs};
-
-  REQUIRE(plyFile.find("vertex"));
-
-  using Vertex = FloatVertex;
-  using VertexLayout = plywoot::reflect::Layout<float, float, float>;
-
-  const std::vector<Vertex> result = plyFile.readElement<Vertex, VertexLayout>();
-  const std::vector<Vertex> expected = {{0, 0, 0}, {0, 1, 0}, {1, 0, 0}, {1, 1, 0},
-                                        {0, 0, 1}, {0, 1, 1}, {1, 0, 1}, {1, 1, 1}};
   CHECK(result == expected);
 }
 
