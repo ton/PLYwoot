@@ -43,9 +43,9 @@ IncludeBlocks: Regroup
 IncludeCategories:
     - Regex:  '^".*"'
       Priority: 1
-    - Regex:  '^<plywoot/.*>'
+    - Regex:  '^<.*/.*>'
       Priority: 2
-    - Regex:  '^<catch2/.*>'
+    - Regex:  '^<[^.]*>'
       Priority: 3
     - Regex:  '^<.*\.(h|hpp)>'
       Priority: 4

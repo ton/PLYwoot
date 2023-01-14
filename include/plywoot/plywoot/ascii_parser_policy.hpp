@@ -34,10 +34,7 @@ public:
 
   /// Skips the given element in the current input stream, assuming the read
   /// head is at the start of that element.
-  void skipElement(const PlyElement &e) const
-  {
-    is_.skipLines(e.size());
-  }
+  void skipElement(const PlyElement &e) const { is_.skipLines(e.size()); }
 
   /// Reads a number of the given type `T` from the input stream.
   template<typename T>
@@ -58,7 +55,10 @@ public:
   std::uint8_t *readNumbers(std::uint8_t *dest) const
   {
     // TODO(ton): needs to be specialized for improved performance.
-    for (std::size_t i = 0; i < N; ++i, dest += sizeof(DestT)) { *reinterpret_cast<DestT *>(dest) = readNumber<PlyT>(); }
+    for (std::size_t i = 0; i < N; ++i, dest += sizeof(DestT))
+    {
+      *reinterpret_cast<DestT *>(dest) = readNumber<PlyT>();
+    }
     return dest;
   }
 

@@ -25,7 +25,7 @@ struct BigEndian
 template<typename T>
 typename std::enable_if<std::is_floating_point<T>::value && sizeof(T) == 4, T>::type byte_swap(T t)
 {
-  unsigned char *bytes = reinterpret_cast<unsigned char*>(&t);
+  unsigned char *bytes = reinterpret_cast<unsigned char *>(&t);
   std::swap(bytes[0], bytes[3]);
   std::swap(bytes[1], bytes[2]);
   return t;
@@ -34,7 +34,7 @@ typename std::enable_if<std::is_floating_point<T>::value && sizeof(T) == 4, T>::
 template<typename T>
 typename std::enable_if<std::is_floating_point<T>::value && sizeof(T) == 8, T>::type byte_swap(T t)
 {
-  unsigned char *bytes = reinterpret_cast<unsigned char*>(&t);
+  unsigned char *bytes = reinterpret_cast<unsigned char *>(&t);
   std::swap(bytes[0], bytes[7]);
   std::swap(bytes[1], bytes[6]);
   std::swap(bytes[2], bytes[5]);

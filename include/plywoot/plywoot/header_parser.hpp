@@ -91,10 +91,7 @@ public:
     scanner_.nextToken();  // ignore the format version
 
     // Ignore comment section for now.
-    while (scanner_.nextToken() == Token::Comment)
-    {
-      comments_.push_back(scanner_.comment());
-    }
+    while (scanner_.nextToken() == Token::Comment) { comments_.push_back(scanner_.comment()); }
 
     // Parse elements.
     do {

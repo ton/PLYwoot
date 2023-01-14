@@ -1,13 +1,11 @@
 #include "types.hpp"
 #include "util.hpp"
 
-#include <plywoot/plywoot.hpp>
-
-#include <boost/iostreams/filtering_streambuf.hpp>
 #include <boost/iostreams/filter/gzip.hpp>
-
+#include <boost/iostreams/filtering_streambuf.hpp>
 #include <catch2/catch_test_macros.hpp>
 #include <catch2/generators/catch_generators.hpp>
+#include <plywoot/plywoot.hpp>
 
 #include <fstream>
 #include <numeric>

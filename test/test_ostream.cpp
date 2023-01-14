@@ -1,8 +1,7 @@
 #include "types.hpp"
 
-#include <plywoot/plywoot.hpp>
-
 #include <catch2/catch_test_macros.hpp>
+#include <plywoot/plywoot.hpp>
 
 #include <fstream>
 #include <numeric>
@@ -198,7 +197,9 @@ TEST_CASE("Write PLY file containing a single vertex using a pack of floats", "[
   REQUIRE(expected == ss.str());
 }
 
-TEST_CASE("Write PLY file containing a single vertex using a pack of floats, followed by another property", "[ostream][ascii]")
+TEST_CASE(
+    "Write PLY file containing a single vertex using a pack of floats, followed by another property",
+    "[ostream][ascii]")
 {
   std::stringstream ss;
   plywoot::OStream plyos{plywoot::PlyFormat::Ascii};

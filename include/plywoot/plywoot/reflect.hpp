@@ -87,37 +87,36 @@ struct Pack
   static constexpr bool isList = false;
 };
 
-namespace detail
+namespace detail {
+template<typename... Ts>
+struct NumProperties
 {
-  template<typename ...Ts>
-  struct NumProperties
-  {
-    static constexpr std::size_t size = 0;
-  };
+  static constexpr std::size_t size = 0;
+};
 
-  template<typename T, typename ...Ts>
-  struct NumProperties<T, Ts...>
-  {
-    static constexpr std::size_t size = NumProperties<T>::size + NumProperties<Ts...>::size;
-  };
+template<typename T, typename... Ts>
+struct NumProperties<T, Ts...>
+{
+  static constexpr std::size_t size = NumProperties<T>::size + NumProperties<Ts...>::size;
+};
 
-  template<typename T, std::size_t N>
-  struct NumProperties<Pack<T, N>>
-  {
-    static constexpr std::size_t size = N;
-  };
+template<typename T, std::size_t N>
+struct NumProperties<Pack<T, N>>
+{
+  static constexpr std::size_t size = N;
+};
 
-  template<typename T>
-  struct NumProperties<T>
-  {
-    static constexpr std::size_t size = 1;
-  };
+template<typename T>
+struct NumProperties<T>
+{
+  static constexpr std::size_t size = 1;
+};
 }
 
 /// Returns the number of properties spanned by the given list of reflection
 /// types. By default, every reflection type spans one property, except for
 /// `plywoot::reflect::Pack`, which may span multiple properties.
-template<typename ...Ts>
+template<typename... Ts>
 std::size_t numProperties()
 {
   return detail::NumProperties<Ts...>::size;
