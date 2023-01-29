@@ -9,6 +9,7 @@
 #include "plywoot/parser.hpp"
 #include "plywoot/parser_variant.hpp"
 #include "plywoot/reflect.hpp"
+#include "plywoot/type_traits.hpp"
 #include "plywoot/types.hpp"
 #include "plywoot/writer.hpp"
 #include "plywoot/writer_variant.hpp"

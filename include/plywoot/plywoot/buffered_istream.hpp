@@ -4,7 +4,6 @@
 #include "endian.hpp"
 
 #include <algorithm>
-#include <cassert>
 #include <cstring>
 #include <istream>
 
@@ -54,6 +53,29 @@ public:
     return *reinterpret_cast<const T *>(t);
   }
 
+  /// Copies `n` bytes to the given destination buffer, assuming it may hold
+  /// that many bytes. Returns a pointer pointing to one byte after the last
+  /// byte that was copied to `dest`.
+  inline std::uint8_t *memcpy(std::uint8_t *dest, std::size_t n)
+  {
+    if (n > BufferSize)
+    {
+      const std::size_t remaining = eob_ - c_;
+      std::memcpy(dest, c_, remaining);
+      is_.read(reinterpret_cast<char *>(dest) + remaining, n - remaining);
+      c_ = eob_;
+    }
+    else
+    {
+      if (c_ + n > eob_) buffer(n);
+
+      std::memcpy(dest, c_, n);
+      c_ += n;
+    }
+
+    return dest + n;
+  }
+
   /// Reads `N` objects of the given type `From` from the input data stream, and
   /// stores them contiguously at the given destination in memory as numbers of
   /// type `To`.
@@ -66,13 +88,7 @@ public:
       std::uint8_t *>::type
   read(std::uint8_t *dest)
   {
-    constexpr std::size_t bytesToRead = N * sizeof(From);
-    if (c_ + bytesToRead > eob_) buffer(bytesToRead);
-
-    std::memcpy(dest, c_, bytesToRead);
-    c_ += bytesToRead;
-
-    return dest + bytesToRead;
+    return this->memcpy(dest, N * sizeof(From));
   }
 
   // Big endian; source number type is equal to the destination number type.
@@ -82,17 +98,13 @@ public:
       std::uint8_t *>::type
   read(std::uint8_t *dest)
   {
-    constexpr std::size_t bytesToRead = N * sizeof(From);
-    if (c_ + bytesToRead > eob_) buffer(bytesToRead);
-
-    std::memcpy(dest, c_, bytesToRead);
-    c_ += bytesToRead;
+    std::uint8_t *result = this->memcpy(dest, N * sizeof(From));
 
     // Perform endianess conversion.
     To *to = reinterpret_cast<To *>(dest);
     for (size_t i = 0; i < N; ++i, ++to) { *to = betoh(*to); }
 
-    return reinterpret_cast<std::uint8_t *>(to);
+    return result;
   }
 
   // Little endian; source number type is different from the destination number
@@ -187,7 +199,6 @@ public:
   /// of the buffer.
   void buffer(std::size_t minimum)
   {
-    assert(minimum < BufferSize / 2);
     std::size_t remaining = eob_ - c_;
     if (remaining < minimum)
     {

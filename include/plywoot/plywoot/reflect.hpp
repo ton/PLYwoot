@@ -101,6 +101,12 @@ struct NumProperties<T, Ts...>
 };
 
 template<typename T, std::size_t N>
+struct NumProperties<Array<T, N>>
+{
+  static constexpr std::size_t size = N;
+};
+
+template<typename T, std::size_t N>
 struct NumProperties<Pack<T, N>>
 {
   static constexpr std::size_t size = N;

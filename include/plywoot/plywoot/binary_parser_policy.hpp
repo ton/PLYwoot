@@ -3,6 +3,7 @@
 
 #include "buffered_istream.hpp"
 #include "endian.hpp"
+#include "type_traits.hpp"
 
 #include <cstdint>
 #include <numeric>
@@ -112,7 +113,60 @@ public:
   /// Skips property data, totaling `n` bytes.
   void skipProperties(std::size_t n) const { is_.skip(n); }
 
+  /// Copies all element data to the given destination buffer `dest`. This
+  /// assumes an element maps to a collection of types `Ts...` for which all
+  /// types are trivially copyable, and contiguous in memory without any padding
+  /// in between.
+  /// @{
+  template<typename... Ts, typename EndiannessDependent = Endianness>
+  typename std::enable_if<std::is_same<EndiannessDependent, LittleEndian>::value, void>::type memcpy(
+      std::uint8_t *dest,
+      const PlyElement &element) const
+  {
+    is_.memcpy(dest, element.size() * detail::SizeOf<Ts...>::size);
+  }
+
+  template<typename... Ts, typename EndiannessDependent = Endianness>
+  typename std::enable_if<std::is_same<EndiannessDependent, BigEndian>::value, void>::type memcpy(
+      std::uint8_t *dest,
+      const PlyElement &element) const
+  {
+    is_.memcpy(dest, element.size() * detail::SizeOf<Ts...>::size);
+
+    for (size_t i = 0; i < element.size(); ++i) { dest = toBigEndian<Ts...>(dest); }
+  }
+  /// @}
+
 private:
+  template<typename T>
+  typename std::enable_if<!detail::IsPack<T>::value, std::uint8_t *>::type toBigEndian(
+      std::uint8_t *dest) const
+  {
+    auto ptr = reinterpret_cast<T *>(dest);
+    *ptr = htobe(*ptr);
+    return dest + sizeof(T);
+  }
+
+  template<typename T>
+  typename std::enable_if<detail::IsPack<T>::value, std::uint8_t *>::type toBigEndian(
+      std::uint8_t *dest) const
+  {
+    auto ptr = reinterpret_cast<typename T::DestT *>(dest);
+    for (std::size_t i = 0; i < T::size; ++i, ++ptr) { *ptr = htobe(*ptr); }
+
+    return dest + detail::SizeOf<T>::size;
+  }
+
+  template<typename T, typename U, typename... Ts>
+  std::uint8_t *toBigEndian(std::uint8_t *dest) const
+  {
+    static_assert(
+        detail::isPacked<T, U, Ts...>(),
+        "converting possibly padded range of little-endian objects to big-endian not implemented yet");
+
+    return toBigEndian<U, Ts...>(toBigEndian<T>(dest));
+  }
+
   mutable detail::BufferedIStream is_;
 };
 

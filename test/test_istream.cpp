@@ -7,6 +7,7 @@
 #include <catch2/generators/catch_generators.hpp>
 #include <plywoot/plywoot.hpp>
 
+#include <array>
 #include <fstream>
 #include <numeric>
 
@@ -535,4 +536,85 @@ TEST_CASE("Test reading a zipped binary PLY file", "[istream]")
 
   CHECK(triangles.back() == Triangle{17277, 17346, 17345});
   CHECK(vertices.back() == Vertex{-0.0400442, 0.15362, -0.00816685});
+}
+
+TEST_CASE("Test reading data that can be directly mapped on to the target layout", "[istream]")
+{
+  auto inputFilename =
+      GENERATE("test/input/binary/big_endian/cube.ply", "test/input/binary/little_endian/cube.ply");
+
+  std::ifstream ifs{inputFilename};
+  const plywoot::IStream plyFile{ifs};
+
+  using Vertex = FloatVertex;
+  using VertexLayout = plywoot::reflect::Layout<float, float, float>;
+
+  const std::vector<Vertex> vertices = plyFile.readElement<Vertex, VertexLayout>();
+  const std::vector<Vertex> expectedVertices = {{0, 0, 0}, {1, 0, 0}, {1, 1, 0}, {0, 1, 0},
+                                                {0, 0, 1}, {1, 0, 1}, {1, 1, 1}, {0, 1, 1}};
+  CHECK(expectedVertices == vertices);
+}
+
+TEST_CASE(
+    "Test reading data that can be directly mapped on to the target layout using packed properties",
+    "[istream]")
+{
+  auto inputFilename =
+      GENERATE("test/input/binary/big_endian/cube.ply", "test/input/binary/little_endian/cube.ply");
+
+  std::ifstream ifs{inputFilename};
+  const plywoot::IStream plyFile{ifs};
+
+  using Vertex = FloatVertex;
+  using VertexLayout = plywoot::reflect::Layout<plywoot::reflect::Pack<float, 3>>;
+
+  const std::vector<Vertex> vertices = plyFile.readElement<Vertex, VertexLayout>();
+  const std::vector<Vertex> expectedVertices = {{0, 0, 0}, {1, 0, 0}, {1, 1, 0}, {0, 1, 0},
+                                                {0, 0, 1}, {1, 0, 1}, {1, 1, 1}, {0, 1, 1}};
+  CHECK(expectedVertices == vertices);
+}
+
+TEST_CASE(
+    "Test reading data that can be directly mapped on to the target layout which is a vector of arrays",
+    "[istream]")
+{
+  auto inputFilename =
+      GENERATE("test/input/binary/big_endian/cube.ply", "test/input/binary/little_endian/cube.ply");
+
+  std::ifstream ifs{inputFilename};
+  const plywoot::IStream plyFile{ifs};
+
+  using Vertex = std::array<float, 3>;
+  using VertexLayout = plywoot::reflect::Layout<plywoot::reflect::Pack<float, 3>>;
+
+  const std::vector<Vertex> vertices = plyFile.readElement<Vertex, VertexLayout>();
+  const std::vector<Vertex> expectedVertices = {{0, 0, 0}, {1, 0, 0}, {1, 1, 0}, {0, 1, 0},
+                                                {0, 0, 1}, {1, 0, 1}, {1, 1, 1}, {0, 1, 1}};
+  CHECK(expectedVertices == vertices);
+}
+
+TEST_CASE(
+    "Test reading data that can be directly mapped on to the target layout which is a vector of arrays, but "
+    "which originates from a PLY list property, and can therefore not be memcpy'd",
+    "[istream]")
+{
+  auto inputFilename =
+      GENERATE("test/input/binary/big_endian/cube.ply", "test/input/binary/little_endian/cube.ply");
+
+  std::ifstream ifs{inputFilename};
+  const plywoot::IStream plyFile{ifs};
+
+  REQUIRE(plyFile.hasElement());
+  REQUIRE(plyFile.element().name() == "vertex");
+  plyFile.skipElement();
+
+  using TriangleLayout = plywoot::reflect::Layout<plywoot::reflect::Array<int, 3>>;
+
+  REQUIRE(plyFile.hasElement());
+  REQUIRE(plyFile.element().name() == "face");
+  const std::vector<Triangle> triangles = plyFile.readElement<Triangle, TriangleLayout>();
+  const std::vector<Triangle> expectedTriangles{{0, 2, 1}, {0, 3, 2}, {4, 5, 6}, {4, 6, 7},
+                                                {0, 1, 5}, {0, 5, 4}, {2, 3, 7}, {2, 7, 6},
+                                                {3, 0, 4}, {3, 4, 7}, {1, 2, 6}, {1, 6, 5}};
+  CHECK(expectedTriangles == triangles);
 }

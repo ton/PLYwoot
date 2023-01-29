@@ -7,6 +7,7 @@ add_executable(tests
   test_istream.cpp
   test_ostream.cpp
   test_iostream.cpp
+  test_type_traits.cpp
 )
 target_link_libraries(tests
   PRIVATE

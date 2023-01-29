@@ -3,6 +3,7 @@
 
 #include "reflect.hpp"
 #include "std.hpp"
+#include "type_traits.hpp"
 #include "types.hpp"
 
 #include <cstdint>
@@ -20,9 +21,23 @@ namespace plywoot { namespace detail {
 ///
 ///   - void skipElement(const PlyElement &e);
 ///   - void skipProperties(size_t numBytes);
+///
+///  Only for the binary policies, the following function needs to be
+///  implemented as well:
+///
+///   - template<typename ...Ts> void memcpy(std::uint8_t *dest, const PLyElement &e);
+///
 template<typename FormatParserPolicy>
 class Parser : private FormatParserPolicy
 {
+private:
+  template<typename... Ts>
+  struct MaybeMemcpyable
+  {
+    static constexpr bool value = !std::is_same<FormatParserPolicy, AsciiParserPolicy>::value &&
+                                  detail::isPacked<Ts...>() && detail::isTriviallyCopyable<Ts...>();
+  };
+
 public:
   using FormatParserPolicy::FormatParserPolicy;
 
@@ -37,7 +52,20 @@ public:
   // TODO(ton): probably better to add another parameter 'size' to guard
   // against overwriting the input buffer.
   template<typename... Ts>
-  void read(const PlyElement &element, reflect::Layout<Ts...> layout) const
+  typename std::enable_if<MaybeMemcpyable<Ts...>::value, void>::type read(
+      const PlyElement &element,
+      reflect::Layout<Ts...> layout) const
+  {
+    const PropertyConstIterator first = element.properties().begin();
+    const PropertyConstIterator last = element.properties().end();
+    if (detail::isMemcpyable<Ts...>(first, last)) { this->template memcpy<Ts...>(layout.data(), element); }
+    else { readElements<Ts...>(layout.data(), element); }
+  }
+
+  template<typename... Ts>
+  typename std::enable_if<!MaybeMemcpyable<Ts...>::value, void>::type read(
+      const PlyElement &element,
+      reflect::Layout<Ts...> layout) const
   {
     readElements<Ts...>(layout.data(), element);
   }
