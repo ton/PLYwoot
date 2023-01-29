@@ -568,6 +568,8 @@ TEST_CASE(
   using Vertex = FloatVertex;
   using VertexLayout = plywoot::reflect::Layout<plywoot::reflect::Pack<float, 3>>;
 
+  REQUIRE(plyFile.hasElement());
+  REQUIRE(plyFile.element().name() == "vertex");
   const std::vector<Vertex> vertices = plyFile.readElement<Vertex, VertexLayout>();
   const std::vector<Vertex> expectedVertices = {{0, 0, 0}, {1, 0, 0}, {1, 1, 0}, {0, 1, 0},
                                                 {0, 0, 1}, {1, 0, 1}, {1, 1, 1}, {0, 1, 1}};
@@ -587,6 +589,8 @@ TEST_CASE(
   using Vertex = std::array<float, 3>;
   using VertexLayout = plywoot::reflect::Layout<plywoot::reflect::Pack<float, 3>>;
 
+  REQUIRE(plyFile.hasElement());
+  REQUIRE(plyFile.element().name() == "vertex");
   const std::vector<Vertex> vertices = plyFile.readElement<Vertex, VertexLayout>();
   const std::vector<Vertex> expectedVertices = {{0, 0, 0}, {1, 0, 0}, {1, 1, 0}, {0, 1, 0},
                                                 {0, 0, 1}, {1, 0, 1}, {1, 1, 1}, {0, 1, 1}};
