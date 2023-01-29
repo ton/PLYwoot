@@ -146,8 +146,10 @@ TEST_CASE("Test reading and writing of variable length lists", "[iostream]")
 
 TEST_CASE("Tests reading and writing vertex and face data", "[iostream]")
 {
-  auto inputFilename = GENERATE("test/input/ascii/cube.ply", "test/input/binary/little_endian/cube.ply");
-  auto format = GENERATE(plywoot::PlyFormat::Ascii, plywoot::PlyFormat::BinaryLittleEndian);
+  auto inputFilename = GENERATE(
+      "test/input/ascii/cube.ply", "test/input/binary/big_endian/cube.ply",
+      "test/input/binary/little_endian/cube.ply");
+  auto format = GENERATE(plywoot::PlyFormat::Ascii, plywoot::PlyFormat::BinaryLittleEndian, plywoot::PlyFormat::BinaryBigEndian);
 
   std::ifstream ifs{inputFilename};
   const plywoot::IStream plyFile{ifs};
