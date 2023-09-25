@@ -17,7 +17,8 @@
 #include <algorithm>
 #include <cstdint>
 #include <functional>
-#include <iostream>
+#include <istream>
+#include <ostream>
 #include <string>
 #include <utility>
 #include <vector>

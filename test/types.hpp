@@ -1,7 +1,7 @@
 #ifndef PLYWOOT_TEST_TYPES_HPP
 #define PLYWOOT_TEST_TYPES_HPP
 
-#include <iostream>
+#include <ostream>
 
 template<typename T>
 struct VertexT
