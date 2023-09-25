@@ -104,7 +104,7 @@ private:
 
   /// Character the scanner's write head is currently pointing to. Invariant:
   ///
-  ///       buffer_ <= c_ < (buffer_ + sizeof(buffer_) - 1)
+  ///       buffer_ <= c_ <= (buffer_ + sizeof(buffer_))
   ///
   char *c_{buffer_};
   /// Number of bytes remaining in the buffer.

@@ -239,7 +239,7 @@ private:
 
   /// Character the scanner's read head is currently pointing to. Invariant:
   ///
-  ///       buffer_ <= c_ < (buffer_ + sizeof(buffer_) - 1)
+  ///       buffer_ <= c_ <= (buffer_ + sizeof(buffer_))
   ///
   /// Note that the invariant allows for one character lookahead without the
   /// need to check whether we need to read data from disk.
