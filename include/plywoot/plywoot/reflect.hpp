@@ -13,27 +13,6 @@ struct Void
   using type = void;
 };
 
-/// Returns whether the given type `T` is considered to be a list.
-/// @{
-template<typename T, typename = void>
-struct IsList
-{
-  static constexpr bool value = false;
-};
-
-template<typename T>
-struct IsList<std::vector<T>>
-{
-  static constexpr bool value = true;
-};
-
-template<typename T>
-struct IsList<T, typename Void<decltype(T::isList)>::type>
-{
-  static constexpr bool value = T::isList;
-};
-/// @}
-
 /// Type wrapper that wraps some type (`DestT`) that we need to serialize to. A
 /// specialization exists that extracts the destination type from some of the
 /// reflect helper types.
@@ -42,14 +21,12 @@ template<typename T, typename = void>
 struct Type
 {
   using DestT = T;
-  static constexpr bool isList = IsList<T>::value;
 };
 
 template<typename T>
 struct Type<T, typename Void<typename T::DestT>::type>
 {
   using DestT = typename T::DestT;
-  static constexpr bool isList = T::isList;
 };
 /// @}
 
@@ -60,7 +37,6 @@ template<typename T, std::size_t N>
 struct Array
 {
   using DestT = T;
-  static constexpr bool isList = true;
 };
 
 /// Can be embedded in a `Layout` type to skip an element property in the input
@@ -84,49 +60,7 @@ struct Pack
 {
   using DestT = T;
   static constexpr std::size_t size = N;
-  static constexpr bool isList = false;
 };
-
-namespace detail {
-template<typename... Ts>
-struct NumProperties
-{
-  static constexpr std::size_t size = 0;
-};
-
-template<typename T, typename... Ts>
-struct NumProperties<T, Ts...>
-{
-  static constexpr std::size_t size = NumProperties<T>::size + NumProperties<Ts...>::size;
-};
-
-template<typename T, std::size_t N>
-struct NumProperties<Array<T, N>>
-{
-  static constexpr std::size_t size = 1;
-};
-
-template<typename T, std::size_t N>
-struct NumProperties<Pack<T, N>>
-{
-  static constexpr std::size_t size = N;
-};
-
-template<typename T>
-struct NumProperties<T>
-{
-  static constexpr std::size_t size = 1;
-};
-}
-
-/// Returns the number of properties spanned by the given list of reflection
-/// types. By default, every reflection type spans one property, except for
-/// `plywoot::reflect::Pack`, which may span multiple properties.
-template<typename... Ts>
-std::size_t numProperties()
-{
-  return detail::NumProperties<Ts...>::size;
-}
 
 /// Used to define the layout of some structure that is either read from or
 /// written to by the PLY I/O functions. Note that it is important that the

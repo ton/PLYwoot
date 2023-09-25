@@ -132,7 +132,7 @@ private:
   }
 
   template<typename TypeTag>
-  typename std::enable_if<TypeTag::isList, const std::uint8_t *>::type writeProperty(
+  typename std::enable_if<detail::isList<TypeTag>(), const std::uint8_t *>::type writeProperty(
       const std::uint8_t *src,
       const PlyProperty &property,
       TypeTag tag) const
@@ -161,7 +161,7 @@ private:
   }
 
   template<typename TypeTag>
-  typename std::enable_if<!TypeTag::isList, const std::uint8_t *>::type writeProperty(
+  typename std::enable_if<!detail::isList<TypeTag>(), const std::uint8_t *>::type writeProperty(
       const std::uint8_t *src,
       const PlyProperty &property,
       TypeTag tag) const
@@ -222,7 +222,7 @@ private:
   writeProperties(const std::uint8_t *src, PropertyConstIterator first, PropertyConstIterator last) const
   {
     src = writeProperty<T>(src, first, last);
-    first += reflect::numProperties<T>();
+    first += detail::numProperties<T>();
     if (first < last) { this->writeTokenSeparator(); }
     return writeProperties<Policy, U, Ts...>(src, first, last);
   }
@@ -232,7 +232,7 @@ private:
   writeProperties(const std::uint8_t *src, PropertyConstIterator first, PropertyConstIterator last) const
   {
     return writeProperties<Policy, U, Ts...>(
-        writeProperty<T>(src, first, last), first + reflect::numProperties<T>(), last);
+        writeProperty<T>(src, first, last), first + detail::numProperties<T>(), last);
   }
 
   template<typename... Ts>
@@ -245,9 +245,9 @@ private:
 
     // In case the element defines more properties than the source data,
     // append the missing properties with a default value of zero.
-    if (reflect::numProperties<Ts...>() < static_cast<std::size_t>(std::distance(first, last)))
+    if (detail::numProperties<Ts...>() < static_cast<std::size_t>(std::distance(first, last)))
     {
-      this->writeMissingProperties(first + reflect::numProperties<Ts...>(), last);
+      this->writeMissingProperties(first + detail::numProperties<Ts...>(), last);
     }
 
     this->writeNewline();

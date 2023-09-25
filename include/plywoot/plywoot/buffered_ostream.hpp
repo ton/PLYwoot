@@ -1,6 +1,8 @@
 #ifndef PLYWOOT_BUFFERED_OSTREAM_HPP
 #define PLYWOOT_BUFFERED_OSTREAM_HPP
 
+#include "type_traits.hpp"
+
 #include <cstdio>
 #include <cstring>
 #include <ostream>
@@ -69,15 +71,15 @@ public:
     if (c_ >= eob_)
     {
       flush();
-      c_ += std::snprintf(c_, OStreamBufferSize, formatStr<T>(), t);
+      c_ += std::snprintf(c_, OStreamBufferSize, detail::formatStr<T>(), t);
     }
     else
     {
-      int n = std::snprintf(c_, eob_ - c_, formatStr<T>(), t);
+      int n = std::snprintf(c_, eob_ - c_, detail::formatStr<T>(), t);
       if (n < 0)
       {
         flush();
-        n = std::snprintf(c_, OStreamBufferSize, formatStr<T>(), t);
+        n = std::snprintf(c_, OStreamBufferSize, detail::formatStr<T>(), t);
       }
       c_ += n;
     }
@@ -93,50 +95,6 @@ public:
   }
 
 private:
-  /// Returns the format string for the given number type.
-  template<typename T>
-  constexpr typename std::enable_if<std::is_floating_point<T>::value, const char *>::type formatStr() const
-  {
-    return "%g";
-  }
-
-  template<typename T>
-  constexpr typename std::enable_if<
-      !std::is_floating_point<T>::value && std::is_signed<T>::value && sizeof(T) <= 4,
-      const char *>::type
-  formatStr() const
-  {
-    return "%d";
-  }
-
-  template<typename T>
-  constexpr typename std::enable_if<
-      !std::is_floating_point<T>::value && !std::is_signed<T>::value && sizeof(T) <= 4,
-      const char *>::type
-  formatStr() const
-  {
-    return "%u";
-  }
-
-  template<typename T>
-  constexpr typename std::enable_if<
-      !std::is_floating_point<T>::value && std::is_signed<T>::value && (sizeof(T) > 4),
-      const char *>::type
-  formatStr() const
-  {
-    return "%ld";
-  }
-
-  template<typename T>
-  constexpr typename std::enable_if<
-      !std::is_floating_point<T>::value && !std::is_signed<T>::value && (sizeof(T) > 4),
-      const char *>::type
-  formatStr() const
-  {
-    return "%lu";
-  }
-  /// @}
-
   /// Flushes the output buffer to the underlying output stream.
   void flush()
   {

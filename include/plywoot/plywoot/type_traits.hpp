@@ -9,6 +9,83 @@
 
 namespace plywoot { namespace detail {
 
+/// Returns whether the given type `T` is considered to be a list.
+/// @{
+template<typename T>
+struct IsList
+{
+  static constexpr bool value = false;
+};
+
+template<typename T, std::size_t N>
+struct IsList<reflect::Array<T, N>>
+{
+  static constexpr bool value = true;
+};
+
+template<typename T>
+struct IsList<std::vector<T>>
+{
+  static constexpr bool value = true;
+};
+
+template<typename T>
+struct IsList<reflect::Type<T>>
+{
+  static constexpr bool value = IsList<T>::value;
+};
+/// @}
+
+/// Returns whether the given reflection type represents a list.
+template<typename T>
+constexpr bool isList()
+{
+  return IsList<T>::value;
+}
+
+/// Given a reflect type, stores the number of properties spanned by the
+/// reflection type. By default, every reflection type spans one property,
+/// except for `plywoot::reflect::Pack`, which spans multiple properties by
+/// definition.
+template<typename... Ts>
+struct NumProperties
+{
+  static constexpr std::size_t size = 0;
+};
+
+template<typename T, typename... Ts>
+struct NumProperties<T, Ts...>
+{
+  static constexpr std::size_t size = NumProperties<T>::size + NumProperties<Ts...>::size;
+};
+
+template<typename T, std::size_t N>
+struct NumProperties<reflect::Array<T, N>>
+{
+  static constexpr std::size_t size = 1;
+};
+
+template<typename T, std::size_t N>
+struct NumProperties<reflect::Pack<T, N>>
+{
+  static constexpr std::size_t size = N;
+};
+
+template<typename T>
+struct NumProperties<T>
+{
+  static constexpr std::size_t size = 1;
+};
+
+/// Returns the number of properties spanned by the given list of reflection
+/// types. By default, every reflection type spans one property, except for
+/// `plywoot::reflect::Pack`, which spans multiple properties by definition.
+template<typename... Ts>
+std::size_t numProperties()
+{
+  return NumProperties<Ts...>::size;
+}
+
 /// Returns whether an object of type `T` represents that same object as an
 /// object of the given PLY data type `type`.
 template<typename T>
@@ -133,10 +210,7 @@ struct IsMemcpyable
 template<typename T, std::size_t N>
 struct IsMemcpyable<reflect::Array<T, N>>
 {
-  bool operator()(const PlyPropertyConstIterator, const PlyPropertyConstIterator) const
-  {
-    return false;
-  }
+  bool operator()(const PlyPropertyConstIterator, const PlyPropertyConstIterator) const { return false; }
 };
 /// @}
 
@@ -158,13 +232,57 @@ struct IsMemcpyable<reflect::Pack<T, N>>
 template<typename T>
 bool isMemcpyable(const PlyPropertyConstIterator first, const PlyPropertyConstIterator last)
 {
-  return first + reflect::numProperties<T>() == last && IsMemcpyable<T>{}(first, last);
+  return first + detail::numProperties<T>() == last && IsMemcpyable<T>{}(first, last);
 }
 
 template<typename T, typename U, typename... Ts>
 bool isMemcpyable(const PlyPropertyConstIterator first, const PlyPropertyConstIterator last)
 {
-  return IsMemcpyable<T>{}(first, last) && isMemcpyable<U, Ts...>(first + reflect::numProperties<T>(), last);
+  return IsMemcpyable<T>{}(first, last) && isMemcpyable<U, Ts...>(first + detail::numProperties<T>(), last);
+}
+/// @}
+
+/// Returns the format string for the given number type.
+template<typename T>
+constexpr typename std::enable_if<std::is_floating_point<T>::value, const char *>::type formatStr()
+{
+  return "%g";
+}
+
+template<typename T>
+constexpr typename std::enable_if<
+    !std::is_floating_point<T>::value && std::is_signed<T>::value && sizeof(T) <= 4,
+    const char *>::type
+formatStr()
+{
+  return "%d";
+}
+
+template<typename T>
+constexpr typename std::enable_if<
+    !std::is_floating_point<T>::value && !std::is_signed<T>::value && sizeof(T) <= 4,
+    const char *>::type
+formatStr()
+{
+  return "%u";
+}
+
+template<typename T>
+constexpr typename std::enable_if<
+    !std::is_floating_point<T>::value && std::is_signed<T>::value && (sizeof(T) > 4),
+    const char *>::type
+formatStr()
+{
+  return "%ld";
+}
+
+template<typename T>
+constexpr typename std::enable_if<
+    !std::is_floating_point<T>::value && !std::is_signed<T>::value && (sizeof(T) > 4),
+    const char *>::type
+formatStr()
+{
+  return "%lu";
 }
 /// @}
 

@@ -81,7 +81,7 @@ private:
   {
     const PropertyConstIterator first = element.properties().begin();
     const PropertyConstIterator last = element.properties().end();
-    const PropertyConstIterator firstToSkip = first + reflect::numProperties<Ts...>();
+    const PropertyConstIterator firstToSkip = first + detail::numProperties<Ts...>();
 
     const std::size_t numBytesToSkip = firstToSkip < last
                                            ? std::accumulate(
@@ -110,7 +110,7 @@ private:
   std::uint8_t *readElement(std::uint8_t *dest, PropertyConstIterator first, PropertyConstIterator last) const
   {
     return readElement<U, Ts...>(
-        readElement<T>(dest, first, last), first + reflect::numProperties<T>(), last);
+        readElement<T>(dest, first, last), first + detail::numProperties<T>(), last);
   }
 
   template<typename PlyT, typename PlySizeT, typename DestT>
@@ -211,7 +211,7 @@ private:
   }
 
   template<typename TypeTag>
-  typename std::enable_if<TypeTag::isList, std::uint8_t *>::type readProperty(
+  typename std::enable_if<detail::isList<TypeTag>(), std::uint8_t *>::type readProperty(
       std::uint8_t *dest,
       const PlyProperty &property,
       TypeTag tag) const
@@ -240,7 +240,7 @@ private:
   }
 
   template<typename TypeTag>
-  typename std::enable_if<!TypeTag::isList, std::uint8_t *>::type readProperty(
+  typename std::enable_if<!detail::isList<TypeTag>(), std::uint8_t *>::type readProperty(
       std::uint8_t *dest,
       const PlyProperty &property,
       TypeTag tag) const
