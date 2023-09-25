@@ -36,12 +36,12 @@ public:
   // union, there is a strict requirement for having a trivial destructor.
   // `std::variant` removes this limitation. The cheap variant implementation
   // needs to be revised to clean this mess up.
-  void close() { dump(); }
+  void close() { flush(); }
 
   /// Writes a single character `c` to the output stream.
   void put(char c)
   {
-    if (c_ == eob_) dump();
+    if (c_ == eob_) flush();
     *c_++ = c;
   }
 
@@ -51,12 +51,12 @@ public:
   {
     if (n >= OStreamBufferSize)
     {
-      dump();
+      flush();
       os_.write(src, n);
     }
     else
     {
-      if (c_ + n > eob_) { dump(); }
+      if (c_ + n > eob_) { flush(); }
       std::memcpy(c_, src, n);
       c_ += n;
     }
@@ -68,7 +68,7 @@ public:
   {
     if (c_ >= eob_)
     {
-      dump();
+      flush();
       c_ += std::snprintf(c_, OStreamBufferSize, formatStr<T>(), t);
     }
     else
@@ -76,7 +76,7 @@ public:
       int n = std::snprintf(c_, eob_ - c_, formatStr<T>(), t);
       if (n < 0)
       {
-        dump();
+        flush();
         n = std::snprintf(c_, OStreamBufferSize, formatStr<T>(), t);
       }
       c_ += n;
@@ -87,7 +87,7 @@ public:
   template<typename T>
   void write(T t)
   {
-    if (c_ + sizeof(T) > eob_) { dump(); }
+    if (c_ + sizeof(T) > eob_) { flush(); }
     std::memcpy(c_, reinterpret_cast<const char *>(&t), sizeof(T));
     c_ += sizeof(T);
   }
@@ -137,7 +137,8 @@ private:
   }
   /// @}
 
-  void dump()
+  /// Flushes the output buffer to the underlying output stream.
+  void flush()
   {
     os_.write(buffer_, c_ - buffer_);
     c_ = buffer_;
