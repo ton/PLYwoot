@@ -69,7 +69,7 @@ struct Skip
 {
 };
 
-/// Can be used in a `Layout` type to step over a member variables in the
+/// Can be used in a `Layout` type to step over member variables in the
 /// destination structure (only useful when reading data from a PLY stream).
 template<typename T>
 struct Stride
@@ -134,7 +134,9 @@ std::size_t numProperties()
 /// types in the data type that is read from or written to. This will
 /// automatically take default C/C++ padding into account. In case not all
 /// properties in some layout structure are written, use `reflect::Stride` to
-/// skip properties.
+/// skip properties. Properties at the end of the structure that are not read
+/// from or written do not need to be specified and will automatically be
+/// skipped.
 template<typename... Ts>
 class Layout : public std::tuple<Ts...>
 {

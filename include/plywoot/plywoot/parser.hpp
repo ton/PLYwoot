@@ -42,13 +42,15 @@ public:
   using FormatParserPolicy::FormatParserPolicy;
 
   /// Reads the given element from the PLY input data stream, storing data in
-  /// the given destination buffer `dest` using the types given as
-  /// `PropertyType`'s in the template argument list. In case the number of
-  /// properties for the element exceeds the number of properties in the
-  /// template argument list, the remaining properties are directly stored
-  /// using the property type as defined in the PLY header. This assumes that
-  /// the output buffer can hold the required amount of data; failing to
-  /// satisfy this precondition results in undefined behavior.
+  /// the given destination buffer associated with the layout descriptor using
+  /// the types given associated with template argument list of the layout
+  /// descriptor. In case the number of properties for the element exceeds the
+  /// number of properties in the template argument list, the remaining
+  /// properties are directly stored using the property type as defined in the
+  /// PLY header. This assumes that the output buffer can hold the required
+  /// amount of data; failing to satisfy this precondition results in undefined
+  /// behavior.
+  /// @{
   // TODO(ton): probably better to add another parameter 'size' to guard
   // against overwriting the input buffer.
   template<typename... Ts>
@@ -69,6 +71,7 @@ public:
   {
     readElements<Ts...>(layout.data(), element);
   }
+  /// @}
 
   void skip(const PlyElement &element) const { this->skipElement(element); }
 
