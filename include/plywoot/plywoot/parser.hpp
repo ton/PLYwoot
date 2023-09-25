@@ -109,8 +109,7 @@ private:
   template<typename T, typename U, typename... Ts>
   std::uint8_t *readElement(std::uint8_t *dest, PropertyConstIterator first, PropertyConstIterator last) const
   {
-    return readElement<U, Ts...>(
-        readElement<T>(dest, first, last), first + detail::numProperties<T>(), last);
+    return readElement<U, Ts...>(readElement<T>(dest, first, last), first + detail::numProperties<T>(), last);
   }
 
   template<typename PlyT, typename PlySizeT, typename DestT>
