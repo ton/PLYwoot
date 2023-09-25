@@ -10,7 +10,7 @@
 namespace {
 
 /// Default buffer size; may need tweaking.
-constexpr std::size_t BufferSize{1024 * 1024};
+constexpr std::size_t IStreamBufferSize{1024 * 1024};
 
 }
 
@@ -58,7 +58,7 @@ public:
   /// byte that was copied to `dest`.
   inline std::uint8_t *memcpy(std::uint8_t *dest, std::size_t n)
   {
-    if (n > BufferSize)
+    if (n > IStreamBufferSize)
     {
       const std::size_t remaining = eob_ - c_;
       std::memcpy(dest, c_, remaining);
@@ -203,12 +203,12 @@ public:
     if (remaining < minimum)
     {
       std::memcpy(buffer_, c_, remaining);
-      if (!is_.read(buffer_ + remaining, BufferSize - remaining))
+      if (!is_.read(buffer_ + remaining, IStreamBufferSize - remaining))
       {
         // In case the buffer is only partially filled, fill the remainder with
         // EOF characters.
         remaining += is_.gcount();
-        std::fill_n(buffer_ + remaining, BufferSize - remaining, EOF);
+        std::fill_n(buffer_ + remaining, IStreamBufferSize - remaining, EOF);
       }
 
       c_ = buffer_;
@@ -219,12 +219,12 @@ private:
   /// Unconditionally buffers data from the input stream.
   void buffer()
   {
-    if (!is_.read(buffer_, BufferSize))
+    if (!is_.read(buffer_, IStreamBufferSize))
     {
       // In case the buffer is only partially filled, fill the remainder with
       // EOF characters.
       auto remaining = is_.gcount();
-      std::fill_n(buffer_ + remaining, BufferSize - remaining, EOF);
+      std::fill_n(buffer_ + remaining, IStreamBufferSize - remaining, EOF);
     }
 
     c_ = buffer_;
@@ -243,15 +243,15 @@ private:
   ///
   /// Note that the invariant allows for one character lookahead without the
   /// need to check whether we need to read data from disk.
-  const char *c_{buffer_ + BufferSize};
+  const char *c_{buffer_ + IStreamBufferSize};
   /// Number of bytes remaining in the buffer.
-  const char *eob_{buffer_ + BufferSize};
+  const char *eob_{buffer_ + IStreamBufferSize};
 
   /// Reference to the wrapped standard input stream.
   std::istream &is_;
 
   /// Buffered data, always a null terminated string.
-  alignas(64) char buffer_[BufferSize] = {};
+  alignas(64) char buffer_[IStreamBufferSize] = {};
 };
 
 }}
