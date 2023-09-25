@@ -622,3 +622,23 @@ TEST_CASE(
                                                 {3, 0, 4}, {3, 4, 7}, {1, 2, 6}, {1, 6, 5}};
   CHECK(expectedTriangles == triangles);
 }
+
+TEST_CASE("Test reading a list property followed by non-list properties", "[istream]")
+{
+  auto inputFilename = GENERATE("test/input/binary/little_endian/single_element_with_list_property_followed_by_three_properties.ply");
+
+  std::ifstream ifs{inputFilename};
+  const plywoot::IStream plyFile{ifs};
+
+  REQUIRE(plyFile.hasElement());
+  REQUIRE(plyFile.element().name() == "vertex");
+  plyFile.skipElement();
+
+  using TriangleLayout = plywoot::reflect::Layout<plywoot::reflect::Array<int, 3>>;
+
+  REQUIRE(plyFile.hasElement());
+  REQUIRE(plyFile.element().name() == "face");
+  const std::vector<Triangle> triangles = plyFile.readElement<Triangle, TriangleLayout>();
+  const std::vector<Triangle> expectedTriangles{{4, 5, 6}, {7, 8, 9}};
+  CHECK(expectedTriangles == triangles);
+}

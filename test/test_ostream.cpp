@@ -222,3 +222,53 @@ TEST_CASE(
       "1 2 3\n"};
   REQUIRE(expected == ss.str());
 }
+
+TEST_CASE(
+    "Write PLY file containing a single vertex using a pack of floats, and a face using an array of integers, followed by another property",
+    "[ostream][ascii]")
+{
+  std::stringstream ss;
+  plywoot::OStream plyos{plywoot::PlyFormat::Ascii};
+
+  const plywoot::PlyProperty x{"x", plywoot::PlyDataType::Float};
+  const plywoot::PlyProperty y{"y", plywoot::PlyDataType::Float};
+  const plywoot::PlyProperty z{"z", plywoot::PlyDataType::Float};
+  const plywoot::PlyElement vertexElement{"vertex", 1, {x, y, z}};
+
+  using VertexLayout = plywoot::reflect::Layout<plywoot::reflect::Pack<float, 3>>;
+  using Vertex = FloatVertex;
+
+  const plywoot::PlyProperty vertexIndices{"vertex_indices", plywoot::PlyDataType::Int, plywoot::PlyDataType::UInt};
+  const plywoot::PlyProperty nx{"nx", plywoot::PlyDataType::Float};
+  const plywoot::PlyProperty ny{"ny", plywoot::PlyDataType::Float};
+  const plywoot::PlyProperty nz{"nz", plywoot::PlyDataType::Float};
+  const plywoot::PlyElement faceElement{"face", 1, {vertexIndices, nx, ny, nz}};
+
+  std::vector<Vertex> vertices = {Vertex{1, 2, 3}};
+  std::vector<Triangle> triangles = {Triangle{4, 5, 6}, Triangle{7, 8, 9}};
+
+  using TriangleLayout = plywoot::reflect::Layout<plywoot::reflect::Array<int, 3>>;
+
+  plyos.add(vertexElement, VertexLayout{vertices});
+  plyos.add(faceElement, TriangleLayout{triangles});
+  plyos.write(ss);
+
+  const std::string expected{R"(ply
+format ascii 1.0
+element vertex 1
+property float x
+property float y
+property float z
+element face 2
+property list uint int vertex_indices
+property float nx
+property float ny
+property float nz
+end_header
+1 2 3
+3 4 5 6 0 0 0
+3 7 8 9 0 0 0
+)"};
+
+  REQUIRE(expected == ss.str());
+}

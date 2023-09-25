@@ -103,7 +103,7 @@ struct NumProperties<T, Ts...>
 template<typename T, std::size_t N>
 struct NumProperties<Array<T, N>>
 {
-  static constexpr std::size_t size = N;
+  static constexpr std::size_t size = 1;
 };
 
 template<typename T, std::size_t N>

@@ -71,6 +71,12 @@ struct SizeOf<T>
 };
 
 template<typename T, std::size_t N>
+struct SizeOf<reflect::Array<T, N>>
+{
+  static constexpr auto size = N * SizeOf<T>::size;
+};
+
+template<typename T, std::size_t N>
 struct SizeOf<reflect::Pack<T, N>>
 {
   static constexpr auto size = N * SizeOf<T>::size;
@@ -127,10 +133,9 @@ struct IsMemcpyable
 template<typename T, std::size_t N>
 struct IsMemcpyable<reflect::Array<T, N>>
 {
-  bool operator()(const PlyPropertyConstIterator first, const PlyPropertyConstIterator last) const
+  bool operator()(const PlyPropertyConstIterator, const PlyPropertyConstIterator) const
   {
-    return first + N <= last &&
-           std::all_of(first, first + N, [](const PlyProperty &p) { return isSame<T>(p.type()); });
+    return false;
   }
 };
 /// @}
