@@ -123,7 +123,7 @@ public:
       std::uint8_t *dest,
       const PlyElement &element) const
   {
-    is_.memcpy(dest, element.size() * detail::SizeOf<Ts...>::size);
+    is_.memcpy(dest, element.size() * detail::sizeOf<Ts...>());
   }
 
   template<typename... Ts, typename EndiannessDependent = Endianness>
@@ -131,7 +131,7 @@ public:
       std::uint8_t *dest,
       const PlyElement &element) const
   {
-    is_.memcpy(dest, element.size() * detail::SizeOf<Ts...>::size);
+    is_.memcpy(dest, element.size() * detail::sizeOf<Ts...>());
 
     for (size_t i = 0; i < element.size(); ++i) { dest = toBigEndian<Ts...>(dest); }
   }
@@ -154,7 +154,7 @@ private:
     auto ptr = reinterpret_cast<typename T::DestT *>(dest);
     for (std::size_t i = 0; i < T::size; ++i, ++ptr) { *ptr = htobe(*ptr); }
 
-    return dest + detail::SizeOf<T>::size;
+    return dest + detail::sizeOf<T>();
   }
 
   template<typename T, typename U, typename... Ts>

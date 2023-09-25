@@ -133,7 +133,8 @@ struct IsPack<reflect::Pack<T, N>>
 /// Type function that returns the size of some type T, effectively implementing
 /// sizeof(T), where it overrides sizeof() for types of instance Pack<>. For
 /// pack types, the computed size is the sum of `SizeOf` for all types in the
-/// pack.
+/// pack, whereas for arrays it is the `SizeOf` of the element type in the array
+/// times the number of elements in the array.
 /// @{
 template<typename T, typename... Ts>
 struct SizeOf
@@ -160,7 +161,16 @@ struct SizeOf<reflect::Pack<T, N>>
 };
 /// @}
 
-// TODO(ton): add convenience function sizeOf().
+/// Returns the size of some type T, effectively implementing sizeof(T), where
+/// it overrides sizeof() for types of instance Pack<> and Array<>. For pack
+/// types, the computed size is the sum of `SizeOf` for all types in the pack,
+/// whereas for arrays it is the `SizeOf` of the element type in the array times
+/// the number of elements in the array.
+template<typename... Ts>
+constexpr std::size_t sizeOf()
+{
+  return SizeOf<Ts...>::size;
+}
 
 /// Type function that returns whether a list of types is consecutively aligned
 /// in memory, without any padding.
@@ -174,7 +184,7 @@ constexpr bool isPacked(uintptr_t offset = 0)
 template<typename T, typename U, typename... Ts>
 constexpr bool isPacked(uintptr_t offset = 0)
 {
-  return ((offset + alignof(T)) % alignof(T)) == 0 && isPacked<U, Ts...>(offset + SizeOf<T>::size);
+  return ((offset + alignof(T)) % alignof(T)) == 0 && isPacked<U, Ts...>(offset + sizeOf<T>());
 }
 /// @}
 
