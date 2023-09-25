@@ -43,8 +43,8 @@ public:
   /// Writes a single character `c` to the output stream.
   void put(char c)
   {
-    if (c_ == eob_) flush();
     *c_++ = c;
+    if (c_ == eob_) flush();
   }
 
   /// Writes the given number of characters `n` read from `src` to the output
@@ -58,7 +58,7 @@ public:
     }
     else
     {
-      if (c_ + n > eob_) { flush(); }
+      if (c_ + n >= eob_) { flush(); }
       std::memcpy(c_, src, n);
       c_ += n;
     }
@@ -68,28 +68,18 @@ public:
   template<typename T>
   void writeAscii(T t)
   {
-    if (c_ >= eob_)
-    {
-      flush();
-      c_ += std::snprintf(c_, OStreamBufferSize, detail::formatStr<T>(), t);
-    }
-    else
-    {
-      int n = std::snprintf(c_, eob_ - c_, detail::formatStr<T>(), t);
-      if (n < 0)
-      {
-        flush();
-        n = std::snprintf(c_, OStreamBufferSize, detail::formatStr<T>(), t);
-      }
-      c_ += n;
-    }
+    constexpr int MIN_BUFFER_SIZE = 100;
+    // TODO(ton): use something like Grisu3 instead of `std::snprintf` to
+    // (greatly) improve performance.
+    if (c_ + MIN_BUFFER_SIZE >= eob_) { flush(); }
+    c_ += std::snprintf(c_, MIN_BUFFER_SIZE, detail::formatStr<T>(), t);
   }
 
   /// Writes a number of type `T` to the output stream.
   template<typename T>
   void write(T t)
   {
-    if (c_ + sizeof(T) > eob_) { flush(); }
+    if (c_ + sizeof(T) >= eob_) { flush(); }
     std::memcpy(c_, reinterpret_cast<const char *>(&t), sizeof(T));
     c_ += sizeof(T);
   }
@@ -104,7 +94,7 @@ private:
 
   /// Character the scanner's write head is currently pointing to. Invariant:
   ///
-  ///       buffer_ <= c_ <= (buffer_ + sizeof(buffer_))
+  ///       buffer_ <= c_ < (buffer_ + sizeof(buffer_))
   ///
   char *c_{buffer_};
   /// Number of bytes remaining in the buffer.
