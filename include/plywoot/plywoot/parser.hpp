@@ -44,7 +44,9 @@ public:
   /// Reads the given element from the PLY input data stream, storing data in
   /// the given destination buffer associated with the layout descriptor using
   /// the types given associated with template argument list of the layout
-  /// descriptor. In case the number of properties for the element exceeds the
+  /// descriptor.
+  ///
+  /// In case the number of properties for the element exceeds the
   /// number of properties in the template argument list, the remaining
   /// properties are directly stored using the property type as defined in the
   /// PLY header. This assumes that the output buffer can hold the required
