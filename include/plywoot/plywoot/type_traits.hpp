@@ -172,6 +172,27 @@ constexpr std::size_t sizeOf()
   return SizeOf<Ts...>::size;
 }
 
+inline std::size_t sizeOf(PlyDataType type)
+{
+  switch (type)
+  {
+    case PlyDataType::Char:
+    case PlyDataType::UChar:
+      return 1;
+    case PlyDataType::Short:
+    case PlyDataType::UShort:
+      return 2;
+    case PlyDataType::Int:
+    case PlyDataType::UInt:
+    case PlyDataType::Float:
+      return 4;
+    case PlyDataType::Double:
+      return 8;
+  }
+
+  return 0;
+}
+
 /// Type function that returns whether a list of types is consecutively aligned
 /// in memory, without any padding.
 /// @{
