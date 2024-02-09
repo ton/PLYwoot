@@ -31,6 +31,7 @@ BraceWrapping:
   AfterFunction: true
   AfterStruct: true
   AfterControlStatement: Always
+  BeforeCatch: true
   BeforeElse: true
 
 KeepEmptyLinesAtTheStartOfBlocks: false
