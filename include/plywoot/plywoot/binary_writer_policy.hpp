@@ -118,6 +118,8 @@ public:
 
   /// Writes a newline, ignored for binary output formats.
   void writeNewline() const {}
+  /// Writes a token separator, ignored for binary output formats.
+  void writeTokenSeparator() const {}
 
 private:
   mutable detail::BufferedOStream os_;
