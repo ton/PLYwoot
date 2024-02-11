@@ -1,0 +1,5 @@
+ply
+format ascii 1.0
+element element 1
+property char property
+end_header

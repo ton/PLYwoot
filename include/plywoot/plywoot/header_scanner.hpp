@@ -239,6 +239,36 @@ public:
     return token_;
   }
 
+  /// Returns whether a token is a reserved keyword.
+  // TODO(ton): make static once we move to C++17.
+  constexpr bool isKeyword(Token token) const
+  {
+    switch (token)
+    {
+      case Token::Ascii:
+      case Token::BinaryBigEndian:
+      case Token::BinaryLittleEndian:
+      case Token::Char:
+      case Token::Double:
+      case Token::Element:
+      case Token::EndHeader:
+      case Token::Float:
+      case Token::Format:
+      case Token::Int:
+      case Token::List:
+      case Token::Property:
+      case Token::Short:
+      case Token::UChar:
+      case Token::UInt:
+      case Token::UShort:
+        return true;
+      default:
+        break;
+    }
+
+    return false;
+  }
+
   /// In case the current token represents a comment, returns a comment
   /// instance, containing the line number the comment is defined on, and the
   /// comment text.

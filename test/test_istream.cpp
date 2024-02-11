@@ -255,6 +255,15 @@ TEST_CASE("Read a PLY file with a comment section consisting of multiple lines",
   CHECK(plyFile.elements().front().name() == "vertex");
 }
 
+TEST_CASE("Read a PLY file using keywords for naming properties and elements", "[header][comments]")
+{
+  std::ifstream ifs{"test/input/header/keywords.ply"};
+
+  const plywoot::IStream plyFile{ifs};
+  REQUIRE(plyFile.elements().size() == 1);
+  CHECK(plyFile.elements().front().name() == "element");
+}
+
 TEST_CASE("Read an element with a single property from a PLY file", "[istream]")
 {
   auto inputFilename = GENERATE(

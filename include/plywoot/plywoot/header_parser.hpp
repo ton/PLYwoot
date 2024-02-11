@@ -124,7 +124,12 @@ private:
   {
     if (scanner_.nextToken() != expected)
     {
-      throw UnexpectedToken(expected, scanner_.token(), scanner_.tokenString());
+      // In case an identifier token is expected, all reserved keywords are
+      // acceptable as well.
+      if (!(expected == Token::Identifier && scanner_.isKeyword(scanner_.token())))
+      {
+        throw UnexpectedToken(expected, scanner_.token(), scanner_.tokenString());
+      }
     }
   }
 
