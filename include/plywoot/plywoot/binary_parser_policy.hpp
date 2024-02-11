@@ -38,42 +38,49 @@ public:
       {
         for (const PlyProperty &p : e.properties())
         {
-          if (!p.isList()) { is_.skip(sizeOf(p.type())); }
-          else
-          {
-            std::size_t size = 0;
-            switch (p.sizeType())
-            {
-              case PlyDataType::Char:
-                size = readNumber<char>();
-                break;
-              case PlyDataType::UChar:
-                size = readNumber<unsigned char>();
-                break;
-              case PlyDataType::Short:
-                size = readNumber<short>();
-                break;
-              case PlyDataType::UShort:
-                size = readNumber<unsigned short>();
-                break;
-              case PlyDataType::Int:
-                size = readNumber<int>();
-                break;
-              case PlyDataType::UInt:
-                size = readNumber<unsigned int>();
-                break;
-              case PlyDataType::Float:
-                size = readNumber<float>();
-                break;
-              case PlyDataType::Double:
-                size = readNumber<double>();
-                break;
-            }
-
-            is_.skip(size * sizeOf(p.type()));
-          }
+          skipProperty(p);
         }
       }
+    }
+  }
+
+  /// Skips the given property in the current input stream, assuming the read
+  /// head is at the start of that element.
+  void skipProperty(const PlyProperty &p) const
+  {
+    if (!p.isList()) { is_.skip(sizeOf(p.type())); }
+    else
+    {
+      std::size_t size = 0;
+      switch (p.sizeType())
+      {
+        case PlyDataType::Char:
+          size = readNumber<char>();
+          break;
+        case PlyDataType::UChar:
+          size = readNumber<unsigned char>();
+          break;
+        case PlyDataType::Short:
+          size = readNumber<short>();
+          break;
+        case PlyDataType::UShort:
+          size = readNumber<unsigned short>();
+          break;
+        case PlyDataType::Int:
+          size = readNumber<int>();
+          break;
+        case PlyDataType::UInt:
+          size = readNumber<unsigned int>();
+          break;
+        case PlyDataType::Float:
+          size = readNumber<float>();
+          break;
+        case PlyDataType::Double:
+          size = readNumber<double>();
+          break;
+      }
+
+      is_.skip(size * sizeOf(p.type()));
     }
   }
 

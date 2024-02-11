@@ -36,6 +36,18 @@ public:
   /// head is at the start of that element.
   void skipElement(const PlyElement &e) const { is_.skipLines(e.size()); }
 
+  /// Skips the given property in the current input stream.
+  void skipProperty(const PlyProperty &p) const
+  {
+    if (p.isList())
+    {
+      // TODO(ton): maybe switch on the list size type...?
+      const auto size = readNumber<int>();
+      for (int i = 0; i < size; ++i) { skipNumber(); }
+    }
+    else { skipNumber(); }
+  }
+
   /// Reads a number of the given type `T` from the input stream.
   template<typename T>
   T readNumber() const
@@ -63,7 +75,7 @@ public:
   }
 
   /// Skips a number of the given type `T` in the input stream.
-  template<typename T>
+  template<typename T = void>
   void skipNumber() const
   {
     is_.skipWhitespace();

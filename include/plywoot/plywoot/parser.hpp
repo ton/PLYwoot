@@ -20,6 +20,7 @@ namespace plywoot { namespace detail {
 ///   - template<typename T> T skipNumber();
 ///
 ///   - void skipElement(const PlyElement &e);
+///   - void skipProperty(const PlyProperty &p);
 ///   - void skipProperties(size_t numBytes);
 ///
 ///  Only for the binary policies, the following function needs to be
@@ -269,12 +270,6 @@ private:
     return dest;
   }
 
-  template<typename DestT>
-  std::uint8_t *readProperty(std::uint8_t *dest, reflect::Type<reflect::Stride<DestT>>) const
-  {
-    return static_cast<std::uint8_t *>(detail::align(dest, alignof(DestT))) + sizeof(DestT);
-  }
-
   template<typename PlyT, typename DestT>
   typename std::enable_if<std::is_arithmetic<DestT>::value, std::uint8_t *>::type readProperty(
       std::uint8_t *dest,
@@ -289,6 +284,18 @@ private:
   typename std::enable_if<!std::is_arithmetic<DestT>::value, std::uint8_t *>::type readProperty(
       std::uint8_t *dest,
       reflect::Type<DestT>) const
+  {
+    return static_cast<std::uint8_t *>(detail::align(dest, alignof(DestT))) + sizeof(DestT);
+  }
+
+  template<typename DestT>
+  std::uint8_t *readProperty(std::uint8_t *dest, reflect::Type<reflect::Skip>) const
+  {
+    return dest;
+  }
+
+  template<typename DestT>
+  std::uint8_t *readProperty(std::uint8_t *dest, reflect::Type<reflect::Stride<DestT>>) const
   {
     return static_cast<std::uint8_t *>(detail::align(dest, alignof(DestT))) + sizeof(DestT);
   }
@@ -331,10 +338,20 @@ private:
   }
 
   template<typename TypeTag>
-  typename std::enable_if<!detail::isList<TypeTag>(), std::uint8_t *>::type readProperty(
-      std::uint8_t *dest,
-      const PlyProperty &property,
-      TypeTag tag) const
+  typename std::enable_if<
+      !detail::isList<TypeTag>() && std::is_same<typename TypeTag::DestT, reflect::Skip>::value,
+      std::uint8_t *>::type
+  readProperty(std::uint8_t *dest, const PlyProperty &property, TypeTag tag) const
+  {
+    this->skipProperty(property);
+    return dest;
+  }
+
+  template<typename TypeTag>
+  typename std::enable_if<
+      !detail::isList<TypeTag>() && !std::is_same<typename TypeTag::DestT, reflect::Skip>::value,
+      std::uint8_t *>::type
+  readProperty(std::uint8_t *dest, const PlyProperty &property, TypeTag tag) const
   {
     switch (property.type())
     {

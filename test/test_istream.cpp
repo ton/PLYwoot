@@ -691,3 +691,64 @@ TEST_CASE("Read multiple elements with tricky alignment properties from a PLY fi
     plywoot::PlyElementData elementData = plyFile.readElement();
   }
 }
+
+TEST_CASE("Test skipping over a simple property", "[istream]")
+{
+  auto inputFilename = GENERATE(
+      "test/input/ascii/multiple_elements_with_two_properties.ply",
+      "test/input/binary/little_endian/multiple_elements_with_two_properties.ply");
+
+  std::ifstream ifs{inputFilename};
+  const plywoot::IStream plyFile{ifs};
+
+  using Layout = plywoot::reflect::Layout<char, plywoot::reflect::Skip>;
+
+  REQUIRE(plyFile.hasElement());
+  REQUIRE(plyFile.element().name() == "vertex");
+
+  const std::vector<char> cs = plyFile.readElement<char, Layout>();
+
+  std::vector<char> expected(10);
+  std::iota(expected.begin(), expected.end(), 86);
+  REQUIRE(expected == cs);
+}
+
+TEST_CASE("Test skipping over a list with a variable size", "[istream]")
+{
+  auto inputFilename = GENERATE(
+      "test/input/ascii/element_with_variadic_list_to_skip.ply",
+      "test/input/binary/little_endian/element_with_variadic_list_to_skip.ply",
+      "test/input/binary/big_endian/element_with_variadic_list_to_skip.ply");
+
+  std::ifstream ifs{inputFilename};
+  const plywoot::IStream plyFile{ifs};
+
+  struct Foo
+  {
+    char x;
+    unsigned char y;
+  };
+
+  using FooLayout = plywoot::reflect::Layout<char, plywoot::reflect::Skip, unsigned char>;
+
+  REQUIRE(plyFile.hasElement());
+  const plywoot::PlyElement element = plyFile.element();
+  REQUIRE(plyFile.element().name() == "foo");
+
+  const std::vector<Foo> foos = plyFile.readElement<Foo, FooLayout>();
+
+  // x
+  {
+    std::vector<char> expected(10);
+    std::iota(expected.begin(), expected.end(), 86);
+    REQUIRE(std::equal(expected.begin(), expected.end(), foos.begin(), [](char c, Foo foo) { return c == foo.x; }));
+  }
+
+  // y
+  {
+    std::vector<unsigned char> expected(10);
+    std::iota(expected.begin(), expected.end(), 246);
+    std::reverse(expected.begin(), expected.end());
+    REQUIRE(std::equal(expected.begin(), expected.end(), foos.begin(), [](unsigned char c, Foo foo) { return c == foo.y; }));
+  }
+}
