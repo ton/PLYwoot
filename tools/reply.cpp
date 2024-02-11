@@ -134,26 +134,29 @@ int main(int argc, char **argv)
     const std::string arg{argv[i]};
 
     // Parse command-line switch.
-    if (arg.front() == '-')
+    if (!arg.empty())
     {
-      auto formatOption = formatOptions.find(arg);
-      if (formatOption != formatOptions.end())
+      if (arg.front() == '-')
       {
-        if (requestedFormat) { errorMessage = "specify a single output format"; }
-        else { requestedFormat = formatOption->second; }
+        auto formatOption = formatOptions.find(arg);
+        if (formatOption != formatOptions.end())
+        {
+          if (requestedFormat) { errorMessage = "specify a single output format"; }
+          else { requestedFormat = formatOption->second; }
+        }
+        else if (arg == "-h" || arg == "--help")
+        {
+          printUsage();
+          return 0;
+        }
+        else
+        {
+          errorMessage = "invalid option '" + arg + "' specified, specify '-h' to display usage information";
+        }
       }
-      else if (arg == "-h" || arg == "--help")
-      {
-        printUsage();
-        return 0;
-      }
-      else
-      {
-        errorMessage = "invalid option '" + arg + "' specified, specify '-h' to display usage information";
-      }
+      else if (!inputFilename) { inputFilename = arg; }
+      else if (!outputFilename) { outputFilename = arg; }
     }
-    else if (!inputFilename) { inputFilename = arg; }
-    else if (!outputFilename) { outputFilename = arg; }
   }
 
   // In case initial parsing of the command-line arguments succeeded, check that
