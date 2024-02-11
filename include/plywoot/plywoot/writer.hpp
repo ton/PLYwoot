@@ -46,10 +46,7 @@ public:
       auto curr = first;
       while (curr < last)
       {
-        if (curr > first)
-        {
-          this->writeTokenSeparator();
-        }
+        if (curr > first) { this->writeTokenSeparator(); }
 
         const PlyProperty &property = *curr++;
         if (property.isList())
