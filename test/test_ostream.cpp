@@ -224,7 +224,8 @@ TEST_CASE(
 }
 
 TEST_CASE(
-    "Write PLY file containing a single vertex using a pack of floats, and a face using an array of integers, followed by another property",
+    "Write PLY file containing a single vertex using a pack of floats, and a face using an array of "
+    "integers, followed by another property",
     "[ostream][ascii]")
 {
   std::stringstream ss;
@@ -238,7 +239,8 @@ TEST_CASE(
   using VertexLayout = plywoot::reflect::Layout<plywoot::reflect::Pack<float, 3>>;
   using Vertex = FloatVertex;
 
-  const plywoot::PlyProperty vertexIndices{"vertex_indices", plywoot::PlyDataType::Int, plywoot::PlyDataType::UInt};
+  const plywoot::PlyProperty vertexIndices{
+      "vertex_indices", plywoot::PlyDataType::Int, plywoot::PlyDataType::UInt};
   const plywoot::PlyProperty nx{"nx", plywoot::PlyDataType::Float};
   const plywoot::PlyProperty ny{"ny", plywoot::PlyDataType::Float};
   const plywoot::PlyProperty nz{"nz", plywoot::PlyDataType::Float};

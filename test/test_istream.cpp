@@ -634,7 +634,8 @@ TEST_CASE(
 
 TEST_CASE("Test reading a list property followed by non-list properties", "[istream]")
 {
-  auto inputFilename = GENERATE("test/input/binary/little_endian/single_element_with_list_property_followed_by_three_properties.ply");
+  auto inputFilename = GENERATE(
+      "test/input/binary/little_endian/single_element_with_list_property_followed_by_three_properties.ply");
 
   std::ifstream ifs{inputFilename};
   const plywoot::IStream plyFile{ifs};
