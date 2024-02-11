@@ -274,3 +274,28 @@ end_header
 
   REQUIRE(expected == ss.str());
 }
+
+TEST_CASE("Write PLY file containing a list with zero elements", "[ostream][ascii]")
+{
+  std::stringstream ss;
+  plywoot::OStream plyos{plywoot::PlyFormat::Ascii};
+
+  const plywoot::PlyProperty p{"l", plywoot::PlyDataType::Float, plywoot::PlyDataType::UChar};
+  const plywoot::PlyElement element{"e", 1, {p}};
+
+  using Floats = std::vector<float>;
+  using Layout = plywoot::reflect::Layout<Floats>;
+
+  std::vector<Floats> elements(1);
+  plyos.add(element, Layout{elements});
+  plyos.write(ss);
+
+  const std::string expected{R"(ply
+format ascii 1.0
+element e 1
+property list uchar float l
+end_header
+0
+)"};
+  REQUIRE(expected == ss.str());
+}

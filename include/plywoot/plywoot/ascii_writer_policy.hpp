@@ -50,8 +50,11 @@ public:
   void writeList(const SrcT *t, std::size_t n) const
   {
     os_.writeAscii(n);
-    os_.put(' ');
-    writeNumbers<PlyT, SrcT>(t, n);
+    if (n > 0)
+    {
+      os_.put(' ');
+      writeNumbers<PlyT, SrcT>(t, n);
+    }
   }
 
   /// Writes a list of numbers of type `SrcT` to the given ASCII output stream.
