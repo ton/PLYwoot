@@ -18,7 +18,7 @@ std::optional<std::string> convert(
   if (!ifs) { return "could not open input file " + std::string(inputFilename); }
 
   std::ofstream of;
-  if (outputFilename) { of.open(*outputFilename); }
+  if (outputFilename) { of.open(*outputFilename, std::ios::out | std::ios::trunc); }
 
   std::ostream &os = (outputFilename ? of : std::cout);
   if (!os)
