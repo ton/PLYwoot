@@ -657,25 +657,37 @@ TEST_CASE("Read multiple elements with tricky alignment properties from a PLY fi
 {
   auto inputFilename = GENERATE("test/input/ascii/alignment.ply");
 
-  std::ifstream ifs{inputFilename};
-  const plywoot::IStream plyFile{ifs};
-  REQUIRE(plyFile.elements().size() == 1);
-
-  struct X
   {
-    char c{0};
-    std::vector<int> v;
-    char d{0};
+    std::ifstream ifs{inputFilename};
+    const plywoot::IStream plyFile{ifs};
+    REQUIRE(plyFile.elements().size() == 1);
 
-    inline bool operator==(const X &x) const { return c == x.c && v == x.v && d == x.d; }
-  };
+    struct X
+    {
+      char c{0};
+      std::vector<int> v;
+      char d{0};
 
-  using Layout = plywoot::reflect::Layout<char, std::vector<int>, char>;
+      inline bool operator==(const X &x) const { return c == x.c && v == x.v && d == x.d; }
+    };
 
-  const std::vector<X> elements = plyFile.readElement<X, Layout>();
-  REQUIRE(elements.size() == 5);
+    using Layout = plywoot::reflect::Layout<char, std::vector<int>, char>;
 
-  const std::vector<X> expectedElements = {
-      {86, {}, 87}, {88, {1}, 89}, {90, {1, 2}, 91}, {92, {1, 2, 3}, 93}, {94, {1, 2, 3, 4}, 95}};
-  CHECK(expectedElements == elements);
+    const std::vector<X> elements = plyFile.readElement<X, Layout>();
+    REQUIRE(elements.size() == 5);
+
+    const std::vector<X> expectedElements = {
+        {86, {}, 87}, {88, {1}, 89}, {90, {1, 2}, 91}, {92, {1, 2, 3}, 93}, {94, {1, 2, 3, 4}, 95}};
+    CHECK(expectedElements == elements);
+  }
+
+  {
+    // Perform a raw read as well, to verify proper construction and destruction
+    // of a `PlyElementData` instance.
+    std::ifstream ifs{inputFilename};
+    const plywoot::IStream plyFile{ifs};
+    REQUIRE(plyFile.elements().size() == 1);
+
+    plywoot::PlyElementData elementData = plyFile.readElement();
+  }
 }

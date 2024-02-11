@@ -67,35 +67,27 @@ public:
           switch (property.type())
           {
             case PlyDataType::Char:
-              new (dest) std::vector<char>();
               dest = readProperty(dest, property, reflect::Type<std::vector<char>>{});
               break;
             case PlyDataType::UChar:
-              new (dest) std::vector<unsigned char>();
               dest = readProperty(dest, property, reflect::Type<std::vector<unsigned char>>{});
               break;
             case PlyDataType::Short:
-              new (dest) std::vector<short>();
               dest = readProperty(dest, property, reflect::Type<std::vector<short>>{});
               break;
             case PlyDataType::UShort:
-              new (dest) std::vector<unsigned short>();
               dest = readProperty(dest, property, reflect::Type<std::vector<unsigned short>>{});
               break;
             case PlyDataType::Int:
-              new (dest) std::vector<int>();
               dest = readProperty(dest, property, reflect::Type<std::vector<int>>{});
               break;
             case PlyDataType::UInt:
-              new (dest) std::vector<unsigned int>();
               dest = readProperty(dest, property, reflect::Type<std::vector<unsigned int>>{});
               break;
             case PlyDataType::Float:
-              new (dest) std::vector<float>();
               dest = readProperty(dest, property, reflect::Type<std::vector<float>>{});
               break;
             case PlyDataType::Double:
-              new (dest) std::vector<double>();
               dest = readProperty(dest, property, reflect::Type<std::vector<double>>{});
               break;
           }
@@ -131,6 +123,8 @@ public:
           }
         }
       }
+
+      dest = detail::align(dest, result.alignment());
     }
 
     return result;

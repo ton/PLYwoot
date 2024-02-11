@@ -223,6 +223,33 @@ Ptr align(Ptr ptr, PlyDataType type)
   return ptr;
 }
 
+/// Returns the alignment of the given PLY data type.
+// TODO(ton): make `constexpr` when moving to C++17.
+inline std::size_t alignof_(PlyDataType type)
+{
+  switch (type)
+  {
+    case PlyDataType::Char:
+      return alignof(char);
+    case PlyDataType::UChar:
+      return alignof(unsigned char);
+    case PlyDataType::Short:
+      return alignof(short);
+    case PlyDataType::UShort:
+      return alignof(unsigned short);
+    case PlyDataType::Int:
+      return alignof(int);
+    case PlyDataType::UInt:
+      return alignof(unsigned int);
+    case PlyDataType::Float:
+      return alignof(float);
+    case PlyDataType::Double:
+      return alignof(double);
+  }
+
+  return 0;
+}
+
 /// Type function that returns whether a list of types is consecutively aligned
 /// in memory, without any padding.
 /// @{
