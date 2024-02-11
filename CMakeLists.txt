@@ -58,6 +58,7 @@ target_link_libraries(plywoot
 )
 
 add_subdirectory(test)
+add_subdirectory(tools)
 
 # install target
 include(GNUInstallDirs)
@@ -73,7 +74,7 @@ if(NOT TARGET uninstall)
 endif()
 
 # Create installation targets (because of `INSTALL_INTERFACE` above, headers are automatically included.
-install(TARGETS plywoot
+install(TARGETS plywoot reply
   EXPORT ${PROJECT_NAME}_Targets
 )
 
