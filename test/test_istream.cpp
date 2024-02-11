@@ -652,3 +652,30 @@ TEST_CASE("Test reading a list property followed by non-list properties", "[istr
   const std::vector<Triangle> expectedTriangles{{4, 5, 6}, {7, 8, 9}};
   CHECK(expectedTriangles == triangles);
 }
+
+TEST_CASE("Read multiple elements with tricky alignment properties from a PLY file", "[istream]")
+{
+  auto inputFilename = GENERATE("test/input/ascii/alignment.ply");
+
+  std::ifstream ifs{inputFilename};
+  const plywoot::IStream plyFile{ifs};
+  REQUIRE(plyFile.elements().size() == 1);
+
+  struct X
+  {
+    char c{0};
+    std::vector<int> v;
+    char d{0};
+
+    inline bool operator==(const X &x) const { return c == x.c && v == x.v && d == x.d; }
+  };
+
+  using Layout = plywoot::reflect::Layout<char, std::vector<int>, char>;
+
+  const std::vector<X> elements = plyFile.readElement<X, Layout>();
+  REQUIRE(elements.size() == 5);
+
+  const std::vector<X> expectedElements = {
+      {86, {}, 87}, {88, {1}, 89}, {90, {1, 2}, 91}, {92, {1, 2, 3}, 93}, {94, {1, 2, 3, 4}, 95}};
+  CHECK(expectedElements == elements);
+}

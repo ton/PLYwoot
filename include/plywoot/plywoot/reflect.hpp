@@ -1,7 +1,6 @@
 #ifndef PLYWOOT_REFLECT_HPP
 #define PLYWOOT_REFLECT_HPP
 
-#include <tuple>
 #include <vector>
 
 namespace plywoot { namespace reflect {
@@ -72,7 +71,7 @@ struct Pack
 /// from or written do not need to be specified and will automatically be
 /// skipped.
 template<typename... Ts>
-class Layout : public std::tuple<Ts...>
+class Layout
 {
 public:
   /// Constructor for an empty layout (no data will be read/written).
@@ -82,7 +81,10 @@ public:
   /// list of elements that will be written to by the PLY parser.
   template<typename T>
   Layout(std::vector<T> &v)
-      : data_{reinterpret_cast<std::uint8_t *>(v.data())}, cdata_{data_}, size_{v.size()}
+      : data_{reinterpret_cast<std::uint8_t *>(v.data())},
+        cdata_{data_},
+        size_{v.size()},
+        alignment_{alignof(T)}
   {
   }
 
@@ -90,7 +92,10 @@ public:
   /// list of elements that will be read from by the PLY writer.
   template<typename T>
   Layout(const std::vector<T> &v)
-      : data_{nullptr}, cdata_{reinterpret_cast<const std::uint8_t *>(v.data())}, size_{v.size()}
+      : data_{nullptr},
+        cdata_{reinterpret_cast<const std::uint8_t *>(v.data())},
+        size_{v.size()},
+        alignment_{alignof(T)}
   {
   }
 
@@ -105,6 +110,9 @@ public:
   /// block pointer to by the associated data block.
   std::size_t size() const { return size_; }
 
+  /// Alignment requirements of this structure.
+  std::size_t alignment() const { return alignment_; }
+
 private:
   /// Pointer to the writable memory area that contains `n` number of structures
   /// made up of the types associated with this layout.
@@ -115,6 +123,9 @@ private:
   /// Number of elements that are or may be stored in the memory block pointer
   /// to by the associated data block.
   std::size_t size_{0};
+  /// Alignment requirements of the structure instances stored in this memory
+  /// block.
+  std::size_t alignment_{0};
 };
 
 }}

@@ -158,7 +158,7 @@ public:
     const PropertyConstIterator first = element.properties().begin();
     const PropertyConstIterator last = element.properties().end();
     if (detail::isMemcpyable<Ts...>(first, last)) { this->template memcpy<Ts...>(layout.data(), element); }
-    else { readElements<Ts...>(layout.data(), element); }
+    else { readElements<Ts...>(element, layout); }
   }
 
   template<typename... Ts>
@@ -166,7 +166,7 @@ public:
       const PlyElement &element,
       reflect::Layout<Ts...> layout) const
   {
-    readElements<Ts...>(layout.data(), element);
+    readElements<Ts...>(element, layout);
   }
   /// @}
 
@@ -174,7 +174,7 @@ public:
 
 private:
   template<typename... Ts>
-  void readElements(std::uint8_t *dest, const PlyElement &element) const
+  void readElements(const PlyElement &element, reflect::Layout<Ts...> layout) const
   {
     const PropertyConstIterator first = element.properties().begin();
     const PropertyConstIterator last = element.properties().end();
@@ -188,9 +188,10 @@ private:
                                                  })
                                            : 0;
 
+    std::uint8_t *dest = layout.data();
     for (std::size_t i{0}; i < element.size(); ++i)
     {
-      dest = readElement<Ts...>(dest, first, last);
+      dest = detail::align(readElement<Ts...>(dest, first, last), layout.alignment());
       this->skipProperties(numBytesToSkip);
     }
   }
