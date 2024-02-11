@@ -154,7 +154,9 @@ public:
     data_.reset(x.data_.release());
     listOffsets_ = std::move(x.listOffsets_);
     bytesPerElement_ = x.bytesPerElement_;
+    alignment_ = x.alignment_;
 
+    x.bytesPerElement_ = 0;
     x.listOffsets_.clear();
     x.element_ = PlyElement();
 
@@ -175,7 +177,7 @@ private:
   std::unique_ptr<std::uint8_t[]> data_;
   std::vector<std::size_t> listOffsets_;
   std::size_t bytesPerElement_ = 0;
-  std::size_t alignment_ = 0;
+  std::size_t alignment_ = alignof(char);
 };
 
 }

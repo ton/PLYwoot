@@ -154,26 +154,31 @@ public:
   /// Queues an element with the associated data for writing. Elements will be
   /// stored in the same order they are queued.
   template<typename... Ts>
-  void add(const PlyElement &element, const reflect::Layout<Ts...> &layout)
+  void add(const PlyElement &element, const reflect::Layout<Ts...> layout)
   {
     // Note; create a copy of the element that specifies as size the number of
     // items in the input layout.
     PlyElement layoutElement{element.name(), layout.size(), element.properties()};
 
     elementWriteClosures_.emplace_back(
-        std::move(layoutElement), [this, layout](detail::WriterVariant &writer, const PlyElement &e) {
-          writer.write<Ts...>(e, layout.data(), layout.size());
-        });
+        std::move(layoutElement),
+        [this, layout](detail::WriterVariant &writer, const PlyElement &e) { writer.write(e, layout); });
   }
 
-  /// Queues the given element data for writing.
+  /// Queues the given element data for writing. This takes ownership of the
+  /// data to be written, to ensure it does not go out of scope prior to
+  /// committing all data to the output stream through `write()`.
   void add(const PlyElementData &elementData)
   {
+    // TODO(ton): once we upgrade to C++17, move capture element data in the
+    // lambda below.
     const std::uint8_t *src = elementData.data();
+    const std::size_t alignment = elementData.alignment();
 
     elementWriteClosures_.emplace_back(
-        elementData.element(),
-        [this, src](detail::WriterVariant &writer, const PlyElement &e) { writer.write(e, src); });
+        elementData.element(), [this, src, alignment](detail::WriterVariant &writer, const PlyElement &e) {
+          writer.write(e, src, alignment);
+        });
   }
 
   /// Writes all data as a PLY file queued through `addElement()` to the given

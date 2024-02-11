@@ -37,35 +37,35 @@ public:
     }
   }
 
-  void write(const PlyElement &element, const std::uint8_t *src) const
+  void write(const PlyElement &element, const std::uint8_t *src, std::size_t alignment) const
   {
     switch (format_)
     {
       case PlyFormat::Ascii:
-        variant_.ascii.write(element, src);
+        variant_.ascii.write(element, src, alignment);
         break;
       case PlyFormat::BinaryBigEndian:
-        variant_.bbe.write(element, src);
+        variant_.bbe.write(element, src, alignment);
         break;
       case PlyFormat::BinaryLittleEndian:
-        variant_.ble.write(element, src);
+        variant_.ble.write(element, src, alignment);
         break;
     }
   }
 
   template<typename... Ts>
-  void write(const PlyElement &element, const std::uint8_t *src, std::size_t n) const
+  void write(const PlyElement &element, const reflect::Layout<Ts...> layout) const
   {
     switch (format_)
     {
       case PlyFormat::Ascii:
-        variant_.ascii.write<Ts...>(element, src, n);
+        variant_.ascii.write(element, layout);
         break;
       case PlyFormat::BinaryBigEndian:
-        variant_.bbe.write<Ts...>(element, src, n);
+        variant_.bbe.write(element, layout);
         break;
       case PlyFormat::BinaryLittleEndian:
-        variant_.ble.write<Ts...>(element, src, n);
+        variant_.ble.write(element, layout);
         break;
     }
   }

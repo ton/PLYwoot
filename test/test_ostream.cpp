@@ -299,3 +299,67 @@ end_header
 )"};
   REQUIRE(expected == ss.str());
 }
+
+TEST_CASE("Write multiple elements with tricky alignment properties", "[istream]")
+{
+  struct X
+  {
+    char c{0};
+    std::vector<int> v;
+    char d{0};
+
+    inline bool operator==(const X &x) const { return c == x.c && v == x.v && d == x.d; }
+  };
+
+  const std::string expected{R"(ply
+format ascii 1.0
+element e 5
+property char c
+property list uchar int v
+property char d
+end_header
+86 0 87
+88 1 1 89
+90 2 1 2 91
+92 3 1 2 3 93
+94 4 1 2 3 4 95
+)"};
+
+  {
+    // Perform writing data using the reflection route.
+    const plywoot::PlyProperty c{"c", plywoot::PlyDataType::Char};
+    const plywoot::PlyProperty v{"v", plywoot::PlyDataType::Int, plywoot::PlyDataType::UChar};
+    const plywoot::PlyProperty d{"d", plywoot::PlyDataType::Char};
+    const plywoot::PlyElement element{"e", 5, {c, v, d}};
+
+    using Layout = plywoot::reflect::Layout<char, std::vector<int>, char>;
+
+    const std::vector<X> elements = {
+        {86, {}, 87}, {88, {1}, 89}, {90, {1, 2}, 91}, {92, {1, 2, 3}, 93}, {94, {1, 2, 3, 4}, 95}};
+
+    std::stringstream ss;
+    plywoot::OStream plyos{plywoot::PlyFormat::Ascii};
+    plyos.add(element, Layout{elements});
+    plyos.write(ss);
+
+    REQUIRE(expected == ss.str());
+  }
+
+  {
+    // Perform writing data using a `PlyElementData` instance as well, to verify
+    // proper construction and destruction of a `PlyElementData` instance.
+    std::stringstream iss{expected};
+
+    const plywoot::IStream plyIs{iss};
+    REQUIRE(plyIs.elements().size() == 1);
+
+    const plywoot::PlyElementData elementData = plyIs.readElement();
+
+    std::stringstream oss;
+    plywoot::OStream plyOs{plywoot::PlyFormat::Ascii};
+    plyOs.add(elementData);
+    plyOs.write(oss);
+
+    REQUIRE(expected == oss.str());
+  }
+}

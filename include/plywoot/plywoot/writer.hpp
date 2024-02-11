@@ -35,7 +35,7 @@ public:
   /// Writes a PLY element to the associated output stream, assuming property
   /// types should be mapped directly to their corresponding native types. This
   /// is used for writing `PlyElementData` instances.
-  void write(const PlyElement &element, const std::uint8_t *src) const
+  void write(const PlyElement &element, const std::uint8_t *src, std::size_t alignment) const
   {
     for (std::size_t i = 0; i < element.size(); ++i)
     {
@@ -111,17 +111,23 @@ public:
         }
       }
 
+      src = detail::align(src, alignment);
+
       this->writeNewline();
     }
   }
 
   template<typename... Ts>
-  void write(const PlyElement &element, const std::uint8_t *src, std::size_t n) const
+  void write(const PlyElement &element, const reflect::Layout<Ts...> layout) const
   {
     const auto first = element.properties().begin();
     const auto last = element.properties().end();
 
-    for (std::size_t i = 0; i < n; ++i) { src = writeElement<Ts...>(src, first, last); }
+    const std::uint8_t *src = layout.data();
+    for (std::size_t i = 0; i < layout.size(); ++i)
+    {
+      src = detail::align(writeElement<Ts...>(src, first, last), layout.alignment());
+    }
   }
 
 private:
