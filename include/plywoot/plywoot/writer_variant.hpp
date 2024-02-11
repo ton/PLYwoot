@@ -37,6 +37,22 @@ public:
     }
   }
 
+  void write(const PlyElement &element, const std::uint8_t *src) const
+  {
+    switch (format_)
+    {
+      case PlyFormat::Ascii:
+        variant_.ascii.write(element, src);
+        break;
+      case PlyFormat::BinaryBigEndian:
+        variant_.bbe.write(element, src);
+        break;
+      case PlyFormat::BinaryLittleEndian:
+        variant_.ble.write(element, src);
+        break;
+    }
+  }
+
   template<typename... Ts>
   void write(const PlyElement &element, const std::uint8_t *src, std::size_t n) const
   {

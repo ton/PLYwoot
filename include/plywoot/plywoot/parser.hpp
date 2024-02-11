@@ -41,6 +41,101 @@ private:
 public:
   using FormatParserPolicy::FormatParserPolicy;
 
+  /// Reads the given element from the PLY input data stream, returning all data
+  /// as a memory block wrapped by an instance of `PlyElementData`. For
+  /// representation of the data in the memory block, see `PlyElementData` for
+  /// more details.
+  ///
+  /// Note: this is not optimized for performance in any way, but is meant to
+  /// provide a way to read all data from a PLY file without the need for up
+  /// front knowledge about the data a PLY file may contain. For now, it is only
+  /// used by `plywoot::convert()` to be able to convert PLY data between
+  /// different formats.
+  PlyElementData read(const PlyElement &element) const
+  {
+    PlyElementData result(element);
+
+    std::uint8_t *dest = result.data();
+    for (size_t i = 0; i < element.size(); ++i)
+    {
+      for (const PlyProperty &property : element.properties())
+      {
+        // In case of a list property, allocate a vector of the right type, and
+        // read the variable length list.
+        if (property.isList())
+        {
+          switch (property.type())
+          {
+            case PlyDataType::Char:
+              new (dest) std::vector<char>();
+              dest = readProperty(dest, property, reflect::Type<std::vector<char>>{});
+              break;
+            case PlyDataType::UChar:
+              new (dest) std::vector<unsigned char>();
+              dest = readProperty(dest, property, reflect::Type<std::vector<unsigned char>>{});
+              break;
+            case PlyDataType::Short:
+              new (dest) std::vector<short>();
+              dest = readProperty(dest, property, reflect::Type<std::vector<short>>{});
+              break;
+            case PlyDataType::UShort:
+              new (dest) std::vector<unsigned short>();
+              dest = readProperty(dest, property, reflect::Type<std::vector<unsigned short>>{});
+              break;
+            case PlyDataType::Int:
+              new (dest) std::vector<int>();
+              dest = readProperty(dest, property, reflect::Type<std::vector<int>>{});
+              break;
+            case PlyDataType::UInt:
+              new (dest) std::vector<unsigned int>();
+              dest = readProperty(dest, property, reflect::Type<std::vector<unsigned int>>{});
+              break;
+            case PlyDataType::Float:
+              new (dest) std::vector<float>();
+              dest = readProperty(dest, property, reflect::Type<std::vector<float>>{});
+              break;
+            case PlyDataType::Double:
+              new (dest) std::vector<double>();
+              dest = readProperty(dest, property, reflect::Type<std::vector<double>>{});
+              break;
+          }
+        }
+        else
+        {
+          switch (property.type())
+          {
+            case PlyDataType::Char:
+              dest = readProperty(dest, property, reflect::Type<char>{});
+              break;
+            case PlyDataType::UChar:
+              dest = readProperty(dest, property, reflect::Type<unsigned char>{});
+              break;
+            case PlyDataType::Short:
+              dest = readProperty(dest, property, reflect::Type<short>{});
+              break;
+            case PlyDataType::UShort:
+              dest = readProperty(dest, property, reflect::Type<unsigned short>{});
+              break;
+            case PlyDataType::Int:
+              dest = readProperty(dest, property, reflect::Type<int>{});
+              break;
+            case PlyDataType::UInt:
+              dest = readProperty(dest, property, reflect::Type<unsigned int>{});
+              break;
+            case PlyDataType::Float:
+              dest = readProperty(dest, property, reflect::Type<float>{});
+              break;
+            case PlyDataType::Double:
+              dest = readProperty(dest, property, reflect::Type<double>{});
+              break;
+          }
+        }
+      }
+    }
+
+    return result;
+  }
+
   /// Reads the given element from the PLY input data stream, storing data in
   /// the given destination buffer associated with the layout descriptor using
   /// the types given associated with template argument list of the layout

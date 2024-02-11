@@ -34,6 +34,24 @@ public:
     }
   }
 
+  PlyElementData read(const PlyElement &element) const
+  {
+    switch (format_)
+    {
+      case PlyFormat::Ascii:
+        return variant_.ascii.read(element);
+        break;
+      case PlyFormat::BinaryBigEndian:
+        return variant_.bbe.read(element);
+        break;
+      case PlyFormat::BinaryLittleEndian:
+        return variant_.ble.read(element);
+        break;
+    }
+
+    return {};
+  }
+
   template<typename... Ts>
   void read(const PlyElement &element, reflect::Layout<Ts...> layout) const
   {

@@ -2,6 +2,7 @@
 #define PLYWOOT_TYPE_TRAITS_HPP
 
 #include "reflect.hpp"
+#include "std.hpp"
 #include "types.hpp"
 
 #include <algorithm>
@@ -172,6 +173,7 @@ constexpr std::size_t sizeOf()
   return SizeOf<Ts...>::size;
 }
 
+/// Returns the size in bytes of the given PLY data type.
 inline std::size_t sizeOf(PlyDataType type)
 {
   switch (type)
@@ -191,6 +193,34 @@ inline std::size_t sizeOf(PlyDataType type)
   }
 
   return 0;
+}
+
+/// Aligns the given input pointer according to the size of the given PLY data
+/// type.
+template<typename Ptr>
+Ptr align(Ptr ptr, PlyDataType type)
+{
+  switch (type)
+  {
+    case PlyDataType::Char:
+      return detail::align(ptr, alignof(char));
+    case PlyDataType::UChar:
+      return detail::align(ptr, alignof(unsigned char));
+    case PlyDataType::Short:
+      return detail::align(ptr, alignof(short));
+    case PlyDataType::UShort:
+      return detail::align(ptr, alignof(unsigned short));
+    case PlyDataType::Int:
+      return detail::align(ptr, alignof(int));
+    case PlyDataType::UInt:
+      return detail::align(ptr, alignof(unsigned int));
+    case PlyDataType::Float:
+      return detail::align(ptr, alignof(float));
+    case PlyDataType::Double:
+      return detail::align(ptr, alignof(double));
+  }
+
+  return ptr;
 }
 
 /// Type function that returns whether a list of types is consecutively aligned

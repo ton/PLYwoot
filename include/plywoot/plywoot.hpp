@@ -5,6 +5,7 @@
 #include "plywoot/ascii_writer_policy.hpp"
 #include "plywoot/binary_parser_policy.hpp"
 #include "plywoot/binary_writer_policy.hpp"
+#include "plywoot/element_data.hpp"
 #include "plywoot/header_parser.hpp"
 #include "plywoot/parser.hpp"
 #include "plywoot/parser_variant.hpp"
@@ -71,9 +72,25 @@ public:
   /// Returns whether there are still elements left to parse.
   bool hasElement() const { return currElement_ != elements_.end(); }
 
+  /// Reads an element to a newly allocated block of memory wrapped by a
+  /// `PlyElementData` instance. PLY data types are directly mapped to their
+  /// corresponding native types. Lists are mapped to an `std::vector<T>` where
+  /// `T` is the type of type of the element in the lists. All data is aligned
+  /// according to the alignment requirements of the compiler platform.
+  ///
+  /// Precondition is that `hasElement()` is true, failing to meet this
+  /// precondition results in undefined behavior.
+  ///
+  /// \return memory block in the form of a `PlyElementData` instance
+  ///     representing all data for the active element to be parsed
+  PlyElementData readElement() const { return parser_.read(*currElement_++); }
+
   /// Reads the current element from the PLY input data stream, returning a list
   /// of objects of type `T`, where the `Layout` type is used to identify how
   /// properties from the PLY element are mapped on objects of type `T`.
+  ///
+  /// Precondition is that `hasElement()` is true, failing to meet this
+  /// precondition results in undefined behavior.
   ///
   /// TODO(ton): add more extensive documentation
   // TODO(ton): probably better to add another parameter 'size' to guard
@@ -147,6 +164,16 @@ public:
         std::move(layoutElement), [this, layout](detail::WriterVariant &writer, const PlyElement &e) {
           writer.write<Ts...>(e, layout.data(), layout.size());
         });
+  }
+
+  /// Queues the given element data for writing.
+  void add(const PlyElementData &elementData)
+  {
+    const std::uint8_t *src = elementData.data();
+
+    elementWriteClosures_.emplace_back(
+        elementData.element(),
+        [this, src](detail::WriterVariant &writer, const PlyElement &e) { writer.write(e, src); });
   }
 
   /// Writes all data as a PLY file queued through `addElement()` to the given
@@ -232,6 +259,27 @@ private:
   /// sorted ascending based on their associated line number.
   std::vector<Comment> comments_;
 };
+
+/// Converts the given input PLY stream to the requested format, and outputs the
+/// resulting PLY data to the given output stream.
+inline void convert(std::istream &is, std::ostream &os, PlyFormat format)
+{
+  IStream plyIs{is};
+  OStream plyOs{format};
+
+  // Note; preserve element data until the write() function below finishes.
+  std::vector<PlyElementData> elementsData;
+
+  while (plyIs.hasElement())
+  {
+    const plywoot::PlyElement element = plyIs.element();
+    elementsData.emplace_back(plyIs.readElement());
+    plyOs.add(elementsData.back());
+  }
+
+  plyOs.write(os);
+}
+
 }
 
 #endif

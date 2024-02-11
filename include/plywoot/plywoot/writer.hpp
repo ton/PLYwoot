@@ -32,6 +32,92 @@ public:
 
   void close() { FormatWriterPolicy::close(); }
 
+  /// Writes a PLY element to the associated output stream, assuming property
+  /// types should be mapped directly to their corresponding native types. This
+  /// is used for writing `PlyElementData` instances.
+  void write(const PlyElement &element, const std::uint8_t *src) const
+  {
+    for (std::size_t i = 0; i < element.size(); ++i)
+    {
+      const std::vector<PlyProperty> &properties = element.properties();
+      const auto first = properties.begin();
+      const auto last = properties.end();
+
+      auto curr = first;
+      while (curr < last)
+      {
+        if (curr > first)
+        {
+          this->writeTokenSeparator();
+        }
+
+        const PlyProperty &property = *curr++;
+        if (property.isList())
+        {
+          switch (property.type())
+          {
+            case PlyDataType::Char:
+              src = writeProperty(src, property, reflect::Type<std::vector<char>>{});
+              break;
+            case PlyDataType::UChar:
+              src = writeProperty(src, property, reflect::Type<std::vector<unsigned char>>{});
+              break;
+            case PlyDataType::Short:
+              src = writeProperty(src, property, reflect::Type<std::vector<short>>{});
+              break;
+            case PlyDataType::UShort:
+              src = writeProperty(src, property, reflect::Type<std::vector<unsigned short>>{});
+              break;
+            case PlyDataType::Int:
+              src = writeProperty(src, property, reflect::Type<std::vector<int>>{});
+              break;
+            case PlyDataType::UInt:
+              src = writeProperty(src, property, reflect::Type<std::vector<unsigned int>>{});
+              break;
+            case PlyDataType::Float:
+              src = writeProperty(src, property, reflect::Type<std::vector<float>>{});
+              break;
+            case PlyDataType::Double:
+              src = writeProperty(src, property, reflect::Type<std::vector<double>>{});
+              break;
+          }
+        }
+        else
+        {
+          switch (property.type())
+          {
+            case PlyDataType::Char:
+              src = writeProperty(src, property, reflect::Type<char>{});
+              break;
+            case PlyDataType::UChar:
+              src = writeProperty(src, property, reflect::Type<unsigned char>{});
+              break;
+            case PlyDataType::Short:
+              src = writeProperty(src, property, reflect::Type<short>{});
+              break;
+            case PlyDataType::UShort:
+              src = writeProperty(src, property, reflect::Type<unsigned short>{});
+              break;
+            case PlyDataType::Int:
+              src = writeProperty(src, property, reflect::Type<int>{});
+              break;
+            case PlyDataType::UInt:
+              src = writeProperty(src, property, reflect::Type<unsigned int>{});
+              break;
+            case PlyDataType::Float:
+              src = writeProperty(src, property, reflect::Type<float>{});
+              break;
+            case PlyDataType::Double:
+              src = writeProperty(src, property, reflect::Type<double>{});
+              break;
+          }
+        }
+      }
+
+      this->writeNewline();
+    }
+  }
+
   template<typename... Ts>
   void write(const PlyElement &element, const std::uint8_t *src, std::size_t n) const
   {
