@@ -194,19 +194,27 @@ private:
     const PropertyConstIterator last = element.properties().end();
     const PropertyConstIterator firstToSkip = first + detail::numProperties<Ts...>();
 
-    const std::size_t numBytesToSkip = firstToSkip < last
-                                           ? std::accumulate(
-                                                 firstToSkip, last, 0ul,
-                                                 [](std::size_t acc, const PlyProperty &p) {
-                                                   return acc + sizeOf(p.isList() ? p.sizeType() : p.type());
-                                                 })
-                                           : 0;
-
     std::uint8_t *dest = layout.data();
-    for (std::size_t i{0}; i < element.size(); ++i)
+
+    if (firstToSkip < last)
     {
-      dest = detail::align(readElement<Ts...>(dest, first, last), layout.alignment());
-      this->skipProperties(numBytesToSkip);
+      const std::size_t numBytesToSkip =
+          std::accumulate(firstToSkip, last, 0ul, [](std::size_t acc, const PlyProperty &p) {
+            return acc + sizeOf(p.isList() ? p.sizeType() : p.type());
+          });
+
+      for (std::size_t i{0}; i < element.size(); ++i)
+      {
+        dest = detail::align(readElement<Ts...>(dest, first, last), layout.alignment());
+        this->skipProperties(numBytesToSkip);
+      }
+    }
+    else
+    {
+      for (std::size_t i{0}; i < element.size(); ++i)
+      {
+        dest = detail::align(readElement<Ts...>(dest, first, last), layout.alignment());
+      }
     }
   }
 
