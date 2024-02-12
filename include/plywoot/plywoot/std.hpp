@@ -37,12 +37,6 @@
 
 namespace plywoot { namespace detail {
 
-inline std::size_t roundup(std::size_t num, std::size_t multiple)
-{
-  const std::size_t mod = num % multiple;
-  return mod == 0 ? num : num + multiple - mod;
-}
-
 /// Aligns the given input pointer. Implementation is taken from GCCs
 /// `std::align` implementation. The given alignment value should be a power
 /// of two.
