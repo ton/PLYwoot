@@ -1,0 +1,17 @@
+ply
+format ascii 1.0
+element foo 10
+property char a
+property uchar b
+property list uchar int skip
+end_header
+86 255 3 1 2 3
+87 254 2 1 2
+88 253 5 1 2 3 4 5
+89 252 1 1
+90 251 0
+91 250 1 1
+92 249 2 1 2
+93 248 3 1 2 3
+94 247 4 1 2 3 4
+95 246 5 1 2 3 4 5

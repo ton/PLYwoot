@@ -760,7 +760,8 @@ TEST_CASE("Test skipping over a list with a variable size", "[istream]")
   {
     std::vector<char> expected(10);
     std::iota(expected.begin(), expected.end(), 86);
-    REQUIRE(std::equal(expected.begin(), expected.end(), foos.begin(), [](char c, Foo foo) { return c == foo.x; }));
+    REQUIRE(std::equal(
+        expected.begin(), expected.end(), foos.begin(), [](char c, Foo foo) { return c == foo.x; }));
   }
 
   // y
@@ -768,6 +769,51 @@ TEST_CASE("Test skipping over a list with a variable size", "[istream]")
     std::vector<unsigned char> expected(10);
     std::iota(expected.begin(), expected.end(), 246);
     std::reverse(expected.begin(), expected.end());
-    REQUIRE(std::equal(expected.begin(), expected.end(), foos.begin(), [](unsigned char c, Foo foo) { return c == foo.y; }));
+    REQUIRE(std::equal(
+        expected.begin(), expected.end(), foos.begin(), [](unsigned char c, Foo foo) { return c == foo.y; }));
+  }
+}
+
+TEST_CASE(
+    "Test skipping over a list as the last property by not having the property mapped in the layout",
+    "[istream]")
+{
+  auto inputFilename = GENERATE(
+      "test/input/ascii/element_with_last_property_variadic_list.ply",
+      "test/input/binary/little_endian/element_with_last_property_variadic_list.ply",
+      "test/input/binary/big_endian/element_with_last_property_variadic_list.ply");
+
+  std::ifstream ifs{inputFilename};
+  const plywoot::IStream plyFile{ifs};
+
+  struct Foo
+  {
+    char x;
+    unsigned char y;
+  };
+
+  using FooLayout = plywoot::reflect::Layout<char, unsigned char>;
+
+  REQUIRE(plyFile.hasElement());
+  const plywoot::PlyElement element = plyFile.element();
+  REQUIRE(plyFile.element().name() == "foo");
+
+  const std::vector<Foo> foos = plyFile.readElement<Foo, FooLayout>();
+
+  // x
+  {
+    std::vector<char> expected(10);
+    std::iota(expected.begin(), expected.end(), 86);
+    REQUIRE(std::equal(
+        expected.begin(), expected.end(), foos.begin(), [](char c, Foo foo) { return c == foo.x; }));
+  }
+
+  // y
+  {
+    std::vector<unsigned char> expected(10);
+    std::iota(expected.begin(), expected.end(), 246);
+    std::reverse(expected.begin(), expected.end());
+    REQUIRE(std::equal(
+        expected.begin(), expected.end(), foos.begin(), [](unsigned char c, Foo foo) { return c == foo.y; }));
   }
 }

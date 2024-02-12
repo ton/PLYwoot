@@ -198,19 +198,35 @@ private:
 
     if (firstToSkip < last)
     {
-      // Note; even though the following may seem specific for binary parsing
-      // only, it is still useful in terms of an ASCII parser. That is, in case
-      // any bytes need to be skipped, the ASCII parser will just ignore the
-      // remainder of the line to read, and as such skip to the next element.
-      const std::size_t numBytesToSkip =
-          std::accumulate(firstToSkip, last, 0ul, [](std::size_t acc, const PlyProperty &p) {
-            return acc + sizeOf(p.isList() ? p.sizeType() : p.type());
-          });
-
-      for (std::size_t i{0}; i < element.size(); ++i)
+      // In case any property that needs to be skipped is a list property, take
+      // the expensive code path. Otherwise, we can calculate the exact number
+      // of bytes to skip over.
+      if (std::any_of(firstToSkip, last, [](const PlyProperty &p) { return p.isList(); }))
       {
-        dest = detail::align(readElement<Ts...>(dest, first, last), layout.alignment());
-        this->skipProperties(numBytesToSkip);
+        for (std::size_t i{0}; i < element.size(); ++i)
+        {
+          dest = detail::align(readElement<Ts...>(dest, first, last), layout.alignment());
+
+          auto curr = firstToSkip;
+          while (curr < last) this->skipProperty(*curr++);
+        }
+      }
+      else
+      {
+        // Note; even though the following may seem specific for binary parsing
+        // only, it is still useful in terms of an ASCII parser. That is, in case
+        // any bytes need to be skipped, the ASCII parser will just ignore the
+        // remainder of the line to read, and as such skip to the next element.
+        const std::size_t numBytesToSkip =
+            std::accumulate(firstToSkip, last, 0ul, [](std::size_t acc, const PlyProperty &p) {
+              return acc + sizeOf(p.isList() ? p.sizeType() : p.type());
+            });
+
+        for (std::size_t i{0}; i < element.size(); ++i)
+        {
+          dest = detail::align(readElement<Ts...>(dest, first, last), layout.alignment());
+          this->skipProperties(numBytesToSkip);
+        }
       }
     }
     else
