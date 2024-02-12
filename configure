@@ -13,7 +13,7 @@ EOF
 }
 
 build_type="debug"
-cmake_install_prefix="/usr/local"
+cmake_install_prefix="$HOME/.local"
 
 for arg in "$@"; do
   case $arg in
