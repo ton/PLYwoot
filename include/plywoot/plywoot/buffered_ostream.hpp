@@ -36,7 +36,7 @@ constexpr std::size_t OStreamBufferSize{1024 * 1024};
 
 namespace plywoot { namespace detail {
 
-/// Wrapper around some ASCII output stream that provides buffered output
+/// Wrapper around some output stream that provides buffered output
 /// functionality. This will always buffer some compile-time given size of bytes
 /// up front, and data is written to this buffer first until either the buffer
 /// fills up or an instance of this object goes out of scope, at which point all
@@ -45,7 +45,8 @@ namespace plywoot { namespace detail {
 class BufferedOStream
 {
 public:
-  /// Constructs a buffered ASCII output stream wrapper around the given output stream.
+  /// Constructs a buffered output stream wrapper around the given output
+  /// stream.
   explicit BufferedOStream(std::ostream &os) : os_{os} {}
 
   /// No copy semantics allowed.
