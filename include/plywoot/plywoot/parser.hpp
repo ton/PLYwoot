@@ -356,16 +356,6 @@ private:
 
   template<typename TypeTag>
   typename std::enable_if<
-      !detail::isList<TypeTag>() && std::is_same<typename TypeTag::DestT, reflect::Skip>::value,
-      std::uint8_t *>::type
-  readProperty(std::uint8_t *dest, const PlyProperty &property, TypeTag tag) const
-  {
-    this->skipProperty(property);
-    return dest;
-  }
-
-  template<typename TypeTag>
-  typename std::enable_if<
       !detail::isList<TypeTag>() && !std::is_same<typename TypeTag::DestT, reflect::Skip>::value,
       std::uint8_t *>::type
   readProperty(std::uint8_t *dest, const PlyProperty &property, TypeTag tag) const
@@ -390,6 +380,14 @@ private:
         return readProperty<double>(dest, tag);
     }
 
+    return dest;
+  }
+
+  template<typename TypeTag>
+  typename std::enable_if<std::is_same<typename TypeTag::DestT, reflect::Skip>::value, std::uint8_t *>::type
+  readProperty(std::uint8_t *dest, const PlyProperty &property, TypeTag tag) const
+  {
+    this->skipProperty(property);
     return dest;
   }
 };
