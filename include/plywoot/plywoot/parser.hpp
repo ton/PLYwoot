@@ -198,6 +198,10 @@ private:
 
     if (firstToSkip < last)
     {
+      // Note; even though the following may seem specific for binary parsing
+      // only, it is still useful in terms of an ASCII parser. That is, in case
+      // any bytes need to be skipped, the ASCII parser will just ignore the
+      // remainder of the line to read, and as such skip to the next element.
       const std::size_t numBytesToSkip =
           std::accumulate(firstToSkip, last, 0ul, [](std::size_t acc, const PlyProperty &p) {
             return acc + sizeOf(p.isList() ? p.sizeType() : p.type());

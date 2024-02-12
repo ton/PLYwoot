@@ -141,6 +141,9 @@ private:
   std::size_t size_;
 };
 
+/// Generic type to string conversion functionality, requiring that an
+/// `std::ostream` << operator is defined for the type. This should only be used
+/// in contexts where performance does not matter.
 template<typename T>
 std::string to_string(const T &t)
 {
