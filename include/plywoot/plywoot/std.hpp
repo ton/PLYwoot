@@ -35,7 +35,7 @@
 #include <sstream>
 #include <string>
 
-namespace plywoot { namespace detail {
+namespace plywoot::detail {
 
 /// Aligns the given input pointer. Implementation is taken from GCCs
 /// `std::align` implementation. The given alignment value should be a power
@@ -146,6 +146,6 @@ std::string to_string(const T &t)
   return oss.str();
 }
 
-}}
+}
 
 #endif

@@ -22,7 +22,7 @@
 
 #include <vector>
 
-namespace plywoot { namespace reflect {
+namespace plywoot::reflect {
 
 /// Meta type that is used to help with SFINAE resolution.
 template<typename... Ts>
@@ -147,6 +147,6 @@ private:
   std::size_t alignment_{0};
 };
 
-}}
+}
 
 #endif

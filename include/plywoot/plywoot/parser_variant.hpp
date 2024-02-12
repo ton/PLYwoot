@@ -25,111 +25,60 @@
 #include "parser.hpp"
 
 #include <istream>
+#include <variant>
 
-namespace plywoot { namespace detail {
+namespace plywoot::detail {
 
 /// For lack of `std::variant`, create a cheap tagged union.
 class ParserVariant
 {
 public:
-  ParserVariant(std::istream &is, PlyFormat format) : format_{format}, variant_{is, format} {}
+  ParserVariant(std::istream &is, PlyFormat format) : variant_{makeVariant(is, format)} {}
 
   ParserVariant(const ParserVariant &) = delete;
   ParserVariant &operator=(const ParserVariant &) = delete;
 
-  ~ParserVariant()
-  {
-    switch (format_)
-    {
-      case PlyFormat::Ascii:
-        variant_.ascii.~Parser<detail::AsciiParserPolicy>();
-        break;
-      case PlyFormat::BinaryBigEndian:
-        variant_.bbe.~Parser<detail::BinaryBigEndianParserPolicy>();
-        break;
-      case PlyFormat::BinaryLittleEndian:
-        variant_.ble.~Parser<detail::BinaryLittleEndianParserPolicy>();
-        break;
-    }
-  }
-
   PlyElementData read(const PlyElement &element) const
   {
-    switch (format_)
-    {
-      case PlyFormat::Ascii:
-        return variant_.ascii.read(element);
-        break;
-      case PlyFormat::BinaryBigEndian:
-        return variant_.bbe.read(element);
-        break;
-      case PlyFormat::BinaryLittleEndian:
-        return variant_.ble.read(element);
-        break;
-    }
-
-    return {};
+    return std::visit([&](auto &&parser) { return parser.read(element); }, variant_);
   }
 
   template<typename... Ts>
   void read(const PlyElement &element, reflect::Layout<Ts...> layout) const
   {
-    switch (format_)
-    {
-      case PlyFormat::Ascii:
-        variant_.ascii.read(element, std::move(layout));
-        break;
-      case PlyFormat::BinaryBigEndian:
-        variant_.bbe.read(element, std::move(layout));
-        break;
-      case PlyFormat::BinaryLittleEndian:
-        variant_.ble.read(element, std::move(layout));
-        break;
-    }
+    std::visit([&element, layout](auto &&parser) { parser.read(element, layout); }, variant_);
   }
 
   void skip(const PlyElement &element) const
   {
-    switch (format_)
-    {
-      case PlyFormat::Ascii:
-        variant_.ascii.skip(element);
-        break;
-      case PlyFormat::BinaryBigEndian:
-        variant_.bbe.skip(element);
-        break;
-      case PlyFormat::BinaryLittleEndian:
-        variant_.ble.skip(element);
-        break;
-    }
+    std::visit([&element](auto &&parser) { parser.skip(element); }, variant_);
   }
 
 private:
-  PlyFormat format_;
+  using Variant = std::variant<
+      detail::Parser<detail::AsciiParserPolicy>,
+      detail::Parser<detail::BinaryBigEndianParserPolicy>,
+      detail::Parser<detail::BinaryLittleEndianParserPolicy>>;
 
-  union U {
-    U(std::istream &is, PlyFormat format)
+  Variant makeVariant(std::istream &is, PlyFormat format)
+  {
+    switch (format)
     {
-      switch (format)
-      {
-        case PlyFormat::Ascii:
-          new (&ascii) detail::Parser<detail::AsciiParserPolicy>{is};
-          break;
-        case PlyFormat::BinaryBigEndian:
-          new (&bbe) detail::Parser<detail::BinaryBigEndianParserPolicy>{is};
-          break;
-        case PlyFormat::BinaryLittleEndian:
-          new (&ble) detail::Parser<detail::BinaryLittleEndianParserPolicy>{is};
-          break;
-      }
+      case PlyFormat::Ascii:
+        return Variant{std::in_place_type<detail::Parser<detail::AsciiParserPolicy>>, is};
+      case PlyFormat::BinaryBigEndian:
+        return Variant{std::in_place_type<detail::Parser<detail::BinaryBigEndianParserPolicy>>, is};
+      case PlyFormat::BinaryLittleEndian:
+      default:
+        break;
     }
 
-    detail::Parser<detail::AsciiParserPolicy> ascii;
-    detail::Parser<detail::BinaryBigEndianParserPolicy> bbe;
-    detail::Parser<detail::BinaryLittleEndianParserPolicy> ble;
-  } variant_;
+    return Variant{std::in_place_type<detail::Parser<detail::BinaryLittleEndianParserPolicy>>, is};
+  }
+
+  Variant variant_;
 };
 
-}}
+}
 
 #endif

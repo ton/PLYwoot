@@ -27,7 +27,7 @@
 #include <cstdint>
 #include <numeric>
 
-namespace plywoot { namespace detail {
+namespace plywoot::detail {
 
 /// Defines a parser policy that deals with binary input streams.
 template<typename Endianness>
@@ -55,10 +55,7 @@ public:
     {
       for (std::size_t i = 0; i < e.size(); ++i)
       {
-        for (const PlyProperty &p : e.properties())
-        {
-          skipProperty(p);
-        }
+        for (const PlyProperty &p : e.properties()) { skipProperty(p); }
       }
     }
   }
@@ -106,42 +103,35 @@ public:
   /// Reads a number of the given type `T` from the input stream.
   /// @{
   template<typename T, typename EndiannessDependent = Endianness>
-  typename std::enable_if<std::is_same<EndiannessDependent, LittleEndian>::value, T>::type readNumber() const
+  T readNumber() const
   {
     // TODO(ton): this assumes the target architecture is little endian.
-    return is_.read<T>();
+    if constexpr (std::is_same_v<EndiannessDependent, LittleEndian>) { return is_.read<T>(); }
+    else { return betoh(is_.read<T>()); }
   }
-
-  template<typename T, typename EndiannessDependent = Endianness>
-  typename std::enable_if<std::is_same<EndiannessDependent, BigEndian>::value, T>::type readNumber() const
-  {
-    return betoh(is_.read<T>());
-  }
-  /// @}
 
   /// Reads `N` numbers of the given type `PlyT` from the input stream, and
   /// stores them contiguously at the given destination in memory as numbers of
   /// type `DestT`. Returns a pointer pointing just after the last number stored
   /// at `dest`.
-  /// @{
   template<typename PlyT, typename DestT, std::size_t N, typename EndiannessDependent = Endianness>
-  typename std::enable_if<std::is_same<EndiannessDependent, LittleEndian>::value, std::uint8_t *>::type readNumbers(std::uint8_t *dest) const
+  std::uint8_t *readNumbers(std::uint8_t *dest) const
   {
-    return is_.read<PlyT, DestT, N>(dest);
+    if constexpr (std::is_same_v<EndiannessDependent, LittleEndian>)
+    {
+      return is_.read<PlyT, DestT, N>(dest);
+    }
+    else
+    {
+      std::uint8_t *result = is_.read<PlyT, DestT, N>(dest);
+
+      // Perform endianess conversion.
+      DestT *to = reinterpret_cast<DestT *>(dest);
+      for (size_t i = 0; i < N; ++i, ++to) { *to = betoh(static_cast<PlyT>(*to)); }
+
+      return result;
+    }
   }
-
-  template<typename PlyT, typename DestT, std::size_t N, typename EndiannessDependent = Endianness>
-  typename std::enable_if<std::is_same<EndiannessDependent, BigEndian>::value, std::uint8_t *>::type readNumbers(std::uint8_t *dest) const
-  {
-    std::uint8_t *result = is_.read<PlyT, DestT, N>(dest);
-
-    // Perform endianess conversion.
-    DestT *to = reinterpret_cast<DestT *>(dest);
-    for (size_t i = 0; i < N; ++i, ++to) { *to = betoh(static_cast<PlyT>(*to)); }
-
-    return result;
-  }
-  /// @}
 
   /// Skips a number of the given type `T` in the input stream.
   template<typename T>
@@ -157,44 +147,35 @@ public:
   /// assumes an element maps to a collection of types `Ts...` for which all
   /// types are trivially copyable, and contiguous in memory without any padding
   /// in between.
-  /// @{
   template<typename... Ts, typename EndiannessDependent = Endianness>
-  typename std::enable_if<std::is_same<EndiannessDependent, LittleEndian>::value, void>::type memcpy(
-      std::uint8_t *dest,
-      const PlyElement &element) const
-  {
-    is_.memcpy(dest, element.size() * detail::sizeOf<Ts...>());
-  }
-
-  template<typename... Ts, typename EndiannessDependent = Endianness>
-  typename std::enable_if<std::is_same<EndiannessDependent, BigEndian>::value, void>::type memcpy(
-      std::uint8_t *dest,
-      const PlyElement &element) const
+  void memcpy(std::uint8_t *dest, const PlyElement &element) const
   {
     is_.memcpy(dest, element.size() * detail::sizeOf<Ts...>());
 
-    for (size_t i = 0; i < element.size(); ++i) { dest = toBigEndian<Ts...>(dest); }
+    if constexpr (std::is_same_v<EndiannessDependent, BigEndian>)
+    {
+      for (size_t i = 0; i < element.size(); ++i) { dest = toBigEndian<Ts...>(dest); }
+    }
   }
-  /// @}
 
 private:
   template<typename T>
-  typename std::enable_if<!detail::IsPack<T>::value, std::uint8_t *>::type toBigEndian(
-      std::uint8_t *dest) const
+  std::uint8_t *toBigEndian(std::uint8_t *dest) const
   {
-    auto ptr = reinterpret_cast<T *>(dest);
-    *ptr = htobe(*ptr);
-    return dest + sizeof(T);
-  }
+    if constexpr (!detail::IsPack<T>::value)
+    {
+      auto ptr = reinterpret_cast<T *>(dest);
+      *ptr = htobe(*ptr);
 
-  template<typename T>
-  typename std::enable_if<detail::IsPack<T>::value, std::uint8_t *>::type toBigEndian(
-      std::uint8_t *dest) const
-  {
-    auto ptr = reinterpret_cast<typename T::DestT *>(dest);
-    for (std::size_t i = 0; i < T::size; ++i, ++ptr) { *ptr = htobe(*ptr); }
+      return dest + sizeof(T);
+    }
+    else
+    {
+      auto ptr = reinterpret_cast<typename T::DestT *>(dest);
+      for (std::size_t i = 0; i < T::size; ++i, ++ptr) { *ptr = htobe(*ptr); }
 
-    return dest + detail::sizeOf<T>();
+      return dest + detail::sizeOf<T>();
+    }
   }
 
   template<typename T, typename U, typename... Ts>
@@ -213,6 +194,6 @@ private:
 using BinaryLittleEndianParserPolicy = BinaryParserPolicy<LittleEndian>;
 using BinaryBigEndianParserPolicy = BinaryParserPolicy<BigEndian>;
 
-}}
+}
 
 #endif

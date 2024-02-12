@@ -34,7 +34,7 @@ constexpr std::size_t OStreamBufferSize{1024 * 1024};
 
 }
 
-namespace plywoot { namespace detail {
+namespace plywoot::detail {
 
 /// Wrapper around some output stream that provides buffered output
 /// functionality. This will always buffer some compile-time given size of bytes
@@ -49,16 +49,13 @@ public:
   /// stream.
   explicit BufferedOStream(std::ostream &os) : os_{os} {}
 
+  /// Destructs this buffered output stream, ensures the wrapped stream is
+  /// closed.
+  ~BufferedOStream() { flush(); }
+
   /// No copy semantics allowed.
   BufferedOStream(const BufferedOStream &) = delete;
   BufferedOStream &operator=(const BufferedOStream &) = delete;
-
-  /// Closes this output stream.
-  // TODO(ton): this should be in a destructor; but because this is part of a
-  // union, there is a strict requirement for having a trivial destructor.
-  // `std::variant` removes this limitation. The cheap variant implementation
-  // needs to be revised to clean this mess up.
-  void close() { flush(); }
 
   /// Writes a single character `c` to the output stream.
   void put(char c)
@@ -127,6 +124,6 @@ private:
   alignas(64) char buffer_[OStreamBufferSize] = {};
 };
 
-}}
+}
 
 #endif

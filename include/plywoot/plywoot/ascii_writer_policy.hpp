@@ -24,7 +24,7 @@
 
 #include <ostream>
 
-namespace plywoot { namespace detail {
+namespace plywoot::detail {
 
 namespace {
 
@@ -49,8 +49,6 @@ class AsciiWriterPolicy
 {
 public:
   AsciiWriterPolicy(std::ostream &os) : os_{os} {}
-
-  void close() { os_.close(); }
 
   /// Writes the number `t` of the given type `T` to the given ASCII output
   /// stream.
@@ -110,6 +108,6 @@ private:
   mutable detail::BufferedOStream os_;
 };
 
-}}
+}
 
 #endif

@@ -25,96 +25,55 @@
 #include "writer.hpp"
 
 #include <ostream>
+#include <variant>
 
-namespace plywoot { namespace detail {
+namespace plywoot::detail {
 
-/// For lack of `std::variant`, create a cheap tagged union.
 class WriterVariant
 {
 public:
-  WriterVariant(std::ostream &os, PlyFormat format) : format_{format}, variant_{os, format} {}
+  WriterVariant(std::ostream &os, PlyFormat format) : variant_{makeVariant(os, format)} {}
 
   WriterVariant(const WriterVariant &) = delete;
   WriterVariant &operator=(const WriterVariant &) = delete;
 
-  ~WriterVariant()
-  {
-    switch (format_)
-    {
-      case PlyFormat::Ascii:
-        variant_.ascii.close();
-        variant_.ascii.~Writer<detail::AsciiWriterPolicy>();
-        break;
-      case PlyFormat::BinaryBigEndian:
-        variant_.bbe.close();
-        variant_.bbe.~Writer<detail::BinaryBigEndianWriterPolicy>();
-        break;
-      case PlyFormat::BinaryLittleEndian:
-        variant_.ble.close();
-        variant_.ble.~Writer<detail::BinaryLittleEndianWriterPolicy>();
-        break;
-    }
-  }
-
   void write(const PlyElement &element, const std::uint8_t *src, std::size_t alignment) const
   {
-    switch (format_)
-    {
-      case PlyFormat::Ascii:
-        variant_.ascii.write(element, src, alignment);
-        break;
-      case PlyFormat::BinaryBigEndian:
-        variant_.bbe.write(element, src, alignment);
-        break;
-      case PlyFormat::BinaryLittleEndian:
-        variant_.ble.write(element, src, alignment);
-        break;
-    }
+    std::visit(
+        [&element, src, alignment](auto &&writer) { writer.write(element, src, alignment); }, variant_);
   }
 
   template<typename... Ts>
   void write(const PlyElement &element, const reflect::Layout<Ts...> layout) const
   {
-    switch (format_)
-    {
-      case PlyFormat::Ascii:
-        variant_.ascii.write(element, layout);
-        break;
-      case PlyFormat::BinaryBigEndian:
-        variant_.bbe.write(element, layout);
-        break;
-      case PlyFormat::BinaryLittleEndian:
-        variant_.ble.write(element, layout);
-        break;
-    }
+    std::visit([&element, layout](auto &&writer) { writer.write(element, layout); }, variant_);
   }
 
 private:
-  PlyFormat format_;
+  using Variant = std::variant<
+      detail::Writer<detail::AsciiWriterPolicy>,
+      detail::Writer<detail::BinaryBigEndianWriterPolicy>,
+      detail::Writer<detail::BinaryLittleEndianWriterPolicy>>;
 
-  union U {
-    U(std::ostream &os, PlyFormat format)
+  Variant makeVariant(std::ostream &os, PlyFormat format)
+  {
+    switch (format)
     {
-      switch (format)
-      {
-        case PlyFormat::Ascii:
-          new (&ascii) detail::Writer<detail::AsciiWriterPolicy>{os};
-          break;
-        case PlyFormat::BinaryBigEndian:
-          new (&bbe) detail::Writer<detail::BinaryBigEndianWriterPolicy>{os};
-          break;
-        case PlyFormat::BinaryLittleEndian:
-          new (&ble) detail::Writer<detail::BinaryLittleEndianWriterPolicy>{os};
-          break;
-      }
+      case PlyFormat::Ascii:
+        return Variant{std::in_place_type<detail::Writer<detail::AsciiWriterPolicy>>, os};
+      case PlyFormat::BinaryBigEndian:
+        return Variant{std::in_place_type<detail::Writer<detail::BinaryBigEndianWriterPolicy>>, os};
+      case PlyFormat::BinaryLittleEndian:
+      default:
+        break;
     }
 
-    detail::Writer<detail::AsciiWriterPolicy> ascii;
-    detail::Writer<detail::BinaryBigEndianWriterPolicy> bbe;
-    detail::Writer<detail::BinaryLittleEndianWriterPolicy> ble;
-  } variant_;
+    return Variant{std::in_place_type<detail::Writer<detail::BinaryLittleEndianWriterPolicy>>, os};
+  }
+
+  Variant variant_;
 };
 
-}}
+}
 
 #endif

@@ -25,7 +25,7 @@
 
 #include <endian.h>
 
-namespace plywoot { namespace detail {
+namespace plywoot::detail {
 
 /// Type tag to indicate little endian behavior is required for the
 /// parser/writer policies.
@@ -40,92 +40,49 @@ struct BigEndian
 };
 
 /// Naive byte swap functions for floating point numbers.
-/// @{
 template<typename T>
-typename std::enable_if<std::is_floating_point<T>::value && sizeof(T) == 4, T>::type byte_swap(T t)
+T byte_swap(T t)
 {
   unsigned char *bytes = reinterpret_cast<unsigned char *>(&t);
-  std::swap(bytes[0], bytes[3]);
-  std::swap(bytes[1], bytes[2]);
-  return t;
-}
 
-template<typename T>
-typename std::enable_if<std::is_floating_point<T>::value && sizeof(T) == 8, T>::type byte_swap(T t)
-{
-  unsigned char *bytes = reinterpret_cast<unsigned char *>(&t);
-  std::swap(bytes[0], bytes[7]);
-  std::swap(bytes[1], bytes[6]);
-  std::swap(bytes[2], bytes[5]);
-  std::swap(bytes[3], bytes[4]);
+  if constexpr (sizeof(T) == 4)
+  {
+    std::swap(bytes[0], bytes[3]);
+    std::swap(bytes[1], bytes[2]);
+  }
+  else if constexpr (sizeof(T) == 8)
+  {
+    std::swap(bytes[0], bytes[7]);
+    std::swap(bytes[1], bytes[6]);
+    std::swap(bytes[2], bytes[5]);
+    std::swap(bytes[3], bytes[4]);
+  }
+
   return t;
 }
-/// @}
 
 /// Wrappers around the glibc htobe* and be*toh functions that pick the correct
 /// call depending on the size of the argument type.
-/// @{
 template<typename T>
-typename std::enable_if<sizeof(T) == 1, T>::type htobe(T t)
+T htobe(T t)
 {
-  return t;
+  if constexpr (sizeof(T) == 1) { return t; }
+  else if constexpr (std::is_integral_v<T> && sizeof(T) == 2) { return static_cast<T>(htobe16(t)); }
+  else if constexpr (std::is_integral_v<T> && sizeof(T) == 4) { return static_cast<T>(htobe32(t)); }
+  else if constexpr (std::is_integral_v<T> && sizeof(T) == 8) { return static_cast<T>(htobe64(t)); }
+  else if constexpr (std::is_floating_point_v<T>) { return byte_swap(t); }
 }
 
 template<typename T>
-typename std::enable_if<std::is_integral<T>::value && sizeof(T) == 2, T>::type htobe(T t)
+T betoh(T t)
 {
-  return static_cast<T>(htobe16(static_cast<std::uint16_t>(t)));
+  if constexpr (sizeof(T) == 1) { return t; }
+  else if constexpr (std::is_integral_v<T> && sizeof(T) == 2) { return static_cast<T>(be16toh(t)); }
+  else if constexpr (std::is_integral_v<T> && sizeof(T) == 4) { return static_cast<T>(be32toh(t)); }
+  else if constexpr (std::is_integral_v<T> && sizeof(T) == 8) { return static_cast<T>(be64toh(t)); }
+  else if constexpr (std::is_floating_point_v<T>) { return byte_swap(t); }
 }
 
-template<typename T>
-typename std::enable_if<std::is_integral<T>::value && sizeof(T) == 4, T>::type htobe(T t)
-{
-  return static_cast<T>(htobe32(static_cast<std::uint32_t>(t)));
 }
-
-template<typename T>
-typename std::enable_if<std::is_integral<T>::value && sizeof(T) == 8, T>::type htobe(T t)
-{
-  return static_cast<T>(htobe64(static_cast<std::uint64_t>(t)));
-}
-
-template<typename T>
-typename std::enable_if<std::is_floating_point<T>::value, T>::type htobe(T t)
-{
-  return byte_swap(t);
-}
-
-template<typename T>
-typename std::enable_if<sizeof(T) == 1, T>::type betoh(T t)
-{
-  return t;
-}
-
-template<typename T>
-typename std::enable_if<std::is_integral<T>::value && sizeof(T) == 2, T>::type betoh(T t)
-{
-  return static_cast<T>(be16toh(static_cast<std::uint16_t>(t)));
-}
-
-template<typename T>
-typename std::enable_if<std::is_integral<T>::value && sizeof(T) == 4, T>::type betoh(T t)
-{
-  return static_cast<T>(be32toh(static_cast<std::uint32_t>(t)));
-}
-
-template<typename T>
-typename std::enable_if<std::is_integral<T>::value && sizeof(T) == 8, T>::type betoh(T t)
-{
-  return static_cast<T>(be64toh(static_cast<std::uint64_t>(t)));
-}
-
-template<typename T>
-typename std::enable_if<std::is_floating_point<T>::value, T>::type betoh(T t)
-{
-  return byte_swap(t);
-}
-/// @}
-
-}}
 
 #endif

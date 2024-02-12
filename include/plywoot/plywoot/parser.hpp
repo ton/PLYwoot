@@ -28,7 +28,7 @@
 #include <cstdint>
 #include <numeric>
 
-namespace plywoot { namespace detail {
+namespace plywoot::detail {
 
 /// Represents a generic PLY parser that is parameterized with format specific
 /// functionality through the FormatParserPolicy type, which should adhere to the
@@ -165,24 +165,19 @@ public:
   // TODO(ton): probably better to add another parameter 'size' to guard
   // against overwriting the input buffer.
   template<typename... Ts>
-  typename std::enable_if<MaybeMemcpyable<Ts...>::value, void>::type read(
-      const PlyElement &element,
-      reflect::Layout<Ts...> layout) const
+  void read(const PlyElement &element, reflect::Layout<Ts...> layout) const
   {
-    const PropertyConstIterator first = element.properties().begin();
-    const PropertyConstIterator last = element.properties().end();
-    if (detail::isMemcpyable<Ts...>(first, last)) { this->template memcpy<Ts...>(layout.data(), element); }
-    else { readElements<Ts...>(element, layout); }
-  }
+    if constexpr (MaybeMemcpyable<Ts...>::value)
+    {
+      if (detail::isMemcpyable<Ts...>(element.properties().begin(), element.properties().end()))
+      {
+        this->template memcpy<Ts...>(layout.data(), element);
+        return;
+      }
+    }
 
-  template<typename... Ts>
-  typename std::enable_if<!MaybeMemcpyable<Ts...>::value, void>::type read(
-      const PlyElement &element,
-      reflect::Layout<Ts...> layout) const
-  {
     readElements<Ts...>(element, layout);
   }
-  /// @}
 
   void skip(const PlyElement &element) const { this->skipElement(element); }
 
@@ -304,21 +299,15 @@ private:
   }
 
   template<typename PlyT, typename DestT>
-  typename std::enable_if<std::is_arithmetic<DestT>::value, std::uint8_t *>::type readProperty(
-      std::uint8_t *dest,
-      reflect::Type<DestT>) const
+  std::uint8_t *readProperty(std::uint8_t *dest, reflect::Type<DestT>) const
   {
-    dest = static_cast<std::uint8_t *>(detail::align(dest, alignof(DestT)));
-    *reinterpret_cast<DestT *>(dest) = this->template readNumber<PlyT>();
-    return dest + sizeof(DestT);
-  }
-
-  template<typename PlyT, typename DestT>
-  typename std::enable_if<!std::is_arithmetic<DestT>::value, std::uint8_t *>::type readProperty(
-      std::uint8_t *dest,
-      reflect::Type<DestT>) const
-  {
-    return static_cast<std::uint8_t *>(detail::align(dest, alignof(DestT))) + sizeof(DestT);
+    if constexpr (std::is_arithmetic_v<DestT>)
+    {
+      dest = static_cast<std::uint8_t *>(detail::align(dest, alignof(DestT)));
+      *reinterpret_cast<DestT *>(dest) = this->template readNumber<PlyT>();
+      return dest + sizeof(DestT);
+    }
+    else { return static_cast<std::uint8_t *>(detail::align(dest, alignof(DestT))) + sizeof(DestT); }
   }
 
   template<typename DestT>
@@ -342,72 +331,61 @@ private:
   }
 
   template<typename TypeTag>
-  typename std::enable_if<detail::isList<TypeTag>(), std::uint8_t *>::type readProperty(
-      std::uint8_t *dest,
-      const PlyProperty &property,
-      TypeTag tag) const
+  std::uint8_t *readProperty(std::uint8_t *dest, const PlyProperty &property, TypeTag tag) const
   {
-    switch (property.type())
+    if constexpr (detail::isList<TypeTag>())
     {
-      case PlyDataType::Char:
-        return readListProperty<char>(dest, property, tag);
-      case PlyDataType::UChar:
-        return readListProperty<unsigned char>(dest, property, tag);
-      case PlyDataType::Short:
-        return readListProperty<short>(dest, property, tag);
-      case PlyDataType::UShort:
-        return readListProperty<unsigned short>(dest, property, tag);
-      case PlyDataType::Int:
-        return readListProperty<int>(dest, property, tag);
-      case PlyDataType::UInt:
-        return readListProperty<unsigned int>(dest, property, tag);
-      case PlyDataType::Float:
-        return readListProperty<float>(dest, property, tag);
-      case PlyDataType::Double:
-        return readListProperty<double>(dest, property, tag);
+      switch (property.type())
+      {
+        case PlyDataType::Char:
+          return readListProperty<char>(dest, property, tag);
+        case PlyDataType::UChar:
+          return readListProperty<unsigned char>(dest, property, tag);
+        case PlyDataType::Short:
+          return readListProperty<short>(dest, property, tag);
+        case PlyDataType::UShort:
+          return readListProperty<unsigned short>(dest, property, tag);
+        case PlyDataType::Int:
+          return readListProperty<int>(dest, property, tag);
+        case PlyDataType::UInt:
+          return readListProperty<unsigned int>(dest, property, tag);
+        case PlyDataType::Float:
+          return readListProperty<float>(dest, property, tag);
+        case PlyDataType::Double:
+          return readListProperty<double>(dest, property, tag);
+      }
+    }
+    else if constexpr (std::is_same_v<typename TypeTag::DestT, reflect::Skip>)
+    {
+      this->skipProperty(property);
+    }
+    else
+    {
+      switch (property.type())
+      {
+        case PlyDataType::Char:
+          return readProperty<char>(dest, tag);
+        case PlyDataType::UChar:
+          return readProperty<unsigned char>(dest, tag);
+        case PlyDataType::Short:
+          return readProperty<short>(dest, tag);
+        case PlyDataType::UShort:
+          return readProperty<unsigned short>(dest, tag);
+        case PlyDataType::Int:
+          return readProperty<int>(dest, tag);
+        case PlyDataType::UInt:
+          return readProperty<unsigned int>(dest, tag);
+        case PlyDataType::Float:
+          return readProperty<float>(dest, tag);
+        case PlyDataType::Double:
+          return readProperty<double>(dest, tag);
+      }
     }
 
-    return dest;
-  }
-
-  template<typename TypeTag>
-  typename std::enable_if<
-      !detail::isList<TypeTag>() && !std::is_same<typename TypeTag::DestT, reflect::Skip>::value,
-      std::uint8_t *>::type
-  readProperty(std::uint8_t *dest, const PlyProperty &property, TypeTag tag) const
-  {
-    switch (property.type())
-    {
-      case PlyDataType::Char:
-        return readProperty<char>(dest, tag);
-      case PlyDataType::UChar:
-        return readProperty<unsigned char>(dest, tag);
-      case PlyDataType::Short:
-        return readProperty<short>(dest, tag);
-      case PlyDataType::UShort:
-        return readProperty<unsigned short>(dest, tag);
-      case PlyDataType::Int:
-        return readProperty<int>(dest, tag);
-      case PlyDataType::UInt:
-        return readProperty<unsigned int>(dest, tag);
-      case PlyDataType::Float:
-        return readProperty<float>(dest, tag);
-      case PlyDataType::Double:
-        return readProperty<double>(dest, tag);
-    }
-
-    return dest;
-  }
-
-  template<typename TypeTag>
-  typename std::enable_if<std::is_same<typename TypeTag::DestT, reflect::Skip>::value, std::uint8_t *>::type
-  readProperty(std::uint8_t *dest, const PlyProperty &property, TypeTag tag) const
-  {
-    this->skipProperty(property);
     return dest;
   }
 };
 
-}}
+}
 
 #endif

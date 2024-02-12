@@ -22,7 +22,7 @@
 
 #include <ostream>
 
-namespace plywoot { namespace detail {
+namespace plywoot::detail {
 
 inline std::ostream &operator<<(std::ostream &os, HeaderScanner::Token t)
 {
@@ -79,6 +79,6 @@ inline std::ostream &operator<<(std::ostream &os, HeaderScanner::Token t)
   return os;
 }
 
-}}
+}
 
 #endif

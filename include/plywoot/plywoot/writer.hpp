@@ -27,13 +27,11 @@
 #include <cstdint>
 #include <type_traits>
 
-namespace plywoot { namespace detail {
+namespace plywoot::detail {
 
 /// Represents a generic PLY writer that is parameterized with format specific
 /// functionality through the FormatWriterPolicy type, which should adhere to
 /// the following model requirements:
-///
-///   - void close();
 ///
 ///   - template<typename T> void writeNumber(T t);
 ///   - template<typename PlySizeT, typename PlyT, typename SrcT>
@@ -48,8 +46,6 @@ class Writer : private FormatWriterPolicy
 {
 public:
   using FormatWriterPolicy::FormatWriterPolicy;
-
-  void close() { FormatWriterPolicy::close(); }
 
   /// Writes a PLY element to the associated output stream, assuming property
   /// types should be mapped directly to their corresponding native types. This
@@ -151,21 +147,15 @@ public:
 
 private:
   template<typename PlyT, typename SrcT>
-  typename std::enable_if<std::is_arithmetic<SrcT>::value, const std::uint8_t *>::type writeProperty(
-      const std::uint8_t *src,
-      reflect::Type<SrcT>) const
+  const std::uint8_t *writeProperty(const std::uint8_t *src, reflect::Type<SrcT>) const
   {
-    src = static_cast<const std::uint8_t *>(detail::align(src, alignof(SrcT)));
-    this->writeNumber(static_cast<PlyT>(*reinterpret_cast<const SrcT *>(src)));
-    return src + sizeof(SrcT);
-  }
-
-  template<typename PlyT, typename SrcT>
-  typename std::enable_if<!std::is_arithmetic<SrcT>::value, const std::uint8_t *>::type writeProperty(
-      const std::uint8_t *src,
-      reflect::Type<SrcT>) const
-  {
-    return static_cast<const std::uint8_t *>(detail::align(src, alignof(SrcT))) + sizeof(SrcT);
+    if constexpr (std::is_arithmetic_v<SrcT>)
+    {
+      src = static_cast<const std::uint8_t *>(detail::align(src, alignof(SrcT)));
+      this->writeNumber(static_cast<PlyT>(*reinterpret_cast<const SrcT *>(src)));
+      return src + sizeof(SrcT);
+    }
+    else { return static_cast<const std::uint8_t *>(detail::align(src, alignof(SrcT))) + sizeof(SrcT); }
   }
 
   /// Specialization for the meta property type `Pack<T, N>`, this will write N
@@ -240,58 +230,51 @@ private:
   }
 
   template<typename TypeTag>
-  typename std::enable_if<detail::isList<TypeTag>(), const std::uint8_t *>::type writeProperty(
-      const std::uint8_t *src,
-      const PlyProperty &property,
-      TypeTag tag) const
+  const std::uint8_t *writeProperty(const std::uint8_t *src, const PlyProperty &property, TypeTag tag) const
   {
-    switch (property.type())
+    if constexpr (detail::isList<TypeTag>())
     {
-      case PlyDataType::Char:
-        return writeListProperty<char>(src, property, tag);
-      case PlyDataType::UChar:
-        return writeListProperty<unsigned char>(src, property, tag);
-      case PlyDataType::Short:
-        return writeListProperty<short>(src, property, tag);
-      case PlyDataType::UShort:
-        return writeListProperty<unsigned short>(src, property, tag);
-      case PlyDataType::Int:
-        return writeListProperty<int>(src, property, tag);
-      case PlyDataType::UInt:
-        return writeListProperty<unsigned int>(src, property, tag);
-      case PlyDataType::Float:
-        return writeListProperty<float>(src, property, tag);
-      case PlyDataType::Double:
-        return writeListProperty<double>(src, property, tag);
+      switch (property.type())
+      {
+        case PlyDataType::Char:
+          return writeListProperty<char>(src, property, tag);
+        case PlyDataType::UChar:
+          return writeListProperty<unsigned char>(src, property, tag);
+        case PlyDataType::Short:
+          return writeListProperty<short>(src, property, tag);
+        case PlyDataType::UShort:
+          return writeListProperty<unsigned short>(src, property, tag);
+        case PlyDataType::Int:
+          return writeListProperty<int>(src, property, tag);
+        case PlyDataType::UInt:
+          return writeListProperty<unsigned int>(src, property, tag);
+        case PlyDataType::Float:
+          return writeListProperty<float>(src, property, tag);
+        case PlyDataType::Double:
+          return writeListProperty<double>(src, property, tag);
+      }
     }
-
-    return src;
-  }
-
-  template<typename TypeTag>
-  typename std::enable_if<!detail::isList<TypeTag>(), const std::uint8_t *>::type writeProperty(
-      const std::uint8_t *src,
-      const PlyProperty &property,
-      TypeTag tag) const
-  {
-    switch (property.type())
+    else
     {
-      case PlyDataType::Char:
-        return writeProperty<char>(src, tag);
-      case PlyDataType::UChar:
-        return writeProperty<unsigned char>(src, tag);
-      case PlyDataType::Short:
-        return writeProperty<short>(src, tag);
-      case PlyDataType::UShort:
-        return writeProperty<unsigned short>(src, tag);
-      case PlyDataType::Int:
-        return writeProperty<int>(src, tag);
-      case PlyDataType::UInt:
-        return writeProperty<unsigned int>(src, tag);
-      case PlyDataType::Float:
-        return writeProperty<float>(src, tag);
-      case PlyDataType::Double:
-        return writeProperty<double>(src, tag);
+      switch (property.type())
+      {
+        case PlyDataType::Char:
+          return writeProperty<char>(src, tag);
+        case PlyDataType::UChar:
+          return writeProperty<unsigned char>(src, tag);
+        case PlyDataType::Short:
+          return writeProperty<short>(src, tag);
+        case PlyDataType::UShort:
+          return writeProperty<unsigned short>(src, tag);
+        case PlyDataType::Int:
+          return writeProperty<int>(src, tag);
+        case PlyDataType::UInt:
+          return writeProperty<unsigned int>(src, tag);
+        case PlyDataType::Float:
+          return writeProperty<float>(src, tag);
+        case PlyDataType::Double:
+          return writeProperty<double>(src, tag);
+      }
     }
 
     return src;
@@ -327,22 +310,25 @@ private:
   }
 
   template<typename Policy, typename T, typename U, typename... Ts>
-  typename std::enable_if<std::is_same<Policy, AsciiWriterPolicy>::value, const std::uint8_t *>::type
-  writeProperties(const std::uint8_t *src, PropertyConstIterator first, PropertyConstIterator last) const
+  const std::uint8_t *writeProperties(
+      const std::uint8_t *src,
+      PropertyConstIterator first,
+      PropertyConstIterator last) const
   {
-    src = writeProperty<T>(src, first, last);
-    first += detail::numProperties<T>();
-    if (first < last) { this->writeTokenSeparator(); }
-    return writeProperties<Policy, U, Ts...>(src, first, last);
+    if constexpr (std::is_same_v<Policy, AsciiWriterPolicy>)
+    {
+      src = writeProperty<T>(src, first, last);
+      first += detail::numProperties<T>();
+      if (first < last) { this->writeTokenSeparator(); }
+      return writeProperties<Policy, U, Ts...>(src, first, last);
+    }
+    else
+    {
+      return writeProperties<Policy, U, Ts...>(
+          writeProperty<T>(src, first, last), first + detail::numProperties<T>(), last);
+    }
   }
-
-  template<typename Policy, typename T, typename U, typename... Ts>
-  typename std::enable_if<!std::is_same<Policy, AsciiWriterPolicy>::value, const std::uint8_t *>::type
-  writeProperties(const std::uint8_t *src, PropertyConstIterator first, PropertyConstIterator last) const
-  {
-    return writeProperties<Policy, U, Ts...>(
-        writeProperty<T>(src, first, last), first + detail::numProperties<T>(), last);
-  }
+  /// @}
 
   template<typename... Ts>
   const std::uint8_t *writeElement(
@@ -365,6 +351,6 @@ private:
   }
 };
 
-}}
+}
 
 #endif

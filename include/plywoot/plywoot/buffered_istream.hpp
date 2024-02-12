@@ -32,7 +32,7 @@ constexpr std::size_t IStreamBufferSize{1024 * 1024};
 
 }
 
-namespace plywoot { namespace detail {
+namespace plywoot::detail {
 
 /// Wrapper around some input stream that provides buffered input functionality.
 /// This will always buffer some compile-time given size of bytes up front, and
@@ -97,33 +97,31 @@ public:
   /// Reads `N` objects of the given type `From` from the input data stream, and
   /// stores them contiguously at the given destination in memory as numbers of
   /// type `To`.
-  /// @{
-
-  // Source number type is equal to the destination number type.
   template<typename From, typename To, size_t N>
-  typename std::enable_if<std::is_same<From, To>::value, std::uint8_t *>::type read(std::uint8_t *dest)
+  std::uint8_t * read(std::uint8_t *dest)
   {
-    return this->memcpy(dest, N * sizeof(From));
+    if constexpr (std::is_same_v<From, To>)
+    {
+      // Little endian; source number type is equal to the destination number
+      // type.
+      return this->memcpy(dest, N * sizeof(From));
+    }
+    else
+    {
+      // TODO(ton): broken; this might overflow in case `bytesToRead >
+      // IStreamBufferSize` holds.
+      constexpr std::size_t bytesToRead = N * sizeof(From);
+      if (c_ + bytesToRead > eob_) buffer(bytesToRead);
+
+      const From *from = reinterpret_cast<const From *>(c_);
+      To *to = reinterpret_cast<To *>(dest);
+      for (size_t i = 0; i < N; ++i) { *to++ = *from++; }
+
+      c_ += bytesToRead;
+
+      return reinterpret_cast<std::uint8_t *>(to);
+    }
   }
-
-  // Source number type is different from the destination number type.
-  template<typename From, typename To, size_t N>
-  typename std::enable_if<!std::is_same<From, To>::value, std::uint8_t *>::type read(std::uint8_t *dest)
-  {
-    // TODO(ton): broken; this might overflow in case `bytesToRead >
-    // IStreamBufferSize` holds.
-    constexpr std::size_t bytesToRead = N * sizeof(From);
-    if (c_ + bytesToRead > eob_) buffer(bytesToRead);
-
-    const From *from = reinterpret_cast<const From *>(c_);
-    To *to = reinterpret_cast<To *>(dest);
-    for (size_t i = 0; i < N; ++i) { *to++ = *from++; }
-
-    c_ += bytesToRead;
-
-    return reinterpret_cast<std::uint8_t *>(to);
-  }
-  /// @}
 
   /// Skips the given number of bytes in the input stream.
   void skip(std::size_t n)
@@ -231,6 +229,6 @@ private:
   alignas(64) char buffer_[IStreamBufferSize] = {};
 };
 
-}}
+}
 
 #endif

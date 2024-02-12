@@ -44,7 +44,7 @@ struct InvalidInputStream : HeaderScannerException
 
 }
 
-namespace plywoot { namespace detail {
+namespace plywoot::detail {
 
 static constexpr const char endHeaderToken[] = "end_header";
 
@@ -259,8 +259,7 @@ public:
   }
 
   /// Returns whether a token is a reserved keyword.
-  // TODO(ton): make static once we move to C++17.
-  constexpr bool isKeyword(Token token) const
+  static constexpr bool isKeyword(Token token)
   {
     switch (token)
     {
@@ -343,6 +342,6 @@ private:
   std::istream &is_;
 };
 
-}}
+}
 
 #endif

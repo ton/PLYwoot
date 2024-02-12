@@ -78,7 +78,7 @@ private:
 
 }
 
-namespace plywoot { namespace detail {
+namespace plywoot::detail {
 
 /// Parser implementation for a PLY header. Results in a list of PLY element
 /// specifications.
@@ -236,6 +236,6 @@ private:
   detail::HeaderScanner scanner_;
 };
 
-}}
+}
 
 #endif

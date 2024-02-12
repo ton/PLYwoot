@@ -27,7 +27,7 @@
 #include <algorithm>
 #include <type_traits>
 
-namespace plywoot { namespace detail {
+namespace plywoot::detail {
 
 /// Returns whether the given type `T` is considered to be a list.
 /// @{
@@ -243,8 +243,7 @@ Ptr align(Ptr ptr, PlyDataType type)
 }
 
 /// Returns the alignment of the given PLY data type.
-// TODO(ton): make `constexpr` when moving to C++17.
-inline std::size_t alignof_(PlyDataType type)
+constexpr std::size_t alignof_(PlyDataType type)
 {
   switch (type)
   {
@@ -351,48 +350,15 @@ bool isMemcpyable(const PlyPropertyConstIterator first, const PlyPropertyConstIt
 
 /// Returns the format string for the given number type.
 template<typename T>
-constexpr typename std::enable_if<std::is_floating_point<T>::value, const char *>::type formatStr()
+const char *formatStr()
 {
-  return "%g";
+  if constexpr (std::is_floating_point_v<T>) { return "%g"; }
+  else if constexpr (std::is_signed_v<T> && sizeof(T) <= 4) { return "%d"; }
+  else if constexpr (!std::is_signed_v<T> && sizeof(T) <= 4) { return "%u"; }
+  else if constexpr (std::is_signed_v<T> && sizeof(T) > 4) { return "%ld"; }
+  else { return "%lu"; }
 }
 
-template<typename T>
-constexpr typename std::enable_if<
-    !std::is_floating_point<T>::value && std::is_signed<T>::value && sizeof(T) <= 4,
-    const char *>::type
-formatStr()
-{
-  return "%d";
 }
-
-template<typename T>
-constexpr typename std::enable_if<
-    !std::is_floating_point<T>::value && !std::is_signed<T>::value && sizeof(T) <= 4,
-    const char *>::type
-formatStr()
-{
-  return "%u";
-}
-
-template<typename T>
-constexpr typename std::enable_if<
-    !std::is_floating_point<T>::value && std::is_signed<T>::value && (sizeof(T) > 4),
-    const char *>::type
-formatStr()
-{
-  return "%ld";
-}
-
-template<typename T>
-constexpr typename std::enable_if<
-    !std::is_floating_point<T>::value && !std::is_signed<T>::value && (sizeof(T) > 4),
-    const char *>::type
-formatStr()
-{
-  return "%lu";
-}
-/// @}
-
-}}
 
 #endif

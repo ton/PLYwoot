@@ -11,9 +11,6 @@ project(PLYwoot
 set(PROJECT_CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/cmake")
 list(APPEND CMAKE_MODULE_PATH ${PROJECT_CMAKE_MODULE_PATH})
 
-# Require C++11 support.
-set(CMAKE_CXX_STANDARD 11)
-
 # For now, -O2 provides the best performance (at least for GCC).
 set(CMAKE_CXX_FLAGS_RELEASE "-O2 -DNDEBUG")
 
@@ -44,7 +41,8 @@ target_include_directories(plywoot
   $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/include>
   $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
 )
-target_compile_features(plywoot INTERFACE cxx_std_11)
+target_compile_features(plywoot INTERFACE cxx_std_17)
+set_property(TARGET plywoot PROPERTY CXX_EXTENSIONS OFF)
 
 target_compile_definitions(plywoot
   INTERFACE
