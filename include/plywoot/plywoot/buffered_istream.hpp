@@ -128,7 +128,7 @@ public:
   /// Skips the given number of bytes in the input stream.
   void skip(std::size_t n)
   {
-    std::size_t remaining = eob_ - c_;
+    const std::size_t remaining = eob_ - c_;
     if (remaining > n) { c_ += n; }
     else
     {
