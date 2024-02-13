@@ -90,13 +90,7 @@ typename std::enable_if<std::is_integral<T>::value && sizeof(T) == 8, T>::type h
 }
 
 template<typename T>
-typename std::enable_if<std::is_floating_point<T>::value && sizeof(T) == 4, T>::type htobe(T t)
-{
-  return byte_swap(t);
-}
-
-template<typename T>
-typename std::enable_if<std::is_floating_point<T>::value && sizeof(T) == 8, T>::type htobe(T t)
+typename std::enable_if<std::is_floating_point<T>::value, T>::type htobe(T t)
 {
   return byte_swap(t);
 }
@@ -126,13 +120,7 @@ typename std::enable_if<std::is_integral<T>::value && sizeof(T) == 8, T>::type b
 }
 
 template<typename T>
-typename std::enable_if<std::is_floating_point<T>::value && sizeof(T) == 4, T>::type betoh(T t)
-{
-  return byte_swap(t);
-}
-
-template<typename T>
-typename std::enable_if<std::is_floating_point<T>::value && sizeof(T) == 8, T>::type betoh(T t)
+typename std::enable_if<std::is_floating_point<T>::value, T>::type betoh(T t)
 {
   return byte_swap(t);
 }
