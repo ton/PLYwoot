@@ -123,11 +123,25 @@ public:
   /// stores them contiguously at the given destination in memory as numbers of
   /// type `DestT`. Returns a pointer pointing just after the last number stored
   /// at `dest`.
-  template<typename PlyT, typename DestT, std::size_t N>
-  std::uint8_t *readNumbers(std::uint8_t *dest) const
+  /// @{
+  template<typename PlyT, typename DestT, std::size_t N, typename EndiannessDependent = Endianness>
+  typename std::enable_if<std::is_same<EndiannessDependent, LittleEndian>::value, std::uint8_t *>::type readNumbers(std::uint8_t *dest) const
   {
-    return is_.read<PlyT, DestT, N, Endianness>(dest);
+    return is_.read<PlyT, DestT, N>(dest);
   }
+
+  template<typename PlyT, typename DestT, std::size_t N, typename EndiannessDependent = Endianness>
+  typename std::enable_if<std::is_same<EndiannessDependent, BigEndian>::value, std::uint8_t *>::type readNumbers(std::uint8_t *dest) const
+  {
+    std::uint8_t *result = is_.read<PlyT, DestT, N>(dest);
+
+    // Perform endianess conversion.
+    DestT *to = reinterpret_cast<DestT *>(dest);
+    for (size_t i = 0; i < N; ++i, ++to) { *to = betoh(static_cast<PlyT>(*to)); }
+
+    return result;
+  }
+  /// @}
 
   /// Skips a number of the given type `T` in the input stream.
   template<typename T>

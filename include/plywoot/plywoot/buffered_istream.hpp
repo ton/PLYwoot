@@ -20,9 +20,8 @@
 #ifndef PLYWOOT_BUFFERED_ISTREAM_HPP
 #define PLYWOOT_BUFFERED_ISTREAM_HPP
 
-#include "endian.hpp"
-
 #include <algorithm>
+#include <cstdint>
 #include <cstring>
 #include <istream>
 
@@ -100,39 +99,16 @@ public:
   /// type `To`.
   /// @{
 
-  // Little endian; source number type is equal to the destination number type.
-  template<typename From, typename To, size_t N, typename Endianess>
-  typename std::enable_if<
-      std::is_same<From, To>::value && std::is_same<Endianess, LittleEndian>::value,
-      std::uint8_t *>::type
-  read(std::uint8_t *dest)
+  // Source number type is equal to the destination number type.
+  template<typename From, typename To, size_t N>
+  typename std::enable_if<std::is_same<From, To>::value, std::uint8_t *>::type read(std::uint8_t *dest)
   {
     return this->memcpy(dest, N * sizeof(From));
   }
 
-  // Big endian; source number type is equal to the destination number type.
-  template<typename From, typename To, size_t N, typename Endianess>
-  typename std::enable_if<
-      std::is_same<From, To>::value && std::is_same<Endianess, BigEndian>::value,
-      std::uint8_t *>::type
-  read(std::uint8_t *dest)
-  {
-    std::uint8_t *result = this->memcpy(dest, N * sizeof(From));
-
-    // Perform endianess conversion.
-    To *to = reinterpret_cast<To *>(dest);
-    for (size_t i = 0; i < N; ++i, ++to) { *to = betoh(*to); }
-
-    return result;
-  }
-
-  // Little endian; source number type is different from the destination number
-  // type.
-  template<typename From, typename To, size_t N, typename Endianess>
-  typename std::enable_if<
-      !std::is_same<From, To>::value && std::is_same<Endianess, LittleEndian>::value,
-      std::uint8_t *>::type
-  read(std::uint8_t *dest)
+  // Source number type is different from the destination number type.
+  template<typename From, typename To, size_t N>
+  typename std::enable_if<!std::is_same<From, To>::value, std::uint8_t *>::type read(std::uint8_t *dest)
   {
     constexpr std::size_t bytesToRead = N * sizeof(From);
     if (c_ + bytesToRead > eob_) buffer(bytesToRead);
@@ -140,26 +116,6 @@ public:
     const From *from = reinterpret_cast<const From *>(c_);
     To *to = reinterpret_cast<To *>(dest);
     for (size_t i = 0; i < N; ++i) { *to++ = *from++; }
-
-    c_ += bytesToRead;
-
-    return reinterpret_cast<std::uint8_t *>(to);
-  }
-
-  // Big endian; source number type is different from the destination number
-  // type.
-  template<typename From, typename To, size_t N, typename Endianess>
-  typename std::enable_if<
-      !std::is_same<From, To>::value && std::is_same<Endianess, BigEndian>::value,
-      std::uint8_t *>::type
-  read(std::uint8_t *dest)
-  {
-    constexpr std::size_t bytesToRead = N * sizeof(From);
-    if (c_ + bytesToRead > eob_) buffer(bytesToRead);
-
-    const From *from = reinterpret_cast<const From *>(c_);
-    To *to = reinterpret_cast<To *>(dest);
-    for (size_t i = 0; i < N; ++i) { *to++ = betoh(*from++); }
 
     c_ += bytesToRead;
 
