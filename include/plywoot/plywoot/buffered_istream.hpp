@@ -110,6 +110,8 @@ public:
   template<typename From, typename To, size_t N>
   typename std::enable_if<!std::is_same<From, To>::value, std::uint8_t *>::type read(std::uint8_t *dest)
   {
+    // TODO(ton): broken; this might overflow in case `bytesToRead >
+    // IStreamBufferSize` holds.
     constexpr std::size_t bytesToRead = N * sizeof(From);
     if (c_ + bytesToRead > eob_) buffer(bytesToRead);
 
