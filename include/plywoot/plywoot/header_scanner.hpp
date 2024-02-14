@@ -26,6 +26,7 @@
 #include <cstring>
 #include <istream>
 #include <string>
+#include <string_view>
 
 namespace plywoot {
 
@@ -150,7 +151,7 @@ public:
     // positioned at the start of the next token or whitespace.
     const char *tokenStart = c_;
     while (!isTokenDelimiter[(unsigned char)*c_]) { c_++; }
-    tokenString_ = detail::string_view(tokenStart, c_);
+    tokenString_ = std::string_view(tokenStart, c_ - tokenStart);
 
     // In case the identifier is one of the reserved keywords, handle it as
     // such. Use first character for quick comparison.
@@ -317,7 +318,7 @@ private:
     const char *last = static_cast<const char *>(::memchr(c_, '\n', remainingBytes));
     if (last != nullptr)
     {
-      tokenString_ = detail::string_view(c_, last);
+      tokenString_ = std::string_view(c_, last - c_);
       c_ = last;
     }
   }
@@ -334,7 +335,7 @@ private:
   /// Most recently scanned token.
   Token token_{Token::Unknown};
   /// String representation of the current token in case it is not predefined.
-  detail::string_view tokenString_;
+  std::string_view tokenString_;
   /// Current line number.
   std::uint32_t line_{0};
 
