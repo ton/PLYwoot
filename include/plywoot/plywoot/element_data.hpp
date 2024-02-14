@@ -58,7 +58,7 @@ public:
       else
       {
         bytesPerElement_ = detail::align(bytesPerElement_, property.type()) + detail::sizeOf(property.type());
-        alignment_ = std::max(alignment_, detail::alignof_(property.type()));
+        alignment_ = std::max(alignment_, detail::alignOf(property.type()));
       }
     }
 

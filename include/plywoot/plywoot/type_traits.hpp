@@ -243,7 +243,7 @@ Ptr align(Ptr ptr, PlyDataType type)
 }
 
 /// Returns the alignment of the given PLY data type.
-constexpr std::size_t alignof_(PlyDataType type)
+constexpr std::size_t alignOf(PlyDataType type)
 {
   switch (type)
   {
