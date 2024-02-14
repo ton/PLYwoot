@@ -294,7 +294,6 @@ private:
                         : writeProperty(src, reflect::Type<reflect::Stride<SrcT>>{});
   }
 
-  // TODO(ton): Fix incorrect comments below.
   /// Reads a list of objects of type `T`, `U`, and `Ts...` from the input
   /// buffer `src` and writes them to the given output stream `os`. The objects
   /// should have a corresponding property defined in the input buffer, the list
