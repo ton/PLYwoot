@@ -101,7 +101,7 @@ struct NumProperties<T>
 /// types. By default, every reflection type spans one property, except for
 /// `plywoot::reflect::Pack`, which spans multiple properties by definition.
 template<typename... Ts>
-std::size_t numProperties()
+constexpr std::size_t numProperties()
 {
   return NumProperties<Ts...>::size;
 }
@@ -109,7 +109,7 @@ std::size_t numProperties()
 /// Returns whether an object of type `T` represents that same object as an
 /// object of the given PLY data type `type`.
 template<typename T>
-bool isSame(PlyDataType type)
+constexpr bool isSame(PlyDataType type)
 {
   switch (type)
   {
@@ -193,7 +193,7 @@ constexpr std::size_t sizeOf()
 }
 
 /// Returns the size in bytes of the given PLY data type.
-inline std::size_t sizeOf(PlyDataType type)
+constexpr std::size_t sizeOf(PlyDataType type)
 {
   switch (type)
   {
@@ -217,7 +217,7 @@ inline std::size_t sizeOf(PlyDataType type)
 /// Aligns the given input pointer according to the size of the given PLY data
 /// type.
 template<typename Ptr>
-Ptr align(Ptr ptr, PlyDataType type)
+constexpr Ptr align(Ptr ptr, PlyDataType type)
 {
   switch (type)
   {

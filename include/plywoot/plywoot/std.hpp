@@ -41,7 +41,7 @@ namespace plywoot::detail {
 /// `std::align` implementation. The given alignment value should be a power
 /// of two.
 template<typename Ptr>
-Ptr align(Ptr ptr, std::size_t alignment)
+constexpr Ptr align(Ptr ptr, std::size_t alignment)
 {
   // Some explanation on the code below; -x is x in two's complement, which
   // means that an alignment value x of power two is converted to (~x + 1).
