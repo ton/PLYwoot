@@ -348,17 +348,6 @@ bool isMemcpyable(const PlyPropertyConstIterator first, const PlyPropertyConstIt
 }
 /// @}
 
-/// Returns the format string for the given number type.
-template<typename T>
-const char *formatStr()
-{
-  if constexpr (std::is_floating_point_v<T>) { return "%g"; }
-  else if constexpr (std::is_signed_v<T> && sizeof(T) <= 4) { return "%d"; }
-  else if constexpr (!std::is_signed_v<T> && sizeof(T) <= 4) { return "%u"; }
-  else if constexpr (std::is_signed_v<T> && sizeof(T) > 4) { return "%ld"; }
-  else { return "%lu"; }
-}
-
 }
 
 #endif

@@ -22,7 +22,7 @@
 
 #include "type_traits.hpp"
 
-#include <cstdio>
+#include <charconv>
 #include <cstring>
 #include <ostream>
 #include <type_traits>
@@ -86,10 +86,8 @@ public:
   void writeAscii(T t)
   {
     constexpr int MIN_BUFFER_SIZE = 100;
-    // TODO(ton): use something like Grisu3 instead of `std::snprintf` to
-    // (greatly) improve performance.
     if (c_ + MIN_BUFFER_SIZE >= eob_) { flush(); }
-    c_ += std::snprintf(c_, MIN_BUFFER_SIZE, detail::formatStr<T>(), t);
+    c_ = std::to_chars(c_, c_ + MIN_BUFFER_SIZE, t).ptr;
   }
 
   /// Writes a number of type `T` to the output stream.
