@@ -287,6 +287,7 @@ TEST_CASE("Read an element with a single property from a PLY file", "[istream]")
 {
   auto inputFilename = GENERATE(
       "test/input/ascii/single_element_with_single_property.ply",
+      "test/input/binary/big_endian/single_element_with_single_property.ply",
       "test/input/binary/little_endian/single_element_with_single_property.ply");
 
   std::ifstream ifs{inputFilename};
@@ -310,6 +311,7 @@ TEST_CASE("Read multiple elements with a single property from a PLY file", "[ist
 {
   auto inputFilename = GENERATE(
       "test/input/ascii/multiple_elements_with_single_property.ply",
+      "test/input/binary/big_endian/multiple_elements_with_single_property.ply",
       "test/input/binary/little_endian/multiple_elements_with_single_property.ply");
 
   std::ifstream ifs{inputFilename};
@@ -336,6 +338,7 @@ TEST_CASE("Read multiple elements with two properties from a PLY file", "[istrea
 {
   auto inputFilename = GENERATE(
       "test/input/ascii/multiple_elements_with_two_properties.ply",
+      "test/input/binary/big_endian/multiple_elements_with_two_properties.ply",
       "test/input/binary/little_endian/multiple_elements_with_two_properties.ply");
 
   std::ifstream ifs{inputFilename};
@@ -375,7 +378,7 @@ TEST_CASE("Retrieve a element and property definition from an IStream given an e
 {
   auto inputFilename = GENERATE(
       "test/input/ascii/cube.ply", "test/input/binary/big_endian/cube.ply",
-      "test/input/binary/little_endian/cube.ply");
+      "test/input/binary/big_endian/cube.ply", "test/input/binary/little_endian/cube.ply");
 
   std::ifstream ifs{inputFilename};
   const plywoot::IStream plyFile{ifs};
@@ -418,6 +421,7 @@ TEST_CASE("Test out of order retrieval of element data", "[istream]")
 {
   auto inputFilename = GENERATE(
       "test/input/ascii/cube_faces_before_vertices.ply",
+      "test/input/binary/big_endian/cube_faces_before_vertices.ply",
       "test/input/binary/little_endian/cube_faces_before_vertices.ply");
 
   std::ifstream ifs{inputFilename};
@@ -438,6 +442,7 @@ TEST_CASE("Read elements from a PLY file by only partially retrieving all proper
 {
   auto inputFilename = GENERATE(
       "test/input/ascii/cube_with_material_data.ply",
+      "test/input/binary/big_endian/cube_with_material_data.ply",
       "test/input/binary/little_endian/cube_with_material_data.ply");
 
   std::ifstream ifs{inputFilename};
@@ -654,6 +659,7 @@ TEST_CASE(
 TEST_CASE("Test reading a list property followed by non-list properties", "[istream]")
 {
   auto inputFilename = GENERATE(
+      "test/input/binary/big_endian/single_element_with_list_property_followed_by_three_properties.ply",
       "test/input/binary/little_endian/single_element_with_list_property_followed_by_three_properties.ply");
 
   std::ifstream ifs{inputFilename};
@@ -674,7 +680,9 @@ TEST_CASE("Test reading a list property followed by non-list properties", "[istr
 
 TEST_CASE("Read multiple elements with tricky alignment properties from a PLY file", "[istream]")
 {
-  auto inputFilename = GENERATE("test/input/ascii/alignment.ply");
+  auto inputFilename = GENERATE(
+      "test/input/ascii/alignment.ply", "test/input/binary/big_endian/alignment.ply",
+      "test/input/binary/little_endian/alignment.ply");
 
   {
     std::ifstream ifs{inputFilename};
@@ -715,6 +723,7 @@ TEST_CASE("Test skipping over a simple property", "[istream]")
 {
   auto inputFilename = GENERATE(
       "test/input/ascii/multiple_elements_with_two_properties.ply",
+      "test/input/binary/big_endian/multiple_elements_with_two_properties.ply",
       "test/input/binary/little_endian/multiple_elements_with_two_properties.ply");
 
   std::ifstream ifs{inputFilename};

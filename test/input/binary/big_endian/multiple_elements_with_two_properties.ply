@@ -1,0 +1,7 @@
+ply
+format binary_big_endian 1.0
+element vertex 10
+property char a
+property uchar b
+end_header
+VÿWşXıYüZû[ú\ù]ø^÷_ö
