@@ -17,6 +17,8 @@ target_link_libraries(tests
   Catch2::Catch2WithMain
 )
 
-# TODO(ton): seems there is a bug in GCC 12 where it issues a warning in the
-# standard library code for a trivial `std::reverse` call.
-set_source_files_properties(test_istream.cpp PROPERTIES COMPILE_FLAGS -Wno-strict-overflow)
+# Seems there is a bug in GCC 12 where it issues a warning in the standard
+# library code for a trivial `std::reverse` call.
+if(CMAKE_COMPILER_IS_GNUCC AND CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL 12 AND CMAKE_CXX_COMPILER_VERSION VERSION_LESS 13)
+  set_source_files_properties(test_istream.cpp PROPERTIES COMPILE_FLAGS -Wno-strict-overflow)
+endif()
