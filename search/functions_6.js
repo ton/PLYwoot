@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['haselement_0',['hasElement',['../classplywoot_1_1IStream.html#a2e1944535d6e7ea16f6e7f066e21de6a',1,'plywoot::IStream']]],
-  ['headerscanner_1',['HeaderScanner',['../classplywoot_1_1detail_1_1HeaderScanner.html#aaf017468a8b5735049ad9fce618694f2',1,'plywoot::detail::HeaderScanner']]]
+  ['islist_0',['isList',['../structplywoot_1_1PlyProperty.html#a7a38831f9a1d26a3824eae382f7e07e1',1,'plywoot::PlyProperty']]],
+  ['istream_1',['IStream',['../classplywoot_1_1IStream.html#a25a0f4f70a6593e78019b203283925b2',1,'plywoot::IStream']]]
 ];

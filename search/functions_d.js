@@ -1,7 +1,4 @@
 var searchData=
 [
-  ['read_0',['read',['../classplywoot_1_1detail_1_1BufferedIStream.html#a2d9f7c59f9de750b89c6671a43e50d53',1,'plywoot::detail::BufferedIStream::read()'],['../classplywoot_1_1detail_1_1BufferedIStream.html#a1995041251355a5edb9675f4b025ca60',1,'plywoot::detail::BufferedIStream::read(std::uint8_t *dest)'],['../classplywoot_1_1detail_1_1Parser.html#ab6af5e11b05d905b5519e83e00d39b78',1,'plywoot::detail::Parser::read(const PlyElement &amp;element) const'],['../classplywoot_1_1detail_1_1Parser.html#ad92bcffbc67ebd8c23c65d7371b60e25',1,'plywoot::detail::Parser::read(const PlyElement &amp;element, reflect::Layout&lt; Ts... &gt; layout) const']]],
-  ['readelement_1',['readelement',['../classplywoot_1_1IStream.html#a1db364e8f9c8d986bc9613762ae66790',1,'plywoot::IStream::readElement() const'],['../classplywoot_1_1IStream.html#a250a33348f5fd0cabf36ca60a72b500a',1,'plywoot::IStream::readElement() const']]],
-  ['readnumber_2',['readnumber',['../classplywoot_1_1detail_1_1AsciiParserPolicy.html#adf04e093e502d02ae5be48384fbb67dc',1,'plywoot::detail::AsciiParserPolicy::readNumber()'],['../classplywoot_1_1detail_1_1BinaryParserPolicy.html#a47306ad2099cbd0073b5e80e901c5f5d',1,'plywoot::detail::BinaryParserPolicy::readNumber()']]],
-  ['readnumbers_3',['readnumbers',['../classplywoot_1_1detail_1_1AsciiParserPolicy.html#ad51456ef5401c33f9ba4e24fc3bf2f00',1,'plywoot::detail::AsciiParserPolicy::readNumbers()'],['../classplywoot_1_1detail_1_1BinaryParserPolicy.html#a056fa2bb15bdb55b4cc4304f640dcfb6',1,'plywoot::detail::BinaryParserPolicy::readNumbers()']]]
+  ['type_0',['type',['../structplywoot_1_1PlyProperty.html#a734c9ae9b3c699a03993376e7a9aa832',1,'plywoot::PlyProperty']]]
 ];

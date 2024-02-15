@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['exception_0',['Exception',['../classplywoot_1_1Exception.html',1,'plywoot']]]
+  ['headerparserexception_0',['HeaderParserException',['../structplywoot_1_1HeaderParserException.html',1,'plywoot']]],
+  ['headerscannerexception_1',['HeaderScannerException',['../structplywoot_1_1HeaderScannerException.html',1,'plywoot']]]
 ];

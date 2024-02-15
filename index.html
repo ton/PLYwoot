@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=11"/>
 <meta name="generator" content="Doxygen 1.9.8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>PLYwoot: Main Page</title>
+<title>PLYwoot: PLYwoot</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -92,10 +92,61 @@ $(document).ready(function(){initNavTree('index.html',''); initResizable(); });
 </div>
 </div>
 
-<div class="header">
-  <div class="headertitle"><div class="title">PLYwoot Documentation</div></div>
+<div><div class="header">
+  <div class="headertitle"><div class="title">PLYwoot </div></div>
 </div><!--header-->
 <div class="contents">
+<div class="textblock"><p><a class="anchor" id="md_README"></a> <img src="https://github.com/ton/PLYwoot/actions/workflows/doxygen.yml/badge.svg" alt="Doxygen action status" style="pointer-events: none;" class="inline"/></p>
+<p>PLYwoot is a C++17 header-only library providing read/write support for <a href="https://paulbourke.net/dataformats/ply/">PLY</a> files. A major design goal of PLYwoot was to provide an <a href="https://en.cppreference.com/w/cpp/io">iostreams</a> based interface without sacrificing performance.</p>
+<h1><a class="anchor" id="autotoc_md1"></a>
+Features</h1>
+<ul>
+<li><b>Fast!</b> In fact, the fastest PLY parser and writer out there according to my own benchmarks :D Refer to the benchmark results at <a href="https://github.com/ton/PLYbench">PLYbench</a> to see how PLYwoot stacks up to other PLY parsers in terms of both read and write performance.</li>
+<li>Header-only, can be directly embedded in your existing C++17 project. There are some optional dependencies to speed up the parsing of ASCII PLY files.</li>
+<li>Read/write support for ASCII, binary little endian, and binary big endian PLY files.</li>
+<li>Direct compile-time mapping of element data in the PLY file to your own types, with implicit type conversion support.</li>
+<li>Allows skipping of properties in the PLY data that are not of interest.</li>
+<li><code>rePLY</code>, a separate tool bundled with PLYwoot allows converting PLY files from one format (ASCII, binary little/big endian) to another.</li>
+</ul>
+<h1><a class="anchor" id="autotoc_md2"></a>
+Examples</h1>
+<p>The following examples demonstrate some typical use cases of PLYwoot. For more details on the functions used below, please refer to the API documentation.</p>
+<h2><a class="anchor" id="autotoc_md3"></a>
+Parsing PLY files</h2>
+<p>Suppose you have a triangle mesh type, that has the following structure:</p>
+<div class="fragment"></div><!-- fragment --><h2><a class="anchor" id="autotoc_md4"></a>
+Writing PLY files</h2>
+<h1><a class="anchor" id="autotoc_md5"></a>
+Getting started</h1>
+<p>Since PLYwoot is header-only, all that is needed is to copy the PLYwoot sources into your project and include <code>&lt;<a class="el" href="plywoot_8hpp_source.html">plywoot/plywoot.hpp</a>&gt;</code> (taking into account license constraints of course). To build rePLY, a tool to convert PLY files between different formats (ASCII, binary little/big endian), PLYwoot can be built as follows, assuming you have at least CMake version 3.5 installed (see dependencies.</p>
+<p>In case you are using a CMake based project and would like to depend on a system-wide installation of PLYwoot, use the following steps to build the unit tests, rePLY and install PLYwoot:</p>
+<div class="fragment"><div class="line">$ cmake -DCMAKE_BUILD_TYPE=Release -B build</div>
+<div class="line">$ cd build &amp;&amp; make install</div>
+</div><!-- fragment --><h2><a class="anchor" id="autotoc_md6"></a>
+Using PLYwoot in a CMake project</h2>
+<p>Assuming PLYwoot has been installed using the previous steps, you should be able to depend on PLYwoot in your CMake project as follows, without having to include the PLYwoot sources in your project:</p>
+<div class="fragment"><div class="line">find_package(PLYwoot REQUIRED)</div>
+</div><!-- fragment --><p>PLYwoot exports one target named <code>PLYwoot::plywoot</code> which represents the header-only library to depend on.</p>
+<h2><a class="anchor" id="autotoc_md7"></a>
+Dependencies</h2>
+<p>To be able to build the unit tests of PLYwoot and the rePLY tool, <a href="https://cmake.org">CMake</a> is required (at least version 3.5). The unit tests are implemented using the <a href="https://github.com/catchorg/Catch2">Catch2</a> unit test framework.</p>
+<p>By default, PLYwoot will use functionality from C++'s standard library to perform string to floating point and integer conversion for parsing of ASCII PLY files. Performance of parsing ASCII PLY files can be improved significantly by ensuring that the <a href="https://github.com/fastfloat/fast_float"><code>fast_float</code></a> and/or <a href="https://github.com/ton/fast_int"><code>fast_int</code></a> libraries are installed.</p>
+<h1><a class="anchor" id="autotoc_md8"></a>
+Benchmarks</h1>
+<p>Please refer to the benchmark results at <a href="https://github.com/ton/PLYbench">PLYbench</a> to see how PLYwoot stacks up to other PLY parsers in terms of both read and write performance. That repository provides all the tools needed to reproduce the benchmark results on your machine, and see how PLYwoot performs on your particular hardware.</p>
+<h1><a class="anchor" id="autotoc_md9"></a>
+Known issues</h1>
+<h1><a class="anchor" id="autotoc_md10"></a>
+Planned features</h1>
+<p>The following features are on my list to be implemented for future versions of PLYwoot:</p>
+<ul>
+<li>Add support to create an 'amalgamation' header file of all combined header-files of PLYwoot for easier inclusion in other projects, similar to how SQLite does this for example.</li>
+<li>Make the <code>Layout</code> type smart enough such that the helper type <code>Pack</code> is no longer needed to ensure consequent properties of the same type are efficiently <code>memcpy</code>'d when possible.</li>
+</ul>
+<h1><a class="anchor" id="autotoc_md11"></a>
+License</h1>
+<p>PLYwoot is licensed under GPLv3. See [LICENSE](LICENSE) for more details. </p>
+</div></div><!-- PageDoc -->
 </div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->

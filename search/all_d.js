@@ -1,7 +1,16 @@
 var searchData=
 [
-  ['read_0',['read',['../classplywoot_1_1detail_1_1BufferedIStream.html#a2d9f7c59f9de750b89c6671a43e50d53',1,'plywoot::detail::BufferedIStream::read()'],['../classplywoot_1_1detail_1_1BufferedIStream.html#a1995041251355a5edb9675f4b025ca60',1,'plywoot::detail::BufferedIStream::read(std::uint8_t *dest)'],['../classplywoot_1_1detail_1_1Parser.html#ab6af5e11b05d905b5519e83e00d39b78',1,'plywoot::detail::Parser::read(const PlyElement &amp;element) const'],['../classplywoot_1_1detail_1_1Parser.html#ad92bcffbc67ebd8c23c65d7371b60e25',1,'plywoot::detail::Parser::read(const PlyElement &amp;element, reflect::Layout&lt; Ts... &gt; layout) const']]],
-  ['readelement_1',['readelement',['../classplywoot_1_1IStream.html#a1db364e8f9c8d986bc9613762ae66790',1,'plywoot::IStream::readElement() const'],['../classplywoot_1_1IStream.html#a250a33348f5fd0cabf36ca60a72b500a',1,'plywoot::IStream::readElement() const']]],
-  ['readnumber_2',['readnumber',['../classplywoot_1_1detail_1_1AsciiParserPolicy.html#adf04e093e502d02ae5be48384fbb67dc',1,'plywoot::detail::AsciiParserPolicy::readNumber()'],['../classplywoot_1_1detail_1_1BinaryParserPolicy.html#a47306ad2099cbd0073b5e80e901c5f5d',1,'plywoot::detail::BinaryParserPolicy::readNumber()']]],
-  ['readnumbers_3',['readnumbers',['../classplywoot_1_1detail_1_1AsciiParserPolicy.html#ad51456ef5401c33f9ba4e24fc3bf2f00',1,'plywoot::detail::AsciiParserPolicy::readNumbers()'],['../classplywoot_1_1detail_1_1BinaryParserPolicy.html#a056fa2bb15bdb55b4cc4304f640dcfb6',1,'plywoot::detail::BinaryParserPolicy::readNumbers()']]]
+  ['pack_0',['Pack',['../structplywoot_1_1reflect_1_1Pack.html',1,'plywoot::reflect']]],
+  ['parserexception_1',['ParserException',['../structplywoot_1_1ParserException.html',1,'plywoot']]],
+  ['parsing_20ply_20files_2',['Parsing PLY files',['../index.html#autotoc_md3',1,'']]],
+  ['planned_20features_3',['Planned features',['../index.html#autotoc_md10',1,'']]],
+  ['ply_20files_4',['ply files',['../index.html#autotoc_md3',1,'Parsing PLY files'],['../index.html#autotoc_md4',1,'Writing PLY files']]],
+  ['plyelement_5',['plyelement',['../structplywoot_1_1PlyElement.html#aa78f881d18c5cdabf86abd4c956e3a32',1,'plywoot::PlyElement::PlyElement()'],['../structplywoot_1_1PlyElement.html',1,'plywoot::PlyElement'],['../structplywoot_1_1PlyElement.html#ad60ef15202c73847ee39335f237d4daf',1,'plywoot::PlyElement::PlyElement(std::string name, std::size_t size, std::vector&lt; PlyProperty &gt; properties)'],['../structplywoot_1_1PlyElement.html#a368581f42cbd6efa5e4f726309a3a812',1,'plywoot::PlyElement::PlyElement(std::string name, std::size_t size)'],['../structplywoot_1_1PlyElement.html#a6b4d54ea5b8cd53af2bcde9ec54b11d0',1,'plywoot::PlyElement::PlyElement(std::string name, std::vector&lt; PlyProperty &gt; properties)']]],
+  ['plyelementdata_6',['plyelementdata',['../classplywoot_1_1PlyElementData.html#ab9941e5ad492dd55f4cd43884ed0d0f9',1,'plywoot::PlyElementData::PlyElementData()=default'],['../classplywoot_1_1PlyElementData.html#a64d623c15bc4bccdd4cb6996bb05639c',1,'plywoot::PlyElementData::PlyElementData(const PlyElement &amp;element)'],['../classplywoot_1_1PlyElementData.html#a1e594f62e5f8c6708ddca8a5ce086388',1,'plywoot::PlyElementData::PlyElementData(PlyElementData &amp;&amp;x)'],['../classplywoot_1_1PlyElementData.html',1,'plywoot::PlyElementData']]],
+  ['plyproperty_7',['PlyProperty',['../structplywoot_1_1PlyProperty.html',1,'plywoot']]],
+  ['plywoot_8',['PLYwoot',['../index.html',1,'']]],
+  ['plywoot_20in_20a_20cmake_20project_9',['Using PLYwoot in a CMake project',['../index.html#autotoc_md6',1,'']]],
+  ['project_10',['Using PLYwoot in a CMake project',['../index.html#autotoc_md6',1,'']]],
+  ['properties_11',['properties',['../structplywoot_1_1PlyElement.html#a0f9b682a2aa7f7996c8141b2799f8a46',1,'plywoot::PlyElement']]],
+  ['property_12',['property',['../structplywoot_1_1PlyElement.html#a11e0d5436331d136c1dd63d27ae47f39',1,'plywoot::PlyElement']]]
 ];

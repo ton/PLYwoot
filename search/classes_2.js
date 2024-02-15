@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['comment_0',['Comment',['../structplywoot_1_1Comment.html',1,'plywoot']]]
+  ['exception_0',['Exception',['../classplywoot_1_1Exception.html',1,'plywoot']]]
 ];

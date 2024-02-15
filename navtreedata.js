@@ -25,14 +25,26 @@
 var NAVTREE =
 [
   [ "PLYwoot", "index.html", [
+    [ "Features", "index.html#autotoc_md1", null ],
+    [ "Examples", "index.html#autotoc_md2", [
+      [ "Parsing PLY files", "index.html#autotoc_md3", null ],
+      [ "Writing PLY files", "index.html#autotoc_md4", null ]
+    ] ],
+    [ "Getting started", "index.html#autotoc_md5", [
+      [ "Using PLYwoot in a CMake project", "index.html#autotoc_md6", null ],
+      [ "Dependencies", "index.html#autotoc_md7", null ]
+    ] ],
+    [ "Benchmarks", "index.html#autotoc_md8", null ],
+    [ "Known issues", "index.html#autotoc_md9", null ],
+    [ "Planned features", "index.html#autotoc_md10", null ],
+    [ "License", "index.html#autotoc_md11", null ],
     [ "Classes", "annotated.html", [
       [ "Class List", "annotated.html", "annotated_dup" ],
       [ "Class Index", "classes.html", null ],
       [ "Class Hierarchy", "hierarchy.html", "hierarchy" ],
       [ "Class Members", "functions.html", [
         [ "All", "functions.html", null ],
-        [ "Functions", "functions_func.html", null ],
-        [ "Enumerations", "functions_enum.html", null ]
+        [ "Functions", "functions_func.html", null ]
       ] ]
     ] ],
     [ "Files", "files.html", [

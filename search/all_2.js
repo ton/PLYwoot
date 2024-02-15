@@ -1,5 +1,6 @@
 var searchData=
 [
-  ['comment_0',['comment',['../structplywoot_1_1Comment.html',1,'plywoot::Comment'],['../classplywoot_1_1detail_1_1HeaderScanner.html#a4cf6d4b35d93a0f71f850938b020a290',1,'plywoot::detail::HeaderScanner::comment()']]],
-  ['comments_1',['comments',['../classplywoot_1_1IStream.html#a1f7f1779ded3278f3564e48cb56f17c9',1,'plywoot::IStream']]]
+  ['cmake_20project_0',['Using PLYwoot in a CMake project',['../index.html#autotoc_md6',1,'']]],
+  ['comment_1',['Comment',['../structplywoot_1_1Comment.html',1,'plywoot']]],
+  ['comments_2',['comments',['../classplywoot_1_1IStream.html#a1f7f1779ded3278f3564e48cb56f17c9',1,'plywoot::IStream']]]
 ];

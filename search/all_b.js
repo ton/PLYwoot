@@ -1,5 +1,4 @@
 var searchData=
 [
-  ['operator_3d_0',['operator=',['../classplywoot_1_1PlyElementData.html#a5cfc34d552eddf90af18bdd6f86cceca',1,'plywoot::PlyElementData']]],
-  ['ostream_1',['ostream',['../classplywoot_1_1OStream.html',1,'plywoot::OStream'],['../classplywoot_1_1OStream.html#a2256223b013c6b4547675bbe799891c8',1,'plywoot::OStream::OStream(PlyFormat format)'],['../classplywoot_1_1OStream.html#a257924fb5f71f9434a4450aac6eab058',1,'plywoot::OStream::OStream(PlyFormat format, std::vector&lt; Comment &gt; comments)']]]
+  ['name_0',['name',['../structplywoot_1_1PlyProperty.html#a7b5ff8590a6e3e5adfe6e138002e6eb7',1,'plywoot::PlyProperty::name()'],['../structplywoot_1_1PlyElement.html#a8491fcd630663b92ebb943e50a7d8f9b',1,'plywoot::PlyElement::name()']]]
 ];

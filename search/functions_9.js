@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['memcpy_0',['memcpy',['../classplywoot_1_1detail_1_1BinaryParserPolicy.html#ad8fb05dfa4d4ba6a2ce640ad98621dfd',1,'plywoot::detail::BinaryParserPolicy::memcpy()'],['../classplywoot_1_1detail_1_1BufferedIStream.html#a71ce857e02bac7bf980a283fae6aab36',1,'plywoot::detail::BufferedIStream::memcpy()']]]
+  ['operator_3d_0',['operator=',['../classplywoot_1_1PlyElementData.html#a5cfc34d552eddf90af18bdd6f86cceca',1,'plywoot::PlyElementData']]],
+  ['ostream_1',['ostream',['../classplywoot_1_1OStream.html#a2256223b013c6b4547675bbe799891c8',1,'plywoot::OStream::OStream(PlyFormat format)'],['../classplywoot_1_1OStream.html#a257924fb5f71f9434a4450aac6eab058',1,'plywoot::OStream::OStream(PlyFormat format, std::vector&lt; Comment &gt; comments)']]]
 ];

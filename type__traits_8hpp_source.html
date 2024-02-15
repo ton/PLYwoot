@@ -133,87 +133,69 @@ $(document).ready(function(){initNavTree('type__traits_8hpp_source.html',''); in
 <div class="line"><a id="l00030" name="l00030"></a><span class="lineno">   30</span><span class="keyword">namespace </span>plywoot::detail {</div>
 <div class="line"><a id="l00031" name="l00031"></a><span class="lineno">   31</span> </div>
 <div class="line"><a id="l00034" name="l00034"></a><span class="lineno">   34</span><span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt;</div>
-<div class="foldopen" id="foldopen00035" data-start="{" data-end="};">
-<div class="line"><a id="l00035" name="l00035"></a><span class="lineno"><a class="line" href="structplywoot_1_1detail_1_1IsList.html">   35</a></span><span class="keyword">struct </span><a class="code hl_struct" href="structplywoot_1_1detail_1_1IsList.html">IsList</a></div>
+<div class="line"><a id="l00035" name="l00035"></a><span class="lineno">   35</span><span class="keyword">struct </span>IsList</div>
 <div class="line"><a id="l00036" name="l00036"></a><span class="lineno">   36</span>{</div>
 <div class="line"><a id="l00037" name="l00037"></a><span class="lineno">   37</span>  <span class="keyword">static</span> <span class="keyword">constexpr</span> <span class="keywordtype">bool</span> value = <span class="keyword">false</span>;</div>
 <div class="line"><a id="l00038" name="l00038"></a><span class="lineno">   38</span>};</div>
-</div>
 <div class="line"><a id="l00039" name="l00039"></a><span class="lineno">   39</span> </div>
 <div class="line"><a id="l00040" name="l00040"></a><span class="lineno">   40</span><span class="keyword">template</span>&lt;<span class="keyword">typename</span> T, std::<span class="keywordtype">size_t</span> N&gt;</div>
-<div class="foldopen" id="foldopen00041" data-start="{" data-end="};">
-<div class="line"><a id="l00041" name="l00041"></a><span class="lineno"><a class="line" href="structplywoot_1_1detail_1_1IsList_3_01reflect_1_1Array_3_01T_00_01N_01_4_01_4.html">   41</a></span><span class="keyword">struct </span><a class="code hl_struct" href="structplywoot_1_1detail_1_1IsList.html">IsList</a>&lt;reflect::Array&lt;T, N&gt;&gt;</div>
+<div class="line"><a id="l00041" name="l00041"></a><span class="lineno">   41</span><span class="keyword">struct </span>IsList&lt;reflect::Array&lt;T, N&gt;&gt;</div>
 <div class="line"><a id="l00042" name="l00042"></a><span class="lineno">   42</span>{</div>
 <div class="line"><a id="l00043" name="l00043"></a><span class="lineno">   43</span>  <span class="keyword">static</span> <span class="keyword">constexpr</span> <span class="keywordtype">bool</span> value = <span class="keyword">true</span>;</div>
 <div class="line"><a id="l00044" name="l00044"></a><span class="lineno">   44</span>};</div>
-</div>
 <div class="line"><a id="l00045" name="l00045"></a><span class="lineno">   45</span> </div>
 <div class="line"><a id="l00046" name="l00046"></a><span class="lineno">   46</span><span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt;</div>
-<div class="foldopen" id="foldopen00047" data-start="{" data-end="};">
-<div class="line"><a id="l00047" name="l00047"></a><span class="lineno"><a class="line" href="structplywoot_1_1detail_1_1IsList_3_01std_1_1vector_3_01T_01_4_01_4.html">   47</a></span><span class="keyword">struct </span><a class="code hl_struct" href="structplywoot_1_1detail_1_1IsList.html">IsList</a>&lt;std::vector&lt;T&gt;&gt;</div>
+<div class="line"><a id="l00047" name="l00047"></a><span class="lineno">   47</span><span class="keyword">struct </span>IsList&lt;std::vector&lt;T&gt;&gt;</div>
 <div class="line"><a id="l00048" name="l00048"></a><span class="lineno">   48</span>{</div>
 <div class="line"><a id="l00049" name="l00049"></a><span class="lineno">   49</span>  <span class="keyword">static</span> <span class="keyword">constexpr</span> <span class="keywordtype">bool</span> value = <span class="keyword">true</span>;</div>
 <div class="line"><a id="l00050" name="l00050"></a><span class="lineno">   50</span>};</div>
-</div>
 <div class="line"><a id="l00051" name="l00051"></a><span class="lineno">   51</span> </div>
 <div class="line"><a id="l00052" name="l00052"></a><span class="lineno">   52</span><span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt;</div>
-<div class="foldopen" id="foldopen00053" data-start="{" data-end="};">
-<div class="line"><a id="l00053" name="l00053"></a><span class="lineno"><a class="line" href="structplywoot_1_1detail_1_1IsList_3_01reflect_1_1Type_3_01T_01_4_01_4.html">   53</a></span><span class="keyword">struct </span><a class="code hl_struct" href="structplywoot_1_1detail_1_1IsList.html">IsList</a>&lt;reflect::Type&lt;T&gt;&gt;</div>
+<div class="line"><a id="l00053" name="l00053"></a><span class="lineno">   53</span><span class="keyword">struct </span>IsList&lt;reflect::Type&lt;T&gt;&gt;</div>
 <div class="line"><a id="l00054" name="l00054"></a><span class="lineno">   54</span>{</div>
-<div class="line"><a id="l00055" name="l00055"></a><span class="lineno">   55</span>  <span class="keyword">static</span> <span class="keyword">constexpr</span> <span class="keywordtype">bool</span> value = <a class="code hl_struct" href="structplywoot_1_1detail_1_1IsList.html">IsList&lt;T&gt;::value</a>;</div>
+<div class="line"><a id="l00055" name="l00055"></a><span class="lineno">   55</span>  <span class="keyword">static</span> <span class="keyword">constexpr</span> <span class="keywordtype">bool</span> value = IsList&lt;T&gt;::value;</div>
 <div class="line"><a id="l00056" name="l00056"></a><span class="lineno">   56</span>};</div>
-</div>
 <div class="line"><a id="l00058" name="l00058"></a><span class="lineno">   58</span> </div>
 <div class="line"><a id="l00060" name="l00060"></a><span class="lineno">   60</span><span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt;</div>
 <div class="line"><a id="l00061" name="l00061"></a><span class="lineno">   61</span><span class="keyword">constexpr</span> <span class="keywordtype">bool</span> isList()</div>
 <div class="line"><a id="l00062" name="l00062"></a><span class="lineno">   62</span>{</div>
-<div class="line"><a id="l00063" name="l00063"></a><span class="lineno">   63</span>  <span class="keywordflow">return</span> <a class="code hl_struct" href="structplywoot_1_1detail_1_1IsList.html">IsList&lt;T&gt;::value</a>;</div>
+<div class="line"><a id="l00063" name="l00063"></a><span class="lineno">   63</span>  <span class="keywordflow">return</span> IsList&lt;T&gt;::value;</div>
 <div class="line"><a id="l00064" name="l00064"></a><span class="lineno">   64</span>}</div>
 <div class="line"><a id="l00065" name="l00065"></a><span class="lineno">   65</span> </div>
 <div class="line"><a id="l00070" name="l00070"></a><span class="lineno">   70</span><span class="keyword">template</span>&lt;<span class="keyword">typename</span>... Ts&gt;</div>
-<div class="foldopen" id="foldopen00071" data-start="{" data-end="};">
-<div class="line"><a id="l00071" name="l00071"></a><span class="lineno"><a class="line" href="structplywoot_1_1detail_1_1NumProperties.html">   71</a></span><span class="keyword">struct </span><a class="code hl_struct" href="structplywoot_1_1detail_1_1NumProperties.html">NumProperties</a></div>
+<div class="line"><a id="l00071" name="l00071"></a><span class="lineno">   71</span><span class="keyword">struct </span>NumProperties</div>
 <div class="line"><a id="l00072" name="l00072"></a><span class="lineno">   72</span>{</div>
 <div class="line"><a id="l00073" name="l00073"></a><span class="lineno">   73</span>  <span class="keyword">static</span> <span class="keyword">constexpr</span> std::size_t size = 0;</div>
 <div class="line"><a id="l00074" name="l00074"></a><span class="lineno">   74</span>};</div>
-</div>
 <div class="line"><a id="l00075" name="l00075"></a><span class="lineno">   75</span> </div>
 <div class="line"><a id="l00076" name="l00076"></a><span class="lineno">   76</span><span class="keyword">template</span>&lt;<span class="keyword">typename</span> T, <span class="keyword">typename</span>... Ts&gt;</div>
-<div class="foldopen" id="foldopen00077" data-start="{" data-end="};">
-<div class="line"><a id="l00077" name="l00077"></a><span class="lineno"><a class="line" href="structplywoot_1_1detail_1_1NumProperties_3_01T_00_01Ts_8_8_8_01_4.html">   77</a></span><span class="keyword">struct </span><a class="code hl_struct" href="structplywoot_1_1detail_1_1NumProperties.html">NumProperties</a>&lt;T, Ts...&gt;</div>
+<div class="line"><a id="l00077" name="l00077"></a><span class="lineno">   77</span><span class="keyword">struct </span>NumProperties&lt;T, Ts...&gt;</div>
 <div class="line"><a id="l00078" name="l00078"></a><span class="lineno">   78</span>{</div>
-<div class="line"><a id="l00079" name="l00079"></a><span class="lineno">   79</span>  <span class="keyword">static</span> <span class="keyword">constexpr</span> std::size_t size = <a class="code hl_struct" href="structplywoot_1_1detail_1_1NumProperties.html">NumProperties&lt;T&gt;::size</a> + <a class="code hl_struct" href="structplywoot_1_1detail_1_1NumProperties.html">NumProperties</a>&lt;Ts...&gt;::size;</div>
+<div class="line"><a id="l00079" name="l00079"></a><span class="lineno">   79</span>  <span class="keyword">static</span> <span class="keyword">constexpr</span> std::size_t size = NumProperties&lt;T&gt;::size + NumProperties&lt;Ts...&gt;::size;</div>
 <div class="line"><a id="l00080" name="l00080"></a><span class="lineno">   80</span>};</div>
-</div>
 <div class="line"><a id="l00081" name="l00081"></a><span class="lineno">   81</span> </div>
 <div class="line"><a id="l00082" name="l00082"></a><span class="lineno">   82</span><span class="keyword">template</span>&lt;<span class="keyword">typename</span> T, std::<span class="keywordtype">size_t</span> N&gt;</div>
-<div class="foldopen" id="foldopen00083" data-start="{" data-end="};">
-<div class="line"><a id="l00083" name="l00083"></a><span class="lineno"><a class="line" href="structplywoot_1_1detail_1_1NumProperties_3_01reflect_1_1Array_3_01T_00_01N_01_4_01_4.html">   83</a></span><span class="keyword">struct </span><a class="code hl_struct" href="structplywoot_1_1detail_1_1NumProperties.html">NumProperties</a>&lt;reflect::Array&lt;T, N&gt;&gt;</div>
+<div class="line"><a id="l00083" name="l00083"></a><span class="lineno">   83</span><span class="keyword">struct </span>NumProperties&lt;reflect::Array&lt;T, N&gt;&gt;</div>
 <div class="line"><a id="l00084" name="l00084"></a><span class="lineno">   84</span>{</div>
 <div class="line"><a id="l00085" name="l00085"></a><span class="lineno">   85</span>  <span class="keyword">static</span> <span class="keyword">constexpr</span> std::size_t size = 1;</div>
 <div class="line"><a id="l00086" name="l00086"></a><span class="lineno">   86</span>};</div>
-</div>
 <div class="line"><a id="l00087" name="l00087"></a><span class="lineno">   87</span> </div>
 <div class="line"><a id="l00088" name="l00088"></a><span class="lineno">   88</span><span class="keyword">template</span>&lt;<span class="keyword">typename</span> T, std::<span class="keywordtype">size_t</span> N&gt;</div>
-<div class="foldopen" id="foldopen00089" data-start="{" data-end="};">
-<div class="line"><a id="l00089" name="l00089"></a><span class="lineno"><a class="line" href="structplywoot_1_1detail_1_1NumProperties_3_01reflect_1_1Pack_3_01T_00_01N_01_4_01_4.html">   89</a></span><span class="keyword">struct </span><a class="code hl_struct" href="structplywoot_1_1detail_1_1NumProperties.html">NumProperties</a>&lt;reflect::Pack&lt;T, N&gt;&gt;</div>
+<div class="line"><a id="l00089" name="l00089"></a><span class="lineno">   89</span><span class="keyword">struct </span>NumProperties&lt;reflect::Pack&lt;T, N&gt;&gt;</div>
 <div class="line"><a id="l00090" name="l00090"></a><span class="lineno">   90</span>{</div>
 <div class="line"><a id="l00091" name="l00091"></a><span class="lineno">   91</span>  <span class="keyword">static</span> <span class="keyword">constexpr</span> std::size_t size = N;</div>
 <div class="line"><a id="l00092" name="l00092"></a><span class="lineno">   92</span>};</div>
-</div>
 <div class="line"><a id="l00093" name="l00093"></a><span class="lineno">   93</span> </div>
 <div class="line"><a id="l00094" name="l00094"></a><span class="lineno">   94</span><span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt;</div>
-<div class="foldopen" id="foldopen00095" data-start="{" data-end="};">
-<div class="line"><a id="l00095" name="l00095"></a><span class="lineno"><a class="line" href="structplywoot_1_1detail_1_1NumProperties_3_01T_01_4.html">   95</a></span><span class="keyword">struct </span><a class="code hl_struct" href="structplywoot_1_1detail_1_1NumProperties.html">NumProperties</a>&lt;T&gt;</div>
+<div class="line"><a id="l00095" name="l00095"></a><span class="lineno">   95</span><span class="keyword">struct </span>NumProperties&lt;T&gt;</div>
 <div class="line"><a id="l00096" name="l00096"></a><span class="lineno">   96</span>{</div>
 <div class="line"><a id="l00097" name="l00097"></a><span class="lineno">   97</span>  <span class="keyword">static</span> <span class="keyword">constexpr</span> std::size_t size = 1;</div>
 <div class="line"><a id="l00098" name="l00098"></a><span class="lineno">   98</span>};</div>
-</div>
 <div class="line"><a id="l00099" name="l00099"></a><span class="lineno">   99</span> </div>
 <div class="line"><a id="l00103" name="l00103"></a><span class="lineno">  103</span><span class="keyword">template</span>&lt;<span class="keyword">typename</span>... Ts&gt;</div>
 <div class="line"><a id="l00104" name="l00104"></a><span class="lineno">  104</span><span class="keyword">constexpr</span> std::size_t numProperties()</div>
 <div class="line"><a id="l00105" name="l00105"></a><span class="lineno">  105</span>{</div>
-<div class="line"><a id="l00106" name="l00106"></a><span class="lineno">  106</span>  <span class="keywordflow">return</span> <a class="code hl_struct" href="structplywoot_1_1detail_1_1NumProperties.html">NumProperties</a>&lt;Ts...&gt;::size;</div>
+<div class="line"><a id="l00106" name="l00106"></a><span class="lineno">  106</span>  <span class="keywordflow">return</span> NumProperties&lt;Ts...&gt;::size;</div>
 <div class="line"><a id="l00107" name="l00107"></a><span class="lineno">  107</span>}</div>
 <div class="line"><a id="l00108" name="l00108"></a><span class="lineno">  108</span> </div>
 <div class="line"><a id="l00111" name="l00111"></a><span class="lineno">  111</span><span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt;</div>
@@ -243,57 +225,45 @@ $(document).ready(function(){initNavTree('type__traits_8hpp_source.html',''); in
 <div class="line"><a id="l00135" name="l00135"></a><span class="lineno">  135</span>}</div>
 <div class="line"><a id="l00136" name="l00136"></a><span class="lineno">  136</span> </div>
 <div class="line"><a id="l00140" name="l00140"></a><span class="lineno">  140</span><span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt;</div>
-<div class="foldopen" id="foldopen00141" data-start="{" data-end="};">
-<div class="line"><a id="l00141" name="l00141"></a><span class="lineno"><a class="line" href="structplywoot_1_1detail_1_1IsPack.html">  141</a></span><span class="keyword">struct </span><a class="code hl_struct" href="structplywoot_1_1detail_1_1IsPack.html">IsPack</a></div>
+<div class="line"><a id="l00141" name="l00141"></a><span class="lineno">  141</span><span class="keyword">struct </span>IsPack</div>
 <div class="line"><a id="l00142" name="l00142"></a><span class="lineno">  142</span>{</div>
 <div class="line"><a id="l00143" name="l00143"></a><span class="lineno">  143</span>  <span class="keyword">static</span> <span class="keyword">constexpr</span> <span class="keywordtype">bool</span> value = <span class="keyword">false</span>;</div>
 <div class="line"><a id="l00144" name="l00144"></a><span class="lineno">  144</span>};</div>
-</div>
 <div class="line"><a id="l00145" name="l00145"></a><span class="lineno">  145</span> </div>
 <div class="line"><a id="l00146" name="l00146"></a><span class="lineno">  146</span><span class="keyword">template</span>&lt;<span class="keyword">typename</span> T, std::<span class="keywordtype">size_t</span> N&gt;</div>
-<div class="foldopen" id="foldopen00147" data-start="{" data-end="};">
-<div class="line"><a id="l00147" name="l00147"></a><span class="lineno"><a class="line" href="structplywoot_1_1detail_1_1IsPack_3_01reflect_1_1Pack_3_01T_00_01N_01_4_01_4.html">  147</a></span><span class="keyword">struct </span><a class="code hl_struct" href="structplywoot_1_1detail_1_1IsPack.html">IsPack</a>&lt;reflect::Pack&lt;T, N&gt;&gt;</div>
+<div class="line"><a id="l00147" name="l00147"></a><span class="lineno">  147</span><span class="keyword">struct </span>IsPack&lt;reflect::Pack&lt;T, N&gt;&gt;</div>
 <div class="line"><a id="l00148" name="l00148"></a><span class="lineno">  148</span>{</div>
 <div class="line"><a id="l00149" name="l00149"></a><span class="lineno">  149</span>  <span class="keyword">static</span> <span class="keyword">constexpr</span> <span class="keywordtype">bool</span> value = <span class="keyword">true</span>;</div>
 <div class="line"><a id="l00150" name="l00150"></a><span class="lineno">  150</span>};</div>
-</div>
 <div class="line"><a id="l00152" name="l00152"></a><span class="lineno">  152</span> </div>
 <div class="line"><a id="l00159" name="l00159"></a><span class="lineno">  159</span><span class="keyword">template</span>&lt;<span class="keyword">typename</span> T, <span class="keyword">typename</span>... Ts&gt;</div>
-<div class="foldopen" id="foldopen00160" data-start="{" data-end="};">
-<div class="line"><a id="l00160" name="l00160"></a><span class="lineno"><a class="line" href="structplywoot_1_1detail_1_1SizeOf.html">  160</a></span><span class="keyword">struct </span><a class="code hl_struct" href="structplywoot_1_1detail_1_1SizeOf.html">SizeOf</a></div>
+<div class="line"><a id="l00160" name="l00160"></a><span class="lineno">  160</span><span class="keyword">struct </span>SizeOf</div>
 <div class="line"><a id="l00161" name="l00161"></a><span class="lineno">  161</span>{</div>
-<div class="line"><a id="l00162" name="l00162"></a><span class="lineno">  162</span>  <span class="keyword">static</span> <span class="keyword">constexpr</span> <span class="keyword">auto</span> size = <a class="code hl_struct" href="structplywoot_1_1detail_1_1SizeOf.html">SizeOf&lt;T&gt;::size</a> + <a class="code hl_struct" href="structplywoot_1_1detail_1_1SizeOf.html">SizeOf</a>&lt;Ts...&gt;::size;</div>
+<div class="line"><a id="l00162" name="l00162"></a><span class="lineno">  162</span>  <span class="keyword">static</span> <span class="keyword">constexpr</span> <span class="keyword">auto</span> size = SizeOf&lt;T&gt;::size + SizeOf&lt;Ts...&gt;::size;</div>
 <div class="line"><a id="l00163" name="l00163"></a><span class="lineno">  163</span>};</div>
-</div>
 <div class="line"><a id="l00164" name="l00164"></a><span class="lineno">  164</span> </div>
 <div class="line"><a id="l00165" name="l00165"></a><span class="lineno">  165</span><span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt;</div>
-<div class="foldopen" id="foldopen00166" data-start="{" data-end="};">
-<div class="line"><a id="l00166" name="l00166"></a><span class="lineno"><a class="line" href="structplywoot_1_1detail_1_1SizeOf_3_01T_01_4.html">  166</a></span><span class="keyword">struct </span><a class="code hl_struct" href="structplywoot_1_1detail_1_1SizeOf.html">SizeOf</a>&lt;T&gt;</div>
+<div class="line"><a id="l00166" name="l00166"></a><span class="lineno">  166</span><span class="keyword">struct </span>SizeOf&lt;T&gt;</div>
 <div class="line"><a id="l00167" name="l00167"></a><span class="lineno">  167</span>{</div>
 <div class="line"><a id="l00168" name="l00168"></a><span class="lineno">  168</span>  <span class="keyword">static</span> <span class="keyword">constexpr</span> <span class="keyword">auto</span> size = <span class="keyword">sizeof</span>(T);</div>
 <div class="line"><a id="l00169" name="l00169"></a><span class="lineno">  169</span>};</div>
-</div>
 <div class="line"><a id="l00170" name="l00170"></a><span class="lineno">  170</span> </div>
 <div class="line"><a id="l00171" name="l00171"></a><span class="lineno">  171</span><span class="keyword">template</span>&lt;<span class="keyword">typename</span> T, std::<span class="keywordtype">size_t</span> N&gt;</div>
-<div class="foldopen" id="foldopen00172" data-start="{" data-end="};">
-<div class="line"><a id="l00172" name="l00172"></a><span class="lineno"><a class="line" href="structplywoot_1_1detail_1_1SizeOf_3_01reflect_1_1Array_3_01T_00_01N_01_4_01_4.html">  172</a></span><span class="keyword">struct </span><a class="code hl_struct" href="structplywoot_1_1detail_1_1SizeOf.html">SizeOf</a>&lt;reflect::Array&lt;T, N&gt;&gt;</div>
+<div class="line"><a id="l00172" name="l00172"></a><span class="lineno">  172</span><span class="keyword">struct </span>SizeOf&lt;reflect::Array&lt;T, N&gt;&gt;</div>
 <div class="line"><a id="l00173" name="l00173"></a><span class="lineno">  173</span>{</div>
-<div class="line"><a id="l00174" name="l00174"></a><span class="lineno">  174</span>  <span class="keyword">static</span> <span class="keyword">constexpr</span> <span class="keyword">auto</span> size = N * <a class="code hl_struct" href="structplywoot_1_1detail_1_1SizeOf.html">SizeOf&lt;T&gt;::size</a>;</div>
+<div class="line"><a id="l00174" name="l00174"></a><span class="lineno">  174</span>  <span class="keyword">static</span> <span class="keyword">constexpr</span> <span class="keyword">auto</span> size = N * SizeOf&lt;T&gt;::size;</div>
 <div class="line"><a id="l00175" name="l00175"></a><span class="lineno">  175</span>};</div>
-</div>
 <div class="line"><a id="l00176" name="l00176"></a><span class="lineno">  176</span> </div>
 <div class="line"><a id="l00177" name="l00177"></a><span class="lineno">  177</span><span class="keyword">template</span>&lt;<span class="keyword">typename</span> T, std::<span class="keywordtype">size_t</span> N&gt;</div>
-<div class="foldopen" id="foldopen00178" data-start="{" data-end="};">
-<div class="line"><a id="l00178" name="l00178"></a><span class="lineno"><a class="line" href="structplywoot_1_1detail_1_1SizeOf_3_01reflect_1_1Pack_3_01T_00_01N_01_4_01_4.html">  178</a></span><span class="keyword">struct </span><a class="code hl_struct" href="structplywoot_1_1detail_1_1SizeOf.html">SizeOf</a>&lt;reflect::Pack&lt;T, N&gt;&gt;</div>
+<div class="line"><a id="l00178" name="l00178"></a><span class="lineno">  178</span><span class="keyword">struct </span>SizeOf&lt;reflect::Pack&lt;T, N&gt;&gt;</div>
 <div class="line"><a id="l00179" name="l00179"></a><span class="lineno">  179</span>{</div>
-<div class="line"><a id="l00180" name="l00180"></a><span class="lineno">  180</span>  <span class="keyword">static</span> <span class="keyword">constexpr</span> <span class="keyword">auto</span> size = N * <a class="code hl_struct" href="structplywoot_1_1detail_1_1SizeOf.html">SizeOf&lt;T&gt;::size</a>;</div>
+<div class="line"><a id="l00180" name="l00180"></a><span class="lineno">  180</span>  <span class="keyword">static</span> <span class="keyword">constexpr</span> <span class="keyword">auto</span> size = N * SizeOf&lt;T&gt;::size;</div>
 <div class="line"><a id="l00181" name="l00181"></a><span class="lineno">  181</span>};</div>
-</div>
 <div class="line"><a id="l00183" name="l00183"></a><span class="lineno">  183</span> </div>
 <div class="line"><a id="l00189" name="l00189"></a><span class="lineno">  189</span><span class="keyword">template</span>&lt;<span class="keyword">typename</span>... Ts&gt;</div>
 <div class="line"><a id="l00190" name="l00190"></a><span class="lineno">  190</span><span class="keyword">constexpr</span> std::size_t sizeOf()</div>
 <div class="line"><a id="l00191" name="l00191"></a><span class="lineno">  191</span>{</div>
-<div class="line"><a id="l00192" name="l00192"></a><span class="lineno">  192</span>  <span class="keywordflow">return</span> <a class="code hl_struct" href="structplywoot_1_1detail_1_1SizeOf.html">SizeOf</a>&lt;Ts...&gt;::size;</div>
+<div class="line"><a id="l00192" name="l00192"></a><span class="lineno">  192</span>  <span class="keywordflow">return</span> SizeOf&lt;Ts...&gt;::size;</div>
 <div class="line"><a id="l00193" name="l00193"></a><span class="lineno">  193</span>}</div>
 <div class="line"><a id="l00194" name="l00194"></a><span class="lineno">  194</span> </div>
 <div class="line"><a id="l00196" name="l00196"></a><span class="lineno">  196</span><span class="keyword">constexpr</span> std::size_t sizeOf(PlyDataType type)</div>
@@ -393,40 +363,34 @@ $(document).ready(function(){initNavTree('type__traits_8hpp_source.html',''); in
 <div class="line"><a id="l00300" name="l00300"></a><span class="lineno">  300</span>}</div>
 <div class="line"><a id="l00302" name="l00302"></a><span class="lineno">  302</span> </div>
 <div class="line"><a id="l00307" name="l00307"></a><span class="lineno">  307</span><span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt;</div>
-<div class="foldopen" id="foldopen00308" data-start="{" data-end="};">
-<div class="line"><a id="l00308" name="l00308"></a><span class="lineno"><a class="line" href="structplywoot_1_1detail_1_1IsMemcpyable.html">  308</a></span><span class="keyword">struct </span><a class="code hl_struct" href="structplywoot_1_1detail_1_1IsMemcpyable.html">IsMemcpyable</a></div>
+<div class="line"><a id="l00308" name="l00308"></a><span class="lineno">  308</span><span class="keyword">struct </span>IsMemcpyable</div>
 <div class="line"><a id="l00309" name="l00309"></a><span class="lineno">  309</span>{</div>
 <div class="line"><a id="l00310" name="l00310"></a><span class="lineno">  310</span>  <span class="keywordtype">bool</span> operator()(<span class="keyword">const</span> PlyPropertyConstIterator first, <span class="keyword">const</span> PlyPropertyConstIterator last)<span class="keyword"> const</span></div>
 <div class="line"><a id="l00311" name="l00311"></a><span class="lineno">  311</span><span class="keyword">  </span>{</div>
 <div class="line"><a id="l00312" name="l00312"></a><span class="lineno">  312</span>    <span class="keywordflow">return</span> first &lt; last &amp;&amp; isSame&lt;T&gt;(first-&gt;type());</div>
 <div class="line"><a id="l00313" name="l00313"></a><span class="lineno">  313</span>  }</div>
 <div class="line"><a id="l00314" name="l00314"></a><span class="lineno">  314</span>};</div>
-</div>
 <div class="line"><a id="l00315" name="l00315"></a><span class="lineno">  315</span> </div>
 <div class="line"><a id="l00316" name="l00316"></a><span class="lineno">  316</span><span class="keyword">template</span>&lt;<span class="keyword">typename</span> T, std::<span class="keywordtype">size_t</span> N&gt;</div>
-<div class="foldopen" id="foldopen00317" data-start="{" data-end="};">
-<div class="line"><a id="l00317" name="l00317"></a><span class="lineno"><a class="line" href="structplywoot_1_1detail_1_1IsMemcpyable_3_01reflect_1_1Array_3_01T_00_01N_01_4_01_4.html">  317</a></span><span class="keyword">struct </span><a class="code hl_struct" href="structplywoot_1_1detail_1_1IsMemcpyable.html">IsMemcpyable</a>&lt;reflect::Array&lt;T, N&gt;&gt;</div>
+<div class="line"><a id="l00317" name="l00317"></a><span class="lineno">  317</span><span class="keyword">struct </span>IsMemcpyable&lt;reflect::Array&lt;T, N&gt;&gt;</div>
 <div class="line"><a id="l00318" name="l00318"></a><span class="lineno">  318</span>{</div>
 <div class="line"><a id="l00319" name="l00319"></a><span class="lineno">  319</span>  <span class="keywordtype">bool</span> operator()(<span class="keyword">const</span> PlyPropertyConstIterator, <span class="keyword">const</span> PlyPropertyConstIterator)<span class="keyword"> const </span>{ <span class="keywordflow">return</span> <span class="keyword">false</span>; }</div>
 <div class="line"><a id="l00320" name="l00320"></a><span class="lineno">  320</span>};</div>
-</div>
 <div class="line"><a id="l00322" name="l00322"></a><span class="lineno">  322</span> </div>
 <div class="line"><a id="l00323" name="l00323"></a><span class="lineno">  323</span><span class="keyword">template</span>&lt;<span class="keyword">typename</span> T, std::<span class="keywordtype">size_t</span> N&gt;</div>
-<div class="foldopen" id="foldopen00324" data-start="{" data-end="};">
-<div class="line"><a id="l00324" name="l00324"></a><span class="lineno"><a class="line" href="structplywoot_1_1detail_1_1IsMemcpyable_3_01reflect_1_1Pack_3_01T_00_01N_01_4_01_4.html">  324</a></span><span class="keyword">struct </span><a class="code hl_struct" href="structplywoot_1_1detail_1_1IsMemcpyable.html">IsMemcpyable</a>&lt;reflect::Pack&lt;T, N&gt;&gt;</div>
+<div class="line"><a id="l00324" name="l00324"></a><span class="lineno">  324</span><span class="keyword">struct </span>IsMemcpyable&lt;reflect::Pack&lt;T, N&gt;&gt;</div>
 <div class="line"><a id="l00325" name="l00325"></a><span class="lineno">  325</span>{</div>
 <div class="line"><a id="l00326" name="l00326"></a><span class="lineno">  326</span>  <span class="keywordtype">bool</span> operator()(<span class="keyword">const</span> PlyPropertyConstIterator first, <span class="keyword">const</span> PlyPropertyConstIterator last)<span class="keyword"> const</span></div>
 <div class="line"><a id="l00327" name="l00327"></a><span class="lineno">  327</span><span class="keyword">  </span>{</div>
 <div class="line"><a id="l00328" name="l00328"></a><span class="lineno">  328</span>    <span class="keywordflow">return</span> first + N &lt;= last &amp;&amp;</div>
-<div class="line"><a id="l00329" name="l00329"></a><span class="lineno">  329</span>           std::all_of(first, first + N, [](<span class="keyword">const</span> <a class="code hl_struct" href="structplywoot_1_1PlyProperty.html">PlyProperty</a> &amp;p) { <span class="keywordflow">return</span> isSame&lt;T&gt;(p.<a class="code hl_function" href="structplywoot_1_1PlyProperty.html#a734c9ae9b3c699a03993376e7a9aa832">type</a>()); });</div>
+<div class="line"><a id="l00329" name="l00329"></a><span class="lineno">  329</span>           std::all_of(first, first + N, [](<span class="keyword">const</span> PlyProperty &amp;p) { <span class="keywordflow">return</span> isSame&lt;T&gt;(p.type()); });</div>
 <div class="line"><a id="l00330" name="l00330"></a><span class="lineno">  330</span>  }</div>
 <div class="line"><a id="l00331" name="l00331"></a><span class="lineno">  331</span>};</div>
-</div>
 <div class="line"><a id="l00332" name="l00332"></a><span class="lineno">  332</span> </div>
 <div class="line"><a id="l00338" name="l00338"></a><span class="lineno">  338</span><span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt;</div>
 <div class="line"><a id="l00339" name="l00339"></a><span class="lineno">  339</span><span class="keywordtype">bool</span> isMemcpyable(<span class="keyword">const</span> PlyPropertyConstIterator first, <span class="keyword">const</span> PlyPropertyConstIterator last)</div>
 <div class="line"><a id="l00340" name="l00340"></a><span class="lineno">  340</span>{</div>
-<div class="line"><a id="l00341" name="l00341"></a><span class="lineno">  341</span>  <span class="keywordflow">return</span> first + detail::numProperties&lt;T&gt;() == last &amp;&amp; <a class="code hl_struct" href="structplywoot_1_1detail_1_1IsMemcpyable.html">IsMemcpyable&lt;T&gt;</a>{}(first, last);</div>
+<div class="line"><a id="l00341" name="l00341"></a><span class="lineno">  341</span>  <span class="keywordflow">return</span> first + detail::numProperties&lt;T&gt;() == last &amp;&amp; IsMemcpyable&lt;T&gt;{}(first, last);</div>
 <div class="line"><a id="l00342" name="l00342"></a><span class="lineno">  342</span>}</div>
 <div class="line"><a id="l00343" name="l00343"></a><span class="lineno">  343</span> </div>
 <div class="line"><a id="l00344" name="l00344"></a><span class="lineno">  344</span><span class="keyword">template</span>&lt;<span class="keyword">typename</span> T, <span class="keyword">typename</span> U, <span class="keyword">typename</span>... Ts&gt;</div>
@@ -438,13 +402,6 @@ $(document).ready(function(){initNavTree('type__traits_8hpp_source.html',''); in
 <div class="line"><a id="l00351" name="l00351"></a><span class="lineno">  351</span>}</div>
 <div class="line"><a id="l00352" name="l00352"></a><span class="lineno">  352</span> </div>
 <div class="line"><a id="l00353" name="l00353"></a><span class="lineno">  353</span><span class="preprocessor">#endif</span></div>
-<div class="ttc" id="astructplywoot_1_1PlyProperty_html"><div class="ttname"><a href="structplywoot_1_1PlyProperty.html">plywoot::PlyProperty</a></div><div class="ttdef"><b>Definition</b> types.hpp:66</div></div>
-<div class="ttc" id="astructplywoot_1_1PlyProperty_html_a734c9ae9b3c699a03993376e7a9aa832"><div class="ttname"><a href="structplywoot_1_1PlyProperty.html#a734c9ae9b3c699a03993376e7a9aa832">plywoot::PlyProperty::type</a></div><div class="ttdeci">PlyDataType type() const</div><div class="ttdoc">Returns the type of this property.</div><div class="ttdef"><b>Definition</b> types.hpp:77</div></div>
-<div class="ttc" id="astructplywoot_1_1detail_1_1IsList_html"><div class="ttname"><a href="structplywoot_1_1detail_1_1IsList.html">plywoot::detail::IsList</a></div><div class="ttdef"><b>Definition</b> type_traits.hpp:36</div></div>
-<div class="ttc" id="astructplywoot_1_1detail_1_1IsMemcpyable_html"><div class="ttname"><a href="structplywoot_1_1detail_1_1IsMemcpyable.html">plywoot::detail::IsMemcpyable</a></div><div class="ttdef"><b>Definition</b> type_traits.hpp:309</div></div>
-<div class="ttc" id="astructplywoot_1_1detail_1_1IsPack_html"><div class="ttname"><a href="structplywoot_1_1detail_1_1IsPack.html">plywoot::detail::IsPack</a></div><div class="ttdef"><b>Definition</b> type_traits.hpp:142</div></div>
-<div class="ttc" id="astructplywoot_1_1detail_1_1NumProperties_html"><div class="ttname"><a href="structplywoot_1_1detail_1_1NumProperties.html">plywoot::detail::NumProperties</a></div><div class="ttdef"><b>Definition</b> type_traits.hpp:72</div></div>
-<div class="ttc" id="astructplywoot_1_1detail_1_1SizeOf_html"><div class="ttname"><a href="structplywoot_1_1detail_1_1SizeOf.html">plywoot::detail::SizeOf</a></div><div class="ttdef"><b>Definition</b> type_traits.hpp:161</div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->

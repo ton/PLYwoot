@@ -132,36 +132,35 @@ $(document).ready(function(){initNavTree('parser__variant_8hpp_source.html','');
 <div class="line"><a id="l00029" name="l00029"></a><span class="lineno">   29</span> </div>
 <div class="line"><a id="l00030" name="l00030"></a><span class="lineno">   30</span><span class="keyword">namespace </span>plywoot::detail {</div>
 <div class="line"><a id="l00031" name="l00031"></a><span class="lineno">   31</span> </div>
-<div class="foldopen" id="foldopen00033" data-start="{" data-end="};">
-<div class="line"><a id="l00033" name="l00033"></a><span class="lineno"><a class="line" href="classplywoot_1_1detail_1_1ParserVariant.html">   33</a></span><span class="keyword">class </span><a class="code hl_class" href="classplywoot_1_1detail_1_1ParserVariant.html">ParserVariant</a></div>
+<div class="line"><a id="l00033" name="l00033"></a><span class="lineno">   33</span><span class="keyword">class </span>ParserVariant</div>
 <div class="line"><a id="l00034" name="l00034"></a><span class="lineno">   34</span>{</div>
 <div class="line"><a id="l00035" name="l00035"></a><span class="lineno">   35</span><span class="keyword">public</span>:</div>
-<div class="line"><a id="l00036" name="l00036"></a><span class="lineno">   36</span>  <a class="code hl_class" href="classplywoot_1_1detail_1_1ParserVariant.html">ParserVariant</a>(std::istream &amp;is, PlyFormat format) : variant_{makeVariant(is, format)} {}</div>
+<div class="line"><a id="l00036" name="l00036"></a><span class="lineno">   36</span>  ParserVariant(std::istream &amp;is, PlyFormat format) : variant_{makeVariant(is, format)} {}</div>
 <div class="line"><a id="l00037" name="l00037"></a><span class="lineno">   37</span> </div>
-<div class="line"><a id="l00038" name="l00038"></a><span class="lineno">   38</span>  <a class="code hl_class" href="classplywoot_1_1detail_1_1ParserVariant.html">ParserVariant</a>(<span class="keyword">const</span> <a class="code hl_class" href="classplywoot_1_1detail_1_1ParserVariant.html">ParserVariant</a> &amp;) = <span class="keyword">delete</span>;</div>
-<div class="line"><a id="l00039" name="l00039"></a><span class="lineno">   39</span>  <a class="code hl_class" href="classplywoot_1_1detail_1_1ParserVariant.html">ParserVariant</a> &amp;operator=(<span class="keyword">const</span> <a class="code hl_class" href="classplywoot_1_1detail_1_1ParserVariant.html">ParserVariant</a> &amp;) = <span class="keyword">delete</span>;</div>
+<div class="line"><a id="l00038" name="l00038"></a><span class="lineno">   38</span>  ParserVariant(<span class="keyword">const</span> ParserVariant &amp;) = <span class="keyword">delete</span>;</div>
+<div class="line"><a id="l00039" name="l00039"></a><span class="lineno">   39</span>  ParserVariant &amp;operator=(<span class="keyword">const</span> ParserVariant &amp;) = <span class="keyword">delete</span>;</div>
 <div class="line"><a id="l00040" name="l00040"></a><span class="lineno">   40</span> </div>
-<div class="line"><a id="l00041" name="l00041"></a><span class="lineno">   41</span>  <a class="code hl_class" href="classplywoot_1_1PlyElementData.html">PlyElementData</a> read(<span class="keyword">const</span> <a class="code hl_struct" href="structplywoot_1_1PlyElement.html">PlyElement</a> &amp;element)<span class="keyword"> const</span></div>
+<div class="line"><a id="l00041" name="l00041"></a><span class="lineno">   41</span>  PlyElementData read(<span class="keyword">const</span> PlyElement &amp;element)<span class="keyword"> const</span></div>
 <div class="line"><a id="l00042" name="l00042"></a><span class="lineno">   42</span><span class="keyword">  </span>{</div>
 <div class="line"><a id="l00043" name="l00043"></a><span class="lineno">   43</span>    <span class="keywordflow">return</span> std::visit([&amp;](<span class="keyword">auto</span> &amp;&amp;parser) { <span class="keywordflow">return</span> parser.read(element); }, variant_);</div>
 <div class="line"><a id="l00044" name="l00044"></a><span class="lineno">   44</span>  }</div>
 <div class="line"><a id="l00045" name="l00045"></a><span class="lineno">   45</span> </div>
 <div class="line"><a id="l00046" name="l00046"></a><span class="lineno">   46</span>  <span class="keyword">template</span>&lt;<span class="keyword">typename</span>... Ts&gt;</div>
-<div class="line"><a id="l00047" name="l00047"></a><span class="lineno">   47</span>  <span class="keywordtype">void</span> read(<span class="keyword">const</span> <a class="code hl_struct" href="structplywoot_1_1PlyElement.html">PlyElement</a> &amp;element, <a class="code hl_class" href="classplywoot_1_1reflect_1_1Layout.html">reflect::Layout&lt;Ts...&gt;</a> layout)<span class="keyword"> const</span></div>
+<div class="line"><a id="l00047" name="l00047"></a><span class="lineno">   47</span>  <span class="keywordtype">void</span> read(<span class="keyword">const</span> PlyElement &amp;element, reflect::Layout&lt;Ts...&gt; layout)<span class="keyword"> const</span></div>
 <div class="line"><a id="l00048" name="l00048"></a><span class="lineno">   48</span><span class="keyword">  </span>{</div>
 <div class="line"><a id="l00049" name="l00049"></a><span class="lineno">   49</span>    std::visit([&amp;element, layout](<span class="keyword">auto</span> &amp;&amp;parser) { parser.read(element, layout); }, variant_);</div>
 <div class="line"><a id="l00050" name="l00050"></a><span class="lineno">   50</span>  }</div>
 <div class="line"><a id="l00051" name="l00051"></a><span class="lineno">   51</span> </div>
-<div class="line"><a id="l00052" name="l00052"></a><span class="lineno">   52</span>  <span class="keywordtype">void</span> skip(<span class="keyword">const</span> <a class="code hl_struct" href="structplywoot_1_1PlyElement.html">PlyElement</a> &amp;element)<span class="keyword"> const</span></div>
+<div class="line"><a id="l00052" name="l00052"></a><span class="lineno">   52</span>  <span class="keywordtype">void</span> skip(<span class="keyword">const</span> PlyElement &amp;element)<span class="keyword"> const</span></div>
 <div class="line"><a id="l00053" name="l00053"></a><span class="lineno">   53</span><span class="keyword">  </span>{</div>
 <div class="line"><a id="l00054" name="l00054"></a><span class="lineno">   54</span>    std::visit([&amp;element](<span class="keyword">auto</span> &amp;&amp;parser) { parser.skip(element); }, variant_);</div>
 <div class="line"><a id="l00055" name="l00055"></a><span class="lineno">   55</span>  }</div>
 <div class="line"><a id="l00056" name="l00056"></a><span class="lineno">   56</span> </div>
 <div class="line"><a id="l00057" name="l00057"></a><span class="lineno">   57</span><span class="keyword">private</span>:</div>
 <div class="line"><a id="l00058" name="l00058"></a><span class="lineno">   58</span>  <span class="keyword">using </span>Variant = std::variant&lt;</div>
-<div class="line"><a id="l00059" name="l00059"></a><span class="lineno">   59</span>      <a class="code hl_class" href="classplywoot_1_1detail_1_1Parser.html">detail::Parser&lt;detail::AsciiParserPolicy&gt;</a>,</div>
-<div class="line"><a id="l00060" name="l00060"></a><span class="lineno">   60</span>      <a class="code hl_class" href="classplywoot_1_1detail_1_1Parser.html">detail::Parser&lt;detail::BinaryBigEndianParserPolicy&gt;</a>,</div>
-<div class="line"><a id="l00061" name="l00061"></a><span class="lineno">   61</span>      <a class="code hl_class" href="classplywoot_1_1detail_1_1Parser.html">detail::Parser&lt;detail::BinaryLittleEndianParserPolicy&gt;</a>&gt;;</div>
+<div class="line"><a id="l00059" name="l00059"></a><span class="lineno">   59</span>      detail::Parser&lt;detail::AsciiParserPolicy&gt;,</div>
+<div class="line"><a id="l00060" name="l00060"></a><span class="lineno">   60</span>      detail::Parser&lt;detail::BinaryBigEndianParserPolicy&gt;,</div>
+<div class="line"><a id="l00061" name="l00061"></a><span class="lineno">   61</span>      detail::Parser&lt;detail::BinaryLittleEndianParserPolicy&gt;&gt;;</div>
 <div class="line"><a id="l00062" name="l00062"></a><span class="lineno">   62</span> </div>
 <div class="line"><a id="l00063" name="l00063"></a><span class="lineno">   63</span>  Variant makeVariant(std::istream &amp;is, PlyFormat format)</div>
 <div class="line"><a id="l00064" name="l00064"></a><span class="lineno">   64</span>  {</div>
@@ -181,16 +180,10 @@ $(document).ready(function(){initNavTree('parser__variant_8hpp_source.html','');
 <div class="line"><a id="l00078" name="l00078"></a><span class="lineno">   78</span> </div>
 <div class="line"><a id="l00079" name="l00079"></a><span class="lineno">   79</span>  Variant variant_;</div>
 <div class="line"><a id="l00080" name="l00080"></a><span class="lineno">   80</span>};</div>
-</div>
 <div class="line"><a id="l00081" name="l00081"></a><span class="lineno">   81</span> </div>
 <div class="line"><a id="l00082" name="l00082"></a><span class="lineno">   82</span>}</div>
 <div class="line"><a id="l00083" name="l00083"></a><span class="lineno">   83</span> </div>
 <div class="line"><a id="l00084" name="l00084"></a><span class="lineno">   84</span><span class="preprocessor">#endif</span></div>
-<div class="ttc" id="aclassplywoot_1_1PlyElementData_html"><div class="ttname"><a href="classplywoot_1_1PlyElementData.html">plywoot::PlyElementData</a></div><div class="ttdef"><b>Definition</b> element_data.hpp:34</div></div>
-<div class="ttc" id="aclassplywoot_1_1detail_1_1ParserVariant_html"><div class="ttname"><a href="classplywoot_1_1detail_1_1ParserVariant.html">plywoot::detail::ParserVariant</a></div><div class="ttdoc">For lack of std::variant, create a cheap tagged union.</div><div class="ttdef"><b>Definition</b> parser_variant.hpp:34</div></div>
-<div class="ttc" id="aclassplywoot_1_1detail_1_1Parser_html"><div class="ttname"><a href="classplywoot_1_1detail_1_1Parser.html">plywoot::detail::Parser</a></div><div class="ttdef"><b>Definition</b> parser.hpp:52</div></div>
-<div class="ttc" id="aclassplywoot_1_1reflect_1_1Layout_html"><div class="ttname"><a href="classplywoot_1_1reflect_1_1Layout.html">plywoot::reflect::Layout</a></div><div class="ttdef"><b>Definition</b> reflect.hpp:94</div></div>
-<div class="ttc" id="astructplywoot_1_1PlyElement_html"><div class="ttname"><a href="structplywoot_1_1PlyElement.html">plywoot::PlyElement</a></div><div class="ttdef"><b>Definition</b> types.hpp:101</div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->

@@ -1,6 +1,4 @@
 var searchData=
 [
-  ['iskeyword_0',['isKeyword',['../classplywoot_1_1detail_1_1HeaderScanner.html#a9f0739ce165af19522c511fe7cd5e91d',1,'plywoot::detail::HeaderScanner']]],
-  ['islist_1',['isList',['../structplywoot_1_1PlyProperty.html#a7a38831f9a1d26a3824eae382f7e07e1',1,'plywoot::PlyProperty']]],
-  ['istream_2',['IStream',['../classplywoot_1_1IStream.html#a25a0f4f70a6593e78019b203283925b2',1,'plywoot::IStream']]]
+  ['layout_0',['layout',['../classplywoot_1_1reflect_1_1Layout.html#a4c779089892c9455670a7f6ae35c2af2',1,'plywoot::reflect::Layout::Layout()=default'],['../classplywoot_1_1reflect_1_1Layout.html#ad5fbdf8361820ad3a1e1ba07b492f2f2',1,'plywoot::reflect::Layout::Layout(std::vector&lt; T &gt; &amp;v)'],['../classplywoot_1_1reflect_1_1Layout.html#a53335f8139fc6e0a0295be278d0e8527',1,'plywoot::reflect::Layout::Layout(const std::vector&lt; T &gt; &amp;v)']]]
 ];
