@@ -25,19 +25,6 @@
 var NAVTREE =
 [
   [ "PLYwoot", "index.html", [
-    [ "Features", "index.html#autotoc_md1", null ],
-    [ "Examples", "index.html#autotoc_md2", [
-      [ "Parsing PLY files", "index.html#autotoc_md3", null ],
-      [ "Writing PLY files", "index.html#autotoc_md4", null ]
-    ] ],
-    [ "Getting started", "index.html#autotoc_md5", [
-      [ "Using PLYwoot in a CMake project", "index.html#autotoc_md6", null ],
-      [ "Dependencies", "index.html#Dependencies", null ]
-    ] ],
-    [ "Benchmarks", "index.html#autotoc_md7", null ],
-    [ "Known issues", "index.html#autotoc_md8", null ],
-    [ "Planned features", "index.html#autotoc_md9", null ],
-    [ "License", "index.html#autotoc_md10", null ],
     [ "Namespaces", "namespaces.html", [
       [ "Namespace List", "namespaces.html", "namespaces_dup" ],
       [ "Namespace Members", "namespacemembers.html", [
@@ -69,7 +56,7 @@ var NAVTREE =
 var NAVTREEINDEX =
 [
 "annotated.html",
-"structplywoot_1_1PlyElement.html#a770eea6282d97e2b476fe7c0ec0df77c"
+"structplywoot_1_1PlyProperty.html"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';
