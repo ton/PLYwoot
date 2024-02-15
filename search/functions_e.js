@@ -1,4 +1,7 @@
 var searchData=
 [
-  ['write_0',['write',['../classplywoot_1_1OStream.html#abe61c5e9a6407b13c910e76ba06c755b',1,'plywoot::OStream']]]
+  ['to_5fnumber_0',['to_number',['../namespaceplywoot_1_1detail.html#a032192c72cdf2643a8021e7d7fc1d8e2',1,'plywoot::detail::to_number(const char *first, const char *last, const char **end)'],['../namespaceplywoot_1_1detail.html#a2015dc3a699cf589df610ee9c87bee1e',1,'plywoot::detail::to_number(const char *first, const char *last, const char **end)']]],
+  ['to_5fnumber_3c_20double_20_3e_1',['to_number&lt; double &gt;',['../namespaceplywoot_1_1detail.html#af40f44da34e84c8827c3a5faf73bc3dd',1,'plywoot::detail']]],
+  ['to_5fstring_2',['to_string',['../namespaceplywoot_1_1detail.html#a9802a9b7bbecdb252e21bd1d2b3b230a',1,'plywoot::detail']]],
+  ['type_3',['type',['../structplywoot_1_1PlyProperty.html#a734c9ae9b3c699a03993376e7a9aa832',1,'plywoot::PlyProperty']]]
 ];

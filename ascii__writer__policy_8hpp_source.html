@@ -101,7 +101,7 @@ $(document).ready(function(){initNavTree('ascii__writer__policy_8hpp_source.html
   <div class="headertitle"><div class="title">ascii_writer_policy.hpp</div></div>
 </div><!--header-->
 <div class="contents">
-<div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span><span class="comment">/*</span></div>
+<a href="ascii__writer__policy_8hpp.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span><span class="comment">/*</span></div>
 <div class="line"><a id="l00002" name="l00002"></a><span class="lineno">    2</span><span class="comment">   This file is part of PLYwoot, a header-only PLY parser.</span></div>
 <div class="line"><a id="l00003" name="l00003"></a><span class="lineno">    3</span><span class="comment"></span> </div>
 <div class="line"><a id="l00004" name="l00004"></a><span class="lineno">    4</span><span class="comment">   Copyright (C) 2023-2024, Ton van den Heuvel</span></div>
@@ -123,11 +123,11 @@ $(document).ready(function(){initNavTree('ascii__writer__policy_8hpp_source.html
 <div class="line"><a id="l00020" name="l00020"></a><span class="lineno">   20</span><span class="preprocessor">#ifndef PLYWOOT_ASCII_WRITER_POLICY_HPP</span></div>
 <div class="line"><a id="l00021" name="l00021"></a><span class="lineno">   21</span><span class="preprocessor">#define PLYWOOT_ASCII_WRITER_POLICY_HPP</span></div>
 <div class="line"><a id="l00022" name="l00022"></a><span class="lineno">   22</span> </div>
-<div class="line"><a id="l00023" name="l00023"></a><span class="lineno">   23</span><span class="preprocessor">#include &quot;buffered_ostream.hpp&quot;</span></div>
+<div class="line"><a id="l00023" name="l00023"></a><span class="lineno">   23</span><span class="preprocessor">#include &quot;<a class="code" href="buffered__ostream_8hpp.html">buffered_ostream.hpp</a>&quot;</span></div>
 <div class="line"><a id="l00024" name="l00024"></a><span class="lineno">   24</span> </div>
 <div class="line"><a id="l00025" name="l00025"></a><span class="lineno">   25</span><span class="preprocessor">#include &lt;ostream&gt;</span></div>
 <div class="line"><a id="l00026" name="l00026"></a><span class="lineno">   26</span> </div>
-<div class="line"><a id="l00027" name="l00027"></a><span class="lineno">   27</span><span class="keyword">namespace </span>plywoot::detail {</div>
+<div class="line"><a id="l00027" name="l00027"></a><span class="lineno">   27</span><span class="keyword">namespace </span><a class="code hl_namespace" href="namespaceplywoot_1_1detail.html">plywoot::detail</a> {</div>
 <div class="line"><a id="l00028" name="l00028"></a><span class="lineno">   28</span> </div>
 <div class="line"><a id="l00029" name="l00029"></a><span class="lineno">   29</span><span class="keyword">namespace </span>{</div>
 <div class="line"><a id="l00030" name="l00030"></a><span class="lineno">   30</span> </div>
@@ -180,7 +180,7 @@ $(document).ready(function(){initNavTree('ascii__writer__policy_8hpp_source.html
 <div class="line"><a id="l00089" name="l00089"></a><span class="lineno">   89</span>    os_.writeAscii(*t);</div>
 <div class="line"><a id="l00090" name="l00090"></a><span class="lineno">   90</span>  }</div>
 <div class="line"><a id="l00091" name="l00091"></a><span class="lineno">   91</span> </div>
-<div class="line"><a id="l00096" name="l00096"></a><span class="lineno">   96</span>  <span class="keywordtype">void</span> writeMissingProperties(PlyPropertyConstIterator first, PlyPropertyConstIterator last)<span class="keyword"> const</span></div>
+<div class="line"><a id="l00096" name="l00096"></a><span class="lineno">   96</span>  <span class="keywordtype">void</span> writeMissingProperties(<a class="code hl_typedef" href="namespaceplywoot.html#a6f063358a1ff8e5618d999479da1f657">PlyPropertyConstIterator</a> first, <a class="code hl_typedef" href="namespaceplywoot.html#a6f063358a1ff8e5618d999479da1f657">PlyPropertyConstIterator</a> last)<span class="keyword"> const</span></div>
 <div class="line"><a id="l00097" name="l00097"></a><span class="lineno">   97</span><span class="keyword">  </span>{</div>
 <div class="line"><a id="l00098" name="l00098"></a><span class="lineno">   98</span>    <span class="keywordflow">while</span> (first++ != last) { os_.write(<span class="stringliteral">&quot; 0&quot;</span>, 2); }</div>
 <div class="line"><a id="l00099" name="l00099"></a><span class="lineno">   99</span>  }</div>
@@ -196,12 +196,15 @@ $(document).ready(function(){initNavTree('ascii__writer__policy_8hpp_source.html
 <div class="line"><a id="l00111" name="l00111"></a><span class="lineno">  111</span>}</div>
 <div class="line"><a id="l00112" name="l00112"></a><span class="lineno">  112</span> </div>
 <div class="line"><a id="l00113" name="l00113"></a><span class="lineno">  113</span><span class="preprocessor">#endif</span></div>
+<div class="ttc" id="abuffered__ostream_8hpp_html"><div class="ttname"><a href="buffered__ostream_8hpp.html">buffered_ostream.hpp</a></div></div>
+<div class="ttc" id="anamespaceplywoot_1_1detail_html"><div class="ttname"><a href="namespaceplywoot_1_1detail.html">plywoot::detail</a></div><div class="ttdef"><b>Definition</b> <a href="ascii__parser__policy_8hpp_source.html#l00046">ascii_parser_policy.hpp:46</a></div></div>
+<div class="ttc" id="anamespaceplywoot_html_a6f063358a1ff8e5618d999479da1f657"><div class="ttname"><a href="namespaceplywoot.html#a6f063358a1ff8e5618d999479da1f657">plywoot::PlyPropertyConstIterator</a></div><div class="ttdeci">std::vector&lt; PlyProperty &gt;::const_iterator PlyPropertyConstIterator</div><div class="ttdef"><b>Definition</b> <a href="types_8hpp_source.html#l00098">types.hpp:98</a></div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><a class="el" href="dir_d44c64559bbebec7f509842c48db8b23.html">include</a></li><li class="navelem"><a class="el" href="dir_b2fbfe87ca2e6ec30f52492568d29687.html">plywoot</a></li><li class="navelem"><a class="el" href="dir_b12cbd9ae501c9151e96d863980be05f.html">plywoot</a></li><li class="navelem"><b>ascii_writer_policy.hpp</b></li>
+    <li class="navelem"><a class="el" href="dir_d44c64559bbebec7f509842c48db8b23.html">include</a></li><li class="navelem"><a class="el" href="dir_b2fbfe87ca2e6ec30f52492568d29687.html">plywoot</a></li><li class="navelem"><a class="el" href="dir_b12cbd9ae501c9151e96d863980be05f.html">plywoot</a></li><li class="navelem"><a class="el" href="ascii__writer__policy_8hpp.html">ascii_writer_policy.hpp</a></li>
     <li class="footer">Generated by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8 </li>
   </ul>
 </div>

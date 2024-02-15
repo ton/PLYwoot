@@ -32,19 +32,32 @@ var NAVTREE =
     ] ],
     [ "Getting started", "index.html#autotoc_md5", [
       [ "Using PLYwoot in a CMake project", "index.html#autotoc_md6", null ],
-      [ "Dependencies", "index.html#autotoc_md7", null ]
+      [ "Dependencies", "index.html#Dependencies", null ]
     ] ],
-    [ "Benchmarks", "index.html#autotoc_md8", null ],
-    [ "Known issues", "index.html#autotoc_md9", null ],
-    [ "Planned features", "index.html#autotoc_md10", null ],
-    [ "License", "index.html#autotoc_md11", null ],
+    [ "Benchmarks", "index.html#autotoc_md7", null ],
+    [ "Known issues", "index.html#autotoc_md8", null ],
+    [ "Planned features", "index.html#autotoc_md9", null ],
+    [ "License", "index.html#autotoc_md10", null ],
+    [ "Namespaces", "namespaces.html", [
+      [ "Namespace List", "namespaces.html", "namespaces_dup" ],
+      [ "Namespace Members", "namespacemembers.html", [
+        [ "All", "namespacemembers.html", null ],
+        [ "Functions", "namespacemembers_func.html", null ],
+        [ "Variables", "namespacemembers_vars.html", null ],
+        [ "Typedefs", "namespacemembers_type.html", null ],
+        [ "Enumerations", "namespacemembers_enum.html", null ]
+      ] ]
+    ] ],
     [ "Classes", "annotated.html", [
       [ "Class List", "annotated.html", "annotated_dup" ],
       [ "Class Index", "classes.html", null ],
       [ "Class Hierarchy", "hierarchy.html", "hierarchy" ],
       [ "Class Members", "functions.html", [
         [ "All", "functions.html", null ],
-        [ "Functions", "functions_func.html", null ]
+        [ "Functions", "functions_func.html", null ],
+        [ "Variables", "functions_vars.html", null ],
+        [ "Typedefs", "functions_type.html", null ],
+        [ "Related Symbols", "functions_rela.html", null ]
       ] ]
     ] ],
     [ "Files", "files.html", [
@@ -55,7 +68,8 @@ var NAVTREE =
 
 var NAVTREEINDEX =
 [
-"annotated.html"
+"annotated.html",
+"structplywoot_1_1PlyElement.html#a770eea6282d97e2b476fe7c0ec0df77c"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

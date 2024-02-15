@@ -24,6 +24,24 @@
 */
 var menudata={children:[
 {text:"Main Page",url:"index.html"},
+{text:"Namespaces",url:"namespaces.html",children:[
+{text:"Namespace List",url:"namespaces.html"},
+{text:"Namespace Members",url:"namespacemembers.html",children:[
+{text:"All",url:"namespacemembers.html",children:[
+{text:"a",url:"namespacemembers.html#index_a"},
+{text:"b",url:"namespacemembers.html#index_b"},
+{text:"c",url:"namespacemembers.html#index_c"},
+{text:"h",url:"namespacemembers.html#index_h"},
+{text:"i",url:"namespacemembers.html#index_i"},
+{text:"n",url:"namespacemembers.html#index_n"},
+{text:"o",url:"namespacemembers.html#index_o"},
+{text:"p",url:"namespacemembers.html#index_p"},
+{text:"s",url:"namespacemembers.html#index_s"},
+{text:"t",url:"namespacemembers.html#index_t"}]},
+{text:"Functions",url:"namespacemembers_func.html"},
+{text:"Variables",url:"namespacemembers_vars.html"},
+{text:"Typedefs",url:"namespacemembers_type.html"},
+{text:"Enumerations",url:"namespacemembers_enum.html"}]}]},
 {text:"Classes",url:"annotated.html",children:[
 {text:"Class List",url:"annotated.html"},
 {text:"Class Index",url:"classes.html"},
@@ -44,6 +62,7 @@ var menudata={children:[
 {text:"r",url:"functions.html#index_r"},
 {text:"s",url:"functions.html#index_s"},
 {text:"t",url:"functions.html#index_t"},
+{text:"u",url:"functions.html#index_u"},
 {text:"w",url:"functions.html#index_w"},
 {text:"~",url:"functions.html#index__7E"}]},
 {text:"Functions",url:"functions_func.html",children:[
@@ -61,7 +80,11 @@ var menudata={children:[
 {text:"r",url:"functions_func.html#index_r"},
 {text:"s",url:"functions_func.html#index_s"},
 {text:"t",url:"functions_func.html#index_t"},
+{text:"u",url:"functions_func.html#index_u"},
 {text:"w",url:"functions_func.html#index_w"},
-{text:"~",url:"functions_func.html#index__7E"}]}]}]},
+{text:"~",url:"functions_func.html#index__7E"}]},
+{text:"Variables",url:"functions_vars.html"},
+{text:"Typedefs",url:"functions_type.html"},
+{text:"Related Symbols",url:"functions_rela.html"}]}]},
 {text:"Files",url:"files.html",children:[
 {text:"File List",url:"files.html"}]}]}

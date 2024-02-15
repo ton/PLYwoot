@@ -101,7 +101,7 @@ $(document).ready(function(){initNavTree('parser_8hpp_source.html',''); initResi
   <div class="headertitle"><div class="title">parser.hpp</div></div>
 </div><!--header-->
 <div class="contents">
-<div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span><span class="comment">/*</span></div>
+<a href="parser_8hpp.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span><span class="comment">/*</span></div>
 <div class="line"><a id="l00002" name="l00002"></a><span class="lineno">    2</span><span class="comment">   This file is part of PLYwoot, a header-only PLY parser.</span></div>
 <div class="line"><a id="l00003" name="l00003"></a><span class="lineno">    3</span><span class="comment"></span> </div>
 <div class="line"><a id="l00004" name="l00004"></a><span class="lineno">    4</span><span class="comment">   Copyright (C) 2023-2024, Ton van den Heuvel</span></div>
@@ -123,15 +123,15 @@ $(document).ready(function(){initNavTree('parser_8hpp_source.html',''); initResi
 <div class="line"><a id="l00020" name="l00020"></a><span class="lineno">   20</span><span class="preprocessor">#ifndef PLYWOOT_PARSER_HPP</span></div>
 <div class="line"><a id="l00021" name="l00021"></a><span class="lineno">   21</span><span class="preprocessor">#define PLYWOOT_PARSER_HPP</span></div>
 <div class="line"><a id="l00022" name="l00022"></a><span class="lineno">   22</span> </div>
-<div class="line"><a id="l00023" name="l00023"></a><span class="lineno">   23</span><span class="preprocessor">#include &quot;reflect.hpp&quot;</span></div>
-<div class="line"><a id="l00024" name="l00024"></a><span class="lineno">   24</span><span class="preprocessor">#include &quot;std.hpp&quot;</span></div>
-<div class="line"><a id="l00025" name="l00025"></a><span class="lineno">   25</span><span class="preprocessor">#include &quot;type_traits.hpp&quot;</span></div>
-<div class="line"><a id="l00026" name="l00026"></a><span class="lineno">   26</span><span class="preprocessor">#include &quot;types.hpp&quot;</span></div>
+<div class="line"><a id="l00023" name="l00023"></a><span class="lineno">   23</span><span class="preprocessor">#include &quot;<a class="code" href="reflect_8hpp.html">reflect.hpp</a>&quot;</span></div>
+<div class="line"><a id="l00024" name="l00024"></a><span class="lineno">   24</span><span class="preprocessor">#include &quot;<a class="code" href="std_8hpp.html">std.hpp</a>&quot;</span></div>
+<div class="line"><a id="l00025" name="l00025"></a><span class="lineno">   25</span><span class="preprocessor">#include &quot;<a class="code" href="type__traits_8hpp.html">type_traits.hpp</a>&quot;</span></div>
+<div class="line"><a id="l00026" name="l00026"></a><span class="lineno">   26</span><span class="preprocessor">#include &quot;<a class="code" href="types_8hpp.html">types.hpp</a>&quot;</span></div>
 <div class="line"><a id="l00027" name="l00027"></a><span class="lineno">   27</span> </div>
 <div class="line"><a id="l00028" name="l00028"></a><span class="lineno">   28</span><span class="preprocessor">#include &lt;cstdint&gt;</span></div>
 <div class="line"><a id="l00029" name="l00029"></a><span class="lineno">   29</span><span class="preprocessor">#include &lt;numeric&gt;</span></div>
 <div class="line"><a id="l00030" name="l00030"></a><span class="lineno">   30</span> </div>
-<div class="line"><a id="l00031" name="l00031"></a><span class="lineno">   31</span><span class="keyword">namespace </span>plywoot::detail {</div>
+<div class="line"><a id="l00031" name="l00031"></a><span class="lineno">   31</span><span class="keyword">namespace </span><a class="code hl_namespace" href="namespaceplywoot_1_1detail.html">plywoot::detail</a> {</div>
 <div class="line"><a id="l00032" name="l00032"></a><span class="lineno">   32</span> </div>
 <div class="line"><a id="l00050" name="l00050"></a><span class="lineno">   50</span><span class="keyword">template</span>&lt;<span class="keyword">typename</span> FormatParserPolicy&gt;</div>
 <div class="line"><a id="l00051" name="l00051"></a><span class="lineno">   51</span><span class="keyword">class </span>Parser : <span class="keyword">private</span> FormatParserPolicy</div>
@@ -141,7 +141,7 @@ $(document).ready(function(){initNavTree('parser_8hpp_source.html',''); initResi
 <div class="line"><a id="l00055" name="l00055"></a><span class="lineno">   55</span>  <span class="keyword">struct </span>MaybeMemcpyable</div>
 <div class="line"><a id="l00056" name="l00056"></a><span class="lineno">   56</span>  {</div>
 <div class="line"><a id="l00057" name="l00057"></a><span class="lineno">   57</span>    <span class="keyword">static</span> <span class="keyword">constexpr</span> <span class="keywordtype">bool</span> value = !std::is_same&lt;FormatParserPolicy, AsciiParserPolicy&gt;::value &amp;&amp;</div>
-<div class="line"><a id="l00058" name="l00058"></a><span class="lineno">   58</span>                                  detail::isPacked&lt;Ts...&gt;() &amp;&amp; detail::isTriviallyCopyable&lt;Ts...&gt;();</div>
+<div class="line"><a id="l00058" name="l00058"></a><span class="lineno">   58</span>                                  <a class="code hl_function" href="namespaceplywoot_1_1detail.html#a6cb6654941b40e7a8b7739c2f7ad79be">detail::isPacked</a>&lt;Ts...&gt;() &amp;&amp; detail::isTriviallyCopyable&lt;Ts...&gt;();</div>
 <div class="line"><a id="l00059" name="l00059"></a><span class="lineno">   59</span>  };</div>
 <div class="line"><a id="l00060" name="l00060"></a><span class="lineno">   60</span> </div>
 <div class="line"><a id="l00061" name="l00061"></a><span class="lineno">   61</span><span class="keyword">public</span>:</div>
@@ -162,28 +162,28 @@ $(document).ready(function(){initNavTree('parser_8hpp_source.html',''); initResi
 <div class="line"><a id="l00086" name="l00086"></a><span class="lineno">   86</span>        {</div>
 <div class="line"><a id="l00087" name="l00087"></a><span class="lineno">   87</span>          <span class="keywordflow">switch</span> (property.type())</div>
 <div class="line"><a id="l00088" name="l00088"></a><span class="lineno">   88</span>          {</div>
-<div class="line"><a id="l00089" name="l00089"></a><span class="lineno">   89</span>            <span class="keywordflow">case</span> PlyDataType::Char:</div>
+<div class="line"><a id="l00089" name="l00089"></a><span class="lineno">   89</span>            <span class="keywordflow">case</span> <a class="code hl_enumvalue" href="namespaceplywoot.html#a9e1fcce16850728d68039e50a8775251a8e95e84813830072b7516cfaa7dbc1a9">PlyDataType::Char</a>:</div>
 <div class="line"><a id="l00090" name="l00090"></a><span class="lineno">   90</span>              dest = readProperty(dest, property, reflect::Type&lt;std::vector&lt;char&gt;&gt;{});</div>
 <div class="line"><a id="l00091" name="l00091"></a><span class="lineno">   91</span>              <span class="keywordflow">break</span>;</div>
-<div class="line"><a id="l00092" name="l00092"></a><span class="lineno">   92</span>            <span class="keywordflow">case</span> PlyDataType::UChar:</div>
+<div class="line"><a id="l00092" name="l00092"></a><span class="lineno">   92</span>            <span class="keywordflow">case</span> <a class="code hl_enumvalue" href="namespaceplywoot.html#a9e1fcce16850728d68039e50a8775251af97d5cb62f8cf5dbb26c17171dd5fe69">PlyDataType::UChar</a>:</div>
 <div class="line"><a id="l00093" name="l00093"></a><span class="lineno">   93</span>              dest = readProperty(dest, property, reflect::Type&lt;std::vector&lt;unsigned char&gt;&gt;{});</div>
 <div class="line"><a id="l00094" name="l00094"></a><span class="lineno">   94</span>              <span class="keywordflow">break</span>;</div>
-<div class="line"><a id="l00095" name="l00095"></a><span class="lineno">   95</span>            <span class="keywordflow">case</span> PlyDataType::Short:</div>
+<div class="line"><a id="l00095" name="l00095"></a><span class="lineno">   95</span>            <span class="keywordflow">case</span> <a class="code hl_enumvalue" href="namespaceplywoot.html#a9e1fcce16850728d68039e50a8775251a30bb747c98bccdd11b3f89e644c4d0ad">PlyDataType::Short</a>:</div>
 <div class="line"><a id="l00096" name="l00096"></a><span class="lineno">   96</span>              dest = readProperty(dest, property, reflect::Type&lt;std::vector&lt;short&gt;&gt;{});</div>
 <div class="line"><a id="l00097" name="l00097"></a><span class="lineno">   97</span>              <span class="keywordflow">break</span>;</div>
-<div class="line"><a id="l00098" name="l00098"></a><span class="lineno">   98</span>            <span class="keywordflow">case</span> PlyDataType::UShort:</div>
+<div class="line"><a id="l00098" name="l00098"></a><span class="lineno">   98</span>            <span class="keywordflow">case</span> <a class="code hl_enumvalue" href="namespaceplywoot.html#a9e1fcce16850728d68039e50a8775251adfe785f133347f9b473f99009732b1bc">PlyDataType::UShort</a>:</div>
 <div class="line"><a id="l00099" name="l00099"></a><span class="lineno">   99</span>              dest = readProperty(dest, property, reflect::Type&lt;std::vector&lt;unsigned short&gt;&gt;{});</div>
 <div class="line"><a id="l00100" name="l00100"></a><span class="lineno">  100</span>              <span class="keywordflow">break</span>;</div>
-<div class="line"><a id="l00101" name="l00101"></a><span class="lineno">  101</span>            <span class="keywordflow">case</span> PlyDataType::Int:</div>
+<div class="line"><a id="l00101" name="l00101"></a><span class="lineno">  101</span>            <span class="keywordflow">case</span> <a class="code hl_enumvalue" href="namespaceplywoot.html#a9e1fcce16850728d68039e50a8775251a1686a6c336b71b36d77354cea19a8b52">PlyDataType::Int</a>:</div>
 <div class="line"><a id="l00102" name="l00102"></a><span class="lineno">  102</span>              dest = readProperty(dest, property, reflect::Type&lt;std::vector&lt;int&gt;&gt;{});</div>
 <div class="line"><a id="l00103" name="l00103"></a><span class="lineno">  103</span>              <span class="keywordflow">break</span>;</div>
-<div class="line"><a id="l00104" name="l00104"></a><span class="lineno">  104</span>            <span class="keywordflow">case</span> PlyDataType::UInt:</div>
+<div class="line"><a id="l00104" name="l00104"></a><span class="lineno">  104</span>            <span class="keywordflow">case</span> <a class="code hl_enumvalue" href="namespaceplywoot.html#a9e1fcce16850728d68039e50a8775251a0b1291eded63143ac04709711274785a">PlyDataType::UInt</a>:</div>
 <div class="line"><a id="l00105" name="l00105"></a><span class="lineno">  105</span>              dest = readProperty(dest, property, reflect::Type&lt;std::vector&lt;unsigned int&gt;&gt;{});</div>
 <div class="line"><a id="l00106" name="l00106"></a><span class="lineno">  106</span>              <span class="keywordflow">break</span>;</div>
-<div class="line"><a id="l00107" name="l00107"></a><span class="lineno">  107</span>            <span class="keywordflow">case</span> PlyDataType::Float:</div>
+<div class="line"><a id="l00107" name="l00107"></a><span class="lineno">  107</span>            <span class="keywordflow">case</span> <a class="code hl_enumvalue" href="namespaceplywoot.html#a9e1fcce16850728d68039e50a8775251a22ae0e2b89e5e3d477f988cc36d3272b">PlyDataType::Float</a>:</div>
 <div class="line"><a id="l00108" name="l00108"></a><span class="lineno">  108</span>              dest = readProperty(dest, property, reflect::Type&lt;std::vector&lt;float&gt;&gt;{});</div>
 <div class="line"><a id="l00109" name="l00109"></a><span class="lineno">  109</span>              <span class="keywordflow">break</span>;</div>
-<div class="line"><a id="l00110" name="l00110"></a><span class="lineno">  110</span>            <span class="keywordflow">case</span> PlyDataType::Double:</div>
+<div class="line"><a id="l00110" name="l00110"></a><span class="lineno">  110</span>            <span class="keywordflow">case</span> <a class="code hl_enumvalue" href="namespaceplywoot.html#a9e1fcce16850728d68039e50a8775251ad909d38d705ce75386dd86e611a82f5b">PlyDataType::Double</a>:</div>
 <div class="line"><a id="l00111" name="l00111"></a><span class="lineno">  111</span>              dest = readProperty(dest, property, reflect::Type&lt;std::vector&lt;double&gt;&gt;{});</div>
 <div class="line"><a id="l00112" name="l00112"></a><span class="lineno">  112</span>              <span class="keywordflow">break</span>;</div>
 <div class="line"><a id="l00113" name="l00113"></a><span class="lineno">  113</span>          }</div>
@@ -192,35 +192,35 @@ $(document).ready(function(){initNavTree('parser_8hpp_source.html',''); initResi
 <div class="line"><a id="l00116" name="l00116"></a><span class="lineno">  116</span>        {</div>
 <div class="line"><a id="l00117" name="l00117"></a><span class="lineno">  117</span>          <span class="keywordflow">switch</span> (property.type())</div>
 <div class="line"><a id="l00118" name="l00118"></a><span class="lineno">  118</span>          {</div>
-<div class="line"><a id="l00119" name="l00119"></a><span class="lineno">  119</span>            <span class="keywordflow">case</span> PlyDataType::Char:</div>
+<div class="line"><a id="l00119" name="l00119"></a><span class="lineno">  119</span>            <span class="keywordflow">case</span> <a class="code hl_enumvalue" href="namespaceplywoot.html#a9e1fcce16850728d68039e50a8775251a8e95e84813830072b7516cfaa7dbc1a9">PlyDataType::Char</a>:</div>
 <div class="line"><a id="l00120" name="l00120"></a><span class="lineno">  120</span>              dest = readProperty(dest, property, reflect::Type&lt;char&gt;{});</div>
 <div class="line"><a id="l00121" name="l00121"></a><span class="lineno">  121</span>              <span class="keywordflow">break</span>;</div>
-<div class="line"><a id="l00122" name="l00122"></a><span class="lineno">  122</span>            <span class="keywordflow">case</span> PlyDataType::UChar:</div>
+<div class="line"><a id="l00122" name="l00122"></a><span class="lineno">  122</span>            <span class="keywordflow">case</span> <a class="code hl_enumvalue" href="namespaceplywoot.html#a9e1fcce16850728d68039e50a8775251af97d5cb62f8cf5dbb26c17171dd5fe69">PlyDataType::UChar</a>:</div>
 <div class="line"><a id="l00123" name="l00123"></a><span class="lineno">  123</span>              dest = readProperty(dest, property, reflect::Type&lt;unsigned char&gt;{});</div>
 <div class="line"><a id="l00124" name="l00124"></a><span class="lineno">  124</span>              <span class="keywordflow">break</span>;</div>
-<div class="line"><a id="l00125" name="l00125"></a><span class="lineno">  125</span>            <span class="keywordflow">case</span> PlyDataType::Short:</div>
+<div class="line"><a id="l00125" name="l00125"></a><span class="lineno">  125</span>            <span class="keywordflow">case</span> <a class="code hl_enumvalue" href="namespaceplywoot.html#a9e1fcce16850728d68039e50a8775251a30bb747c98bccdd11b3f89e644c4d0ad">PlyDataType::Short</a>:</div>
 <div class="line"><a id="l00126" name="l00126"></a><span class="lineno">  126</span>              dest = readProperty(dest, property, reflect::Type&lt;short&gt;{});</div>
 <div class="line"><a id="l00127" name="l00127"></a><span class="lineno">  127</span>              <span class="keywordflow">break</span>;</div>
-<div class="line"><a id="l00128" name="l00128"></a><span class="lineno">  128</span>            <span class="keywordflow">case</span> PlyDataType::UShort:</div>
+<div class="line"><a id="l00128" name="l00128"></a><span class="lineno">  128</span>            <span class="keywordflow">case</span> <a class="code hl_enumvalue" href="namespaceplywoot.html#a9e1fcce16850728d68039e50a8775251adfe785f133347f9b473f99009732b1bc">PlyDataType::UShort</a>:</div>
 <div class="line"><a id="l00129" name="l00129"></a><span class="lineno">  129</span>              dest = readProperty(dest, property, reflect::Type&lt;unsigned short&gt;{});</div>
 <div class="line"><a id="l00130" name="l00130"></a><span class="lineno">  130</span>              <span class="keywordflow">break</span>;</div>
-<div class="line"><a id="l00131" name="l00131"></a><span class="lineno">  131</span>            <span class="keywordflow">case</span> PlyDataType::Int:</div>
+<div class="line"><a id="l00131" name="l00131"></a><span class="lineno">  131</span>            <span class="keywordflow">case</span> <a class="code hl_enumvalue" href="namespaceplywoot.html#a9e1fcce16850728d68039e50a8775251a1686a6c336b71b36d77354cea19a8b52">PlyDataType::Int</a>:</div>
 <div class="line"><a id="l00132" name="l00132"></a><span class="lineno">  132</span>              dest = readProperty(dest, property, reflect::Type&lt;int&gt;{});</div>
 <div class="line"><a id="l00133" name="l00133"></a><span class="lineno">  133</span>              <span class="keywordflow">break</span>;</div>
-<div class="line"><a id="l00134" name="l00134"></a><span class="lineno">  134</span>            <span class="keywordflow">case</span> PlyDataType::UInt:</div>
+<div class="line"><a id="l00134" name="l00134"></a><span class="lineno">  134</span>            <span class="keywordflow">case</span> <a class="code hl_enumvalue" href="namespaceplywoot.html#a9e1fcce16850728d68039e50a8775251a0b1291eded63143ac04709711274785a">PlyDataType::UInt</a>:</div>
 <div class="line"><a id="l00135" name="l00135"></a><span class="lineno">  135</span>              dest = readProperty(dest, property, reflect::Type&lt;unsigned int&gt;{});</div>
 <div class="line"><a id="l00136" name="l00136"></a><span class="lineno">  136</span>              <span class="keywordflow">break</span>;</div>
-<div class="line"><a id="l00137" name="l00137"></a><span class="lineno">  137</span>            <span class="keywordflow">case</span> PlyDataType::Float:</div>
+<div class="line"><a id="l00137" name="l00137"></a><span class="lineno">  137</span>            <span class="keywordflow">case</span> <a class="code hl_enumvalue" href="namespaceplywoot.html#a9e1fcce16850728d68039e50a8775251a22ae0e2b89e5e3d477f988cc36d3272b">PlyDataType::Float</a>:</div>
 <div class="line"><a id="l00138" name="l00138"></a><span class="lineno">  138</span>              dest = readProperty(dest, property, reflect::Type&lt;float&gt;{});</div>
 <div class="line"><a id="l00139" name="l00139"></a><span class="lineno">  139</span>              <span class="keywordflow">break</span>;</div>
-<div class="line"><a id="l00140" name="l00140"></a><span class="lineno">  140</span>            <span class="keywordflow">case</span> PlyDataType::Double:</div>
+<div class="line"><a id="l00140" name="l00140"></a><span class="lineno">  140</span>            <span class="keywordflow">case</span> <a class="code hl_enumvalue" href="namespaceplywoot.html#a9e1fcce16850728d68039e50a8775251ad909d38d705ce75386dd86e611a82f5b">PlyDataType::Double</a>:</div>
 <div class="line"><a id="l00141" name="l00141"></a><span class="lineno">  141</span>              dest = readProperty(dest, property, reflect::Type&lt;double&gt;{});</div>
 <div class="line"><a id="l00142" name="l00142"></a><span class="lineno">  142</span>              <span class="keywordflow">break</span>;</div>
 <div class="line"><a id="l00143" name="l00143"></a><span class="lineno">  143</span>          }</div>
 <div class="line"><a id="l00144" name="l00144"></a><span class="lineno">  144</span>        }</div>
 <div class="line"><a id="l00145" name="l00145"></a><span class="lineno">  145</span>      }</div>
 <div class="line"><a id="l00146" name="l00146"></a><span class="lineno">  146</span> </div>
-<div class="line"><a id="l00147" name="l00147"></a><span class="lineno">  147</span>      dest = detail::align(dest, result.alignment());</div>
+<div class="line"><a id="l00147" name="l00147"></a><span class="lineno">  147</span>      dest = <a class="code hl_function" href="namespaceplywoot_1_1detail.html#a22be282111b7b6256dc2c29da0d69521">detail::align</a>(dest, result.alignment());</div>
 <div class="line"><a id="l00148" name="l00148"></a><span class="lineno">  148</span>    }</div>
 <div class="line"><a id="l00149" name="l00149"></a><span class="lineno">  149</span> </div>
 <div class="line"><a id="l00150" name="l00150"></a><span class="lineno">  150</span>    <span class="keywordflow">return</span> result;</div>
@@ -249,9 +249,9 @@ $(document).ready(function(){initNavTree('parser_8hpp_source.html',''); initResi
 <div class="line"><a id="l00185" name="l00185"></a><span class="lineno">  185</span>  <span class="keyword">template</span>&lt;<span class="keyword">typename</span>... Ts&gt;</div>
 <div class="line"><a id="l00186" name="l00186"></a><span class="lineno">  186</span>  <span class="keywordtype">void</span> readElements(<span class="keyword">const</span> PlyElement &amp;element, reflect::Layout&lt;Ts...&gt; layout)<span class="keyword"> const</span></div>
 <div class="line"><a id="l00187" name="l00187"></a><span class="lineno">  187</span><span class="keyword">  </span>{</div>
-<div class="line"><a id="l00188" name="l00188"></a><span class="lineno">  188</span>    <span class="keyword">const</span> PropertyConstIterator first = element.properties().begin();</div>
-<div class="line"><a id="l00189" name="l00189"></a><span class="lineno">  189</span>    <span class="keyword">const</span> PropertyConstIterator last = element.properties().end();</div>
-<div class="line"><a id="l00190" name="l00190"></a><span class="lineno">  190</span>    <span class="keyword">const</span> PropertyConstIterator firstToSkip = first + detail::numProperties&lt;Ts...&gt;();</div>
+<div class="line"><a id="l00188" name="l00188"></a><span class="lineno">  188</span>    <span class="keyword">const</span> <a class="code hl_typedef" href="namespaceplywoot.html#ad194c868b3bf892b615d89efeda7c87a">PropertyConstIterator</a> first = element.properties().begin();</div>
+<div class="line"><a id="l00189" name="l00189"></a><span class="lineno">  189</span>    <span class="keyword">const</span> <a class="code hl_typedef" href="namespaceplywoot.html#ad194c868b3bf892b615d89efeda7c87a">PropertyConstIterator</a> last = element.properties().end();</div>
+<div class="line"><a id="l00190" name="l00190"></a><span class="lineno">  190</span>    <span class="keyword">const</span> <a class="code hl_typedef" href="namespaceplywoot.html#ad194c868b3bf892b615d89efeda7c87a">PropertyConstIterator</a> firstToSkip = first + <a class="code hl_function" href="namespaceplywoot_1_1detail.html#a484093026f80593157cdb54b7473c762">detail::numProperties</a>&lt;Ts...&gt;();</div>
 <div class="line"><a id="l00191" name="l00191"></a><span class="lineno">  191</span> </div>
 <div class="line"><a id="l00192" name="l00192"></a><span class="lineno">  192</span>    std::uint8_t *dest = layout.data();</div>
 <div class="line"><a id="l00193" name="l00193"></a><span class="lineno">  193</span> </div>
@@ -264,7 +264,7 @@ $(document).ready(function(){initNavTree('parser_8hpp_source.html',''); initResi
 <div class="line"><a id="l00200" name="l00200"></a><span class="lineno">  200</span>      {</div>
 <div class="line"><a id="l00201" name="l00201"></a><span class="lineno">  201</span>        <span class="keywordflow">for</span> (std::size_t i{0}; i &lt; element.size(); ++i)</div>
 <div class="line"><a id="l00202" name="l00202"></a><span class="lineno">  202</span>        {</div>
-<div class="line"><a id="l00203" name="l00203"></a><span class="lineno">  203</span>          dest = detail::align(readElement&lt;Ts...&gt;(dest, first, last), layout.alignment());</div>
+<div class="line"><a id="l00203" name="l00203"></a><span class="lineno">  203</span>          dest = <a class="code hl_function" href="namespaceplywoot_1_1detail.html#a22be282111b7b6256dc2c29da0d69521">detail::align</a>(readElement&lt;Ts...&gt;(dest, first, last), layout.alignment());</div>
 <div class="line"><a id="l00204" name="l00204"></a><span class="lineno">  204</span> </div>
 <div class="line"><a id="l00205" name="l00205"></a><span class="lineno">  205</span>          <span class="keyword">auto</span> curr = firstToSkip;</div>
 <div class="line"><a id="l00206" name="l00206"></a><span class="lineno">  206</span>          <span class="keywordflow">while</span> (curr &lt; last) this-&gt;skipProperty(*curr++);</div>
@@ -278,12 +278,12 @@ $(document).ready(function(){initNavTree('parser_8hpp_source.html',''); initResi
 <div class="line"><a id="l00214" name="l00214"></a><span class="lineno">  214</span>        <span class="comment">// remainder of the line to read, and as such skip to the next element.</span></div>
 <div class="line"><a id="l00215" name="l00215"></a><span class="lineno">  215</span>        <span class="keyword">const</span> std::size_t numBytesToSkip =</div>
 <div class="line"><a id="l00216" name="l00216"></a><span class="lineno">  216</span>            std::accumulate(firstToSkip, last, 0ul, [](std::size_t acc, <span class="keyword">const</span> PlyProperty &amp;p) {</div>
-<div class="line"><a id="l00217" name="l00217"></a><span class="lineno">  217</span>              <span class="keywordflow">return</span> acc + sizeOf(p.isList() ? p.sizeType() : p.type());</div>
+<div class="line"><a id="l00217" name="l00217"></a><span class="lineno">  217</span>              <span class="keywordflow">return</span> acc + <a class="code hl_function" href="namespaceplywoot_1_1detail.html#a7e88f7ac5dbc8e189b8ca864c23628e2">sizeOf</a>(p.isList() ? p.sizeType() : p.type());</div>
 <div class="line"><a id="l00218" name="l00218"></a><span class="lineno">  218</span>            });</div>
 <div class="line"><a id="l00219" name="l00219"></a><span class="lineno">  219</span> </div>
 <div class="line"><a id="l00220" name="l00220"></a><span class="lineno">  220</span>        <span class="keywordflow">for</span> (std::size_t i{0}; i &lt; element.size(); ++i)</div>
 <div class="line"><a id="l00221" name="l00221"></a><span class="lineno">  221</span>        {</div>
-<div class="line"><a id="l00222" name="l00222"></a><span class="lineno">  222</span>          dest = detail::align(readElement&lt;Ts...&gt;(dest, first, last), layout.alignment());</div>
+<div class="line"><a id="l00222" name="l00222"></a><span class="lineno">  222</span>          dest = <a class="code hl_function" href="namespaceplywoot_1_1detail.html#a22be282111b7b6256dc2c29da0d69521">detail::align</a>(readElement&lt;Ts...&gt;(dest, first, last), layout.alignment());</div>
 <div class="line"><a id="l00223" name="l00223"></a><span class="lineno">  223</span>          this-&gt;skipProperties(numBytesToSkip);</div>
 <div class="line"><a id="l00224" name="l00224"></a><span class="lineno">  224</span>        }</div>
 <div class="line"><a id="l00225" name="l00225"></a><span class="lineno">  225</span>      }</div>
@@ -292,13 +292,13 @@ $(document).ready(function(){initNavTree('parser_8hpp_source.html',''); initResi
 <div class="line"><a id="l00228" name="l00228"></a><span class="lineno">  228</span>    {</div>
 <div class="line"><a id="l00229" name="l00229"></a><span class="lineno">  229</span>      <span class="keywordflow">for</span> (std::size_t i{0}; i &lt; element.size(); ++i)</div>
 <div class="line"><a id="l00230" name="l00230"></a><span class="lineno">  230</span>      {</div>
-<div class="line"><a id="l00231" name="l00231"></a><span class="lineno">  231</span>        dest = detail::align(readElement&lt;Ts...&gt;(dest, first, last), layout.alignment());</div>
+<div class="line"><a id="l00231" name="l00231"></a><span class="lineno">  231</span>        dest = <a class="code hl_function" href="namespaceplywoot_1_1detail.html#a22be282111b7b6256dc2c29da0d69521">detail::align</a>(readElement&lt;Ts...&gt;(dest, first, last), layout.alignment());</div>
 <div class="line"><a id="l00232" name="l00232"></a><span class="lineno">  232</span>      }</div>
 <div class="line"><a id="l00233" name="l00233"></a><span class="lineno">  233</span>    }</div>
 <div class="line"><a id="l00234" name="l00234"></a><span class="lineno">  234</span>  }</div>
 <div class="line"><a id="l00235" name="l00235"></a><span class="lineno">  235</span> </div>
 <div class="line"><a id="l00236" name="l00236"></a><span class="lineno">  236</span>  <span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt;</div>
-<div class="line"><a id="l00237" name="l00237"></a><span class="lineno">  237</span>  std::uint8_t *readElement(std::uint8_t *dest, PlyPropertyConstIterator first, PlyPropertyConstIterator last)<span class="keyword"></span></div>
+<div class="line"><a id="l00237" name="l00237"></a><span class="lineno">  237</span>  std::uint8_t *readElement(std::uint8_t *dest, <a class="code hl_typedef" href="namespaceplywoot.html#a6f063358a1ff8e5618d999479da1f657">PlyPropertyConstIterator</a> first, <a class="code hl_typedef" href="namespaceplywoot.html#a6f063358a1ff8e5618d999479da1f657">PlyPropertyConstIterator</a> last)<span class="keyword"></span></div>
 <div class="line"><a id="l00238" name="l00238"></a><span class="lineno">  238</span><span class="keyword">      const</span></div>
 <div class="line"><a id="l00239" name="l00239"></a><span class="lineno">  239</span><span class="keyword">  </span>{</div>
 <div class="line"><a id="l00240" name="l00240"></a><span class="lineno">  240</span>    <span class="keywordflow">return</span> first &lt; last ? readProperty(dest, *first, reflect::Type&lt;T&gt;{})</div>
@@ -306,7 +306,7 @@ $(document).ready(function(){initNavTree('parser_8hpp_source.html',''); initResi
 <div class="line"><a id="l00242" name="l00242"></a><span class="lineno">  242</span>  }</div>
 <div class="line"><a id="l00243" name="l00243"></a><span class="lineno">  243</span> </div>
 <div class="line"><a id="l00244" name="l00244"></a><span class="lineno">  244</span>  <span class="keyword">template</span>&lt;<span class="keyword">typename</span> T, <span class="keyword">typename</span> U, <span class="keyword">typename</span>... Ts&gt;</div>
-<div class="line"><a id="l00245" name="l00245"></a><span class="lineno">  245</span>  std::uint8_t *readElement(std::uint8_t *dest, PropertyConstIterator first, PropertyConstIterator last)<span class="keyword"> const</span></div>
+<div class="line"><a id="l00245" name="l00245"></a><span class="lineno">  245</span>  std::uint8_t *readElement(std::uint8_t *dest, <a class="code hl_typedef" href="namespaceplywoot.html#ad194c868b3bf892b615d89efeda7c87a">PropertyConstIterator</a> first, <a class="code hl_typedef" href="namespaceplywoot.html#ad194c868b3bf892b615d89efeda7c87a">PropertyConstIterator</a> last)<span class="keyword"> const</span></div>
 <div class="line"><a id="l00246" name="l00246"></a><span class="lineno">  246</span><span class="keyword">  </span>{</div>
 <div class="line"><a id="l00247" name="l00247"></a><span class="lineno">  247</span>    <span class="keywordflow">return</span> readElement&lt;U, Ts...&gt;(readElement&lt;T&gt;(dest, first, last), first + detail::numProperties&lt;T&gt;(), last);</div>
 <div class="line"><a id="l00248" name="l00248"></a><span class="lineno">  248</span>  }</div>
@@ -314,7 +314,7 @@ $(document).ready(function(){initNavTree('parser_8hpp_source.html',''); initResi
 <div class="line"><a id="l00250" name="l00250"></a><span class="lineno">  250</span>  <span class="keyword">template</span>&lt;<span class="keyword">typename</span> PlyT, <span class="keyword">typename</span> PlySizeT, <span class="keyword">typename</span> DestT&gt;</div>
 <div class="line"><a id="l00251" name="l00251"></a><span class="lineno">  251</span>  std::uint8_t *readListProperty(std::uint8_t *dest, reflect::Type&lt;std::vector&lt;DestT&gt;&gt;)<span class="keyword"> const</span></div>
 <div class="line"><a id="l00252" name="l00252"></a><span class="lineno">  252</span><span class="keyword">  </span>{</div>
-<div class="line"><a id="l00253" name="l00253"></a><span class="lineno">  253</span>    dest = <span class="keyword">static_cast&lt;</span>std::uint8_t *<span class="keyword">&gt;</span>(detail::align(dest, <span class="keyword">alignof</span>(std::vector&lt;DestT&gt;)));</div>
+<div class="line"><a id="l00253" name="l00253"></a><span class="lineno">  253</span>    dest = <span class="keyword">static_cast&lt;</span>std::uint8_t *<span class="keyword">&gt;</span>(<a class="code hl_function" href="namespaceplywoot_1_1detail.html#a22be282111b7b6256dc2c29da0d69521">detail::align</a>(dest, <span class="keyword">alignof</span>(std::vector&lt;DestT&gt;)));</div>
 <div class="line"><a id="l00254" name="l00254"></a><span class="lineno">  254</span>    std::vector&lt;DestT&gt; &amp;v = *<span class="keyword">reinterpret_cast&lt;</span>std::vector&lt;DestT&gt; *<span class="keyword">&gt;</span>(dest);</div>
 <div class="line"><a id="l00255" name="l00255"></a><span class="lineno">  255</span> </div>
 <div class="line"><a id="l00256" name="l00256"></a><span class="lineno">  256</span>    <span class="keyword">const</span> PlySizeT size = this-&gt;<span class="keyword">template</span> readNumber&lt;PlySizeT&gt;();</div>
@@ -332,7 +332,7 @@ $(document).ready(function(){initNavTree('parser_8hpp_source.html',''); initResi
 <div class="line"><a id="l00268" name="l00268"></a><span class="lineno">  268</span>    <span class="comment">// TODO(ton): skip the number that defines the list in the PLY data, we</span></div>
 <div class="line"><a id="l00269" name="l00269"></a><span class="lineno">  269</span>    <span class="comment">// expect it to be of length N; throw an exception here in case they do no match?</span></div>
 <div class="line"><a id="l00270" name="l00270"></a><span class="lineno">  270</span>    this-&gt;<span class="keyword">template</span> skipNumber&lt;PlySizeT&gt;();</div>
-<div class="line"><a id="l00271" name="l00271"></a><span class="lineno">  271</span>    dest = <span class="keyword">static_cast&lt;</span>std::uint8_t *<span class="keyword">&gt;</span>(detail::align(dest, <span class="keyword">alignof</span>(DestT)));</div>
+<div class="line"><a id="l00271" name="l00271"></a><span class="lineno">  271</span>    dest = <span class="keyword">static_cast&lt;</span>std::uint8_t *<span class="keyword">&gt;</span>(<a class="code hl_function" href="namespaceplywoot_1_1detail.html#a22be282111b7b6256dc2c29da0d69521">detail::align</a>(dest, <span class="keyword">alignof</span>(DestT)));</div>
 <div class="line"><a id="l00272" name="l00272"></a><span class="lineno">  272</span>    <span class="keywordflow">return</span> this-&gt;<span class="keyword">template</span> readNumbers&lt;PlyT, DestT, N&gt;(dest);</div>
 <div class="line"><a id="l00273" name="l00273"></a><span class="lineno">  273</span>  }</div>
 <div class="line"><a id="l00274" name="l00274"></a><span class="lineno">  274</span> </div>
@@ -341,21 +341,21 @@ $(document).ready(function(){initNavTree('parser_8hpp_source.html',''); initResi
 <div class="line"><a id="l00277" name="l00277"></a><span class="lineno">  277</span><span class="keyword">  </span>{</div>
 <div class="line"><a id="l00278" name="l00278"></a><span class="lineno">  278</span>    <span class="keywordflow">switch</span> (property.sizeType())</div>
 <div class="line"><a id="l00279" name="l00279"></a><span class="lineno">  279</span>    {</div>
-<div class="line"><a id="l00280" name="l00280"></a><span class="lineno">  280</span>      <span class="keywordflow">case</span> PlyDataType::Char:</div>
+<div class="line"><a id="l00280" name="l00280"></a><span class="lineno">  280</span>      <span class="keywordflow">case</span> <a class="code hl_enumvalue" href="namespaceplywoot.html#a9e1fcce16850728d68039e50a8775251a8e95e84813830072b7516cfaa7dbc1a9">PlyDataType::Char</a>:</div>
 <div class="line"><a id="l00281" name="l00281"></a><span class="lineno">  281</span>        <span class="keywordflow">return</span> readListProperty&lt;PlyT, char&gt;(dest, tag);</div>
-<div class="line"><a id="l00282" name="l00282"></a><span class="lineno">  282</span>      <span class="keywordflow">case</span> PlyDataType::UChar:</div>
+<div class="line"><a id="l00282" name="l00282"></a><span class="lineno">  282</span>      <span class="keywordflow">case</span> <a class="code hl_enumvalue" href="namespaceplywoot.html#a9e1fcce16850728d68039e50a8775251af97d5cb62f8cf5dbb26c17171dd5fe69">PlyDataType::UChar</a>:</div>
 <div class="line"><a id="l00283" name="l00283"></a><span class="lineno">  283</span>        <span class="keywordflow">return</span> readListProperty&lt;PlyT, unsigned char&gt;(dest, tag);</div>
-<div class="line"><a id="l00284" name="l00284"></a><span class="lineno">  284</span>      <span class="keywordflow">case</span> PlyDataType::Short:</div>
+<div class="line"><a id="l00284" name="l00284"></a><span class="lineno">  284</span>      <span class="keywordflow">case</span> <a class="code hl_enumvalue" href="namespaceplywoot.html#a9e1fcce16850728d68039e50a8775251a30bb747c98bccdd11b3f89e644c4d0ad">PlyDataType::Short</a>:</div>
 <div class="line"><a id="l00285" name="l00285"></a><span class="lineno">  285</span>        <span class="keywordflow">return</span> readListProperty&lt;PlyT, short&gt;(dest, tag);</div>
-<div class="line"><a id="l00286" name="l00286"></a><span class="lineno">  286</span>      <span class="keywordflow">case</span> PlyDataType::UShort:</div>
+<div class="line"><a id="l00286" name="l00286"></a><span class="lineno">  286</span>      <span class="keywordflow">case</span> <a class="code hl_enumvalue" href="namespaceplywoot.html#a9e1fcce16850728d68039e50a8775251adfe785f133347f9b473f99009732b1bc">PlyDataType::UShort</a>:</div>
 <div class="line"><a id="l00287" name="l00287"></a><span class="lineno">  287</span>        <span class="keywordflow">return</span> readListProperty&lt;PlyT, unsigned short&gt;(dest, tag);</div>
-<div class="line"><a id="l00288" name="l00288"></a><span class="lineno">  288</span>      <span class="keywordflow">case</span> PlyDataType::Int:</div>
+<div class="line"><a id="l00288" name="l00288"></a><span class="lineno">  288</span>      <span class="keywordflow">case</span> <a class="code hl_enumvalue" href="namespaceplywoot.html#a9e1fcce16850728d68039e50a8775251a1686a6c336b71b36d77354cea19a8b52">PlyDataType::Int</a>:</div>
 <div class="line"><a id="l00289" name="l00289"></a><span class="lineno">  289</span>        <span class="keywordflow">return</span> readListProperty&lt;PlyT, int&gt;(dest, tag);</div>
-<div class="line"><a id="l00290" name="l00290"></a><span class="lineno">  290</span>      <span class="keywordflow">case</span> PlyDataType::UInt:</div>
+<div class="line"><a id="l00290" name="l00290"></a><span class="lineno">  290</span>      <span class="keywordflow">case</span> <a class="code hl_enumvalue" href="namespaceplywoot.html#a9e1fcce16850728d68039e50a8775251a0b1291eded63143ac04709711274785a">PlyDataType::UInt</a>:</div>
 <div class="line"><a id="l00291" name="l00291"></a><span class="lineno">  291</span>        <span class="keywordflow">return</span> readListProperty&lt;PlyT, unsigned int&gt;(dest, tag);</div>
-<div class="line"><a id="l00292" name="l00292"></a><span class="lineno">  292</span>      <span class="keywordflow">case</span> PlyDataType::Float:</div>
+<div class="line"><a id="l00292" name="l00292"></a><span class="lineno">  292</span>      <span class="keywordflow">case</span> <a class="code hl_enumvalue" href="namespaceplywoot.html#a9e1fcce16850728d68039e50a8775251a22ae0e2b89e5e3d477f988cc36d3272b">PlyDataType::Float</a>:</div>
 <div class="line"><a id="l00293" name="l00293"></a><span class="lineno">  293</span>        <span class="keywordflow">return</span> readListProperty&lt;PlyT, float&gt;(dest, tag);</div>
-<div class="line"><a id="l00294" name="l00294"></a><span class="lineno">  294</span>      <span class="keywordflow">case</span> PlyDataType::Double:</div>
+<div class="line"><a id="l00294" name="l00294"></a><span class="lineno">  294</span>      <span class="keywordflow">case</span> <a class="code hl_enumvalue" href="namespaceplywoot.html#a9e1fcce16850728d68039e50a8775251ad909d38d705ce75386dd86e611a82f5b">PlyDataType::Double</a>:</div>
 <div class="line"><a id="l00295" name="l00295"></a><span class="lineno">  295</span>        <span class="keywordflow">return</span> readListProperty&lt;PlyT, double&gt;(dest, tag);</div>
 <div class="line"><a id="l00296" name="l00296"></a><span class="lineno">  296</span>    }</div>
 <div class="line"><a id="l00297" name="l00297"></a><span class="lineno">  297</span> </div>
@@ -367,11 +367,11 @@ $(document).ready(function(){initNavTree('parser_8hpp_source.html',''); initResi
 <div class="line"><a id="l00303" name="l00303"></a><span class="lineno">  303</span><span class="keyword">  </span>{</div>
 <div class="line"><a id="l00304" name="l00304"></a><span class="lineno">  304</span>    <span class="keywordflow">if</span> <span class="keyword">constexpr</span> (std::is_arithmetic_v&lt;DestT&gt;)</div>
 <div class="line"><a id="l00305" name="l00305"></a><span class="lineno">  305</span>    {</div>
-<div class="line"><a id="l00306" name="l00306"></a><span class="lineno">  306</span>      dest = <span class="keyword">static_cast&lt;</span>std::uint8_t *<span class="keyword">&gt;</span>(detail::align(dest, <span class="keyword">alignof</span>(DestT)));</div>
+<div class="line"><a id="l00306" name="l00306"></a><span class="lineno">  306</span>      dest = <span class="keyword">static_cast&lt;</span>std::uint8_t *<span class="keyword">&gt;</span>(<a class="code hl_function" href="namespaceplywoot_1_1detail.html#a22be282111b7b6256dc2c29da0d69521">detail::align</a>(dest, <span class="keyword">alignof</span>(DestT)));</div>
 <div class="line"><a id="l00307" name="l00307"></a><span class="lineno">  307</span>      *<span class="keyword">reinterpret_cast&lt;</span>DestT *<span class="keyword">&gt;</span>(dest) = this-&gt;<span class="keyword">template</span> readNumber&lt;PlyT&gt;();</div>
 <div class="line"><a id="l00308" name="l00308"></a><span class="lineno">  308</span>      <span class="keywordflow">return</span> dest + <span class="keyword">sizeof</span>(DestT);</div>
 <div class="line"><a id="l00309" name="l00309"></a><span class="lineno">  309</span>    }</div>
-<div class="line"><a id="l00310" name="l00310"></a><span class="lineno">  310</span>    <span class="keywordflow">else</span> { <span class="keywordflow">return</span> <span class="keyword">static_cast&lt;</span>std::uint8_t *<span class="keyword">&gt;</span>(detail::align(dest, <span class="keyword">alignof</span>(DestT))) + <span class="keyword">sizeof</span>(DestT); }</div>
+<div class="line"><a id="l00310" name="l00310"></a><span class="lineno">  310</span>    <span class="keywordflow">else</span> { <span class="keywordflow">return</span> <span class="keyword">static_cast&lt;</span>std::uint8_t *<span class="keyword">&gt;</span>(<a class="code hl_function" href="namespaceplywoot_1_1detail.html#a22be282111b7b6256dc2c29da0d69521">detail::align</a>(dest, <span class="keyword">alignof</span>(DestT))) + <span class="keyword">sizeof</span>(DestT); }</div>
 <div class="line"><a id="l00311" name="l00311"></a><span class="lineno">  311</span>  }</div>
 <div class="line"><a id="l00312" name="l00312"></a><span class="lineno">  312</span> </div>
 <div class="line"><a id="l00313" name="l00313"></a><span class="lineno">  313</span>  <span class="keyword">template</span>&lt;<span class="keyword">typename</span> DestT&gt;</div>
@@ -383,14 +383,14 @@ $(document).ready(function(){initNavTree('parser_8hpp_source.html',''); initResi
 <div class="line"><a id="l00319" name="l00319"></a><span class="lineno">  319</span>  <span class="keyword">template</span>&lt;<span class="keyword">typename</span> DestT&gt;</div>
 <div class="line"><a id="l00320" name="l00320"></a><span class="lineno">  320</span>  std::uint8_t *readProperty(std::uint8_t *dest, reflect::Type&lt;reflect::Stride&lt;DestT&gt;&gt;)<span class="keyword"> const</span></div>
 <div class="line"><a id="l00321" name="l00321"></a><span class="lineno">  321</span><span class="keyword">  </span>{</div>
-<div class="line"><a id="l00322" name="l00322"></a><span class="lineno">  322</span>    <span class="keywordflow">return</span> <span class="keyword">static_cast&lt;</span>std::uint8_t *<span class="keyword">&gt;</span>(detail::align(dest, <span class="keyword">alignof</span>(DestT))) + <span class="keyword">sizeof</span>(DestT);</div>
+<div class="line"><a id="l00322" name="l00322"></a><span class="lineno">  322</span>    <span class="keywordflow">return</span> <span class="keyword">static_cast&lt;</span>std::uint8_t *<span class="keyword">&gt;</span>(<a class="code hl_function" href="namespaceplywoot_1_1detail.html#a22be282111b7b6256dc2c29da0d69521">detail::align</a>(dest, <span class="keyword">alignof</span>(DestT))) + <span class="keyword">sizeof</span>(DestT);</div>
 <div class="line"><a id="l00323" name="l00323"></a><span class="lineno">  323</span>  }</div>
 <div class="line"><a id="l00324" name="l00324"></a><span class="lineno">  324</span> </div>
 <div class="line"><a id="l00325" name="l00325"></a><span class="lineno">  325</span>  <span class="keyword">template</span>&lt;<span class="keyword">typename</span> PlyT, <span class="keyword">typename</span> DestT, <span class="keywordtype">size_t</span> N&gt;</div>
 <div class="line"><a id="l00326" name="l00326"></a><span class="lineno">  326</span>  std::uint8_t *readProperty(std::uint8_t *dest, reflect::Type&lt;reflect::Pack&lt;DestT, N&gt;&gt;)<span class="keyword"> const</span></div>
 <div class="line"><a id="l00327" name="l00327"></a><span class="lineno">  327</span><span class="keyword">  </span>{</div>
 <div class="line"><a id="l00328" name="l00328"></a><span class="lineno">  328</span>    <span class="keyword">static_assert</span>(std::is_arithmetic&lt;PlyT&gt;::value, <span class="stringliteral">&quot;unexpected PLY data type&quot;</span>);</div>
-<div class="line"><a id="l00329" name="l00329"></a><span class="lineno">  329</span>    dest = <span class="keyword">static_cast&lt;</span>std::uint8_t *<span class="keyword">&gt;</span>(detail::align(dest, <span class="keyword">alignof</span>(DestT)));</div>
+<div class="line"><a id="l00329" name="l00329"></a><span class="lineno">  329</span>    dest = <span class="keyword">static_cast&lt;</span>std::uint8_t *<span class="keyword">&gt;</span>(<a class="code hl_function" href="namespaceplywoot_1_1detail.html#a22be282111b7b6256dc2c29da0d69521">detail::align</a>(dest, <span class="keyword">alignof</span>(DestT)));</div>
 <div class="line"><a id="l00330" name="l00330"></a><span class="lineno">  330</span>    <span class="keywordflow">return</span> this-&gt;<span class="keyword">template</span> readNumbers&lt;PlyT, DestT, N&gt;(dest);</div>
 <div class="line"><a id="l00331" name="l00331"></a><span class="lineno">  331</span>  }</div>
 <div class="line"><a id="l00332" name="l00332"></a><span class="lineno">  332</span> </div>
@@ -401,21 +401,21 @@ $(document).ready(function(){initNavTree('parser_8hpp_source.html',''); initResi
 <div class="line"><a id="l00337" name="l00337"></a><span class="lineno">  337</span>    {</div>
 <div class="line"><a id="l00338" name="l00338"></a><span class="lineno">  338</span>      <span class="keywordflow">switch</span> (property.type())</div>
 <div class="line"><a id="l00339" name="l00339"></a><span class="lineno">  339</span>      {</div>
-<div class="line"><a id="l00340" name="l00340"></a><span class="lineno">  340</span>        <span class="keywordflow">case</span> PlyDataType::Char:</div>
+<div class="line"><a id="l00340" name="l00340"></a><span class="lineno">  340</span>        <span class="keywordflow">case</span> <a class="code hl_enumvalue" href="namespaceplywoot.html#a9e1fcce16850728d68039e50a8775251a8e95e84813830072b7516cfaa7dbc1a9">PlyDataType::Char</a>:</div>
 <div class="line"><a id="l00341" name="l00341"></a><span class="lineno">  341</span>          <span class="keywordflow">return</span> readListProperty&lt;char&gt;(dest, property, tag);</div>
-<div class="line"><a id="l00342" name="l00342"></a><span class="lineno">  342</span>        <span class="keywordflow">case</span> PlyDataType::UChar:</div>
+<div class="line"><a id="l00342" name="l00342"></a><span class="lineno">  342</span>        <span class="keywordflow">case</span> <a class="code hl_enumvalue" href="namespaceplywoot.html#a9e1fcce16850728d68039e50a8775251af97d5cb62f8cf5dbb26c17171dd5fe69">PlyDataType::UChar</a>:</div>
 <div class="line"><a id="l00343" name="l00343"></a><span class="lineno">  343</span>          <span class="keywordflow">return</span> readListProperty&lt;unsigned char&gt;(dest, property, tag);</div>
-<div class="line"><a id="l00344" name="l00344"></a><span class="lineno">  344</span>        <span class="keywordflow">case</span> PlyDataType::Short:</div>
+<div class="line"><a id="l00344" name="l00344"></a><span class="lineno">  344</span>        <span class="keywordflow">case</span> <a class="code hl_enumvalue" href="namespaceplywoot.html#a9e1fcce16850728d68039e50a8775251a30bb747c98bccdd11b3f89e644c4d0ad">PlyDataType::Short</a>:</div>
 <div class="line"><a id="l00345" name="l00345"></a><span class="lineno">  345</span>          <span class="keywordflow">return</span> readListProperty&lt;short&gt;(dest, property, tag);</div>
-<div class="line"><a id="l00346" name="l00346"></a><span class="lineno">  346</span>        <span class="keywordflow">case</span> PlyDataType::UShort:</div>
+<div class="line"><a id="l00346" name="l00346"></a><span class="lineno">  346</span>        <span class="keywordflow">case</span> <a class="code hl_enumvalue" href="namespaceplywoot.html#a9e1fcce16850728d68039e50a8775251adfe785f133347f9b473f99009732b1bc">PlyDataType::UShort</a>:</div>
 <div class="line"><a id="l00347" name="l00347"></a><span class="lineno">  347</span>          <span class="keywordflow">return</span> readListProperty&lt;unsigned short&gt;(dest, property, tag);</div>
-<div class="line"><a id="l00348" name="l00348"></a><span class="lineno">  348</span>        <span class="keywordflow">case</span> PlyDataType::Int:</div>
+<div class="line"><a id="l00348" name="l00348"></a><span class="lineno">  348</span>        <span class="keywordflow">case</span> <a class="code hl_enumvalue" href="namespaceplywoot.html#a9e1fcce16850728d68039e50a8775251a1686a6c336b71b36d77354cea19a8b52">PlyDataType::Int</a>:</div>
 <div class="line"><a id="l00349" name="l00349"></a><span class="lineno">  349</span>          <span class="keywordflow">return</span> readListProperty&lt;int&gt;(dest, property, tag);</div>
-<div class="line"><a id="l00350" name="l00350"></a><span class="lineno">  350</span>        <span class="keywordflow">case</span> PlyDataType::UInt:</div>
+<div class="line"><a id="l00350" name="l00350"></a><span class="lineno">  350</span>        <span class="keywordflow">case</span> <a class="code hl_enumvalue" href="namespaceplywoot.html#a9e1fcce16850728d68039e50a8775251a0b1291eded63143ac04709711274785a">PlyDataType::UInt</a>:</div>
 <div class="line"><a id="l00351" name="l00351"></a><span class="lineno">  351</span>          <span class="keywordflow">return</span> readListProperty&lt;unsigned int&gt;(dest, property, tag);</div>
-<div class="line"><a id="l00352" name="l00352"></a><span class="lineno">  352</span>        <span class="keywordflow">case</span> PlyDataType::Float:</div>
+<div class="line"><a id="l00352" name="l00352"></a><span class="lineno">  352</span>        <span class="keywordflow">case</span> <a class="code hl_enumvalue" href="namespaceplywoot.html#a9e1fcce16850728d68039e50a8775251a22ae0e2b89e5e3d477f988cc36d3272b">PlyDataType::Float</a>:</div>
 <div class="line"><a id="l00353" name="l00353"></a><span class="lineno">  353</span>          <span class="keywordflow">return</span> readListProperty&lt;float&gt;(dest, property, tag);</div>
-<div class="line"><a id="l00354" name="l00354"></a><span class="lineno">  354</span>        <span class="keywordflow">case</span> PlyDataType::Double:</div>
+<div class="line"><a id="l00354" name="l00354"></a><span class="lineno">  354</span>        <span class="keywordflow">case</span> <a class="code hl_enumvalue" href="namespaceplywoot.html#a9e1fcce16850728d68039e50a8775251ad909d38d705ce75386dd86e611a82f5b">PlyDataType::Double</a>:</div>
 <div class="line"><a id="l00355" name="l00355"></a><span class="lineno">  355</span>          <span class="keywordflow">return</span> readListProperty&lt;double&gt;(dest, property, tag);</div>
 <div class="line"><a id="l00356" name="l00356"></a><span class="lineno">  356</span>      }</div>
 <div class="line"><a id="l00357" name="l00357"></a><span class="lineno">  357</span>    }</div>
@@ -427,21 +427,21 @@ $(document).ready(function(){initNavTree('parser_8hpp_source.html',''); initResi
 <div class="line"><a id="l00363" name="l00363"></a><span class="lineno">  363</span>    {</div>
 <div class="line"><a id="l00364" name="l00364"></a><span class="lineno">  364</span>      <span class="keywordflow">switch</span> (property.type())</div>
 <div class="line"><a id="l00365" name="l00365"></a><span class="lineno">  365</span>      {</div>
-<div class="line"><a id="l00366" name="l00366"></a><span class="lineno">  366</span>        <span class="keywordflow">case</span> PlyDataType::Char:</div>
+<div class="line"><a id="l00366" name="l00366"></a><span class="lineno">  366</span>        <span class="keywordflow">case</span> <a class="code hl_enumvalue" href="namespaceplywoot.html#a9e1fcce16850728d68039e50a8775251a8e95e84813830072b7516cfaa7dbc1a9">PlyDataType::Char</a>:</div>
 <div class="line"><a id="l00367" name="l00367"></a><span class="lineno">  367</span>          <span class="keywordflow">return</span> readProperty&lt;char&gt;(dest, tag);</div>
-<div class="line"><a id="l00368" name="l00368"></a><span class="lineno">  368</span>        <span class="keywordflow">case</span> PlyDataType::UChar:</div>
+<div class="line"><a id="l00368" name="l00368"></a><span class="lineno">  368</span>        <span class="keywordflow">case</span> <a class="code hl_enumvalue" href="namespaceplywoot.html#a9e1fcce16850728d68039e50a8775251af97d5cb62f8cf5dbb26c17171dd5fe69">PlyDataType::UChar</a>:</div>
 <div class="line"><a id="l00369" name="l00369"></a><span class="lineno">  369</span>          <span class="keywordflow">return</span> readProperty&lt;unsigned char&gt;(dest, tag);</div>
-<div class="line"><a id="l00370" name="l00370"></a><span class="lineno">  370</span>        <span class="keywordflow">case</span> PlyDataType::Short:</div>
+<div class="line"><a id="l00370" name="l00370"></a><span class="lineno">  370</span>        <span class="keywordflow">case</span> <a class="code hl_enumvalue" href="namespaceplywoot.html#a9e1fcce16850728d68039e50a8775251a30bb747c98bccdd11b3f89e644c4d0ad">PlyDataType::Short</a>:</div>
 <div class="line"><a id="l00371" name="l00371"></a><span class="lineno">  371</span>          <span class="keywordflow">return</span> readProperty&lt;short&gt;(dest, tag);</div>
-<div class="line"><a id="l00372" name="l00372"></a><span class="lineno">  372</span>        <span class="keywordflow">case</span> PlyDataType::UShort:</div>
+<div class="line"><a id="l00372" name="l00372"></a><span class="lineno">  372</span>        <span class="keywordflow">case</span> <a class="code hl_enumvalue" href="namespaceplywoot.html#a9e1fcce16850728d68039e50a8775251adfe785f133347f9b473f99009732b1bc">PlyDataType::UShort</a>:</div>
 <div class="line"><a id="l00373" name="l00373"></a><span class="lineno">  373</span>          <span class="keywordflow">return</span> readProperty&lt;unsigned short&gt;(dest, tag);</div>
-<div class="line"><a id="l00374" name="l00374"></a><span class="lineno">  374</span>        <span class="keywordflow">case</span> PlyDataType::Int:</div>
+<div class="line"><a id="l00374" name="l00374"></a><span class="lineno">  374</span>        <span class="keywordflow">case</span> <a class="code hl_enumvalue" href="namespaceplywoot.html#a9e1fcce16850728d68039e50a8775251a1686a6c336b71b36d77354cea19a8b52">PlyDataType::Int</a>:</div>
 <div class="line"><a id="l00375" name="l00375"></a><span class="lineno">  375</span>          <span class="keywordflow">return</span> readProperty&lt;int&gt;(dest, tag);</div>
-<div class="line"><a id="l00376" name="l00376"></a><span class="lineno">  376</span>        <span class="keywordflow">case</span> PlyDataType::UInt:</div>
+<div class="line"><a id="l00376" name="l00376"></a><span class="lineno">  376</span>        <span class="keywordflow">case</span> <a class="code hl_enumvalue" href="namespaceplywoot.html#a9e1fcce16850728d68039e50a8775251a0b1291eded63143ac04709711274785a">PlyDataType::UInt</a>:</div>
 <div class="line"><a id="l00377" name="l00377"></a><span class="lineno">  377</span>          <span class="keywordflow">return</span> readProperty&lt;unsigned int&gt;(dest, tag);</div>
-<div class="line"><a id="l00378" name="l00378"></a><span class="lineno">  378</span>        <span class="keywordflow">case</span> PlyDataType::Float:</div>
+<div class="line"><a id="l00378" name="l00378"></a><span class="lineno">  378</span>        <span class="keywordflow">case</span> <a class="code hl_enumvalue" href="namespaceplywoot.html#a9e1fcce16850728d68039e50a8775251a22ae0e2b89e5e3d477f988cc36d3272b">PlyDataType::Float</a>:</div>
 <div class="line"><a id="l00379" name="l00379"></a><span class="lineno">  379</span>          <span class="keywordflow">return</span> readProperty&lt;float&gt;(dest, tag);</div>
-<div class="line"><a id="l00380" name="l00380"></a><span class="lineno">  380</span>        <span class="keywordflow">case</span> PlyDataType::Double:</div>
+<div class="line"><a id="l00380" name="l00380"></a><span class="lineno">  380</span>        <span class="keywordflow">case</span> <a class="code hl_enumvalue" href="namespaceplywoot.html#a9e1fcce16850728d68039e50a8775251ad909d38d705ce75386dd86e611a82f5b">PlyDataType::Double</a>:</div>
 <div class="line"><a id="l00381" name="l00381"></a><span class="lineno">  381</span>          <span class="keywordflow">return</span> readProperty&lt;double&gt;(dest, tag);</div>
 <div class="line"><a id="l00382" name="l00382"></a><span class="lineno">  382</span>      }</div>
 <div class="line"><a id="l00383" name="l00383"></a><span class="lineno">  383</span>    }</div>
@@ -453,12 +453,31 @@ $(document).ready(function(){initNavTree('parser_8hpp_source.html',''); initResi
 <div class="line"><a id="l00389" name="l00389"></a><span class="lineno">  389</span>}</div>
 <div class="line"><a id="l00390" name="l00390"></a><span class="lineno">  390</span> </div>
 <div class="line"><a id="l00391" name="l00391"></a><span class="lineno">  391</span><span class="preprocessor">#endif</span></div>
+<div class="ttc" id="anamespaceplywoot_1_1detail_html"><div class="ttname"><a href="namespaceplywoot_1_1detail.html">plywoot::detail</a></div><div class="ttdef"><b>Definition</b> <a href="ascii__parser__policy_8hpp_source.html#l00046">ascii_parser_policy.hpp:46</a></div></div>
+<div class="ttc" id="anamespaceplywoot_1_1detail_html_a22be282111b7b6256dc2c29da0d69521"><div class="ttname"><a href="namespaceplywoot_1_1detail.html#a22be282111b7b6256dc2c29da0d69521">plywoot::detail::align</a></div><div class="ttdeci">constexpr Ptr align(Ptr ptr, std::size_t alignment)</div><div class="ttdef"><b>Definition</b> <a href="std_8hpp_source.html#l00044">std.hpp:44</a></div></div>
+<div class="ttc" id="anamespaceplywoot_1_1detail_html_a484093026f80593157cdb54b7473c762"><div class="ttname"><a href="namespaceplywoot_1_1detail.html#a484093026f80593157cdb54b7473c762">plywoot::detail::numProperties</a></div><div class="ttdeci">constexpr std::size_t numProperties()</div><div class="ttdef"><b>Definition</b> <a href="type__traits_8hpp_source.html#l00104">type_traits.hpp:104</a></div></div>
+<div class="ttc" id="anamespaceplywoot_1_1detail_html_a6cb6654941b40e7a8b7739c2f7ad79be"><div class="ttname"><a href="namespaceplywoot_1_1detail.html#a6cb6654941b40e7a8b7739c2f7ad79be">plywoot::detail::isPacked</a></div><div class="ttdeci">constexpr bool isPacked(uintptr_t offset=0)</div><div class="ttdef"><b>Definition</b> <a href="type__traits_8hpp_source.html#l00275">type_traits.hpp:275</a></div></div>
+<div class="ttc" id="anamespaceplywoot_1_1detail_html_a7e88f7ac5dbc8e189b8ca864c23628e2"><div class="ttname"><a href="namespaceplywoot_1_1detail.html#a7e88f7ac5dbc8e189b8ca864c23628e2">plywoot::detail::sizeOf</a></div><div class="ttdeci">constexpr std::size_t sizeOf()</div><div class="ttdef"><b>Definition</b> <a href="type__traits_8hpp_source.html#l00190">type_traits.hpp:190</a></div></div>
+<div class="ttc" id="anamespaceplywoot_html_a6f063358a1ff8e5618d999479da1f657"><div class="ttname"><a href="namespaceplywoot.html#a6f063358a1ff8e5618d999479da1f657">plywoot::PlyPropertyConstIterator</a></div><div class="ttdeci">std::vector&lt; PlyProperty &gt;::const_iterator PlyPropertyConstIterator</div><div class="ttdef"><b>Definition</b> <a href="types_8hpp_source.html#l00098">types.hpp:98</a></div></div>
+<div class="ttc" id="anamespaceplywoot_html_a9e1fcce16850728d68039e50a8775251a0b1291eded63143ac04709711274785a"><div class="ttname"><a href="namespaceplywoot.html#a9e1fcce16850728d68039e50a8775251a0b1291eded63143ac04709711274785a">plywoot::PlyDataType::UInt</a></div><div class="ttdeci">@ UInt</div></div>
+<div class="ttc" id="anamespaceplywoot_html_a9e1fcce16850728d68039e50a8775251a1686a6c336b71b36d77354cea19a8b52"><div class="ttname"><a href="namespaceplywoot.html#a9e1fcce16850728d68039e50a8775251a1686a6c336b71b36d77354cea19a8b52">plywoot::PlyDataType::Int</a></div><div class="ttdeci">@ Int</div></div>
+<div class="ttc" id="anamespaceplywoot_html_a9e1fcce16850728d68039e50a8775251a22ae0e2b89e5e3d477f988cc36d3272b"><div class="ttname"><a href="namespaceplywoot.html#a9e1fcce16850728d68039e50a8775251a22ae0e2b89e5e3d477f988cc36d3272b">plywoot::PlyDataType::Float</a></div><div class="ttdeci">@ Float</div></div>
+<div class="ttc" id="anamespaceplywoot_html_a9e1fcce16850728d68039e50a8775251a30bb747c98bccdd11b3f89e644c4d0ad"><div class="ttname"><a href="namespaceplywoot.html#a9e1fcce16850728d68039e50a8775251a30bb747c98bccdd11b3f89e644c4d0ad">plywoot::PlyDataType::Short</a></div><div class="ttdeci">@ Short</div></div>
+<div class="ttc" id="anamespaceplywoot_html_a9e1fcce16850728d68039e50a8775251a8e95e84813830072b7516cfaa7dbc1a9"><div class="ttname"><a href="namespaceplywoot.html#a9e1fcce16850728d68039e50a8775251a8e95e84813830072b7516cfaa7dbc1a9">plywoot::PlyDataType::Char</a></div><div class="ttdeci">@ Char</div></div>
+<div class="ttc" id="anamespaceplywoot_html_a9e1fcce16850728d68039e50a8775251ad909d38d705ce75386dd86e611a82f5b"><div class="ttname"><a href="namespaceplywoot.html#a9e1fcce16850728d68039e50a8775251ad909d38d705ce75386dd86e611a82f5b">plywoot::PlyDataType::Double</a></div><div class="ttdeci">@ Double</div></div>
+<div class="ttc" id="anamespaceplywoot_html_a9e1fcce16850728d68039e50a8775251adfe785f133347f9b473f99009732b1bc"><div class="ttname"><a href="namespaceplywoot.html#a9e1fcce16850728d68039e50a8775251adfe785f133347f9b473f99009732b1bc">plywoot::PlyDataType::UShort</a></div><div class="ttdeci">@ UShort</div></div>
+<div class="ttc" id="anamespaceplywoot_html_a9e1fcce16850728d68039e50a8775251af97d5cb62f8cf5dbb26c17171dd5fe69"><div class="ttname"><a href="namespaceplywoot.html#a9e1fcce16850728d68039e50a8775251af97d5cb62f8cf5dbb26c17171dd5fe69">plywoot::PlyDataType::UChar</a></div><div class="ttdeci">@ UChar</div></div>
+<div class="ttc" id="anamespaceplywoot_html_ad194c868b3bf892b615d89efeda7c87a"><div class="ttname"><a href="namespaceplywoot.html#ad194c868b3bf892b615d89efeda7c87a">plywoot::PropertyConstIterator</a></div><div class="ttdeci">std::vector&lt; PlyProperty &gt;::const_iterator PropertyConstIterator</div><div class="ttdef"><b>Definition</b> <a href="types_8hpp_source.html#l00159">types.hpp:159</a></div></div>
+<div class="ttc" id="areflect_8hpp_html"><div class="ttname"><a href="reflect_8hpp.html">reflect.hpp</a></div></div>
+<div class="ttc" id="astd_8hpp_html"><div class="ttname"><a href="std_8hpp.html">std.hpp</a></div></div>
+<div class="ttc" id="atype__traits_8hpp_html"><div class="ttname"><a href="type__traits_8hpp.html">type_traits.hpp</a></div></div>
+<div class="ttc" id="atypes_8hpp_html"><div class="ttname"><a href="types_8hpp.html">types.hpp</a></div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><a class="el" href="dir_d44c64559bbebec7f509842c48db8b23.html">include</a></li><li class="navelem"><a class="el" href="dir_b2fbfe87ca2e6ec30f52492568d29687.html">plywoot</a></li><li class="navelem"><a class="el" href="dir_b12cbd9ae501c9151e96d863980be05f.html">plywoot</a></li><li class="navelem"><b>parser.hpp</b></li>
+    <li class="navelem"><a class="el" href="dir_d44c64559bbebec7f509842c48db8b23.html">include</a></li><li class="navelem"><a class="el" href="dir_b2fbfe87ca2e6ec30f52492568d29687.html">plywoot</a></li><li class="navelem"><a class="el" href="dir_b12cbd9ae501c9151e96d863980be05f.html">plywoot</a></li><li class="navelem"><a class="el" href="parser_8hpp.html">parser.hpp</a></li>
     <li class="footer">Generated by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8 </li>
   </ul>
 </div>
