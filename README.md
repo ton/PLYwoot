@@ -7,7 +7,7 @@ PLYwoot is a C++17 header-only library providing read/write support for [PLY](ht
 ## Features
 
 * **Fast!** In fact, the fastest PLY parser and writer out there according to my own benchmarks :D Refer to the benchmark results at [PLYbench](https://github.com/ton/PLYbench) to see how PLYwoot stacks up to other PLY parsers in terms of both read and write performance.
-* Header-only, can be directly embedded in your existing C++17 project. There are some optional [dependencies](#dependencies) to speed up the parsing of ASCII PLY files.
+* Header-only, can be directly embedded in your existing C++17 project. There are some optional [dependencies](#Dependencies) to speed up the parsing of ASCII PLY files.
 * Read/write support for ASCII, binary little endian, and binary big endian PLY files.
 * Direct compile-time mapping of element data in the PLY file to your own types, with implicit type conversion support.
 * Allows skipping of properties in the PLY data that are not of interest.
@@ -15,7 +15,7 @@ PLYwoot is a C++17 header-only library providing read/write support for [PLY](ht
 
 ## Examples
 
-The following examples demonstrate some typical use cases of PLYwoot. For more details on the functions used below, please refer to the [API](#api) documentation.
+The following examples demonstrate some typical use cases of PLYwoot. For more details on the functions used below, please refer to the [API documentation](https://ton.github.io/PLYwoot) for more details.
 
 ### Parsing PLY files
 
@@ -28,9 +28,9 @@ Suppose you have a triangle mesh type, that has the following structure:
 
 ## Getting started
 
-Since PLYwoot is header-only, all that is needed is to copy the PLYwoot sources into your project and include `<plywoot/plywoot.hpp>` (taking into account license constraints of course). To build rePLY, a tool to convert PLY files between different formats (ASCII, binary little/big endian), PLYwoot can be built as follows, assuming you have at least CMake version 3.5 installed (see [dependencies](#dependencies).
+Since PLYwoot is header-only, all that is needed is to copy the PLYwoot sources into your project and [`#include <plywoot/plywoot.hpp>`](include/plywoot/plywoot.hpp) (taking into account license constraints of course). To build `rePLY`, a tool to convert PLY files between different formats (ASCII, binary little/big endian), PLYwoot can be built as follows, assuming you have at least CMake version 3.5 installed (see [dependencies](#Dependencies)).
 
-In case you are using a CMake based project and would like to depend on a system-wide installation of PLYwoot, use the following steps to build the unit tests, rePLY and install PLYwoot:
+In case you are using a CMake based project and would like to depend on a system-wide installation of PLYwoot, use the following steps to build the unit tests, `rePLY` and install PLYwoot:
 
 ```sh
 $ cmake -DCMAKE_BUILD_TYPE=Release -B build
@@ -49,7 +49,7 @@ PLYwoot exports one target named `PLYwoot::plywoot` which represents the header-
 
 ### Dependencies
 
-To be able to build the unit tests of PLYwoot and the rePLY tool, [CMake](https://cmake.org) is required (at least version 3.5). The unit tests are implemented using the [Catch2](https://github.com/catchorg/Catch2) unit test framework.
+To be able to build the unit tests of PLYwoot and the `rePLY` tool, [CMake](https://cmake.org) is required (at least version 3.5). The unit tests are implemented using the [Catch2](https://github.com/catchorg/Catch2) unit test framework.
 
 By default, PLYwoot will use functionality from C++'s standard library to perform string to floating point and integer conversion for parsing of ASCII PLY files. Performance of parsing ASCII PLY files can be improved significantly by ensuring that the [`fast_float`](https://github.com/fastfloat/fast_float) and/or [`fast_int`](https://github.com/ton/fast_int) libraries are installed.
 
@@ -68,4 +68,4 @@ The following features are on my list to be implemented for future versions of P
 
 ## License
 
-PLYwoot is licensed under GPLv3. See [LICENSE](LICENSE) for more details.
+PLYwoot is licensed under GPLv3. See [LICENSE](./LICENSE) for more details.
