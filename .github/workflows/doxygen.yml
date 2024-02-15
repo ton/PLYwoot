@@ -1,4 +1,4 @@
-name: Doxygen action
+name: Doxygen
 
 # Controls when the action will run. Triggers the workflow on push or pull request
 # events but only for the master branch
@@ -16,7 +16,7 @@ jobs:
       with:
         submodules: true
 
-    - name: Doxygen action
+    - name: Doxygen
       uses: mattnotmitt/doxygen-action@v1.9.8
       with:
         doxyfile-path: './Doxyfile'
