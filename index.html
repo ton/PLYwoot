@@ -118,8 +118,8 @@ Parsing PLY files</h2>
 Writing PLY files</h2>
 <h1><a class="anchor" id="autotoc_md5"></a>
 Getting started</h1>
-<p>Since PLYwoot is header-only, all that is needed is to copy the PLYwoot sources into your project and include <code>&lt;<a class="el" href="plywoot_8hpp_source.html">plywoot/plywoot.hpp</a>&gt;</code> (taking into account license constraints of course). To build rePLY, a tool to convert PLY files between different formats (ASCII, binary little/big endian), PLYwoot can be built as follows, assuming you have at least CMake version 3.5 installed (see dependencies.</p>
-<p>In case you are using a CMake based project and would like to depend on a system-wide installation of PLYwoot, use the following steps to build the unit tests, rePLY and install PLYwoot:</p>
+<p>Since PLYwoot is header-only, all that is needed is to copy the PLYwoot sources into your project and include <a href="./include/plywoot/plywoot.hpp"><code>&lt;plywoot/plywoot.hpp&gt;</code></a> (taking into account license constraints of course). To build <code>rePLY</code>, a tool to convert PLY files between different formats (ASCII, binary little/big endian), PLYwoot can be built as follows, assuming you have at least CMake version 3.5 installed (see dependencies.</p>
+<p>In case you are using a CMake based project and would like to depend on a system-wide installation of PLYwoot, use the following steps to build the unit tests, <code>rePLY</code> and install PLYwoot:</p>
 <div class="fragment"><div class="line">$ cmake -DCMAKE_BUILD_TYPE=Release -B build</div>
 <div class="line">$ cd build &amp;&amp; make install</div>
 </div><!-- fragment --><h2><a class="anchor" id="autotoc_md6"></a>
@@ -129,7 +129,7 @@ Using PLYwoot in a CMake project</h2>
 </div><!-- fragment --><p>PLYwoot exports one target named <code>PLYwoot::plywoot</code> which represents the header-only library to depend on.</p>
 <h2><a class="anchor" id="autotoc_md7"></a>
 Dependencies</h2>
-<p>To be able to build the unit tests of PLYwoot and the rePLY tool, <a href="https://cmake.org">CMake</a> is required (at least version 3.5). The unit tests are implemented using the <a href="https://github.com/catchorg/Catch2">Catch2</a> unit test framework.</p>
+<p>To be able to build the unit tests of PLYwoot and the <code>rePLY</code> tool, <a href="https://cmake.org">CMake</a> is required (at least version 3.5). The unit tests are implemented using the <a href="https://github.com/catchorg/Catch2">Catch2</a> unit test framework.</p>
 <p>By default, PLYwoot will use functionality from C++'s standard library to perform string to floating point and integer conversion for parsing of ASCII PLY files. Performance of parsing ASCII PLY files can be improved significantly by ensuring that the <a href="https://github.com/fastfloat/fast_float"><code>fast_float</code></a> and/or <a href="https://github.com/ton/fast_int"><code>fast_int</code></a> libraries are installed.</p>
 <h1><a class="anchor" id="autotoc_md8"></a>
 Benchmarks</h1>
@@ -145,7 +145,7 @@ Planned features</h1>
 </ul>
 <h1><a class="anchor" id="autotoc_md11"></a>
 License</h1>
-<p>PLYwoot is licensed under GPLv3. See [LICENSE](LICENSE) for more details. </p>
+<p>PLYwoot is licensed under GPLv3. See <a href="./LICENSE">LICENSE</a> for more details. </p>
 </div></div><!-- PageDoc -->
 </div><!-- contents -->
 </div><!-- doc-content -->

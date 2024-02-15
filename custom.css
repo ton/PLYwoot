@@ -1,3 +1,9 @@
 html {
 	--top-height: 140px;
+
+	--page-font-size: 15.6pt;
+	--navigation-font-size: 14.4pt;
+	--toc-font-size: 13.4pt;
+	--code-font-size: 14pt; /* affects code, fragment */
+	--title-font-size: 22pt;
 }
