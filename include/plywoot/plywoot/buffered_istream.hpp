@@ -108,8 +108,10 @@ public:
     }
     else
     {
-      // TODO(ton): broken; this might overflow in case `bytesToRead >
-      // IStreamBufferSize` holds.
+      static_assert(
+          N * sizeof(From) <= IStreamBufferSize,
+          "input stream buffer size is too small; increase IStreamBufferSize");
+
       constexpr std::size_t bytesToRead = N * sizeof(From);
       if (c_ + bytesToRead > eob_) buffer(bytesToRead);
 
