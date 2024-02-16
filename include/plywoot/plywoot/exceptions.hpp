@@ -25,10 +25,13 @@
 
 namespace plywoot {
 
-/// Base class for all exceptions thrown by plywoot.
+/// Base class for all exceptions thrown by PLYwoot.
 class Exception : public std::runtime_error
 {
 public:
+  /// Constructs an exception instance with the given error message.
+  ///
+  /// \param message exception message to store in this exception
   Exception(const std::string &message) : std::runtime_error(message) {}
 };
 

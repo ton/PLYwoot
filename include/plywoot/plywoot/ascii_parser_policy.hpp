@@ -31,31 +31,44 @@
 
 namespace plywoot {
 
-// Base class for all parser exceptions.
+/// Base class for all parser exceptions.
 struct ParserException : Exception
 {
+  /// Constructs a parser exception with the given exception message.
+  ///
+  /// \param message parser exception message
   ParserException(const std::string &message) : Exception("parser error: " + message) {}
 };
 
-// Unexpected end-of-file exception.
+/// Unexpected end-of-file exception.
 struct UnexpectedEof : ParserException
 {
+  /// Constructs an unexpected end-of-file exception.
   UnexpectedEof() : ParserException("unexpected end of file") {}
 };
 
 namespace detail {
 
-/// Defines a parser policy that deals with ASCII input streams.
+/// Defines a parser policy that deals with ASCII input streams. The policy
+/// types act as mixins to add format specific behavior to the generic parser
+/// functionality in `plywoot::detail::Parser`.
 class AsciiParserPolicy
 {
 public:
+  /// Constructs an ASCII parser policy instance for the given input stream.
+  ///
+  /// \param is input stream to associate with this ASCII input stream policy.
   AsciiParserPolicy(std::istream &is) : is_{is} {}
 
   /// Skips the given element in the current input stream, assuming the read
   /// head is at the start of that element.
+  ///
+  /// \param e element to skip
   void skipElement(const PlyElement &e) const { is_.skipLines(e.size()); }
 
   /// Skips the given property in the current input stream.
+  ///
+  /// \param p property to skip
   void skipProperty(const PlyProperty &p) const
   {
     if (p.isList())
@@ -68,6 +81,8 @@ public:
   }
 
   /// Reads a number of the given type `T` from the input stream.
+  ///
+  /// \return a number of the given type `T` read from the input stream
   template<typename T>
   T readNumber() const
   {
@@ -80,8 +95,11 @@ public:
 
   /// Reads `N` numbers of the given type `PlyT` from the input stream, and
   /// stores them contiguously at the given destination in memory as numbers of
-  /// type `DestT`. Returns a pointer pointing just after the last number stored
-  /// at `dest`.
+  /// type `DestT`.
+  ///
+  /// \param dest pointer to the destination in memory where to store parsed
+  ///     numbers
+  /// \return a pointer pointing just after the last number stored \a dest
   template<typename PlyT, typename DestT, std::size_t N>
   std::uint8_t *readNumbers(std::uint8_t *dest) const
   {
@@ -101,13 +119,16 @@ public:
     is_.skipNonWhitespace();
   }
 
-  /// Skips property data, totaling `n` bytes.
+  /// Skips property data, totaling \a n bytes.
+  ///
+  /// \param n number of bytes to skip
   void skipProperties(std::size_t n) const
   {
     if (n > 0) is_.skipLines(1);
   }
 
 private:
+  /// Wrapped input stream associated with this ASCII parser policy.
   mutable detail::BufferedIStream is_;
 };
 

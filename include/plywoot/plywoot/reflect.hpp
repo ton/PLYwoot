@@ -32,12 +32,14 @@ namespace plywoot::reflect {
 template<typename T, typename = void>
 struct Type
 {
+  /// Target property type.
   using DestT = T;
 };
 
 template<typename T>
 struct Type<T, typename std::void_t<typename T::DestT>>
 {
+  /// Target property type.
   using DestT = typename T::DestT;
 };
 /// @}
@@ -48,6 +50,7 @@ struct Type<T, typename std::void_t<typename T::DestT>>
 template<typename T, std::size_t N>
 struct Array
 {
+  /// Type of the elements in the destination list type.
   using DestT = T;
 };
 
@@ -62,6 +65,7 @@ struct Skip
 template<typename T>
 struct Stride
 {
+  /// Type of the member types in the target type to skip over.
   using DestT = T;
 };
 
@@ -70,7 +74,10 @@ struct Stride
 template<typename T, std::size_t N>
 struct Pack
 {
+  /// Type of the member types in the target type to pack.
   using DestT = T;
+  /// Number of PLY properties to pack together and `memcpy` to the
+  /// corresponding target type members.
   static constexpr std::size_t size = N;
 };
 
@@ -92,6 +99,8 @@ public:
 
   /// Constructs a layout representation of some element, and specifies a target
   /// list of elements that will be written to by the PLY parser.
+  ///
+  /// \param v list of elements to be assigned to by the PLY parser
   template<typename T>
   Layout(std::vector<T> &v)
       : data_{reinterpret_cast<std::uint8_t *>(v.data())},
@@ -103,6 +112,8 @@ public:
 
   /// Constructs a layout representation of some element, and specifies a target
   /// list of elements that will be read from by the PLY writer.
+  ///
+  /// \param v list of elements to be read from by the PLY writer
   template<typename T>
   Layout(const std::vector<T> &v)
       : data_{nullptr},
@@ -112,18 +123,29 @@ public:
   {
   }
 
-  /// Returns a pointer to the read-only memory area that contains `n` number of
-  /// structures made up of the types associated with this layout.
-  /// @{
+  /// Returns a pointer to the memory area storing instances of type `T`
+  /// associated with this layout.
+  ///
+  /// \return a pointer to the memory area storing instances of type `T`
+  ///    associated with this layout.
   std::uint8_t *data() { return data_; }
+  /// Returns a pointer to the read-only memory area storing instances of type
+  /// `T` associated with this layout.
+  ///
+  /// \return a pointer to the read-only memory area storing instances of type
+  ///    `T` associated with this layout.
   const std::uint8_t *data() const { return cdata_; }
-  /// @}
 
   /// Returns the number of elements that are or may be stored in the memory
   /// block pointer to by the associated data block.
+  ///
+  /// \return the number of elements that are or may be stored in the memory
+  ///     block pointer to by the associated data block
   std::size_t size() const { return size_; }
 
   /// Alignment requirements of this structure.
+  ///
+  /// \return alignment requirements of the elements of type T in this layout
   std::size_t alignment() const { return alignment_; }
 
 private:

@@ -40,6 +40,8 @@ public:
   /// total size in bytes of the data block to represent all data in the given
   /// PLY element. Note that lists are mapped on to `std::vector`, so we can
   /// pre-calculate the data size of the data block.
+  ///
+  /// \param element PLY element to construct this instance for
   explicit PlyElementData(const PlyElement &element) : element_{element}
   {
     // Keep track of the alignment requirements of the memory block that will
@@ -160,13 +162,20 @@ public:
   }
 
   // This type is non-copyable.
+  /// \cond
   PlyElementData(const PlyElementData &) = delete;
   PlyElementData &operator=(const PlyElementData &) = delete;
+  /// \endcond
 
-  /// Move constructor.
+  /// Move constructor implemented in terms of move assignment for simplicity.
+  ///
+  /// \param x PLY element data instance to construct from
   PlyElementData(PlyElementData &&x) { *this = std::move(x); }
 
   /// Move assignment operator.
+  ///
+  /// \param x PLY element data instance to move assign from
+  /// \return a reference to this newly assigned element data instance
   PlyElementData &operator=(PlyElementData &&x)
   {
     element_ = std::move(x.element_);
@@ -183,19 +192,35 @@ public:
   }
 
   /// Returns the associated element definition.
+  ///
+  /// \return the definition of the element associated with this element data
+  ///     instance
   const PlyElement &element() const { return element_; }
 
   /// Returns a pointer to the memory block storing element data.
+  ///
+  /// \return a pointer to the memory block storing element data
   std::uint8_t *data() const { return data_.get(); }
 
-  /// Alignment requirements of the structures stored in this memory block.
+  /// Alignment requirements of the elements stored in this memory block in
+  /// bytes.
+  ///
+  /// \return alignment requirements of the elements stored in this memory
+  ///     block in bytes
   std::size_t alignment() const { return alignment_; }
 
 private:
+  /// Definition of the element associated with this element data instance.
   PlyElement element_;
+  /// Memory block containing all properties of the elements to store
   std::unique_ptr<std::uint8_t[]> data_;
+  /// Relative offset of every `std::vector` instance created for variable
+  /// lists.
   std::vector<std::size_t> listOffsets_;
+  /// Number of bytes required to store a single element.
   std::size_t bytesPerElement_ = 0;
+  /// Alignment requirements of the elements stored in this memory block in
+  /// bytes.
   std::size_t alignment_ = alignof(char);
 };
 

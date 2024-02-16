@@ -33,6 +33,9 @@ namespace plywoot {
 /// Base class for all header scanner exceptions.
 struct HeaderScannerException : Exception
 {
+  /// Constructs a header scanner exception with the given exception message.
+  ///
+  /// \param message exception message
   HeaderScannerException(const std::string &message) : Exception("scanner error: " + message) {}
 };
 
@@ -40,6 +43,7 @@ struct HeaderScannerException : Exception
 /// header parser.
 struct InvalidInputStream : HeaderScannerException
 {
+  /// Constructs an invalid input stream exception.
   InvalidInputStream() : HeaderScannerException("invalid input stream") {}
 };
 

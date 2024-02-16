@@ -29,16 +29,22 @@
 
 namespace plywoot::detail {
 
-/// Defines a parser policy that deals with binary input streams.
+/// Defines a parser policy that deals with binary input streams. The policy
+/// types act as mixins to add format specific behavior to the generic parser
+/// functionality in `plywoot::detail::Parser`.
 template<typename Endianness>
 class BinaryParserPolicy
 {
 public:
   /// Constructs a binary little endian parser policy.
+  ///
+  /// \param is input stream to associate with this binary input stream policy.
   BinaryParserPolicy(std::istream &is) : is_{is} {}
 
   /// Skips the given element in the current input stream, assuming the read
   /// head is at the start of that element.
+  ///
+  /// \param e element to skip
   void skipElement(const PlyElement &e) const
   {
     // In case all element properties are non-list properties, we can calculate
@@ -62,6 +68,8 @@ public:
 
   /// Skips the given property in the current input stream, assuming the read
   /// head is at the start of that element.
+  ///
+  /// \param p property to skip
   void skipProperty(const PlyProperty &p) const
   {
     if (!p.isList()) { is_.skip(sizeOf(p.type())); }
@@ -101,6 +109,8 @@ public:
   }
 
   /// Reads a number of the given type `T` from the input stream.
+  ///
+  /// \return a number of the given type `T` read from the input stream
   /// @{
   template<typename T, typename EndiannessDependent = Endianness>
   T readNumber() const
@@ -114,6 +124,10 @@ public:
   /// stores them contiguously at the given destination in memory as numbers of
   /// type `DestT`. Returns a pointer pointing just after the last number stored
   /// at `dest`.
+  ///
+  /// \param dest pointer to the destination in memory where to store parsed
+  ///     numbers
+  /// \return a pointer pointing just after the last number stored \a dest
   template<typename PlyT, typename DestT, std::size_t N, typename EndiannessDependent = Endianness>
   std::uint8_t *readNumbers(std::uint8_t *dest) const
   {
@@ -140,13 +154,18 @@ public:
     is_.skip(sizeof(T));
   }
 
-  /// Skips property data, totaling `n` bytes.
+  /// Skips property data, totaling \a n bytes.
+  ///
+  /// \param n number of bytes to skip
   void skipProperties(std::size_t n) const { is_.skip(n); }
 
   /// Copies all element data to the given destination buffer `dest`. This
   /// assumes an element maps to a collection of types `Ts...` for which all
   /// types are trivially copyable, and contiguous in memory without any padding
   /// in between.
+  ///
+  /// \param dest
+  /// \param element
   template<typename... Ts, typename EndiannessDependent = Endianness>
   void memcpy(std::uint8_t *dest, const PlyElement &element) const
   {
@@ -188,6 +207,7 @@ private:
     return toBigEndian<U, Ts...>(toBigEndian<T>(dest));
   }
 
+  /// Wrapped input stream associated with this binary parser policy.
   mutable detail::BufferedIStream is_;
 };
 

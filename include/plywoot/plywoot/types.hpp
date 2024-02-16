@@ -64,27 +64,57 @@ enum class PlyFormat {
 
 struct PlyProperty
 {
+  /// Default constructor.
   PlyProperty() = default;
+  /// Constructs a PLY property for a property with the given name and type.
+  ///
+  /// \param name name of the PLY property
+  /// \param type type of the PLY property
   PlyProperty(std::string name, PlyDataType type) : name_{std::move(name)}, type_{type} {}
+  /// Constructs a PLY list property for a list property with the given name,
+  /// type, and size type.
+  ///
+  /// \param name name of the PLY list property
+  /// \param type type of the elements in the PLY property
+  /// \param sizeType type of number storing the size of list
   PlyProperty(std::string name, PlyDataType type, PlyDataType sizeType)
       : name_{std::move(name)}, type_{type}, isList_{true}, sizeType_{sizeType}
   {
   }
 
   /// Returns the name of this property.
+  ///
+  /// \return the name of this property
   const std::string &name() const { return name_; }
   /// Returns the type of this property.
+  ///
+  /// \return the type of this property
   PlyDataType type() const { return type_; }
   /// Returns whether this property represents a list property.
+  ///
+  /// \return \c true in case this property represents a list property, \c false
+  ///   otherwise
   bool isList() const { return isList_; }
   /// Returns the size type of this property.
+  ///
+  /// \return the size type of this property
   PlyDataType sizeType() const { return sizeType_; }
 
+  /// Compares the two given PLY properties \a x and \a y for equality.
+  ///
+  /// \param x left-hand side property to compare for equality with \a y
+  /// \param y right-hand side property to compare for equality with \a x
+  /// \return \c true in case \a x is equal to \a y, \c false otherwise
   inline friend bool operator==(const PlyProperty &x, const PlyProperty &y)
   {
     return x.type_ == y.type_ && x.isList_ == y.isList_ && x.sizeType_ == y.sizeType_ && x.name_ == y.name_;
   }
 
+  /// Compares the two given PLY properties \a x and \a y for inequality.
+  ///
+  /// \param x left-hand side property to compare for inequality with \a y
+  /// \param y right-hand side property to compare for inequality with \a x
+  /// \return \c true in case \a x is not equal to \a y, \c false otherwise
   inline friend bool operator!=(const PlyProperty &x, const PlyProperty &y) { return !(x == y); }
 
 private:
@@ -103,24 +133,43 @@ struct PlyElement
   PlyElement() = default;
   /// Constructor taking a name and a list of initial properties to associate
   /// with this element.
+  ///
+  /// \param name name of the PLY element to construct
+  /// \param properties definitions of the PLY properties embedded in this
+  ///     PLY element
   PlyElement(std::string name, std::vector<PlyProperty> properties)
       : name_{std::move(name)}, size_{0}, properties_{std::move(properties)}
   {
   }
   /// Constructor taking a name and size for this element.
+  ///
+  /// \param name name of the PLY element to construct
+  /// \param size TODO
   PlyElement(std::string name, std::size_t size) : name_{std::move(name)}, size_{size} {}
   /// Constructor taking a name and size for this element, as well as a list
   /// of initial properties to associate with this element.
+  ///
+  /// \param name name of the PLY element to construct
+  /// \param size TODO
+  /// \param properties definitions of the PLY properties embedded in this
+  ///     PLY element
   PlyElement(std::string name, std::size_t size, std::vector<PlyProperty> properties)
       : name_{std::move(name)}, size_{size}, properties_{std::move(properties)}
   {
   }
 
   /// Returns the name of this element.
+  ///
+  /// \return the name of this element
   const std::string &name() const { return name_; }
   /// Returns the size of this element.
+  ///
+  /// \return the size of this element
+  // TODO(ton): remove from this type?
   std::size_t size() const { return size_; }
   /// Returns the properties associated with this element.
+  ///
+  /// \return the properties associated with this element
   const std::vector<PlyProperty> &properties() const { return properties_; }
 
   /// Returns a pair where the first element is a copy of the property with
@@ -128,6 +177,12 @@ struct PlyElement
   /// indicates whether the requested property was found. In case a requested
   /// property was not found for this element, a default constructed property
   /// is returned.
+  ///
+  /// \param propertyName name of the property to find the definition for
+  /// \return a pair where the first element is a copy of the property with
+  ///     the given name in case it exists and the second element is a Boolean
+  ///     that indicates whether the requested property was found
+  // TODO(ton): return an optional
   std::pair<PlyProperty, bool> property(const std::string &propertyName) const
   {
     const auto it = std::find_if(properties_.begin(), properties_.end(), [&](const PlyProperty &p) {
@@ -137,6 +192,12 @@ struct PlyElement
                                    : std::pair<PlyProperty, bool>{{}, false};
   }
 
+  /// Factory method that constructs a new PLY property definition associated
+  /// with this PLY element in-place, forwarding the given arguments to the
+  /// constructor of `plywoot::PlyProperty`.
+  ///
+  /// \param args arguments to forward to the constructor of `plywoot::Property`
+  /// \return the newly constructed and added PLY property definition
   template<typename... Args>
   PlyProperty &addProperty(Args &&...args)
   {
@@ -144,15 +205,32 @@ struct PlyElement
     return properties_.back();
   }
 
+  /// Compares the two given PLY element definitions for equality.
+  ///
+  /// \param x left-hand side element definition to compare for equality with \a
+  ///     y
+  /// \param y right-hand side element definition to compare for equality with
+  ///     \a x
+  /// \return \c true in case \a x is equal to \a y, \c false otherwise
   inline friend bool operator==(const PlyElement &x, const PlyElement &y)
   {
     return x.size_ == y.size_ && x.name_ == y.name_ && x.properties_ == y.properties_;
   }
+  /// Compares the two given PLY element definitions for inequality.
+  ///
+  /// \param x left-hand side element definition to compare for inequality with \a
+  ///     y
+  /// \param y right-hand side element definition to compare for inequality with
+  ///     \a x
+  /// \return \c true in case \a x is not equal to \a y, \c false otherwise
   inline friend bool operator!=(const PlyElement &x, const PlyElement &y) { return !(x == y); }
 
 private:
+  /// Name of this element.
   std::string name_;
+  /// Size of this element.
   std::size_t size_;
+  /// The definitions of the properties contained in this element.
   std::vector<PlyProperty> properties_;
 };
 
@@ -162,13 +240,23 @@ using PropertyConstIterator = std::vector<PlyProperty>::const_iterator;
 /// associated line number.
 struct Comment
 {
+  /// Line number in the PLY header where this comment originates from.
   std::uint32_t line;
+  /// The comment text.
   std::string text;
 
+  /// Compares the two given comments \a x and \a y for equality.
+  ///
+  /// \param x left-hand side comment to check for equality
+  /// \param y right-hand side comment to check for equality
   inline friend bool operator==(const Comment &x, const Comment &y)
   {
     return x.line == y.line && x.text == y.text;
   }
+  /// Compares the two given comments \a x and \a y for inequality.
+  ///
+  /// \param x left-hand side comment to check for inequality
+  /// \param y right-hand side comment to check for inequality
   inline friend bool operator!=(const Comment &x, const Comment &y) { return !(x == y); }
 };
 

@@ -51,12 +51,18 @@ class IStream
 public:
   /// Constructs an input PLY data stream from the given input stream. This will
   /// automatically trigger parsing of all PLY data in the input stream.
+  ///
+  /// \param is input stream containing the PLY data to parse
   IStream(std::istream &is) : IStream{is, detail::HeaderParser{is}} {}
 
-  /// Returns all comment lines.
+  /// Returns all comments embedded in the PLY header.
+  ///
+  /// \return all comments embedded in the PLY header
   const std::vector<Comment> &comments() const { return comments_; }
 
   /// Returns all elements associated with this PLY file.
+  ///
+  /// \return all elements associated with this PLY file
   const std::vector<PlyElement> &elements() const { return elements_; }
 
   /// Returns a pair where the first element is a copy of the element with the
@@ -64,6 +70,12 @@ public:
   /// indicates whether the requested element was found. In case a requested
   /// element was not found in the input data, a default constructed element
   /// is returned.
+  ///
+  /// \param name name of the element to retrieve
+  /// \return a pair where the first element is a copy of the element in case it
+  ///   exists, and the second element is a Boolean indicating whether the
+  ///   requested element was found
+  // TODO(ton): change return type to an optional.
   std::pair<PlyElement, bool> element(const std::string &name) const
   {
     const auto it = std::find_if(
@@ -73,13 +85,17 @@ public:
   }
 
   /// Returns the format of the input PLY data stream.
+  ///
+  /// \return the format of the input PLY data stream
   PlyFormat format() const { return format_; }
 
   /// Positions the read head at the start of the element with the given name,
   /// or at the end of the stream in case the given element is not present in
   /// the stream, skipping over elements that do not match \a elementName.
-  /// Returns \c true in case an element with the given name was found,
-  /// otherwise, returns \c false.
+  ///
+  /// \param elementName name of the element to find
+  /// \return \c true in case an element with the given name was found,
+  ///     \c false otherwise
   bool find(const std::string &elementName) const
   {
     while (currElement_ != elements_.end() && currElement_->name() != elementName) { skipElement(); }
@@ -87,8 +103,13 @@ public:
   }
 
   /// Returns a copy of the current element that can be either read or skipped.
+  ///
+  /// \return  a copy of the current element that can be either read or skipped
   PlyElement element() const { return hasElement() ? *currElement_ : PlyElement{}; }
   /// Returns whether there are still elements left to parse.
+  ///
+  /// \return \c true in case there are still elements left to parse, \c false
+  ///     otherwise
   bool hasElement() const { return currElement_ != elements_.end(); }
 
   /// Reads an element to a newly allocated block of memory wrapped by a
@@ -111,7 +132,10 @@ public:
   /// Precondition is that `hasElement()` is true, failing to meet this
   /// precondition results in undefined behavior.
   ///
-  /// TODO(ton): add more extensive documentation
+  /// \return a vector of object of type `T` representing the element that was
+  ///     parsed using the PLY property mapping embedded in the given `Layout`
+  ///     type
+  // TODO(ton): add more extensive documentation
   // TODO(ton): probably better to add another parameter 'size' to guard
   template<typename T, typename Layout>
   std::vector<T> readElement() const
@@ -126,6 +150,9 @@ public:
 
 private:
   /// Constructs a PLY file from the given input stream and header parser.
+  ///
+  /// \param is input stream containing the PLY data to parse
+  /// \param headerParser header parser instance
   IStream(std::istream &is, const detail::HeaderParser &headerParser)
       : parser_{is, headerParser.format()},
         comments_{headerParser.comments()},
@@ -156,12 +183,18 @@ class OStream
 {
 public:
   /// Constructs an output PLY data stream of the given format type.
+  ///
+  /// \param format format of the output PLY data stream
   OStream(PlyFormat format) : format_{format} {}
   /// Constructs an output PLY data stream of the given format type, with the
   /// specified comments that should be written to the header. Line numbers of
   /// the comments should start from line 2, since according to the
   /// specification, comments may not occur in the first two lines of the
   /// header.
+  ///
+  /// \param format format of the output PLY data stream
+  /// \param comments comments to store in the header of the output PLY data
+  ///     stream
   OStream(PlyFormat format, std::vector<Comment> comments) : format_{format}, comments_{std::move(comments)}
   {
     // Ensure comments are sorted on line number (ascending).
@@ -172,6 +205,10 @@ public:
 
   /// Queues an element with the associated data for writing. Elements will be
   /// stored in the same order they are queued.
+  ///
+  /// \param element PLY element to add for streaming to this output stream
+  /// \param layout PLY property to target type mapping representing the way PLY
+  ///     properties should be mapped on the various target type member types
   template<typename... Ts>
   void add(const PlyElement &element, const reflect::Layout<Ts...> layout)
   {
@@ -187,6 +224,8 @@ public:
   /// Queues the given element data for writing. This takes ownership of the
   /// data to be written, to ensure it does not go out of scope prior to
   /// committing all data to the output stream through `write()`.
+  ///
+  /// \param elementData raw element data to stream to this output stream
   void add(const PlyElementData &elementData)
   {
     // TODO(ton): once we upgrade to C++17, move capture element data in the
@@ -202,6 +241,8 @@ public:
 
   /// Writes all data as a PLY file queued through `addElement()` to the given
   /// output stream.
+  ///
+  /// \param os output stream to write the queued element data to
   void write(std::ostream &os) const
   {
     writeHeader(os);
@@ -218,6 +259,8 @@ public:
 private:
   /// Writes the ASCII PLY header, which defines the format of the PLY data, the
   /// elements and element properties that occur in the data.
+  ///
+  /// \param os output stream to write the PLY header data to
   void writeHeader(std::ostream &os) const
   {
     os << "ply\n";
@@ -286,6 +329,10 @@ private:
 
 /// Converts the given input PLY stream to the requested format, and outputs the
 /// resulting PLY data to the given output stream.
+///
+/// \param is input stream containing the PLY data to convert
+/// \param os output stream to write converted PLY data to
+/// \param format PLY format of the output PLY data
 inline void convert(std::istream &is, std::ostream &os, PlyFormat format)
 {
   IStream plyIs{is};

@@ -38,6 +38,9 @@ namespace plywoot {
 /// Base class for all header parser exceptions.
 struct HeaderParserException : Exception
 {
+  /// Constructs a header parser exception with the given error message.
+  ///
+  /// \param message header parser error message
   HeaderParserException(const std::string &message) : Exception("parser error: " + message) {}
 };
 
@@ -45,12 +48,21 @@ struct HeaderParserException : Exception
 /// input.
 struct InvalidFormat : HeaderParserException
 {
+  /// Constructs an invalid format parser exception with the given error
+  /// message.
+  ///
+  /// \param format the invalid format keyword that was found in the header
   InvalidFormat(const std::string &format) : HeaderParserException("invalid format found: " + format) {}
 };
 
 /// Exception thrown in case the input contains an unexpected token.
 struct UnexpectedToken : HeaderParserException
 {
+  /// Constructs an unexpected token header parser exception.
+  ///
+  /// \param expected token that was expected
+  /// \param found token that was found
+  /// \param tokenString textual representation of the token that was found
   UnexpectedToken(
       detail::HeaderScanner::Token expected,
       detail::HeaderScanner::Token found,
@@ -63,16 +75,30 @@ struct UnexpectedToken : HeaderParserException
   {
   }
 
+  /// Constructs an unexpected token header parser exception for cases where the
+  /// expected token is not clearly defined.
+  ///
+  /// \param found token that was found
+  /// \param tokenString textual representation of the token that was found
+  // TODO(ton): fix passing Eof below as the expected token
   UnexpectedToken(detail::HeaderScanner::Token found, const std::string &tokenString)
       : UnexpectedToken{detail::HeaderScanner::Token::Eof, found, tokenString}
   {
   }
 
-  std::string expected() const { return detail::to_string(expected_); }
-  std::string found() const { return detail::to_string(found_); }
+  /// Returns the expected token.
+  ///
+  /// \return the expected token
+  detail::HeaderScanner::Token expected() const { return expected_; }
+  /// Returns the token that was found instead of the expected token.
+  ///
+  /// \return the token that was found instead of the expected token
+  detail::HeaderScanner::Token found() const { return found_; }
 
 private:
+  /// Expected token.
   detail::HeaderScanner::Token expected_;
+  /// Token that was found instead of the expected token.
   detail::HeaderScanner::Token found_;
 };
 
@@ -87,6 +113,10 @@ class HeaderParser
   using Token = detail::HeaderScanner::Token;
 
 public:
+  /// Constructs a header parser for the PLY header data in the given input
+  /// stream.
+  ///
+  /// \param is input stream containing PLY header data to parse
   HeaderParser(std::istream &is) : scanner_{is}
   {
     accept(Token::MagicNumber);
@@ -132,8 +162,19 @@ public:
     } while (scanner_.token() != Token::EndHeader);
   }
 
+  /// Returns all comments that were extracted from the PLY header by this
+  /// parser.
+  ///
+  /// \return all comments in the PLY header parsed by this parser
   const std::vector<Comment> &comments() const { return comments_; }
+  /// Returns all PLY elements defined in the parsed PLY header.
+  ///
+  /// \return all PLY elements defined in the parsed PLY header
   const std::vector<PlyElement> &elements() const { return elements_; }
+
+  /// Returns the PLY format type as encoded in the PLY header.
+  ///
+  /// \return the PLY format type as encoded in the PLY header
   PlyFormat format() const { return format_; }
 
 private:
