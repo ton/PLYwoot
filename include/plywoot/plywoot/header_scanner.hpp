@@ -52,10 +52,10 @@ static constexpr const char endHeaderToken[] = "end_header";
 /// Lookup table to check whether a character is a token delimiter.
 /// The following characters are token delimiters:
 ///
-///  1. <space> (32)
-///  2. \t      (9)
-///  3. \n      (10)
-///  4. \r      (13)
+///  1. \<space> (32)
+///  2. \\t      (9)
+///  3. \\n      (10)
+///  4. \\r      (13)
 ///  5. EOF     (255)
 ///
 // clang-format off
