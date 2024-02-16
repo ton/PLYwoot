@@ -1,0 +1,28 @@
+name: PLYwoot unit tests
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Install CMake, C++ compilers, and Boost
+        run: |
+          sudo apt install -y g++ gcc cmake libboost-iostreams-dev
+
+      - name: Download, build and install Catch2 version 3
+        run: |
+          wget https://github.com/catchorg/Catch2/archive/refs/tags/v3.5.2.tar.gz
+          tar xf v3.5.2.tar.gz
+          cd Catch2-3.5.2
+          cmake -DCMAKE_BUILD_TYPE=Release -B build && sudo cmake --build build -j8 --target install
+
+      - name: Execute PLYwoot unit test
+        run: |
+          cmake -DCMAKE_BUILD_TYPE=Release -B build && cmake --build build -j8 && build/tests
