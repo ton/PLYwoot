@@ -4,7 +4,7 @@ project(PLYwoot
   VERSION 0.0.1
   LANGUAGES CXX
   HOMEPAGE_URL "https://github.com/ton/plywoot"
-  DESCRIPTION "C++11 header-only PLY I/O library"
+  DESCRIPTION "C++17 header-only PLY I/O library"
 )
 
 # Custom cmake modules.
