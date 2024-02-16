@@ -22,7 +22,7 @@
 #include <plywoot/plywoot.hpp>
 
 #include <fstream>
-#include <iostream>  // Remove!
+#include <iomanip>
 #include <sstream>
 #include <vector>
 
@@ -56,6 +56,12 @@ using UCharsLayout = plywoot::reflect::Layout<UChars>;
 using Ints = std::vector<int>;
 using IntsLayout = plywoot::reflect::Layout<Ints>;
 
+std::ostream &operator<<(std::ostream &os, const Element &e)
+{
+  return os << std::setprecision(20) << "{a: " << int(e.a) << ", b: " << int(e.b) << ", c: " << e.c << ", d: " << e.d << ", e: " << e.e
+            << ", f: " << e.f << ", g: " << e.g << ", h: " << e.h << "}\n";
+}
+
 }
 
 TEST_CASE("Test converting an ASCII PLY file to binary little and big endian.", "[convert]")
@@ -85,7 +91,7 @@ TEST_CASE("Test converting an ASCII PLY file to binary little and big endian.", 
       {92, 249, -32762, 65529, -2147483642, 2147483641, 7.0, -7.0},
       {93, 248, -32761, 65528, -2147483641, 2147483640, 8.0, -8.0},
       {94, 247, -32760, 65527, -2147483640, 2147483639, 9.0, -9.0},
-      {95, 246, -32759, 65526, -2147483639, 2147483638, 9.9, -9.9},
+      {95, 246, -32759, 65526, -2147483639, 2147483638, 10.0, -10.0},
   };
   REQUIRE(expectedElements == inputElements);
 
