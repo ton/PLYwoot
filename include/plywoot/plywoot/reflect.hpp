@@ -20,16 +20,10 @@
 #ifndef PLYWOOT_REFLECT_HPP
 #define PLYWOOT_REFLECT_HPP
 
+#include <type_traits>
 #include <vector>
 
 namespace plywoot::reflect {
-
-/// Meta type that is used to help with SFINAE resolution.
-template<typename... Ts>
-struct Void
-{
-  using type = void;
-};
 
 /// Type wrapper that wraps some type (`DestT`) that we need to serialize to. A
 /// specialization exists that extracts the destination type from some of the
@@ -42,7 +36,7 @@ struct Type
 };
 
 template<typename T>
-struct Type<T, typename Void<typename T::DestT>::type>
+struct Type<T, typename std::void_t<typename T::DestT>>
 {
   using DestT = typename T::DestT;
 };
