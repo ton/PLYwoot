@@ -98,7 +98,7 @@ public:
   /// stores them contiguously at the given destination in memory as numbers of
   /// type `To`.
   template<typename From, typename To, size_t N>
-  std::uint8_t * read(std::uint8_t *dest)
+  std::uint8_t *read(std::uint8_t *dest)
   {
     if constexpr (std::is_same_v<From, To>)
     {
