@@ -150,6 +150,8 @@ Classes</h2></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><b>NumProperties&lt; reflect::Pack&lt; T, N &gt; &gt;</b></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><b>NumProperties&lt; reflect::Stride&lt; T &gt; &gt;</b></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><b>NumProperties&lt; T &gt;</b></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><b>NumProperties&lt; T, Ts... &gt;</b></td></tr>
@@ -367,7 +369,7 @@ template&lt;typename Ptr &gt; </div>
 </div><div class="memdoc">
 <p>Aligns the given input pointer according to the size of the given PLY data type. </p>
 
-<p class="definition">Definition at line <a class="el" href="type__traits_8hpp_source.html#l00220">220</a> of file <a class="el" href="type__traits_8hpp_source.html">type_traits.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="type__traits_8hpp_source.html#l00226">226</a> of file <a class="el" href="type__traits_8hpp_source.html">type_traits.hpp</a>.</p>
 
 </div>
 </div>
@@ -438,7 +440,7 @@ template&lt;typename Ptr &gt; </div>
 
 <p>Returns the alignment of the given PLY data type. </p>
 
-<p class="definition">Definition at line <a class="el" href="type__traits_8hpp_source.html#l00246">246</a> of file <a class="el" href="type__traits_8hpp_source.html">type_traits.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="type__traits_8hpp_source.html#l00252">252</a> of file <a class="el" href="type__traits_8hpp_source.html">type_traits.hpp</a>.</p>
 
 </div>
 </div>
@@ -571,7 +573,7 @@ template&lt;typename T &gt; </div>
 </div><div class="memdoc">
 <p>Returns whether the range of properties in [<code>first</code>, <code>last</code>) represents PLY properties that have the same type as the given type range. Note that a single <code><a class="el" href="structplywoot_1_1reflect_1_1Pack.html">reflect::Pack</a></code> type is compared with same number of properties as are in the pack. </p>
 
-<p class="definition">Definition at line <a class="el" href="type__traits_8hpp_source.html#l00339">339</a> of file <a class="el" href="type__traits_8hpp_source.html">type_traits.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="type__traits_8hpp_source.html#l00345">345</a> of file <a class="el" href="type__traits_8hpp_source.html">type_traits.hpp</a>.</p>
 
 </div>
 </div>
@@ -603,7 +605,7 @@ template&lt;typename T , typename U , typename... Ts&gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="type__traits_8hpp_source.html#l00345">345</a> of file <a class="el" href="type__traits_8hpp_source.html">type_traits.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="type__traits_8hpp_source.html#l00351">351</a> of file <a class="el" href="type__traits_8hpp_source.html">type_traits.hpp</a>.</p>
 
 </div>
 </div>
@@ -634,7 +636,7 @@ template&lt;typename T &gt; </div>
 </div><div class="memdoc">
 <p>Type function that returns whether a list of types is consecutively aligned in memory, without any padding. </p>
 
-<p class="definition">Definition at line <a class="el" href="type__traits_8hpp_source.html#l00275">275</a> of file <a class="el" href="type__traits_8hpp_source.html">type_traits.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="type__traits_8hpp_source.html#l00281">281</a> of file <a class="el" href="type__traits_8hpp_source.html">type_traits.hpp</a>.</p>
 
 </div>
 </div>
@@ -664,7 +666,7 @@ template&lt;typename T , typename U , typename... Ts&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="type__traits_8hpp_source.html#l00281">281</a> of file <a class="el" href="type__traits_8hpp_source.html">type_traits.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="type__traits_8hpp_source.html#l00287">287</a> of file <a class="el" href="type__traits_8hpp_source.html">type_traits.hpp</a>.</p>
 
 </div>
 </div>
@@ -695,7 +697,7 @@ template&lt;typename T &gt; </div>
 </div><div class="memdoc">
 <p>Returns whether an object of type <code>T</code> represents that same object as an object of the given PLY data type <code>type</code>. </p>
 
-<p class="definition">Definition at line <a class="el" href="type__traits_8hpp_source.html#l00112">112</a> of file <a class="el" href="type__traits_8hpp_source.html">type_traits.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="type__traits_8hpp_source.html#l00118">118</a> of file <a class="el" href="type__traits_8hpp_source.html">type_traits.hpp</a>.</p>
 
 </div>
 </div>
@@ -725,7 +727,7 @@ template&lt;typename T &gt; </div>
 </div><div class="memdoc">
 <p>Type function that returns whether all types in the given list of types are trivially copyable. </p>
 
-<p class="definition">Definition at line <a class="el" href="type__traits_8hpp_source.html#l00291">291</a> of file <a class="el" href="type__traits_8hpp_source.html">type_traits.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="type__traits_8hpp_source.html#l00297">297</a> of file <a class="el" href="type__traits_8hpp_source.html">type_traits.hpp</a>.</p>
 
 </div>
 </div>
@@ -754,7 +756,7 @@ template&lt;typename T , typename U , typename... Ts&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="type__traits_8hpp_source.html#l00297">297</a> of file <a class="el" href="type__traits_8hpp_source.html">type_traits.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="type__traits_8hpp_source.html#l00303">303</a> of file <a class="el" href="type__traits_8hpp_source.html">type_traits.hpp</a>.</p>
 
 </div>
 </div>
@@ -784,7 +786,7 @@ template&lt;typename... Ts&gt; </div>
 </div><div class="memdoc">
 <p>Returns the number of properties spanned by the given list of reflection types. By default, every reflection type spans one property, except for <code><a class="el" href="structplywoot_1_1reflect_1_1Pack.html">plywoot::reflect::Pack</a></code>, which spans multiple properties by definition. </p>
 
-<p class="definition">Definition at line <a class="el" href="type__traits_8hpp_source.html#l00104">104</a> of file <a class="el" href="type__traits_8hpp_source.html">type_traits.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="type__traits_8hpp_source.html#l00110">110</a> of file <a class="el" href="type__traits_8hpp_source.html">type_traits.hpp</a>.</p>
 
 </div>
 </div>
@@ -852,7 +854,7 @@ template&lt;typename... Ts&gt; </div>
 </div><div class="memdoc">
 <p>Returns the size of some type T, effectively implementing sizeof(T), where it overrides sizeof() for types of instance Pack&lt;&gt; and Array&lt;&gt;. For pack types, the computed size is the sum of <code>SizeOf</code> for all types in the pack, whereas for arrays it is the <code>SizeOf</code> of the element type in the array times the number of elements in the array. </p>
 
-<p class="definition">Definition at line <a class="el" href="type__traits_8hpp_source.html#l00190">190</a> of file <a class="el" href="type__traits_8hpp_source.html">type_traits.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="type__traits_8hpp_source.html#l00196">196</a> of file <a class="el" href="type__traits_8hpp_source.html">type_traits.hpp</a>.</p>
 
 </div>
 </div>
@@ -882,7 +884,7 @@ template&lt;typename... Ts&gt; </div>
 
 <p>Returns the size in bytes of the given PLY data type. </p>
 
-<p class="definition">Definition at line <a class="el" href="type__traits_8hpp_source.html#l00196">196</a> of file <a class="el" href="type__traits_8hpp_source.html">type_traits.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="type__traits_8hpp_source.html#l00202">202</a> of file <a class="el" href="type__traits_8hpp_source.html">type_traits.hpp</a>.</p>
 
 </div>
 </div>
