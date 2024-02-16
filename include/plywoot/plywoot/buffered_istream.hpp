@@ -103,8 +103,6 @@ public:
   {
     if constexpr (std::is_same_v<From, To>)
     {
-      // Little endian; source number type is equal to the destination number
-      // type.
       return this->memcpy(dest, N * sizeof(From));
     }
     else
@@ -218,7 +216,7 @@ private:
   /// Buffered data, always a null terminated string.
   std::unique_ptr<char[]> buffer_{new char[IStreamBufferSize]};
 
-  /// Character the scanner's read head is currently pointing to. Invariant:
+  /// Character the read head is currently pointing to. Invariant:
   ///
   ///       buffer_ <= c_ <= (buffer_ + sizeof(buffer_))
   ///
