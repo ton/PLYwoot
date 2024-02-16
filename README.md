@@ -243,7 +243,7 @@ Please refer to the benchmark results at [PLYbench](https://github.com/ton/PLYbe
 The following features are on my list to be implemented for future versions of PLYwoot:
 
 * Add support to create an 'amalgamation' header file of all combined header-files of PLYwoot for easier inclusion in other projects, similar to how SQLite does this for example.
-* Make the `Layout` type smart enough such that the helper type `Pack` is no longer needed to ensure consequent properties of the same type are efficiently `memcpy`'d when possible.
+* Make the `Layout` type smart enough such that the helper type `Pack` is no longer needed to ensure consecutive properties of the same type are efficiently `memcpy`'d when possible.
 
 ## License
 
