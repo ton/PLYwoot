@@ -102,7 +102,7 @@ public:
   }
 
   /// Skips property data, totaling `n` bytes.
-  void skipProperties(size_t n) const
+  void skipProperties(std::size_t n) const
   {
     if (n > 0) is_.skipLines(1);
   }

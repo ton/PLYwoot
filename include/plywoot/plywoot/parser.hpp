@@ -40,7 +40,7 @@ namespace plywoot::detail {
 ///
 ///   - void skipElement(const PlyElement &e);
 ///   - void skipProperty(const PlyProperty &p);
-///   - void skipProperties(size_t numBytes);
+///   - void skipProperties(std::size_t numBytes);
 ///
 ///  Only for the binary policies, the following function needs to be
 ///  implemented as well:
@@ -76,7 +76,7 @@ public:
     PlyElementData result(element);
 
     std::uint8_t *dest = result.data();
-    for (size_t i = 0; i < element.size(); ++i)
+    for (std::size_t i = 0; i < element.size(); ++i)
     {
       for (const PlyProperty &property : element.properties())
       {
@@ -322,7 +322,7 @@ private:
     return static_cast<std::uint8_t *>(detail::align(dest, alignof(DestT))) + sizeof(DestT);
   }
 
-  template<typename PlyT, typename DestT, size_t N>
+  template<typename PlyT, typename DestT, std::size_t N>
   std::uint8_t *readProperty(std::uint8_t *dest, reflect::Type<reflect::Pack<DestT, N>>) const
   {
     static_assert(std::is_arithmetic<PlyT>::value, "unexpected PLY data type");

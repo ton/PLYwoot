@@ -97,7 +97,7 @@ public:
   /// Reads `N` objects of the given type `From` from the input data stream, and
   /// stores them contiguously at the given destination in memory as numbers of
   /// type `To`.
-  template<typename From, typename To, size_t N>
+  template<typename From, typename To, std::size_t N>
   std::uint8_t *read(std::uint8_t *dest)
   {
     if constexpr (std::is_same_v<From, To>)
@@ -117,7 +117,7 @@ public:
 
       const From *from = reinterpret_cast<const From *>(c_);
       To *to = reinterpret_cast<To *>(dest);
-      for (size_t i = 0; i < N; ++i) { *to++ = *from++; }
+      for (std::size_t i = 0; i < N; ++i) { *to++ = *from++; }
 
       c_ += bytesToRead;
 

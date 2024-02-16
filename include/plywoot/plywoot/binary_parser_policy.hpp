@@ -127,7 +127,7 @@ public:
 
       // Perform endianess conversion.
       DestT *to = reinterpret_cast<DestT *>(dest);
-      for (size_t i = 0; i < N; ++i, ++to) { *to = betoh(static_cast<PlyT>(*to)); }
+      for (std::size_t i = 0; i < N; ++i, ++to) { *to = betoh(static_cast<PlyT>(*to)); }
 
       return result;
     }
@@ -154,7 +154,7 @@ public:
 
     if constexpr (std::is_same_v<EndiannessDependent, BigEndian>)
     {
-      for (size_t i = 0; i < element.size(); ++i) { dest = toBigEndian<Ts...>(dest); }
+      for (std::size_t i = 0; i < element.size(); ++i) { dest = toBigEndian<Ts...>(dest); }
     }
   }
 
