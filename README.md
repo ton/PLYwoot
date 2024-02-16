@@ -105,10 +105,10 @@ To parse the triangle data in the PLY file listed above to our target type `Tria
 
 ```cpp
 using namespace plywoot::reflect;
-using TriangleLayout = Layout<std::vector<>>;
+using TriangleLayout = Layout<std::vector<std::int32_t>>;
 ```
 
-This tells PLYwoot that the first property in the PLY `face` element which is a variable length list `vertex_indices` needs to be mapped onto an `std::vector` instance. This works, but is of course not very efficient. Typically, a triangle type will have the following form:
+This tells PLYwoot that the first property in the PLY `face` element which is a variable length list `vertex_indices` needs to be mapped onto an `std::vector` instance. This works, but is not very efficient. PLYwoot will not make any assumption on the length of the lists in the input data, and will have to initialize a vector of indices for each triangle it reads. Typically, a triangle type will have the following form:
 
 ```cpp
 struct Triangle
@@ -117,14 +117,39 @@ struct Triangle
 };
 ```
 
-In case we know up front that each face in the PLY data is encoded by three vertex indices, this assumption can be embedded in the layout map by just packing the list entries in the PLY data:
+In case we know up front that each face in the PLY data is encoded by three vertex indices, this assumption can be embedded in the layout map by mapping the PLY list property using `plywoot::reflect::Array`, as follows:
 
 ```cpp
 using namespace plywoot::reflect;
-using TriangleLayout = Layout<Pack<std::int32_t, 3>>;
+using TriangleLayout = Layout<Array<std::int32_t, 3>>;
 ```
 
-This will improve parser performance significantly. In this case, the PLY type exactly matches the target member type (`std::int32_t`), and as such the triangle data will be directly `memcpy`'d into the result vector.
+`plywoot::reflect::Array` is very similar to `plywoot::reflect::Pack` we saw before, except that it maps a single *list* PLY property onto the target type, instead of multiple PLY properties. As long as the target type holds one or more member types that have the same memory representation as the list data in the PLY file, `plywoot::reflect::Array` can be used. Thus, in case `Triangle` has the form below, the above `TriangleLayout` type will still work, since the memory representation of the two forms of `Triangle` are the same:
+
+```cpp
+struct Triangle
+{
+    std::array<std::int32_t, 3> indices;
+};
+```
+
+This way of mapping the PLY list property will improve parser performance dramatically. In this case, the PLY list type exactly matches the target member type (`std::int32_t`), and as such the triangle data will be directly `memcpy`'d into the result vector. Note that implicit type conversions are still supported in this way. In case `Triangle` has the following form:
+
+```cpp
+struct Triangle
+{
+    std::array<std::uint32_t, 3> indices;
+};
+```
+
+Thus, an array of `std::uint32_t` instead of `std::int32_t`, the `TriangleLayout` defined above needs to be adapted to read:
+
+```cpp
+using namespace plywoot::reflect;
+using TriangleLayout = Layout<Array<std::uint32_t, 3>>;
+```
+
+Then, reading the same PLY data will still work, and PLYwoot will take care of the implicit type conversion from a signed integer in the PLY data to an unsigned integer in the target type. Just note that a direct `memcpy` is then no longer performed. The latter restriction may be too tight in some cases, and future PLYwoot versions can improve on this.
 
 ## Writing PLY files
 
