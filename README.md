@@ -13,18 +13,167 @@ PLYwoot is a C++17 header-only library providing read/write support for [PLY](ht
 * Allows skipping of properties in the PLY data that are not of interest.
 * `rePLY`, a separate tool bundled with PLYwoot allows converting PLY files from one format (ASCII, binary little/big endian) to another.
 
-## Examples
+## Parsing PLY files
 
-The following examples demonstrate some typical use cases of PLYwoot. For more details on the functions used below, please refer to the [API documentation](https://ton.github.io/PLYwoot) for more details.
+This section will demonstrate how to use PLYwoot to parse a PLY file for the typical use case of parsing triangle mesh data. For more details on the functions used below, please refer to the [API documentation](https://ton.github.io/PLYwoot).
 
-### Parsing PLY files
-
-Suppose you have a triangle mesh type, that has the following structure:
+Suppose we have the following two very *naive* types `Triangle` and `Vertex` to represent a triangle and vertex in a triangle mesh:
 
 ```cpp
+struct Triangle
+{
+    std::vector<std::int32_t> indices;
+};
+
+struct Vertex
+{
+    double x, y, z;
+};
 ```
 
-### Writing PLY files
+Furthermore, suppose we have PLY file that contains the following element data, that is, it contains 1612868 vertices containing an (`x`, `y`, `z`) tuple representing the vertex coordinates together with an RGB tuple representing the vertex color. Finally, the PLY file contains 3224192 triangles represented by indices into the vertex list. PLY does not support fixed lists, so the triangle data is stored as a list of variable length lists, which in practice will always be a list of three elements. PLYwoot provides functionality to pass on this assumption to the parser to speed up parsing.
+
+```ply
+element vertex 1612868
+property float x
+property float y
+property float z
+property uchar red
+property uchar green
+property uchar blue
+element face 3224192
+property list uchar int vertex_indices
+```
+
+#### Parsing the vertex element
+
+PLYwoot allows you to directly map the `x`, `y`, and `z` properties on the `Vertex` type, the so-called 'target type', and ignore the RGB data. For that, PLYwoot needs to know the memory layout of the `Vertex` type. Reflection is not yet standardized in C++, so we have to come up with a work-around to pass on this information to PLYwoot. PLYwoot provides a `plywoot::reflect::Layout` type which enables specifying the mapping of PLY properties onto member types of the `Vertex` struct in this case. This is done using a `plywoot::reflect::Layout` template type. For example, to create a property map for vertex element in the PLY data above onto the `Vertex` type, the following layout type can be specified:
+
+```cpp
+using namespace plywoot::reflect;
+using VertexLayout = Layout<double, double, double, Skip, Skip, Skip>;
+```
+
+This tells PLYwoot to map the first three properties in the PLY element, that is the three float properties `x`, `y`, and `z` respectively onto `double` member variables. We are not interested in the `red`, `green`, and `blue` properties in the PLY data, so those can be skipped when parsing the PLY data, which is indicated by the three `plywoot::reflect::Skip` types. `plywoot::reflect::Skip` types occuring at the end of a layout specification do not necessarily need to be specified, PLYwoot is smart enough to skip any properties for which no mapping was defined, so the `VertexLayout` type can be further simplified to:
+
+```cpp
+using namespace plywoot::reflect;
+using VertexLayout = Layout<double, double, double>;
+```
+
+Now, suppose we have some input stream `is` containing our PLY data, then the `vertex` element in that PLY can now be parsed as follows:
+
+```cpp
+using VertexLayout = plywoot::reflect::Layout<double, double, double>;
+
+plywoot::IStream ply_is{is};
+const std::vector<Vertex> vertices = ply_is.readElement<Vertex, VertexLayout>();
+```
+
+##### Improving read performance by packing properties
+
+PLYwoot will copy each individual PLY property into each `Vertex` instance separately in the last code fragment that we saw. This can be improved a bit further. In case we know that the struct member variables are laid out consecutively in memory using standard C++ alignment rules, the PLY properties can be directly `memcpy`'d into each `Vertex` instance. This can be done by packing the three target member types into a `plywoot::reflect::Pack` type as follows:
+
+```cpp
+using VertexLayout = plywoot::reflect::Layout<plywoot::reflect::Pack<double, 3>>;
+```
+
+This will significantly speed up parsing performance, as the three PLY properties `x`, `y`, and `z` will be `memcpy`'d at the same time into a `Vertex` instance. In principle, `plywoot::reflect::Pack` could be an implementation detail in the sense that PLYwoot could be smart enough to do automatic packing of target member types, but this has not been implemented yet.
+
+##### Skipping over properties in the target type
+
+As we saw, using `plywoot::reflect::Skip` can be used to skip over unwanted PLY property data. But suppose we would like to skip over a member variable in the target type, this can be done as well. For example, suppose our `Vertex` type has a slightly different form, where each vertex also stores a UV-coordinate. For the sake of this argument, assume the UV-coordinate is laid out before the X, Y, Z coordinate in memory:
+
+```cpp
+struct Vertex
+{
+    double u, v;
+    double x, y, z;
+};
+```
+
+The UV coordinates can not be initialized directly from the PLY data that we saw earlier. For this, PLYwoot provides a `plywoot::reflect::Stride` type, that allows skipping over types in the target type, as follows:
+
+```cpp
+using namespace plywoot::reflect;
+using VertexLayout = Layout<Stride<double>, Stride<double>, Pack<double, 3>>;
+```
+
+#### Parsing the triangle element
+
+To parse the triangle data in the PLY file listed above to our target type `Triangle`, the following layout can be used:
+
+```cpp
+using namespace plywoot::reflect;
+using TriangleLayout = Layout<std::vector<>>;
+```
+
+This tells PLYwoot that the first property in the PLY `face` element which is a variable length list `vertex_indices` needs to be mapped onto an `std::vector` instance. This works, but is of course not very efficient. Typically, a triangle type will have the following form:
+
+```cpp
+struct Triangle
+{
+    std::int32_t a, b, c;
+};
+```
+
+In case we know up front that each face in the PLY data is encoded by three vertex indices, this assumption can be embedded in the layout map by just packing the list entries in the PLY data:
+
+```cpp
+using namespace plywoot::reflect;
+using TriangleLayout = Layout<Pack<std::int32_t, 3>>;
+```
+
+This will improve parser performance significantly. In this case, the PLY type exactly matches the target member type (`std::int32_t`), and as such the triangle data will be directly `memcpy`'d into the result vector.
+
+## Writing PLY files
+
+Writing PLY files makes use of the same reflection mechanism used for parsing PLY files. You will need to tell PLYwoot how your source type maps onto PLY properties in the resulting PLY file. Suppose we would like to write out a list of vertices and triangles to a PLY file with the following elements and respective properties:
+
+```ply
+element vertex
+property float x
+property float y
+property float z
+element face
+property list uchar int vertex_indices
+```
+
+To do this, first define the elements and properties:
+
+```cpp
+std::vector<Vertex> vertices;
+std::vector<Triangle> triangles;
+
+const plywoot::PlyProperty x{"x", plywoot::PlyDataType::Float};
+const plywoot::PlyProperty y{"y", plywoot::PlyDataType::Float};
+const plywoot::PlyProperty z{"z", plywoot::PlyDataType::Float};
+const plywoot::PlyElement vertex_element{"vertex", vertices.size(), {x, y, z}};
+
+const plywoot::PlyProperty vertex_indices{"vertex_indices", plywoot::PlyDataType::Int, plywoot::PlyDataType::UChar};
+const plywoot::PlyElement face_element{"face", triangles.size(), {vertex_indices}};
+```
+
+Then, define the source layout in a similar way as was done for parsing the PLY data:
+
+```cpp
+using namespace plywoot::reflect;
+using VertexLayout = Layout<Pack<double, 3>>;
+using TriangleLayout = Layout<Pack<int, 3>>;
+```
+
+Finally, add the elements together with the data to be written for that element to a `plywoot::OStream`, and write the data to some `std::ostream` instance as follows:
+
+```cpp
+plywoot::OStream ply_os{plywoot::PlyFormat::Ascii}
+ply_os.add(vertex_element, VertexLayout{vertices});
+ply_os.add(face_element, TriangleLayout{triangles});
+
+std::ofstream ofs{"output.ply", std::ios::out | std::ios::trunc}
+ply_os.write(ofs);
+```
+
+Note that the data to be written is passed in as an argument to the `plywoot::reflect::Layout` type encoding the source to PLY property type mapping. In this case, an ASCII PLY file is written. Binary little and big endian output format types are supported as well.
 
 ## Getting started
 
@@ -52,6 +201,10 @@ PLYwoot exports one target named `PLYwoot::plywoot` which represents the header-
 To be able to build the unit tests of PLYwoot and the `rePLY` tool, [CMake](https://cmake.org) is required (at least version 3.5). The unit tests are implemented using the [Catch2](https://github.com/catchorg/Catch2) unit test framework.
 
 By default, PLYwoot will use functionality from C++'s standard library to perform string to floating point and integer conversion for parsing of ASCII PLY files. Performance of parsing ASCII PLY files can be improved significantly by ensuring that the [`fast_float`](https://github.com/fastfloat/fast_float) and/or [`fast_int`](https://github.com/ton/fast_int) libraries are installed.
+
+## API documentation
+
+The complete API documentation generated by [Doxygen](https://www.doxygen.nl) can be found at: [https://ton.github.io/PLYwoot](https://ton.github.io/PLYwoot). The API documentation also contains various examples and use-cases that illustrate PLYwoot's usage.
 
 ## Benchmarks
 
