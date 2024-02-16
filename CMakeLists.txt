@@ -18,8 +18,8 @@ set(CMAKE_CXX_FLAGS_RELEASE "-O2 -DNDEBUG")
 set (CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
 
 # Set the appropriate compiler flags.
-add_compile_options("$<$<CONFIG:DEBUG>:-Wall;-Wextra;-Wshadow;-Wno-unused-variable;-Wno-unused-function;-Wno-unused-parameter;-Werror;-fno-strict-aliasing;-march=native>")
-add_compile_options("$<$<CONFIG:RELEASE>:-Wall;-Wextra;-Wshadow;-Wpedantic;-Werror;-Wno-unused-parameter;-fno-strict-aliasing;-march=native>")
+add_compile_options("$<$<CONFIG:DEBUG>:-Wall;-Wextra;-Wshadow;-Wno-maybe-uninitialized;-Wno-unused-variable;-Wno-unused-function;-Wno-unused-parameter;-Werror;-fno-strict-aliasing;-march=native>")
+add_compile_options("$<$<CONFIG:RELEASE>:-Wall;-Wextra;-Wshadow;-Wno-maybe-uninitialized;-Wpedantic;-Werror;-Wno-unused-parameter;-fno-strict-aliasing;-march=native>")
 
 # External (optional) dependencies.
 include(FeatureSummary)
