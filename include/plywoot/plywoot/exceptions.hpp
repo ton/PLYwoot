@@ -20,8 +20,6 @@
 #ifndef PLYWOOT_EXCEPTIONS_HPP
 #define PLYWOOT_EXCEPTIONS_HPP
 
-#include <fmt/format.h>
-
 #include <stdexcept>
 #include <string>
 
