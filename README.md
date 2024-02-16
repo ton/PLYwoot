@@ -223,7 +223,7 @@ PLYwoot exports one target named `PLYwoot::plywoot` which represents the header-
 
 ### Dependencies
 
-To be able to build the unit tests of PLYwoot and the `rePLY` tool, [CMake](https://cmake.org) is required (at least version 3.5). The unit tests are implemented using the [Catch2](https://github.com/catchorg/Catch2) unit test framework.
+To be able to build the unit tests of PLYwoot and the `rePLY` tool, [CMake](https://cmake.org) is required (at least version 3.5). The unit tests are implemented using the [Catch2](https://github.com/catchorg/Catch2) unit test framework. One of the unit tests depends on [Boost](https://www.boost.org) to implement reading PLY data from a compressed stream.
 
 By default, PLYwoot will use functionality from C++'s standard library to perform string to floating point and integer conversion for parsing of ASCII PLY files. Performance of parsing ASCII PLY files can be improved significantly by ensuring that the [`fast_float`](https://github.com/fastfloat/fast_float) and/or [`fast_int`](https://github.com/ton/fast_int) libraries are installed.
 
