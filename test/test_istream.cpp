@@ -860,3 +860,32 @@ TEST_CASE("Test striding over member types in the target type", "[istream]")
                                                 {0, 0, 1}, {1, 0, 1}, {1, 1, 1}, {0, 1, 1}};
   CHECK(expectedVertices == vertices);
 }
+
+TEST_CASE("Test performing an implicit type conversion on the list type", "[istream]")
+{
+  auto inputFilename = GENERATE(
+      "test/input/ascii/cube.ply", "test/input/binary/little_endian/cube.ply",
+      "test/input/binary/big_endian/cube.ply");
+
+  struct Tri
+  {
+    Tri() = default;
+    Tri(float a, float b, float c) : indices{a, b, c} {}
+
+    std::vector<float> indices;
+
+    bool operator==(const Tri &x) const { return indices == x.indices; }
+  };
+
+  std::ifstream ifs{inputFilename};
+  const plywoot::IStream plyFile{ifs};
+
+  using TriangleLayout = plywoot::reflect::Layout<std::vector<float>>;
+
+  REQUIRE(plyFile.find("face"));
+
+  const std::vector<Tri> triangles = plyFile.readElement<Tri, TriangleLayout>();
+  const std::vector<Tri> expectedTriangles{{0, 2, 1}, {0, 3, 2}, {4, 5, 6}, {4, 6, 7}, {0, 1, 5}, {0, 5, 4},
+                                           {2, 3, 7}, {2, 7, 6}, {3, 0, 4}, {3, 4, 7}, {1, 2, 6}, {1, 6, 5}};
+  CHECK(expectedTriangles == triangles);
+}
