@@ -92,6 +92,12 @@ struct NumProperties<reflect::Pack<T, N>>
 };
 
 template<typename T>
+struct NumProperties<reflect::Stride<T>>
+{
+  static constexpr std::size_t size = 0;
+};
+
+template<typename T>
 struct NumProperties<T>
 {
   static constexpr std::size_t size = 1;

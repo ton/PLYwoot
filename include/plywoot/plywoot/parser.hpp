@@ -238,7 +238,7 @@ private:
       const
   {
     return first < last ? readProperty(dest, *first, reflect::Type<T>{})
-                        : readProperty(dest, reflect::Type<reflect::Stride<T>>{});
+                        : static_cast<std::uint8_t *>(detail::align(dest, alignof(T))) + sizeof(T);
   }
 
   template<typename T, typename U, typename... Ts>
@@ -310,13 +310,13 @@ private:
     else { return static_cast<std::uint8_t *>(detail::align(dest, alignof(DestT))) + sizeof(DestT); }
   }
 
-  template<typename DestT>
+  template<typename PlyT>
   std::uint8_t *readProperty(std::uint8_t *dest, reflect::Type<reflect::Skip>) const
   {
     return dest;
   }
 
-  template<typename DestT>
+  template<typename PlyT, typename DestT>
   std::uint8_t *readProperty(std::uint8_t *dest, reflect::Type<reflect::Stride<DestT>>) const
   {
     return static_cast<std::uint8_t *>(detail::align(dest, alignof(DestT))) + sizeof(DestT);

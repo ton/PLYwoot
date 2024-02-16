@@ -826,3 +826,37 @@ TEST_CASE(
         expected.begin(), expected.end(), foos.begin(), [](unsigned char c, Foo foo) { return c == foo.y; }));
   }
 }
+
+TEST_CASE("Test striding over member types in the target type", "[istream]")
+{
+  auto inputFilename = GENERATE(
+      "test/input/ascii/cube.ply", "test/input/binary/little_endian/cube.ply",
+      "test/input/binary/big_endian/cube.ply");
+
+  struct Vertex
+  {
+    Vertex() = default;
+    Vertex(float a, float b, float c) : x{a}, y{b}, z{c} {}
+
+    double u{0}, v{0};
+    float x, y, z;
+
+    bool operator==(const Vertex &rhs) const
+    {
+      return u == rhs.u && v == rhs.v && x == rhs.x && y == rhs.y && z == rhs.z;
+    }
+  };
+
+  std::ifstream ifs{inputFilename};
+  const plywoot::IStream plyFile{ifs};
+
+  using VertexLayout = plywoot::reflect::Layout<
+      plywoot::reflect::Stride<double>, plywoot::reflect::Stride<double>, float, float, float>;
+
+  REQUIRE(plyFile.find("vertex"));
+
+  const std::vector<Vertex> vertices = plyFile.readElement<Vertex, VertexLayout>();
+  const std::vector<Vertex> expectedVertices = {{0, 0, 0}, {1, 0, 0}, {1, 1, 0}, {0, 1, 0},
+                                                {0, 0, 1}, {1, 0, 1}, {1, 1, 1}, {0, 1, 1}};
+  CHECK(expectedVertices == vertices);
+}
