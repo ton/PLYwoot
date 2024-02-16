@@ -23,6 +23,6 @@ jobs:
           cd Catch2-3.5.2
           cmake -DCMAKE_BUILD_TYPE=Release -B build && sudo cmake --build build -j8 --target install
 
-      - name: Execute PLYwoot unit test
+      - name: Build and execute PLYwoot unit tests
         run: |
           cmake -DCMAKE_BUILD_TYPE=Release -B build && cmake --build build -j8 && build/tests
