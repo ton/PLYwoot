@@ -1,4 +1,4 @@
-name: PLYwoot unit tests
+name: Unit tests
 
 on:
   push:
