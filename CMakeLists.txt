@@ -11,8 +11,8 @@ project(PLYwoot
 set(PROJECT_CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/cmake")
 list(APPEND CMAKE_MODULE_PATH ${PROJECT_CMAKE_MODULE_PATH})
 
-# For now, -O2 provides the best performance (at least for GCC).
-set(CMAKE_CXX_FLAGS_RELEASE "-O2 -DNDEBUG")
+# Specify release flags.
+set(CMAKE_CXX_FLAGS_RELEASE "-O3 -DNDEBUG")
 
 # Put all executables in build/.
 set (CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
