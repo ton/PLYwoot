@@ -1,4 +1,0 @@
-var structplywoot_1_1reflect_1_1Type_3_01T_00_01typename_01Void_3_01typename_01T_1_1DestT_01_4_1_1type_01_4 =
-[
-    [ "DestT", "structplywoot_1_1reflect_1_1Type_3_01T_00_01typename_01Void_3_01typename_01T_1_1DestT_01_4_1_1type_01_4.html#ad22f3cbc08874f693d9ea91179f54d27", null ]
-];

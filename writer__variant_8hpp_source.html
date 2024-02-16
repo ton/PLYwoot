@@ -101,7 +101,7 @@ $(document).ready(function(){initNavTree('writer__variant_8hpp_source.html','');
   <div class="headertitle"><div class="title">writer_variant.hpp</div></div>
 </div><!--header-->
 <div class="contents">
-<a href="writer__variant_8hpp.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span><span class="comment">/*</span></div>
+<div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span><span class="comment">/*</span></div>
 <div class="line"><a id="l00002" name="l00002"></a><span class="lineno">    2</span><span class="comment">   This file is part of PLYwoot, a header-only PLY parser.</span></div>
 <div class="line"><a id="l00003" name="l00003"></a><span class="lineno">    3</span><span class="comment"></span> </div>
 <div class="line"><a id="l00004" name="l00004"></a><span class="lineno">    4</span><span class="comment">   Copyright (C) 2023-2024, Ton van den Heuvel</span></div>
@@ -123,19 +123,19 @@ $(document).ready(function(){initNavTree('writer__variant_8hpp_source.html','');
 <div class="line"><a id="l00020" name="l00020"></a><span class="lineno">   20</span><span class="preprocessor">#ifndef PLYWOOT_WRITER_VARIANT_HPP</span></div>
 <div class="line"><a id="l00021" name="l00021"></a><span class="lineno">   21</span><span class="preprocessor">#define PLYWOOT_WRITER_VARIANT_HPP</span></div>
 <div class="line"><a id="l00022" name="l00022"></a><span class="lineno">   22</span> </div>
-<div class="line"><a id="l00023" name="l00023"></a><span class="lineno">   23</span><span class="preprocessor">#include &quot;<a class="code" href="ascii__writer__policy_8hpp.html">ascii_writer_policy.hpp</a>&quot;</span></div>
-<div class="line"><a id="l00024" name="l00024"></a><span class="lineno">   24</span><span class="preprocessor">#include &quot;<a class="code" href="binary__writer__policy_8hpp.html">binary_writer_policy.hpp</a>&quot;</span></div>
-<div class="line"><a id="l00025" name="l00025"></a><span class="lineno">   25</span><span class="preprocessor">#include &quot;<a class="code" href="writer_8hpp.html">writer.hpp</a>&quot;</span></div>
+<div class="line"><a id="l00023" name="l00023"></a><span class="lineno">   23</span><span class="preprocessor">#include &quot;ascii_writer_policy.hpp&quot;</span></div>
+<div class="line"><a id="l00024" name="l00024"></a><span class="lineno">   24</span><span class="preprocessor">#include &quot;binary_writer_policy.hpp&quot;</span></div>
+<div class="line"><a id="l00025" name="l00025"></a><span class="lineno">   25</span><span class="preprocessor">#include &quot;writer.hpp&quot;</span></div>
 <div class="line"><a id="l00026" name="l00026"></a><span class="lineno">   26</span> </div>
 <div class="line"><a id="l00027" name="l00027"></a><span class="lineno">   27</span><span class="preprocessor">#include &lt;ostream&gt;</span></div>
 <div class="line"><a id="l00028" name="l00028"></a><span class="lineno">   28</span><span class="preprocessor">#include &lt;variant&gt;</span></div>
 <div class="line"><a id="l00029" name="l00029"></a><span class="lineno">   29</span> </div>
-<div class="line"><a id="l00030" name="l00030"></a><span class="lineno">   30</span><span class="keyword">namespace </span><a class="code hl_namespace" href="namespaceplywoot_1_1detail.html">plywoot::detail</a> {</div>
+<div class="line"><a id="l00030" name="l00030"></a><span class="lineno">   30</span><span class="keyword">namespace </span>plywoot::detail {</div>
 <div class="line"><a id="l00031" name="l00031"></a><span class="lineno">   31</span> </div>
 <div class="line"><a id="l00032" name="l00032"></a><span class="lineno">   32</span><span class="keyword">class </span>WriterVariant</div>
 <div class="line"><a id="l00033" name="l00033"></a><span class="lineno">   33</span>{</div>
 <div class="line"><a id="l00034" name="l00034"></a><span class="lineno">   34</span><span class="keyword">public</span>:</div>
-<div class="line"><a id="l00035" name="l00035"></a><span class="lineno">   35</span>  WriterVariant(std::ostream &amp;os, <a class="code hl_enumeration" href="namespaceplywoot.html#a8befa81dd977847aad0435f0d606bb50">PlyFormat</a> format) : variant_{makeVariant(os, format)} {}</div>
+<div class="line"><a id="l00035" name="l00035"></a><span class="lineno">   35</span>  WriterVariant(std::ostream &amp;os, PlyFormat format) : variant_{makeVariant(os, format)} {}</div>
 <div class="line"><a id="l00036" name="l00036"></a><span class="lineno">   36</span> </div>
 <div class="line"><a id="l00037" name="l00037"></a><span class="lineno">   37</span>  WriterVariant(<span class="keyword">const</span> WriterVariant &amp;) = <span class="keyword">delete</span>;</div>
 <div class="line"><a id="l00038" name="l00038"></a><span class="lineno">   38</span>  WriterVariant &amp;operator=(<span class="keyword">const</span> WriterVariant &amp;) = <span class="keyword">delete</span>;</div>
@@ -158,15 +158,15 @@ $(document).ready(function(){initNavTree('writer__variant_8hpp_source.html','');
 <div class="line"><a id="l00055" name="l00055"></a><span class="lineno">   55</span>      detail::Writer&lt;detail::BinaryBigEndianWriterPolicy&gt;,</div>
 <div class="line"><a id="l00056" name="l00056"></a><span class="lineno">   56</span>      detail::Writer&lt;detail::BinaryLittleEndianWriterPolicy&gt;&gt;;</div>
 <div class="line"><a id="l00057" name="l00057"></a><span class="lineno">   57</span> </div>
-<div class="line"><a id="l00058" name="l00058"></a><span class="lineno">   58</span>  Variant makeVariant(std::ostream &amp;os, <a class="code hl_enumeration" href="namespaceplywoot.html#a8befa81dd977847aad0435f0d606bb50">PlyFormat</a> format)</div>
+<div class="line"><a id="l00058" name="l00058"></a><span class="lineno">   58</span>  Variant makeVariant(std::ostream &amp;os, PlyFormat format)</div>
 <div class="line"><a id="l00059" name="l00059"></a><span class="lineno">   59</span>  {</div>
 <div class="line"><a id="l00060" name="l00060"></a><span class="lineno">   60</span>    <span class="keywordflow">switch</span> (format)</div>
 <div class="line"><a id="l00061" name="l00061"></a><span class="lineno">   61</span>    {</div>
-<div class="line"><a id="l00062" name="l00062"></a><span class="lineno">   62</span>      <span class="keywordflow">case</span> <a class="code hl_enumvalue" href="namespaceplywoot.html#a8befa81dd977847aad0435f0d606bb50a76b8d0dcd02ccaf203c167ced6d7ef31">PlyFormat::Ascii</a>:</div>
+<div class="line"><a id="l00062" name="l00062"></a><span class="lineno">   62</span>      <span class="keywordflow">case</span> PlyFormat::Ascii:</div>
 <div class="line"><a id="l00063" name="l00063"></a><span class="lineno">   63</span>        <span class="keywordflow">return</span> Variant{std::in_place_type&lt;detail::Writer&lt;detail::AsciiWriterPolicy&gt;&gt;, os};</div>
-<div class="line"><a id="l00064" name="l00064"></a><span class="lineno">   64</span>      <span class="keywordflow">case</span> <a class="code hl_enumvalue" href="namespaceplywoot.html#a8befa81dd977847aad0435f0d606bb50ab60d771fdf58d1046f9e617725edf8d9">PlyFormat::BinaryBigEndian</a>:</div>
+<div class="line"><a id="l00064" name="l00064"></a><span class="lineno">   64</span>      <span class="keywordflow">case</span> PlyFormat::BinaryBigEndian:</div>
 <div class="line"><a id="l00065" name="l00065"></a><span class="lineno">   65</span>        <span class="keywordflow">return</span> Variant{std::in_place_type&lt;detail::Writer&lt;detail::BinaryBigEndianWriterPolicy&gt;&gt;, os};</div>
-<div class="line"><a id="l00066" name="l00066"></a><span class="lineno">   66</span>      <span class="keywordflow">case</span> <a class="code hl_enumvalue" href="namespaceplywoot.html#a8befa81dd977847aad0435f0d606bb50a09d714092131885d741dd4738f2ebe4f">PlyFormat::BinaryLittleEndian</a>:</div>
+<div class="line"><a id="l00066" name="l00066"></a><span class="lineno">   66</span>      <span class="keywordflow">case</span> PlyFormat::BinaryLittleEndian:</div>
 <div class="line"><a id="l00067" name="l00067"></a><span class="lineno">   67</span>      <span class="keywordflow">default</span>:</div>
 <div class="line"><a id="l00068" name="l00068"></a><span class="lineno">   68</span>        <span class="keywordflow">break</span>;</div>
 <div class="line"><a id="l00069" name="l00069"></a><span class="lineno">   69</span>    }</div>
@@ -180,20 +180,12 @@ $(document).ready(function(){initNavTree('writer__variant_8hpp_source.html','');
 <div class="line"><a id="l00077" name="l00077"></a><span class="lineno">   77</span>}</div>
 <div class="line"><a id="l00078" name="l00078"></a><span class="lineno">   78</span> </div>
 <div class="line"><a id="l00079" name="l00079"></a><span class="lineno">   79</span><span class="preprocessor">#endif</span></div>
-<div class="ttc" id="aascii__writer__policy_8hpp_html"><div class="ttname"><a href="ascii__writer__policy_8hpp.html">ascii_writer_policy.hpp</a></div></div>
-<div class="ttc" id="abinary__writer__policy_8hpp_html"><div class="ttname"><a href="binary__writer__policy_8hpp.html">binary_writer_policy.hpp</a></div></div>
-<div class="ttc" id="anamespaceplywoot_1_1detail_html"><div class="ttname"><a href="namespaceplywoot_1_1detail.html">plywoot::detail</a></div><div class="ttdef"><b>Definition</b> <a href="ascii__parser__policy_8hpp_source.html#l00046">ascii_parser_policy.hpp:46</a></div></div>
-<div class="ttc" id="anamespaceplywoot_html_a8befa81dd977847aad0435f0d606bb50"><div class="ttname"><a href="namespaceplywoot.html#a8befa81dd977847aad0435f0d606bb50">plywoot::PlyFormat</a></div><div class="ttdeci">PlyFormat</div><div class="ttdef"><b>Definition</b> <a href="types_8hpp_source.html#l00059">types.hpp:59</a></div></div>
-<div class="ttc" id="anamespaceplywoot_html_a8befa81dd977847aad0435f0d606bb50a09d714092131885d741dd4738f2ebe4f"><div class="ttname"><a href="namespaceplywoot.html#a8befa81dd977847aad0435f0d606bb50a09d714092131885d741dd4738f2ebe4f">plywoot::PlyFormat::BinaryLittleEndian</a></div><div class="ttdeci">@ BinaryLittleEndian</div></div>
-<div class="ttc" id="anamespaceplywoot_html_a8befa81dd977847aad0435f0d606bb50a76b8d0dcd02ccaf203c167ced6d7ef31"><div class="ttname"><a href="namespaceplywoot.html#a8befa81dd977847aad0435f0d606bb50a76b8d0dcd02ccaf203c167ced6d7ef31">plywoot::PlyFormat::Ascii</a></div><div class="ttdeci">@ Ascii</div></div>
-<div class="ttc" id="anamespaceplywoot_html_a8befa81dd977847aad0435f0d606bb50ab60d771fdf58d1046f9e617725edf8d9"><div class="ttname"><a href="namespaceplywoot.html#a8befa81dd977847aad0435f0d606bb50ab60d771fdf58d1046f9e617725edf8d9">plywoot::PlyFormat::BinaryBigEndian</a></div><div class="ttdeci">@ BinaryBigEndian</div></div>
-<div class="ttc" id="awriter_8hpp_html"><div class="ttname"><a href="writer_8hpp.html">writer.hpp</a></div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><a class="el" href="dir_d44c64559bbebec7f509842c48db8b23.html">include</a></li><li class="navelem"><a class="el" href="dir_b2fbfe87ca2e6ec30f52492568d29687.html">plywoot</a></li><li class="navelem"><a class="el" href="dir_b12cbd9ae501c9151e96d863980be05f.html">plywoot</a></li><li class="navelem"><a class="el" href="writer__variant_8hpp.html">writer_variant.hpp</a></li>
+    <li class="navelem"><a class="el" href="dir_d44c64559bbebec7f509842c48db8b23.html">include</a></li><li class="navelem"><a class="el" href="dir_b2fbfe87ca2e6ec30f52492568d29687.html">plywoot</a></li><li class="navelem"><a class="el" href="dir_b12cbd9ae501c9151e96d863980be05f.html">plywoot</a></li><li class="navelem"><b>writer_variant.hpp</b></li>
     <li class="footer">Generated by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8 </li>
   </ul>
 </div>

@@ -1,7 +1,5 @@
 var searchData=
 [
-  ['to_5fnumber_0',['to_number',['../namespaceplywoot_1_1detail.html#a032192c72cdf2643a8021e7d7fc1d8e2',1,'plywoot::detail::to_number(const char *first, const char *last, const char **end)'],['../namespaceplywoot_1_1detail.html#a2015dc3a699cf589df610ee9c87bee1e',1,'plywoot::detail::to_number(const char *first, const char *last, const char **end)']]],
-  ['to_5fnumber_3c_20double_20_3e_1',['to_number&lt; double &gt;',['../namespaceplywoot_1_1detail.html#af40f44da34e84c8827c3a5faf73bc3dd',1,'plywoot::detail']]],
-  ['to_5fstring_2',['to_string',['../namespaceplywoot_1_1detail.html#a9802a9b7bbecdb252e21bd1d2b3b230a',1,'plywoot::detail']]],
-  ['type_3',['type',['../structplywoot_1_1PlyProperty.html#a734c9ae9b3c699a03993376e7a9aa832',1,'plywoot::PlyProperty']]]
+  ['unexpectedeof_0',['UnexpectedEof',['../structplywoot_1_1UnexpectedEof.html#a3d89f7a7aa2356a81444c102accdc26a',1,'plywoot::UnexpectedEof']]],
+  ['unexpectedtoken_1',['unexpectedtoken',['../structplywoot_1_1UnexpectedToken.html#a63a70ce52f73b389b525e9b9a4317ad8',1,'plywoot::UnexpectedToken::UnexpectedToken(detail::HeaderScanner::Token expected, detail::HeaderScanner::Token found, const std::string &amp;tokenString)'],['../structplywoot_1_1UnexpectedToken.html#a8f45361ae136e834036576e54bb2d659',1,'plywoot::UnexpectedToken::UnexpectedToken(detail::HeaderScanner::Token found, const std::string &amp;tokenString)']]]
 ];

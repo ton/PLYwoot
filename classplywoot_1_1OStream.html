@@ -104,10 +104,9 @@ $(document).ready(function(){initNavTree('classplywoot_1_1OStream.html',''); ini
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a2256223b013c6b4547675bbe799891c8" id="r_a2256223b013c6b4547675bbe799891c8"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classplywoot_1_1OStream.html#a2256223b013c6b4547675bbe799891c8">OStream</a> (<a class="el" href="namespaceplywoot.html#a8befa81dd977847aad0435f0d606bb50">PlyFormat</a> format)</td></tr>
-<tr class="memdesc:a2256223b013c6b4547675bbe799891c8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructs an output PLY data stream of the given format type.  <br /></td></tr>
+<tr class="memitem:a2256223b013c6b4547675bbe799891c8" id="r_a2256223b013c6b4547675bbe799891c8"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classplywoot_1_1OStream.html#a2256223b013c6b4547675bbe799891c8">OStream</a> (PlyFormat format)</td></tr>
 <tr class="separator:a2256223b013c6b4547675bbe799891c8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a257924fb5f71f9434a4450aac6eab058" id="r_a257924fb5f71f9434a4450aac6eab058"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classplywoot_1_1OStream.html#a257924fb5f71f9434a4450aac6eab058">OStream</a> (<a class="el" href="namespaceplywoot.html#a8befa81dd977847aad0435f0d606bb50">PlyFormat</a> format, std::vector&lt; <a class="el" href="structplywoot_1_1Comment.html">Comment</a> &gt; comments)</td></tr>
+<tr class="memitem:a257924fb5f71f9434a4450aac6eab058" id="r_a257924fb5f71f9434a4450aac6eab058"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classplywoot_1_1OStream.html#a257924fb5f71f9434a4450aac6eab058">OStream</a> (PlyFormat format, std::vector&lt; <a class="el" href="structplywoot_1_1Comment.html">Comment</a> &gt; comments)</td></tr>
 <tr class="separator:a257924fb5f71f9434a4450aac6eab058"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a543c346130ea97fcd26dd6073cfcbb19" id="r_a543c346130ea97fcd26dd6073cfcbb19"><td class="memTemplParams" colspan="2">template&lt;typename... Ts&gt; </td></tr>
 <tr class="memitem:a543c346130ea97fcd26dd6073cfcbb19"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classplywoot_1_1OStream.html#a543c346130ea97fcd26dd6073cfcbb19">add</a> (const <a class="el" href="structplywoot_1_1PlyElement.html">PlyElement</a> &amp;element, const <a class="el" href="classplywoot_1_1reflect_1_1Layout.html">reflect::Layout</a>&lt; Ts... &gt; layout)</td></tr>
@@ -120,7 +119,7 @@ Public Member Functions</h2></td></tr>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Represents an output PLY data stream that can be used to output data to a PLY format. </p>
 
-<p class="definition">Definition at line <a class="el" href="plywoot_8hpp_source.html#l00155">155</a> of file <a class="el" href="plywoot_8hpp_source.html">plywoot.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="plywoot_8hpp_source.html#l00182">182</a> of file <a class="el" href="plywoot_8hpp_source.html">plywoot.hpp</a>.</p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a2256223b013c6b4547675bbe799891c8" name="a2256223b013c6b4547675bbe799891c8"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a2256223b013c6b4547675bbe799891c8">&#9670;&#160;</a></span>OStream() <span class="overload">[1/2]</span></h2>
@@ -134,7 +133,7 @@ Public Member Functions</h2></td></tr>
         <tr>
           <td class="memname">plywoot::OStream::OStream </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="namespaceplywoot.html#a8befa81dd977847aad0435f0d606bb50">PlyFormat</a>&#160;</td>
+          <td class="paramtype">PlyFormat&#160;</td>
           <td class="paramname"><em>format</em></td><td>)</td>
           <td></td>
         </tr>
@@ -145,10 +144,15 @@ Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+<p>Constructs an output PLY data stream of the given format type.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">format</td><td>format of the output PLY data stream </td></tr>
+  </table>
+  </dd>
+</dl>
 
-<p>Constructs an output PLY data stream of the given format type. </p>
-
-<p class="definition">Definition at line <a class="el" href="plywoot_8hpp_source.html#l00159">159</a> of file <a class="el" href="plywoot_8hpp_source.html">plywoot.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="plywoot_8hpp_source.html#l00188">188</a> of file <a class="el" href="plywoot_8hpp_source.html">plywoot.hpp</a>.</p>
 
 </div>
 </div>
@@ -164,7 +168,7 @@ Public Member Functions</h2></td></tr>
         <tr>
           <td class="memname">plywoot::OStream::OStream </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="namespaceplywoot.html#a8befa81dd977847aad0435f0d606bb50">PlyFormat</a>&#160;</td>
+          <td class="paramtype">PlyFormat&#160;</td>
           <td class="paramname"><em>format</em>, </td>
         </tr>
         <tr>
@@ -185,9 +189,16 @@ Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Constructs an output PLY data stream of the given format type, with the specified comments that should be written to the header. Line numbers of the comments should start from line 2, since according to the specification, comments may not occur in the first two lines of the header. </p>
+<p>Constructs an output PLY data stream of the given format type, with the specified comments that should be written to the header. Line numbers of the comments should start from line 2, since according to the specification, comments may not occur in the first two lines of the header.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">format</td><td>format of the output PLY data stream </td></tr>
+    <tr><td class="paramname">comments</td><td>comments to store in the header of the output PLY data stream </td></tr>
+  </table>
+  </dd>
+</dl>
 
-<p class="definition">Definition at line <a class="el" href="plywoot_8hpp_source.html#l00165">165</a> of file <a class="el" href="plywoot_8hpp_source.html">plywoot.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="plywoot_8hpp_source.html#l00198">198</a> of file <a class="el" href="plywoot_8hpp_source.html">plywoot.hpp</a>.</p>
 
 </div>
 </div>
@@ -227,9 +238,16 @@ template&lt;typename... Ts&gt; </div>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Queues an element with the associated data for writing. Elements will be stored in the same order they are queued. </p>
+<p>Queues an element with the associated data for writing. Elements will be stored in the same order they are queued.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">element</td><td>PLY element to add for streaming to this output stream </td></tr>
+    <tr><td class="paramname">layout</td><td>PLY property to target type mapping representing the way PLY properties should be mapped on the various target type member types </td></tr>
+  </table>
+  </dd>
+</dl>
 
-<p class="definition">Definition at line <a class="el" href="plywoot_8hpp_source.html#l00176">176</a> of file <a class="el" href="plywoot_8hpp_source.html">plywoot.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="plywoot_8hpp_source.html#l00213">213</a> of file <a class="el" href="plywoot_8hpp_source.html">plywoot.hpp</a>.</p>
 
 </div>
 </div>
@@ -256,9 +274,15 @@ template&lt;typename... Ts&gt; </div>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Queues the given element data for writing. This takes ownership of the data to be written, to ensure it does not go out of scope prior to committing all data to the output stream through <code><a class="el" href="classplywoot_1_1OStream.html#abe61c5e9a6407b13c910e76ba06c755b">write()</a></code>. </p>
+<p>Queues the given element data for writing. This takes ownership of the data to be written, to ensure it does not go out of scope prior to committing all data to the output stream through <code><a class="el" href="classplywoot_1_1OStream.html#abe61c5e9a6407b13c910e76ba06c755b">write()</a></code>.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">elementData</td><td>raw element data to stream to this output stream </td></tr>
+  </table>
+  </dd>
+</dl>
 
-<p class="definition">Definition at line <a class="el" href="plywoot_8hpp_source.html#l00190">190</a> of file <a class="el" href="plywoot_8hpp_source.html">plywoot.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="plywoot_8hpp_source.html#l00229">229</a> of file <a class="el" href="plywoot_8hpp_source.html">plywoot.hpp</a>.</p>
 
 </div>
 </div>
@@ -285,9 +309,15 @@ template&lt;typename... Ts&gt; </div>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Writes all data as a PLY file queued through <code>addElement()</code> to the given output stream. </p>
+<p>Writes all data as a PLY file queued through <code>addElement()</code> to the given output stream.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">os</td><td>output stream to write the queued element data to </td></tr>
+  </table>
+  </dd>
+</dl>
 
-<p class="definition">Definition at line <a class="el" href="plywoot_8hpp_source.html#l00205">205</a> of file <a class="el" href="plywoot_8hpp_source.html">plywoot.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="plywoot_8hpp_source.html#l00246">246</a> of file <a class="el" href="plywoot_8hpp_source.html">plywoot.hpp</a>.</p>
 
 </div>
 </div>
@@ -299,7 +329,7 @@ template&lt;typename... Ts&gt; </div>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><a class="el" href="namespaceplywoot.html">plywoot</a></li><li class="navelem"><a class="el" href="classplywoot_1_1OStream.html">OStream</a></li>
+    <li class="navelem"><b>plywoot</b></li><li class="navelem"><a class="el" href="classplywoot_1_1OStream.html">OStream</a></li>
     <li class="footer">Generated by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8 </li>
   </ul>
 </div>

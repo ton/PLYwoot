@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['find_0',['find',['../classplywoot_1_1IStream.html#a7c3b01bd0a56336259439b0663b8f3e7',1,'plywoot::IStream']]],
-  ['format_1',['format',['../classplywoot_1_1IStream.html#a23fb1fac551e54eb85b0595a297ce569',1,'plywoot::IStream']]],
-  ['found_2',['found',['../structplywoot_1_1UnexpectedToken.html#af5f407a39a7e85f3d60f29a49b1cfbc8',1,'plywoot::UnexpectedToken']]]
+  ['haselement_0',['hasElement',['../classplywoot_1_1IStream.html#a2e1944535d6e7ea16f6e7f066e21de6a',1,'plywoot::IStream']]],
+  ['headerparserexception_1',['HeaderParserException',['../structplywoot_1_1HeaderParserException.html#a456e6ef7f159ed6799fba7f1b9b1a4fb',1,'plywoot::HeaderParserException']]],
+  ['headerscannerexception_2',['HeaderScannerException',['../structplywoot_1_1HeaderScannerException.html#a4786e5e59a17dd2b28ba0ff8311eb7f1',1,'plywoot::HeaderScannerException']]]
 ];

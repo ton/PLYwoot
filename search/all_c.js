@@ -1,5 +1,8 @@
 var searchData=
 [
-  ['readelement_0',['readelement',['../classplywoot_1_1IStream.html#a1db364e8f9c8d986bc9613762ae66790',1,'plywoot::IStream::readElement() const'],['../classplywoot_1_1IStream.html#a250a33348f5fd0cabf36ca60a72b500a',1,'plywoot::IStream::readElement() const']]],
-  ['reflect_2ehpp_1',['reflect.hpp',['../reflect_8hpp.html',1,'']]]
+  ['size_0',['size',['../structplywoot_1_1reflect_1_1Pack.html#a35d985b0ed10a7ccbb423d75842fbc72',1,'plywoot::reflect::Pack::size'],['../classplywoot_1_1reflect_1_1Layout.html#ae1b12fdbd5db8e0de77790f883f211cf',1,'plywoot::reflect::Layout::size()'],['../structplywoot_1_1PlyElement.html#abb9cce830ddef34d5a1509863f4eed94',1,'plywoot::PlyElement::size()']]],
+  ['sizetype_1',['sizeType',['../structplywoot_1_1PlyProperty.html#a85697222caaf34e81d3ac6aefac4501b',1,'plywoot::PlyProperty']]],
+  ['skip_2',['Skip',['../structplywoot_1_1reflect_1_1Skip.html',1,'plywoot::reflect']]],
+  ['skipelement_3',['skipElement',['../classplywoot_1_1IStream.html#a8683b8bba3fe88b3bd1be77f32b1bc0e',1,'plywoot::IStream']]],
+  ['stride_4',['Stride',['../structplywoot_1_1reflect_1_1Stride.html',1,'plywoot::reflect']]]
 ];

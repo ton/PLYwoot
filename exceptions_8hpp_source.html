@@ -101,7 +101,7 @@ $(document).ready(function(){initNavTree('exceptions_8hpp_source.html',''); init
   <div class="headertitle"><div class="title">exceptions.hpp</div></div>
 </div><!--header-->
 <div class="contents">
-<a href="exceptions_8hpp.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span><span class="comment">/*</span></div>
+<div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span><span class="comment">/*</span></div>
 <div class="line"><a id="l00002" name="l00002"></a><span class="lineno">    2</span><span class="comment">   This file is part of PLYwoot, a header-only PLY parser.</span></div>
 <div class="line"><a id="l00003" name="l00003"></a><span class="lineno">    3</span><span class="comment"></span> </div>
 <div class="line"><a id="l00004" name="l00004"></a><span class="lineno">    4</span><span class="comment">   Copyright (C) 2023-2024, Ton van den Heuvel</span></div>
@@ -126,28 +126,27 @@ $(document).ready(function(){initNavTree('exceptions_8hpp_source.html',''); init
 <div class="line"><a id="l00023" name="l00023"></a><span class="lineno">   23</span><span class="preprocessor">#include &lt;stdexcept&gt;</span></div>
 <div class="line"><a id="l00024" name="l00024"></a><span class="lineno">   24</span><span class="preprocessor">#include &lt;string&gt;</span></div>
 <div class="line"><a id="l00025" name="l00025"></a><span class="lineno">   25</span> </div>
-<div class="line"><a id="l00026" name="l00026"></a><span class="lineno">   26</span><span class="keyword">namespace </span><a class="code hl_namespace" href="namespaceplywoot.html">plywoot</a> {</div>
+<div class="line"><a id="l00026" name="l00026"></a><span class="lineno">   26</span><span class="keyword">namespace </span>plywoot {</div>
 <div class="line"><a id="l00027" name="l00027"></a><span class="lineno">   27</span> </div>
 <div class="foldopen" id="foldopen00029" data-start="{" data-end="};">
 <div class="line"><a id="l00029" name="l00029"></a><span class="lineno"><a class="line" href="classplywoot_1_1Exception.html">   29</a></span><span class="keyword">class </span><a class="code hl_class" href="classplywoot_1_1Exception.html">Exception</a> : <span class="keyword">public</span> std::runtime_error</div>
 <div class="line"><a id="l00030" name="l00030"></a><span class="lineno">   30</span>{</div>
 <div class="line"><a id="l00031" name="l00031"></a><span class="lineno">   31</span><span class="keyword">public</span>:</div>
-<div class="line"><a id="l00032" name="l00032"></a><span class="lineno"><a class="line" href="classplywoot_1_1Exception.html#a59f021e21bc955a058b92509206968eb">   32</a></span>  <a class="code hl_function" href="classplywoot_1_1Exception.html#a59f021e21bc955a058b92509206968eb">Exception</a>(<span class="keyword">const</span> std::string &amp;message) : std::runtime_error(message) {}</div>
-<div class="line"><a id="l00033" name="l00033"></a><span class="lineno">   33</span>};</div>
+<div class="line"><a id="l00035" name="l00035"></a><span class="lineno"><a class="line" href="classplywoot_1_1Exception.html#a59f021e21bc955a058b92509206968eb">   35</a></span>  <a class="code hl_function" href="classplywoot_1_1Exception.html#a59f021e21bc955a058b92509206968eb">Exception</a>(<span class="keyword">const</span> std::string &amp;message) : std::runtime_error(message) {}</div>
+<div class="line"><a id="l00036" name="l00036"></a><span class="lineno">   36</span>};</div>
 </div>
-<div class="line"><a id="l00034" name="l00034"></a><span class="lineno">   34</span> </div>
-<div class="line"><a id="l00035" name="l00035"></a><span class="lineno">   35</span>}</div>
-<div class="line"><a id="l00036" name="l00036"></a><span class="lineno">   36</span> </div>
-<div class="line"><a id="l00037" name="l00037"></a><span class="lineno">   37</span><span class="preprocessor">#endif</span></div>
-<div class="ttc" id="aclassplywoot_1_1Exception_html"><div class="ttname"><a href="classplywoot_1_1Exception.html">plywoot::Exception</a></div><div class="ttdoc">Base class for all exceptions thrown by plywoot.</div><div class="ttdef"><b>Definition</b> <a href="exceptions_8hpp_source.html#l00029">exceptions.hpp:30</a></div></div>
-<div class="ttc" id="aclassplywoot_1_1Exception_html_a59f021e21bc955a058b92509206968eb"><div class="ttname"><a href="classplywoot_1_1Exception.html#a59f021e21bc955a058b92509206968eb">plywoot::Exception::Exception</a></div><div class="ttdeci">Exception(const std::string &amp;message)</div><div class="ttdef"><b>Definition</b> <a href="exceptions_8hpp_source.html#l00032">exceptions.hpp:32</a></div></div>
-<div class="ttc" id="anamespaceplywoot_html"><div class="ttname"><a href="namespaceplywoot.html">plywoot</a></div><div class="ttdef"><b>Definition</b> <a href="plywoot_8hpp_source.html#l00046">plywoot.hpp:46</a></div></div>
+<div class="line"><a id="l00037" name="l00037"></a><span class="lineno">   37</span> </div>
+<div class="line"><a id="l00038" name="l00038"></a><span class="lineno">   38</span>}</div>
+<div class="line"><a id="l00039" name="l00039"></a><span class="lineno">   39</span> </div>
+<div class="line"><a id="l00040" name="l00040"></a><span class="lineno">   40</span><span class="preprocessor">#endif</span></div>
+<div class="ttc" id="aclassplywoot_1_1Exception_html"><div class="ttname"><a href="classplywoot_1_1Exception.html">plywoot::Exception</a></div><div class="ttdoc">Base class for all exceptions thrown by PLYwoot.</div><div class="ttdef"><b>Definition</b> <a href="exceptions_8hpp_source.html#l00029">exceptions.hpp:30</a></div></div>
+<div class="ttc" id="aclassplywoot_1_1Exception_html_a59f021e21bc955a058b92509206968eb"><div class="ttname"><a href="classplywoot_1_1Exception.html#a59f021e21bc955a058b92509206968eb">plywoot::Exception::Exception</a></div><div class="ttdeci">Exception(const std::string &amp;message)</div><div class="ttdef"><b>Definition</b> <a href="exceptions_8hpp_source.html#l00035">exceptions.hpp:35</a></div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><a class="el" href="dir_d44c64559bbebec7f509842c48db8b23.html">include</a></li><li class="navelem"><a class="el" href="dir_b2fbfe87ca2e6ec30f52492568d29687.html">plywoot</a></li><li class="navelem"><a class="el" href="dir_b12cbd9ae501c9151e96d863980be05f.html">plywoot</a></li><li class="navelem"><a class="el" href="exceptions_8hpp.html">exceptions.hpp</a></li>
+    <li class="navelem"><a class="el" href="dir_d44c64559bbebec7f509842c48db8b23.html">include</a></li><li class="navelem"><a class="el" href="dir_b2fbfe87ca2e6ec30f52492568d29687.html">plywoot</a></li><li class="navelem"><a class="el" href="dir_b12cbd9ae501c9151e96d863980be05f.html">plywoot</a></li><li class="navelem"><b>exceptions.hpp</b></li>
     <li class="footer">Generated by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8 </li>
   </ul>
 </div>
