@@ -24,6 +24,7 @@
 
 #include <charconv>
 #include <cstring>
+#include <memory>
 #include <ostream>
 #include <type_traits>
 
@@ -103,23 +104,23 @@ private:
   /// Flushes the output buffer to the underlying output stream.
   void flush()
   {
-    os_.write(buffer_, c_ - buffer_);
-    c_ = buffer_;
+    os_.write(buffer_.get(), c_ - buffer_.get());
+    c_ = buffer_.get();
   }
+
+  /// Buffered data, always a null terminated string.
+  std::unique_ptr<char[]> buffer_{new char[OStreamBufferSize]};
 
   /// Character the scanner's write head is currently pointing to. Invariant:
   ///
   ///       buffer_ <= c_ < (buffer_ + sizeof(buffer_))
   ///
-  char *c_{buffer_};
+  char *c_{buffer_.get()};
   /// Number of bytes remaining in the buffer.
-  const char *eob_{buffer_ + OStreamBufferSize};
+  const char *eob_{buffer_.get() + OStreamBufferSize};
 
   /// Reference to the wrapped standard output stream.
   std::ostream &os_;
-
-  /// Buffered data, always a null terminated string.
-  alignas(64) char buffer_[OStreamBufferSize] = {};
 };
 
 }

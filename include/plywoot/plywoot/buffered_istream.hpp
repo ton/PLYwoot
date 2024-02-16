@@ -24,6 +24,7 @@
 #include <cstdint>
 #include <cstring>
 #include <istream>
+#include <memory>
 
 namespace {
 
@@ -43,7 +44,7 @@ class BufferedIStream
 {
 public:
   /// Constructs a buffered input stream wrapper around the given input stream.
-  explicit BufferedIStream(std::istream &is) : is_{is} {}
+  explicit BufferedIStream(std::istream &is) : is_{is} { buffer(); }
 
   /// No copy semantics allowed.
   BufferedIStream(const BufferedIStream &) = delete;
@@ -179,16 +180,16 @@ public:
     std::size_t remaining = eob_ - c_;
     if (remaining < minimum)
     {
-      std::memcpy(buffer_, c_, remaining);
-      if (!is_.read(buffer_ + remaining, IStreamBufferSize - remaining))
+      std::memcpy(buffer_.get(), c_, remaining);
+      if (!is_.read(buffer_.get() + remaining, IStreamBufferSize - remaining))
       {
         // In case the buffer is only partially filled, fill the remainder with
         // EOF characters.
         remaining += is_.gcount();
-        std::fill_n(buffer_ + remaining, IStreamBufferSize - remaining, EOF);
+        std::fill_n(buffer_.get() + remaining, IStreamBufferSize - remaining, EOF);
       }
 
-      c_ = buffer_;
+      c_ = buffer_.get();
     }
   }
 
@@ -196,15 +197,15 @@ private:
   /// Unconditionally buffers data from the input stream.
   void buffer()
   {
-    if (!is_.read(buffer_, IStreamBufferSize))
+    if (!is_.read(buffer_.get(), IStreamBufferSize))
     {
       // In case the buffer is only partially filled, fill the remainder with
       // EOF characters.
       auto remaining = is_.gcount();
-      std::fill_n(buffer_ + remaining, IStreamBufferSize - remaining, EOF);
+      std::fill_n(buffer_.get() + remaining, IStreamBufferSize - remaining, EOF);
     }
 
-    c_ = buffer_;
+    c_ = buffer_.get();
   }
 
   /// Reads the next character in the input stream and advances the read head by
@@ -214,21 +215,21 @@ private:
     if (c_++ == eob_) { buffer(); }
   }
 
+  /// Buffered data, always a null terminated string.
+  std::unique_ptr<char[]> buffer_{new char[IStreamBufferSize]};
+
   /// Character the scanner's read head is currently pointing to. Invariant:
   ///
   ///       buffer_ <= c_ <= (buffer_ + sizeof(buffer_))
   ///
   /// Note that the invariant allows for one character lookahead without the
   /// need to check whether we need to read data from disk.
-  const char *c_{buffer_ + IStreamBufferSize};
+  const char *c_{buffer_.get() + IStreamBufferSize};
   /// Number of bytes remaining in the buffer.
-  const char *eob_{buffer_ + IStreamBufferSize};
+  const char *eob_{buffer_.get() + IStreamBufferSize};
 
   /// Reference to the wrapped standard input stream.
   std::istream &is_;
-
-  /// Buffered data, always a null terminated string.
-  alignas(64) char buffer_[IStreamBufferSize] = {};
 };
 
 }
