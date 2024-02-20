@@ -20,6 +20,8 @@
 #ifndef PLYWOOT_PARSER_HPP
 #define PLYWOOT_PARSER_HPP
 
+/// \file
+
 #include "reflect.hpp"
 #include "std.hpp"
 #include "type_traits.hpp"

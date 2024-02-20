@@ -20,6 +20,8 @@
 #ifndef PLYWOOT_HEADER_SCANNER_HPP
 #define PLYWOOT_HEADER_SCANNER_HPP
 
+/// \file
+
 #include "std.hpp"
 
 #include <cstdint>

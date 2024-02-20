@@ -20,10 +20,18 @@
 #ifndef PLYWOOT_HEADER_SCANNER_IOS_HPP
 #define PLYWOOT_HEADER_SCANNER_IOS_HPP
 
+/// \file
+
 #include <ostream>
 
 namespace plywoot::detail {
 
+/// Outputs the text representation of the given header scanner token \p t to
+/// the given output stream \p os.
+///
+/// \param os output stream to output the text representation of \p t to
+/// \param t header scanner token to convert to text
+/// \return the output stream
 inline std::ostream &operator<<(std::ostream &os, HeaderScanner::Token t)
 {
   switch (t)

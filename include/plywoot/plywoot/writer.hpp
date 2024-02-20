@@ -20,6 +20,8 @@
 #ifndef PLYWOOT_WRITER_HPP
 #define PLYWOOT_WRITER_HPP
 
+/// \file
+
 #include "reflect.hpp"
 #include "std.hpp"
 #include "types.hpp"

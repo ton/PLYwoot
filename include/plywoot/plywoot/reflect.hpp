@@ -20,6 +20,8 @@
 #ifndef PLYWOOT_REFLECT_HPP
 #define PLYWOOT_REFLECT_HPP
 
+/// \file
+
 #include <type_traits>
 #include <vector>
 

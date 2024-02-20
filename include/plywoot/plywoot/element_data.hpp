@@ -20,6 +20,8 @@
 #ifndef PLYWOOT_ELEMENT_DATA_HPP
 #define PLYWOOT_ELEMENT_DATA_HPP
 
+/// \file
+
 #include "types.hpp"
 
 #include <algorithm>

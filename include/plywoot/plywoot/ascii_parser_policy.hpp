@@ -20,6 +20,8 @@
 #ifndef PLYWOOT_ASCII_PARSER_POLICY_HPP
 #define PLYWOOT_ASCII_PARSER_POLICY_HPP
 
+/// \file
+
 #include "buffered_istream.hpp"
 #include "exceptions.hpp"
 #include "reflect.hpp"
@@ -99,7 +101,7 @@ public:
   ///
   /// \param dest pointer to the destination in memory where to store parsed
   ///     numbers
-  /// \return a pointer pointing just after the last number stored \a dest
+  /// \return a pointer pointing just after the last number stored \p dest
   template<typename PlyT, typename DestT, std::size_t N>
   std::uint8_t *readNumbers(std::uint8_t *dest) const
   {
@@ -119,7 +121,7 @@ public:
     is_.skipNonWhitespace();
   }
 
-  /// Skips property data, totaling \a n bytes.
+  /// Skips property data, totaling \p n bytes.
   ///
   /// \param n number of bytes to skip
   void skipProperties(std::size_t n) const

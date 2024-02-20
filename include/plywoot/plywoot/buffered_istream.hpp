@@ -20,6 +20,8 @@
 #ifndef PLYWOOT_BUFFERED_ISTREAM_HPP
 #define PLYWOOT_BUFFERED_ISTREAM_HPP
 
+/// \file
+
 #include <algorithm>
 #include <cstdint>
 #include <cstring>

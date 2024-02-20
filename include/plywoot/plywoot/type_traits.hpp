@@ -20,6 +20,8 @@
 #ifndef PLYWOOT_TYPE_TRAITS_HPP
 #define PLYWOOT_TYPE_TRAITS_HPP
 
+/// \file
+
 #include "reflect.hpp"
 #include "std.hpp"
 #include "types.hpp"
@@ -56,7 +58,10 @@ struct IsList<reflect::Type<T>>
 };
 /// @}
 
-/// Returns whether the given reflection type represents a list.
+/// Returns whether the given reflection type `T` represents a list.
+///
+/// \tparam T type for which to calculate whether it represents a list
+/// \return \c true in case the given type `T` represents a list
 template<typename T>
 constexpr bool isList()
 {
@@ -106,6 +111,9 @@ struct NumProperties<T>
 /// Returns the number of properties spanned by the given list of reflection
 /// types. By default, every reflection type spans one property, except for
 /// `plywoot::reflect::Pack`, which spans multiple properties by definition.
+///
+/// \return the number of properties spanned by the given list of reflection
+///     types
 template<typename... Ts>
 constexpr std::size_t numProperties()
 {
@@ -114,6 +122,10 @@ constexpr std::size_t numProperties()
 
 /// Returns whether an object of type `T` represents that same object as an
 /// object of the given PLY data type `type`.
+///
+/// \tparam T type to check for equality with the PLY data type \p type
+/// \param type PLY data type to check for equality with `T`
+/// \return \c true in case an type `T` equals the given PLY data type \p type
 template<typename T>
 constexpr bool isSame(PlyDataType type)
 {
@@ -192,6 +204,9 @@ struct SizeOf<reflect::Pack<T, N>>
 /// types, the computed size is the sum of `SizeOf` for all types in the pack,
 /// whereas for arrays it is the `SizeOf` of the element type in the array times
 /// the number of elements in the array.
+///
+/// \return the sum of the size in bytes of the given list of reflection types
+///     `Ts...`
 template<typename... Ts>
 constexpr std::size_t sizeOf()
 {
@@ -199,6 +214,9 @@ constexpr std::size_t sizeOf()
 }
 
 /// Returns the size in bytes of the given PLY data type.
+///
+/// \param type PLY data type to calculate the size for
+/// \return the size in bytes of the given PLY data type
 constexpr std::size_t sizeOf(PlyDataType type)
 {
   switch (type)
@@ -222,6 +240,11 @@ constexpr std::size_t sizeOf(PlyDataType type)
 
 /// Aligns the given input pointer according to the size of the given PLY data
 /// type.
+///
+/// \param ptr input point to align
+/// \param type PLY data type of the object pointed to by \p ptr
+/// \return the input pointer \p ptr aligned according to the alignment
+///     requirements for the given PLY data type \p type
 template<typename Ptr>
 constexpr Ptr align(Ptr ptr, PlyDataType type)
 {
@@ -249,6 +272,10 @@ constexpr Ptr align(Ptr ptr, PlyDataType type)
 }
 
 /// Returns the alignment of the given PLY data type.
+///
+/// \param type PLY data type for which alignment requirements need to be
+///     returned
+/// \return the alignment of the given PLY data type
 constexpr std::size_t alignOf(PlyDataType type)
 {
   switch (type)
@@ -274,42 +301,62 @@ constexpr std::size_t alignOf(PlyDataType type)
   return 0;
 }
 
-/// Type function that returns whether a list of types is consecutively aligned
-/// in memory, without any padding.
-/// @{
+/// Type function that returns whether a type is aligned in memory at the given
+/// memory \p offset.
+///
+/// \tparam T type to check whether it is aligned in memory at the given \p
+///     offset
+/// \param offset relative memory offset at which an object of type `T` is to be
+///     stored
+/// \return \c true in case the given type is packed, \c false otherwise
 template<typename T>
 constexpr bool isPacked(uintptr_t offset = 0)
 {
   return ((offset + alignof(T)) % alignof(T)) == 0;
 }
 
+/// Type function that returns whether a list of types are consecutively aligned
+/// in memory, without any padding, at the given memory \p offset.
+///
+/// \param offset relative memory offset at which an object of type `T` is to be
+///     stored
+/// \return \c true in case the given type is packed, \c false otherwise
 template<typename T, typename U, typename... Ts>
 constexpr bool isPacked(uintptr_t offset = 0)
 {
   return ((offset + alignof(T)) % alignof(T)) == 0 && isPacked<U, Ts...>(offset + sizeOf<T>());
 }
-/// @}
 
 /// Type function that returns whether all types in the given list of types are
-/// trivially copyable.
-/// @{
+/// trivially copyable, that is, they do not have a custom copy constructor
+/// non-standard implementation.
+///
+/// \tparam T type for which to check whether it is trivially copyable
+/// \return \c true in case all types passed in as template parameters are
+///     trivially copyable, \c false otherwise
 template<typename T>
 constexpr bool isTriviallyCopyable()
 {
   return std::is_trivially_copyable<T>::value;
 }
 
+/// Type function that returns whether all types in the given list of types are
+/// trivially copyable, that is, they do not have a custom copy constructor
+/// non-standard implementation.
+///
+/// \tparam T,U,Ts... type for which to check whether it is trivially copyable
+/// \return \c true in case all types passed in as template parameters are
+///     trivially copyable, \c false otherwise
 template<typename T, typename U, typename... Ts>
 constexpr bool isTriviallyCopyable()
 {
   return std::is_trivially_copyable<T>::value && isTriviallyCopyable<U, Ts...>();
 }
-/// @}
 
+/// @{
 /// Type that provides a function operator that returns whether a range of
 /// properties in [`first`, `last`) represents PLY properties that can be
 /// trivially copied to the given destination type `T`.
-/// @{
 template<typename T>
 struct IsMemcpyable
 {
@@ -340,19 +387,35 @@ struct IsMemcpyable<reflect::Pack<T, N>>
 /// properties that have the same type as the given type range. Note that a
 /// single `reflect::Pack` type is compared with same number of properties as
 /// are in the pack.
-/// @{
+///
+/// \param first iterator pointing to the first property in the range of input
+///     PLY properties
+/// \param last iterator pointing after the last property in the range of input
+///     PLY properties
+/// \return \c true in case all PLY properties in the given range are
+///     `memcpy`'able, \c false otherwise
 template<typename T>
 bool isMemcpyable(const PlyPropertyConstIterator first, const PlyPropertyConstIterator last)
 {
   return first + detail::numProperties<T>() == last && IsMemcpyable<T>{}(first, last);
 }
 
+/// Returns whether the range of properties in [`first`, `last`) represents PLY
+/// properties that have the same type as the given type range. Note that a
+/// single `reflect::Pack` type is compared with same number of properties as
+/// are in the pack.
+///
+/// \param first iterator pointing to the first property in the range of input
+///     PLY properties
+/// \param last iterator pointing after the last property in the range of input
+///     PLY properties
+/// \return \c true in case all PLY properties in the given range are
+///     `memcpy`'able, \c false otherwise
 template<typename T, typename U, typename... Ts>
 bool isMemcpyable(const PlyPropertyConstIterator first, const PlyPropertyConstIterator last)
 {
   return IsMemcpyable<T>{}(first, last) && isMemcpyable<U, Ts...>(first + detail::numProperties<T>(), last);
 }
-/// @}
 
 }
 

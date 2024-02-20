@@ -20,6 +20,8 @@
 #ifndef PLYWOOT_ENDIAN_HPP
 #define PLYWOOT_ENDIAN_HPP
 
+/// \file
+
 #include <cstdint>
 #include <utility>
 
@@ -39,7 +41,11 @@ struct BigEndian
 {
 };
 
-/// Naive byte swap functions for floating point numbers.
+/// Naive byte swap functions for floating point numbers to convert between
+/// endian representations.
+///
+/// \param t floating point number to convert
+/// \return \p t converted from either big/little to little/big endian
 template<typename T>
 T byte_swap(T t)
 {
@@ -61,8 +67,12 @@ T byte_swap(T t)
   return t;
 }
 
-/// Wrappers around the glibc htobe* and be*toh functions that pick the correct
-/// call depending on the size of the argument type.
+/// Wrapper around the glibc htobe* functions that pick the correct call
+/// depending on the size of the argument type, converts the number object from
+/// host endianess to big endian.
+///
+/// \param t number to convert
+/// \return \p t in big endian representation
 template<typename T>
 T htobe(T t)
 {
@@ -73,6 +83,12 @@ T htobe(T t)
   else if constexpr (std::is_floating_point_v<T>) { return byte_swap(t); }
 }
 
+/// Wrappers around the glibc be*toh functions that pick the correct call
+/// depending on the size of the argument type, converts the number object from
+/// big endian to host endianess.
+///
+/// \param t big endian number to convert
+/// \return \p t in host endian representation
 template<typename T>
 T betoh(T t)
 {

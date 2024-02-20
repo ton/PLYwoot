@@ -20,6 +20,8 @@
 #ifndef PLYWOOT_ASCII_WRITER_POLICY_HPP
 #define PLYWOOT_ASCII_WRITER_POLICY_HPP
 
+/// \file
+
 #include "buffered_ostream.hpp"
 
 #include <ostream>

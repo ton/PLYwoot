@@ -20,6 +20,8 @@
 #ifndef PLYWOOT_HPP
 #define PLYWOOT_HPP
 
+/// \file
+
 #include "plywoot/ascii_parser_policy.hpp"
 #include "plywoot/ascii_writer_policy.hpp"
 #include "plywoot/binary_parser_policy.hpp"
@@ -91,7 +93,7 @@ public:
 
   /// Positions the read head at the start of the element with the given name,
   /// or at the end of the stream in case the given element is not present in
-  /// the stream, skipping over elements that do not match \a elementName.
+  /// the stream, skipping over elements that do not match \p elementName.
   ///
   /// \param elementName name of the element to find
   /// \return \c true in case an element with the given name was found,
@@ -118,9 +120,7 @@ public:
   /// `T` is the type of type of the element in the lists. All data is aligned
   /// according to the alignment requirements of the compiler platform.
   ///
-  /// Precondition is that `hasElement()` is true, failing to meet this
-  /// precondition results in undefined behavior.
-  ///
+  /// \pre `hasElement()` must be \c true
   /// \return memory block in the form of a `PlyElementData` instance
   ///     representing all data for the active element to be parsed
   PlyElementData readElement() const { return parser_.read(*currElement_++); }
@@ -129,9 +129,9 @@ public:
   /// of objects of type `T`, where the `Layout` type is used to identify how
   /// properties from the PLY element are mapped on objects of type `T`.
   ///
-  /// Precondition is that `hasElement()` is true, failing to meet this
-  /// precondition results in undefined behavior.
-  ///
+  /// \tparam T type of objects to be read from the stream
+  /// \tparam Layout layout specifying the mapping of PLY properties to `T`
+  /// \pre `hasElement()` must be \c true
   /// \return a vector of object of type `T` representing the element that was
   ///     parsed using the PLY property mapping embedded in the given `Layout`
   ///     type

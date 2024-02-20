@@ -20,6 +20,8 @@
 #ifndef PLYWOOT_EXCEPTIONS_HPP
 #define PLYWOOT_EXCEPTIONS_HPP
 
+/// \file
+
 #include <stdexcept>
 #include <string>
 

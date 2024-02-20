@@ -20,6 +20,8 @@
 #ifndef PLYWOOT_BINARY_WRITER_POLICY_HPP
 #define PLYWOOT_BINARY_WRITER_POLICY_HPP
 
+/// \file
+
 #include "buffered_ostream.hpp"
 #include "endian.hpp"
 
@@ -126,7 +128,9 @@ private:
   mutable detail::BufferedOStream os_;
 };
 
+/// Convenience type alias for the binary little endian writer policy.
 using BinaryLittleEndianWriterPolicy = BinaryWriterPolicy<LittleEndian>;
+/// Convenience type alias for the binary big endian writer policy.
 using BinaryBigEndianWriterPolicy = BinaryWriterPolicy<BigEndian>;
 
 }

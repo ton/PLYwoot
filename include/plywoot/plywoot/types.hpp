@@ -20,6 +20,8 @@
 #ifndef PLYWOOT_TYPES_HPP
 #define PLYWOOT_TYPES_HPP
 
+/// \file
+
 #include <algorithm>
 #include <cstdint>
 #include <ostream>
@@ -29,11 +31,18 @@
 
 namespace plywoot {
 
+/// Enumeration of data types supported by the PLY format.
 enum class PlyDataType { Char, UChar, Short, UShort, Int, UInt, Float, Double };
 
-inline std::ostream &operator<<(std::ostream &os, PlyDataType dataType)
+/// Outputs a textual representation of the given PLY data type \p type.
+///
+/// \param os output stream to output the textual representation of \p type to
+/// \param type PLY data type enumeration value to output a textual
+///     representation for
+/// \return the output stream \p os
+inline std::ostream &operator<<(std::ostream &os, PlyDataType type)
 {
-  switch (dataType)
+  switch (type)
   {
     case PlyDataType::Char:
       return os << "char";
@@ -56,12 +65,17 @@ inline std::ostream &operator<<(std::ostream &os, PlyDataType dataType)
   return os;
 }
 
+/// Enumeration of all formats supported by the PLY format. This represents the format
+/// of the data stored in the PLY file, the header is always human-readable
+/// ASCII text.
 enum class PlyFormat {
   Ascii,
   BinaryBigEndian,
   BinaryLittleEndian,
 };
 
+/// Represents a PLY property stored in an element. A PLY property is a named
+/// data element with a certain type.
 struct PlyProperty
 {
   /// Default constructor.
@@ -100,21 +114,21 @@ struct PlyProperty
   /// \return the size type of this property
   PlyDataType sizeType() const { return sizeType_; }
 
-  /// Compares the two given PLY properties \a x and \a y for equality.
+  /// Compares the two given PLY properties \p x and \p y for equality.
   ///
-  /// \param x left-hand side property to compare for equality with \a y
-  /// \param y right-hand side property to compare for equality with \a x
-  /// \return \c true in case \a x is equal to \a y, \c false otherwise
+  /// \param x left-hand side property to compare for equality with \p y
+  /// \param y right-hand side property to compare for equality with \p x
+  /// \return \c true in case \p x is equal to \p y, \c false otherwise
   inline friend bool operator==(const PlyProperty &x, const PlyProperty &y)
   {
     return x.type_ == y.type_ && x.isList_ == y.isList_ && x.sizeType_ == y.sizeType_ && x.name_ == y.name_;
   }
 
-  /// Compares the two given PLY properties \a x and \a y for inequality.
+  /// Compares the two given PLY properties \p x and \p y for inequality.
   ///
-  /// \param x left-hand side property to compare for inequality with \a y
-  /// \param y right-hand side property to compare for inequality with \a x
-  /// \return \c true in case \a x is not equal to \a y, \c false otherwise
+  /// \param x left-hand side property to compare for inequality with \p y
+  /// \param y right-hand side property to compare for inequality with \p x
+  /// \return \c true in case \p x is not equal to \p y, \c false otherwise
   inline friend bool operator!=(const PlyProperty &x, const PlyProperty &y) { return !(x == y); }
 
 private:
@@ -125,8 +139,12 @@ private:
   PlyDataType sizeType_{PlyDataType::Char};
 };
 
+/// Convenience type alias for a const vector iterator pointing to a
+/// `PlyProperty`.
 using PlyPropertyConstIterator = std::vector<PlyProperty>::const_iterator;
 
+/// Represents an element stored in a PLY file. An element is a named collection
+/// of ordered PLY properties.
 struct PlyElement
 {
   /// Default constructor.
@@ -210,8 +228,8 @@ struct PlyElement
   /// \param x left-hand side element definition to compare for equality with \a
   ///     y
   /// \param y right-hand side element definition to compare for equality with
-  ///     \a x
-  /// \return \c true in case \a x is equal to \a y, \c false otherwise
+  ///     \p x
+  /// \return \c true in case \p x is equal to \p y, \c false otherwise
   inline friend bool operator==(const PlyElement &x, const PlyElement &y)
   {
     return x.size_ == y.size_ && x.name_ == y.name_ && x.properties_ == y.properties_;
@@ -221,8 +239,8 @@ struct PlyElement
   /// \param x left-hand side element definition to compare for inequality with \a
   ///     y
   /// \param y right-hand side element definition to compare for inequality with
-  ///     \a x
-  /// \return \c true in case \a x is not equal to \a y, \c false otherwise
+  ///     \p x
+  /// \return \c true in case \p x is not equal to \p y, \c false otherwise
   inline friend bool operator!=(const PlyElement &x, const PlyElement &y) { return !(x == y); }
 
 private:
@@ -234,6 +252,8 @@ private:
   std::vector<PlyProperty> properties_;
 };
 
+/// Convenience type alias for a const vector iterator pointing to a
+/// `PlyProperty`.
 using PropertyConstIterator = std::vector<PlyProperty>::const_iterator;
 
 /// A comment represents a single line of comment in some PLY file, with an
@@ -245,7 +265,7 @@ struct Comment
   /// The comment text.
   std::string text;
 
-  /// Compares the two given comments \a x and \a y for equality.
+  /// Compares the two given comments \p x and \p p for equality.
   ///
   /// \param x left-hand side comment to check for equality
   /// \param y right-hand side comment to check for equality
@@ -253,7 +273,7 @@ struct Comment
   {
     return x.line == y.line && x.text == y.text;
   }
-  /// Compares the two given comments \a x and \a y for inequality.
+  /// Compares the two given comments \p x and \p y for inequality.
   ///
   /// \param x left-hand side comment to check for inequality
   /// \param y right-hand side comment to check for inequality

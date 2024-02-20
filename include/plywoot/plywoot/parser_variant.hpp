@@ -20,6 +20,8 @@
 #ifndef PLYWOOT_PARSER_VARIANT_HPP
 #define PLYWOOT_PARSER_VARIANT_HPP
 
+/// \file
+
 #include "ascii_parser_policy.hpp"
 #include "binary_parser_policy.hpp"
 #include "parser.hpp"

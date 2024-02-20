@@ -20,6 +20,8 @@
 #ifndef PLYWOOT_BUFFERED_OSTREAM_HPP
 #define PLYWOOT_BUFFERED_OSTREAM_HPP
 
+/// \file
+
 #include "type_traits.hpp"
 
 #include <charconv>

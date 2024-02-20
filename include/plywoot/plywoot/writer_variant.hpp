@@ -20,6 +20,8 @@
 #ifndef PLYWOOT_WRITER_VARIANT_HPP
 #define PLYWOOT_WRITER_VARIANT_HPP
 
+/// \file
+
 #include "ascii_writer_policy.hpp"
 #include "binary_writer_policy.hpp"
 #include "writer.hpp"

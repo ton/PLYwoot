@@ -20,6 +20,8 @@
 #ifndef PLYWOOT_HEADER_PARSER_HPP
 #define PLYWOOT_HEADER_PARSER_HPP
 
+/// \file
+
 #include "exceptions.hpp"
 #include "header_scanner.hpp"
 #include "header_scanner_ios.hpp"
