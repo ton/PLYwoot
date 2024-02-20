@@ -289,8 +289,8 @@ private:
   template<typename SrcT>
   const std::uint8_t *writeProperty(
       const std::uint8_t *src,
-      PropertyConstIterator first,
-      PropertyConstIterator last) const
+      PlyPropertyConstIterator first,
+      PlyPropertyConstIterator last) const
   {
     return first < last ? writeProperty(src, *first, reflect::Type<SrcT>{})
                         : writeProperty(src, reflect::Type<reflect::Stride<SrcT>>{});
@@ -304,8 +304,8 @@ private:
   template<typename Policy, typename T>
   const std::uint8_t *writeProperties(
       const std::uint8_t *src,
-      PropertyConstIterator first,
-      PropertyConstIterator last) const
+      PlyPropertyConstIterator first,
+      PlyPropertyConstIterator last) const
   {
     return writeProperty<T>(src, first, last);
   }
@@ -313,8 +313,8 @@ private:
   template<typename Policy, typename T, typename U, typename... Ts>
   const std::uint8_t *writeProperties(
       const std::uint8_t *src,
-      PropertyConstIterator first,
-      PropertyConstIterator last) const
+      PlyPropertyConstIterator first,
+      PlyPropertyConstIterator last) const
   {
     if constexpr (std::is_same_v<Policy, AsciiWriterPolicy>)
     {
@@ -334,8 +334,8 @@ private:
   template<typename... Ts>
   const std::uint8_t *writeElement(
       const std::uint8_t *src,
-      PropertyConstIterator first,
-      PropertyConstIterator last) const
+      PlyPropertyConstIterator first,
+      PlyPropertyConstIterator last) const
   {
     src = this->writeProperties<FormatWriterPolicy, Ts...>(src, first, last);
 

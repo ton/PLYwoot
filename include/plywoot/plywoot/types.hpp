@@ -252,10 +252,6 @@ private:
   std::vector<PlyProperty> properties_;
 };
 
-/// Convenience type alias for a const vector iterator pointing to a
-/// `PlyProperty`.
-using PropertyConstIterator = std::vector<PlyProperty>::const_iterator;
-
 /// A comment represents a single line of comment in some PLY file, with an
 /// associated line number.
 struct Comment

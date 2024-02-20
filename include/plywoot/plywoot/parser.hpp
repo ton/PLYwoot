@@ -187,9 +187,9 @@ private:
   template<typename... Ts>
   void readElements(const PlyElement &element, reflect::Layout<Ts...> layout) const
   {
-    const PropertyConstIterator first = element.properties().begin();
-    const PropertyConstIterator last = element.properties().end();
-    const PropertyConstIterator firstToSkip = first + detail::numProperties<Ts...>();
+    const PlyPropertyConstIterator first = element.properties().begin();
+    const PlyPropertyConstIterator last = element.properties().end();
+    const PlyPropertyConstIterator firstToSkip = first + detail::numProperties<Ts...>();
 
     std::uint8_t *dest = layout.data();
 
@@ -244,7 +244,7 @@ private:
   }
 
   template<typename T, typename U, typename... Ts>
-  std::uint8_t *readElement(std::uint8_t *dest, PropertyConstIterator first, PropertyConstIterator last) const
+  std::uint8_t *readElement(std::uint8_t *dest, PlyPropertyConstIterator first, PlyPropertyConstIterator last) const
   {
     return readElement<U, Ts...>(readElement<T>(dest, first, last), first + detail::numProperties<T>(), last);
   }
