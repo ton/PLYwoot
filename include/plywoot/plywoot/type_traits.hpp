@@ -271,36 +271,6 @@ constexpr Ptr align(Ptr ptr, PlyDataType type)
   return ptr;
 }
 
-/// Returns the alignment of the given PLY data type.
-///
-/// \param type PLY data type for which alignment requirements need to be
-///     returned
-/// \return the alignment of the given PLY data type
-constexpr std::size_t alignOf(PlyDataType type)
-{
-  switch (type)
-  {
-    case PlyDataType::Char:
-      return alignof(char);
-    case PlyDataType::UChar:
-      return alignof(unsigned char);
-    case PlyDataType::Short:
-      return alignof(short);
-    case PlyDataType::UShort:
-      return alignof(unsigned short);
-    case PlyDataType::Int:
-      return alignof(int);
-    case PlyDataType::UInt:
-      return alignof(unsigned int);
-    case PlyDataType::Float:
-      return alignof(float);
-    case PlyDataType::Double:
-      return alignof(double);
-  }
-
-  return 0;
-}
-
 /// Type function that returns whether a type is aligned in memory at the given
 /// memory \p offset.
 ///

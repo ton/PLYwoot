@@ -62,7 +62,29 @@ public:
       else
       {
         bytesPerElement_ = detail::align(bytesPerElement_, property.type()) + detail::sizeOf(property.type());
-        alignment_ = std::max(alignment_, detail::alignOf(property.type()));
+        switch (property.type())
+        {
+          case PlyDataType::Short:
+            alignment_ = std::max(alignment_, alignof(short));
+            break;
+          case PlyDataType::UShort:
+            alignment_ = std::max(alignment_, alignof(unsigned short));
+            break;
+          case PlyDataType::Int:
+            alignment_ = std::max(alignment_, alignof(int));
+            break;
+          case PlyDataType::UInt:
+            alignment_ = std::max(alignment_, alignof(unsigned int));
+            break;
+          case PlyDataType::Float:
+            alignment_ = std::max(alignment_, alignof(float));
+            break;
+          case PlyDataType::Double:
+            alignment_ = std::max(alignment_, alignof(double));
+            break;
+          default:
+            break;
+        }
       }
     }
 
