@@ -312,7 +312,7 @@ constexpr std::size_t alignOf(PlyDataType type)
 template<typename T>
 constexpr bool isPacked(uintptr_t offset = 0)
 {
-  return ((offset + alignof(T)) % alignof(T)) == 0;
+  return (offset % alignof(T)) == 0;
 }
 
 /// Type function that returns whether a list of types are consecutively aligned
@@ -324,7 +324,7 @@ constexpr bool isPacked(uintptr_t offset = 0)
 template<typename T, typename U, typename... Ts>
 constexpr bool isPacked(uintptr_t offset = 0)
 {
-  return ((offset + alignof(T)) % alignof(T)) == 0 && isPacked<U, Ts...>(offset + sizeOf<T>());
+  return (offset % alignof(T)) == 0 && isPacked<U, Ts...>(offset + sizeOf<T>());
 }
 
 /// Type function that returns whether all types in the given list of types are
