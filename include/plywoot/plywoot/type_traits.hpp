@@ -331,26 +331,13 @@ constexpr bool isPacked(uintptr_t offset = 0)
 /// trivially copyable, that is, they do not have a custom copy constructor
 /// non-standard implementation.
 ///
-/// \tparam T type for which to check whether it is trivially copyable
-/// \return \c true in case all types passed in as template parameters are
-///     trivially copyable, \c false otherwise
-template<typename T>
-constexpr bool isTriviallyCopyable()
-{
-  return std::is_trivially_copyable<T>::value;
-}
-
-/// Type function that returns whether all types in the given list of types are
-/// trivially copyable, that is, they do not have a custom copy constructor
-/// non-standard implementation.
-///
 /// \tparam T,U,Ts... type for which to check whether it is trivially copyable
 /// \return \c true in case all types passed in as template parameters are
 ///     trivially copyable, \c false otherwise
-template<typename T, typename U, typename... Ts>
+template<typename... Ts>
 constexpr bool isTriviallyCopyable()
 {
-  return std::is_trivially_copyable<T>::value && isTriviallyCopyable<U, Ts...>();
+  return (std::is_trivially_copyable_v<Ts> && ...);
 }
 
 /// @{
