@@ -67,8 +67,6 @@ struct Skip
 template<typename T>
 struct Stride
 {
-  /// Type of the member types in the target type to skip over.
-  using DestT = T;
 };
 
 /// Can be used in a `Layout` type to pack together a sequence of properties of
