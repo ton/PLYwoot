@@ -25,6 +25,18 @@
 var NAVTREE =
 [
   [ "PLYwoot", "index.html", [
+    [ "Getting started", "index.html#autotoc_md1", [
+      [ "Using PLYwoot in a CMake project", "index.html#autotoc_md2", null ]
+    ] ],
+    [ "Parsing PLY files", "index.html#autotoc_md3", [
+      [ "Parsing the vertex element", "index.html#autotoc_md4", [
+        [ "Improving read performance by packing properties", "index.html#autotoc_md5", null ],
+        [ "Skipping over properties in the target type", "index.html#autotoc_md6", null ]
+      ] ],
+      [ "Parsing the triangle element", "index.html#autotoc_md7", null ]
+    ] ],
+    [ "Writing PLY files", "index.html#autotoc_md8", null ],
+    [ "Dependencies", "index.html#Dependencies", null ],
     [ "Classes", "annotated.html", [
       [ "Class List", "annotated.html", "annotated_dup" ],
       [ "Class Index", "classes.html", null ],

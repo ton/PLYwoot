@@ -1,3 +1,4 @@
+<!-- HTML header for doxygen 1.10.0-->
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en-US">
 <head>
@@ -6,9 +7,15 @@
 <meta name="generator" content="Doxygen 1.9.8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
 <title>PLYwoot: include/plywoot/plywoot/reflect.hpp Source File</title>
+<!--BEGIN PROJECT_ICON-->
+<link rel="icon" href="$projecticon" type="image/x-icon" />
+<!--END PROJECT_ICON-->
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
+<!--BEGIN COPY_CLIPBOARD-->
+<script type="text/javascript" src="clipboard.js"></script>
+<!--END COPY_CLIPBOARD-->
 <link href="navtree.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="resize.js"></script>
 <script type="text/javascript" src="navtreedata.js"></script>
@@ -19,7 +26,14 @@
 <link href="doxygen.css" rel="stylesheet" type="text/css" />
 <link href="doxygen-awesome.css" rel="stylesheet" type="text/css"/>
 <link href="doxygen-awesome-sidebar-only.css" rel="stylesheet" type="text/css"/>
+<link href="doxygen-awesome-sidebar-only-darkmode-toggle.css" rel="stylesheet" type="text/css"/>
 <link href="custom.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="doxygen-awesome-darkmode-toggle.js"></script>
+<script type="text/javascript" src="doxygen-awesome-paragraph-link.js"></script>
+<script type="text/javascript">
+	DoxygenAwesomeDarkModeToggle.init()
+	DoxygenAwesomeParagraphLink.init()
+</script>
 </head>
 <body>
 <div id="top"><!-- do not remove this div, it is closed by doxygen! -->
@@ -101,7 +115,7 @@ $(document).ready(function(){initNavTree('reflect_8hpp_source.html',''); initRes
   <div class="headertitle"><div class="title">reflect.hpp</div></div>
 </div><!--header-->
 <div class="contents">
-<div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span><span class="comment">/*</span></div>
+<a href="reflect_8hpp.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span><span class="comment">/*</span></div>
 <div class="line"><a id="l00002" name="l00002"></a><span class="lineno">    2</span><span class="comment">   This file is part of PLYwoot, a header-only PLY parser.</span></div>
 <div class="line"><a id="l00003" name="l00003"></a><span class="lineno">    3</span><span class="comment"></span> </div>
 <div class="line"><a id="l00004" name="l00004"></a><span class="lineno">    4</span><span class="comment">   Copyright (C) 2023-2024, Ton van den Heuvel</span></div>
@@ -123,46 +137,46 @@ $(document).ready(function(){initNavTree('reflect_8hpp_source.html',''); initRes
 <div class="line"><a id="l00020" name="l00020"></a><span class="lineno">   20</span><span class="preprocessor">#ifndef PLYWOOT_REFLECT_HPP</span></div>
 <div class="line"><a id="l00021" name="l00021"></a><span class="lineno">   21</span><span class="preprocessor">#define PLYWOOT_REFLECT_HPP</span></div>
 <div class="line"><a id="l00022" name="l00022"></a><span class="lineno">   22</span> </div>
-<div class="line"><a id="l00023" name="l00023"></a><span class="lineno">   23</span><span class="preprocessor">#include &lt;type_traits&gt;</span></div>
-<div class="line"><a id="l00024" name="l00024"></a><span class="lineno">   24</span><span class="preprocessor">#include &lt;vector&gt;</span></div>
-<div class="line"><a id="l00025" name="l00025"></a><span class="lineno">   25</span> </div>
-<div class="line"><a id="l00026" name="l00026"></a><span class="lineno">   26</span><span class="keyword">namespace </span>plywoot::reflect {</div>
+<div class="line"><a id="l00024" name="l00024"></a><span class="lineno">   24</span> </div>
+<div class="line"><a id="l00025" name="l00025"></a><span class="lineno">   25</span><span class="preprocessor">#include &lt;type_traits&gt;</span></div>
+<div class="line"><a id="l00026" name="l00026"></a><span class="lineno">   26</span><span class="preprocessor">#include &lt;vector&gt;</span></div>
 <div class="line"><a id="l00027" name="l00027"></a><span class="lineno">   27</span> </div>
-<div class="line"><a id="l00032" name="l00032"></a><span class="lineno">   32</span><span class="keyword">template</span>&lt;<span class="keyword">typename</span> T, <span class="keyword">typename</span> = <span class="keywordtype">void</span>&gt;</div>
-<div class="foldopen" id="foldopen00033" data-start="{" data-end="};">
-<div class="line"><a id="l00033" name="l00033"></a><span class="lineno"><a class="line" href="structplywoot_1_1reflect_1_1Type.html">   33</a></span><span class="keyword">struct </span><a class="code hl_struct" href="structplywoot_1_1reflect_1_1Type.html">Type</a></div>
-<div class="line"><a id="l00034" name="l00034"></a><span class="lineno">   34</span>{</div>
-<div class="line"><a id="l00036" name="l00036"></a><span class="lineno"><a class="line" href="structplywoot_1_1reflect_1_1Type.html#aed1d85d7bde0c7716f845e254ea81353">   36</a></span>  <span class="keyword">using </span><a class="code hl_typedef" href="structplywoot_1_1reflect_1_1Type.html#aed1d85d7bde0c7716f845e254ea81353">DestT</a> = T;</div>
-<div class="line"><a id="l00037" name="l00037"></a><span class="lineno">   37</span>};</div>
+<div class="line"><a id="l00028" name="l00028"></a><span class="lineno">   28</span><span class="keyword">namespace </span>plywoot::reflect {</div>
+<div class="line"><a id="l00029" name="l00029"></a><span class="lineno">   29</span> </div>
+<div class="line"><a id="l00034" name="l00034"></a><span class="lineno">   34</span><span class="keyword">template</span>&lt;<span class="keyword">typename</span> T, <span class="keyword">typename</span> = <span class="keywordtype">void</span>&gt;</div>
+<div class="foldopen" id="foldopen00035" data-start="{" data-end="};">
+<div class="line"><a id="l00035" name="l00035"></a><span class="lineno"><a class="line" href="structplywoot_1_1reflect_1_1Type.html">   35</a></span><span class="keyword">struct </span><a class="code hl_struct" href="structplywoot_1_1reflect_1_1Type.html">Type</a></div>
+<div class="line"><a id="l00036" name="l00036"></a><span class="lineno">   36</span>{</div>
+<div class="line"><a id="l00038" name="l00038"></a><span class="lineno"><a class="line" href="structplywoot_1_1reflect_1_1Type.html#aed1d85d7bde0c7716f845e254ea81353">   38</a></span>  <span class="keyword">using </span><a class="code hl_typedef" href="structplywoot_1_1reflect_1_1Type.html#aed1d85d7bde0c7716f845e254ea81353">DestT</a> = T;</div>
+<div class="line"><a id="l00039" name="l00039"></a><span class="lineno">   39</span>};</div>
 </div>
-<div class="line"><a id="l00038" name="l00038"></a><span class="lineno">   38</span> </div>
-<div class="line"><a id="l00039" name="l00039"></a><span class="lineno">   39</span><span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt;</div>
-<div class="foldopen" id="foldopen00040" data-start="{" data-end="};">
-<div class="line"><a id="l00040" name="l00040"></a><span class="lineno"><a class="line" href="structplywoot_1_1reflect_1_1Type_3_01T_00_01typename_01std_1_1void__t_3_01typename_01T_1_1DestT_01_4_01_4.html">   40</a></span><span class="keyword">struct </span><a class="code hl_struct" href="structplywoot_1_1reflect_1_1Type.html">Type</a>&lt;T, typename std::void_t&lt;typename T::DestT&gt;&gt;</div>
-<div class="line"><a id="l00041" name="l00041"></a><span class="lineno">   41</span>{</div>
-<div class="line"><a id="l00043" name="l00043"></a><span class="lineno"><a class="line" href="structplywoot_1_1reflect_1_1Type_3_01T_00_01typename_01std_1_1void__t_3_01typename_01T_1_1DestT_01_4_01_4.html#a49dd8536df02c850e62e612b06c7d737">   43</a></span>  <span class="keyword">using </span><a class="code hl_typedef" href="structplywoot_1_1reflect_1_1Type_3_01T_00_01typename_01std_1_1void__t_3_01typename_01T_1_1DestT_01_4_01_4.html#a49dd8536df02c850e62e612b06c7d737">DestT</a> = <span class="keyword">typename</span> T::DestT;</div>
-<div class="line"><a id="l00044" name="l00044"></a><span class="lineno">   44</span>};</div>
+<div class="line"><a id="l00040" name="l00040"></a><span class="lineno">   40</span> </div>
+<div class="line"><a id="l00041" name="l00041"></a><span class="lineno">   41</span><span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt;</div>
+<div class="foldopen" id="foldopen00042" data-start="{" data-end="};">
+<div class="line"><a id="l00042" name="l00042"></a><span class="lineno"><a class="line" href="structplywoot_1_1reflect_1_1Type_3_01T_00_01typename_01std_1_1void__t_3_01typename_01T_1_1DestT_01_4_01_4.html">   42</a></span><span class="keyword">struct </span><a class="code hl_struct" href="structplywoot_1_1reflect_1_1Type.html">Type</a>&lt;T, typename std::void_t&lt;typename T::DestT&gt;&gt;</div>
+<div class="line"><a id="l00043" name="l00043"></a><span class="lineno">   43</span>{</div>
+<div class="line"><a id="l00045" name="l00045"></a><span class="lineno"><a class="line" href="structplywoot_1_1reflect_1_1Type_3_01T_00_01typename_01std_1_1void__t_3_01typename_01T_1_1DestT_01_4_01_4.html#a49dd8536df02c850e62e612b06c7d737">   45</a></span>  <span class="keyword">using </span><a class="code hl_typedef" href="structplywoot_1_1reflect_1_1Type_3_01T_00_01typename_01std_1_1void__t_3_01typename_01T_1_1DestT_01_4_01_4.html#a49dd8536df02c850e62e612b06c7d737">DestT</a> = <span class="keyword">typename</span> T::DestT;</div>
+<div class="line"><a id="l00046" name="l00046"></a><span class="lineno">   46</span>};</div>
 </div>
-<div class="line"><a id="l00046" name="l00046"></a><span class="lineno">   46</span> </div>
-<div class="line"><a id="l00050" name="l00050"></a><span class="lineno">   50</span><span class="keyword">template</span>&lt;<span class="keyword">typename</span> T, std::<span class="keywordtype">size_t</span> N&gt;</div>
-<div class="foldopen" id="foldopen00051" data-start="{" data-end="};">
-<div class="line"><a id="l00051" name="l00051"></a><span class="lineno"><a class="line" href="structplywoot_1_1reflect_1_1Array.html">   51</a></span><span class="keyword">struct </span><a class="code hl_struct" href="structplywoot_1_1reflect_1_1Array.html">Array</a></div>
-<div class="line"><a id="l00052" name="l00052"></a><span class="lineno">   52</span>{</div>
-<div class="line"><a id="l00054" name="l00054"></a><span class="lineno"><a class="line" href="structplywoot_1_1reflect_1_1Array.html#aa0dcfcc8e839e6b085ce308e06f6d476">   54</a></span>  <span class="keyword">using </span><a class="code hl_typedef" href="structplywoot_1_1reflect_1_1Array.html#aa0dcfcc8e839e6b085ce308e06f6d476">DestT</a> = T;</div>
-<div class="line"><a id="l00055" name="l00055"></a><span class="lineno">   55</span>};</div>
+<div class="line"><a id="l00048" name="l00048"></a><span class="lineno">   48</span> </div>
+<div class="line"><a id="l00052" name="l00052"></a><span class="lineno">   52</span><span class="keyword">template</span>&lt;<span class="keyword">typename</span> T, std::<span class="keywordtype">size_t</span> N&gt;</div>
+<div class="foldopen" id="foldopen00053" data-start="{" data-end="};">
+<div class="line"><a id="l00053" name="l00053"></a><span class="lineno"><a class="line" href="structplywoot_1_1reflect_1_1Array.html">   53</a></span><span class="keyword">struct </span><a class="code hl_struct" href="structplywoot_1_1reflect_1_1Array.html">Array</a></div>
+<div class="line"><a id="l00054" name="l00054"></a><span class="lineno">   54</span>{</div>
+<div class="line"><a id="l00056" name="l00056"></a><span class="lineno"><a class="line" href="structplywoot_1_1reflect_1_1Array.html#aa0dcfcc8e839e6b085ce308e06f6d476">   56</a></span>  <span class="keyword">using </span><a class="code hl_typedef" href="structplywoot_1_1reflect_1_1Array.html#aa0dcfcc8e839e6b085ce308e06f6d476">DestT</a> = T;</div>
+<div class="line"><a id="l00057" name="l00057"></a><span class="lineno">   57</span>};</div>
 </div>
-<div class="line"><a id="l00056" name="l00056"></a><span class="lineno">   56</span> </div>
-<div class="foldopen" id="foldopen00059" data-start="{" data-end="};">
-<div class="line"><a id="l00059" name="l00059"></a><span class="lineno"><a class="line" href="structplywoot_1_1reflect_1_1Skip.html">   59</a></span><span class="keyword">struct </span><a class="code hl_struct" href="structplywoot_1_1reflect_1_1Skip.html">Skip</a></div>
-<div class="line"><a id="l00060" name="l00060"></a><span class="lineno">   60</span>{</div>
-<div class="line"><a id="l00061" name="l00061"></a><span class="lineno">   61</span>};</div>
+<div class="line"><a id="l00058" name="l00058"></a><span class="lineno">   58</span> </div>
+<div class="foldopen" id="foldopen00061" data-start="{" data-end="};">
+<div class="line"><a id="l00061" name="l00061"></a><span class="lineno"><a class="line" href="structplywoot_1_1reflect_1_1Skip.html">   61</a></span><span class="keyword">struct </span><a class="code hl_struct" href="structplywoot_1_1reflect_1_1Skip.html">Skip</a></div>
+<div class="line"><a id="l00062" name="l00062"></a><span class="lineno">   62</span>{</div>
+<div class="line"><a id="l00063" name="l00063"></a><span class="lineno">   63</span>};</div>
 </div>
-<div class="line"><a id="l00062" name="l00062"></a><span class="lineno">   62</span> </div>
-<div class="line"><a id="l00065" name="l00065"></a><span class="lineno">   65</span><span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt;</div>
-<div class="foldopen" id="foldopen00066" data-start="{" data-end="};">
-<div class="line"><a id="l00066" name="l00066"></a><span class="lineno"><a class="line" href="structplywoot_1_1reflect_1_1Stride.html">   66</a></span><span class="keyword">struct </span><a class="code hl_struct" href="structplywoot_1_1reflect_1_1Stride.html">Stride</a></div>
-<div class="line"><a id="l00067" name="l00067"></a><span class="lineno">   67</span>{</div>
-<div class="line"><a id="l00069" name="l00069"></a><span class="lineno"><a class="line" href="structplywoot_1_1reflect_1_1Stride.html#a5e3b51cd176ef493cdf2e3cf7e5197da">   69</a></span>  <span class="keyword">using </span><a class="code hl_typedef" href="structplywoot_1_1reflect_1_1Stride.html#a5e3b51cd176ef493cdf2e3cf7e5197da">DestT</a> = T;</div>
+<div class="line"><a id="l00064" name="l00064"></a><span class="lineno">   64</span> </div>
+<div class="line"><a id="l00067" name="l00067"></a><span class="lineno">   67</span><span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt;</div>
+<div class="foldopen" id="foldopen00068" data-start="{" data-end="};">
+<div class="line"><a id="l00068" name="l00068"></a><span class="lineno"><a class="line" href="structplywoot_1_1reflect_1_1Stride.html">   68</a></span><span class="keyword">struct </span><a class="code hl_struct" href="structplywoot_1_1reflect_1_1Stride.html">Stride</a></div>
+<div class="line"><a id="l00069" name="l00069"></a><span class="lineno">   69</span>{</div>
 <div class="line"><a id="l00070" name="l00070"></a><span class="lineno">   70</span>};</div>
 </div>
 <div class="line"><a id="l00071" name="l00071"></a><span class="lineno">   71</span> </div>
@@ -230,23 +244,22 @@ $(document).ready(function(){initNavTree('reflect_8hpp_source.html',''); initRes
 <div class="ttc" id="aclassplywoot_1_1reflect_1_1Layout_html_ad5fbdf8361820ad3a1e1ba07b492f2f2"><div class="ttname"><a href="classplywoot_1_1reflect_1_1Layout.html#ad5fbdf8361820ad3a1e1ba07b492f2f2">plywoot::reflect::Layout::Layout</a></div><div class="ttdeci">Layout(std::vector&lt; T &gt; &amp;v)</div><div class="ttdef"><b>Definition</b> <a href="reflect_8hpp_source.html#l00105">reflect.hpp:105</a></div></div>
 <div class="ttc" id="aclassplywoot_1_1reflect_1_1Layout_html_ae1b12fdbd5db8e0de77790f883f211cf"><div class="ttname"><a href="classplywoot_1_1reflect_1_1Layout.html#ae1b12fdbd5db8e0de77790f883f211cf">plywoot::reflect::Layout::size</a></div><div class="ttdeci">std::size_t size() const</div><div class="ttdef"><b>Definition</b> <a href="reflect_8hpp_source.html#l00144">reflect.hpp:144</a></div></div>
 <div class="ttc" id="aclassplywoot_1_1reflect_1_1Layout_html_ae5bebab37831f1fa046d39c0aa586f5a"><div class="ttname"><a href="classplywoot_1_1reflect_1_1Layout.html#ae5bebab37831f1fa046d39c0aa586f5a">plywoot::reflect::Layout::data</a></div><div class="ttdeci">const std::uint8_t * data() const</div><div class="ttdef"><b>Definition</b> <a href="reflect_8hpp_source.html#l00137">reflect.hpp:137</a></div></div>
-<div class="ttc" id="astructplywoot_1_1reflect_1_1Array_html"><div class="ttname"><a href="structplywoot_1_1reflect_1_1Array.html">plywoot::reflect::Array</a></div><div class="ttdef"><b>Definition</b> <a href="reflect_8hpp_source.html#l00051">reflect.hpp:52</a></div></div>
-<div class="ttc" id="astructplywoot_1_1reflect_1_1Array_html_aa0dcfcc8e839e6b085ce308e06f6d476"><div class="ttname"><a href="structplywoot_1_1reflect_1_1Array.html#aa0dcfcc8e839e6b085ce308e06f6d476">plywoot::reflect::Array::DestT</a></div><div class="ttdeci">T DestT</div><div class="ttdoc">Type of the elements in the destination list type.</div><div class="ttdef"><b>Definition</b> <a href="reflect_8hpp_source.html#l00054">reflect.hpp:54</a></div></div>
+<div class="ttc" id="astructplywoot_1_1reflect_1_1Array_html"><div class="ttname"><a href="structplywoot_1_1reflect_1_1Array.html">plywoot::reflect::Array</a></div><div class="ttdef"><b>Definition</b> <a href="reflect_8hpp_source.html#l00053">reflect.hpp:54</a></div></div>
+<div class="ttc" id="astructplywoot_1_1reflect_1_1Array_html_aa0dcfcc8e839e6b085ce308e06f6d476"><div class="ttname"><a href="structplywoot_1_1reflect_1_1Array.html#aa0dcfcc8e839e6b085ce308e06f6d476">plywoot::reflect::Array::DestT</a></div><div class="ttdeci">T DestT</div><div class="ttdoc">Type of the elements in the destination list type.</div><div class="ttdef"><b>Definition</b> <a href="reflect_8hpp_source.html#l00056">reflect.hpp:56</a></div></div>
 <div class="ttc" id="astructplywoot_1_1reflect_1_1Pack_html"><div class="ttname"><a href="structplywoot_1_1reflect_1_1Pack.html">plywoot::reflect::Pack</a></div><div class="ttdef"><b>Definition</b> <a href="reflect_8hpp_source.html#l00075">reflect.hpp:76</a></div></div>
 <div class="ttc" id="astructplywoot_1_1reflect_1_1Pack_html_a132150eef5443117bb6f7a96f51e61e2"><div class="ttname"><a href="structplywoot_1_1reflect_1_1Pack.html#a132150eef5443117bb6f7a96f51e61e2">plywoot::reflect::Pack::DestT</a></div><div class="ttdeci">T DestT</div><div class="ttdoc">Type of the member types in the target type to pack.</div><div class="ttdef"><b>Definition</b> <a href="reflect_8hpp_source.html#l00078">reflect.hpp:78</a></div></div>
 <div class="ttc" id="astructplywoot_1_1reflect_1_1Pack_html_a35d985b0ed10a7ccbb423d75842fbc72"><div class="ttname"><a href="structplywoot_1_1reflect_1_1Pack.html#a35d985b0ed10a7ccbb423d75842fbc72">plywoot::reflect::Pack::size</a></div><div class="ttdeci">static constexpr std::size_t size</div><div class="ttdef"><b>Definition</b> <a href="reflect_8hpp_source.html#l00081">reflect.hpp:81</a></div></div>
-<div class="ttc" id="astructplywoot_1_1reflect_1_1Skip_html"><div class="ttname"><a href="structplywoot_1_1reflect_1_1Skip.html">plywoot::reflect::Skip</a></div><div class="ttdef"><b>Definition</b> <a href="reflect_8hpp_source.html#l00059">reflect.hpp:60</a></div></div>
-<div class="ttc" id="astructplywoot_1_1reflect_1_1Stride_html"><div class="ttname"><a href="structplywoot_1_1reflect_1_1Stride.html">plywoot::reflect::Stride</a></div><div class="ttdef"><b>Definition</b> <a href="reflect_8hpp_source.html#l00066">reflect.hpp:67</a></div></div>
-<div class="ttc" id="astructplywoot_1_1reflect_1_1Stride_html_a5e3b51cd176ef493cdf2e3cf7e5197da"><div class="ttname"><a href="structplywoot_1_1reflect_1_1Stride.html#a5e3b51cd176ef493cdf2e3cf7e5197da">plywoot::reflect::Stride::DestT</a></div><div class="ttdeci">T DestT</div><div class="ttdoc">Type of the member types in the target type to skip over.</div><div class="ttdef"><b>Definition</b> <a href="reflect_8hpp_source.html#l00069">reflect.hpp:69</a></div></div>
-<div class="ttc" id="astructplywoot_1_1reflect_1_1Type_3_01T_00_01typename_01std_1_1void__t_3_01typename_01T_1_1DestT_01_4_01_4_html_a49dd8536df02c850e62e612b06c7d737"><div class="ttname"><a href="structplywoot_1_1reflect_1_1Type_3_01T_00_01typename_01std_1_1void__t_3_01typename_01T_1_1DestT_01_4_01_4.html#a49dd8536df02c850e62e612b06c7d737">plywoot::reflect::Type&lt; T, typename std::void_t&lt; typename T::DestT &gt; &gt;::DestT</a></div><div class="ttdeci">typename T::DestT DestT</div><div class="ttdoc">Target property type.</div><div class="ttdef"><b>Definition</b> <a href="reflect_8hpp_source.html#l00043">reflect.hpp:43</a></div></div>
-<div class="ttc" id="astructplywoot_1_1reflect_1_1Type_html"><div class="ttname"><a href="structplywoot_1_1reflect_1_1Type.html">plywoot::reflect::Type</a></div><div class="ttdef"><b>Definition</b> <a href="reflect_8hpp_source.html#l00033">reflect.hpp:34</a></div></div>
-<div class="ttc" id="astructplywoot_1_1reflect_1_1Type_html_aed1d85d7bde0c7716f845e254ea81353"><div class="ttname"><a href="structplywoot_1_1reflect_1_1Type.html#aed1d85d7bde0c7716f845e254ea81353">plywoot::reflect::Type::DestT</a></div><div class="ttdeci">T DestT</div><div class="ttdoc">Target property type.</div><div class="ttdef"><b>Definition</b> <a href="reflect_8hpp_source.html#l00036">reflect.hpp:36</a></div></div>
+<div class="ttc" id="astructplywoot_1_1reflect_1_1Skip_html"><div class="ttname"><a href="structplywoot_1_1reflect_1_1Skip.html">plywoot::reflect::Skip</a></div><div class="ttdef"><b>Definition</b> <a href="reflect_8hpp_source.html#l00061">reflect.hpp:62</a></div></div>
+<div class="ttc" id="astructplywoot_1_1reflect_1_1Stride_html"><div class="ttname"><a href="structplywoot_1_1reflect_1_1Stride.html">plywoot::reflect::Stride</a></div><div class="ttdef"><b>Definition</b> <a href="reflect_8hpp_source.html#l00068">reflect.hpp:69</a></div></div>
+<div class="ttc" id="astructplywoot_1_1reflect_1_1Type_3_01T_00_01typename_01std_1_1void__t_3_01typename_01T_1_1DestT_01_4_01_4_html_a49dd8536df02c850e62e612b06c7d737"><div class="ttname"><a href="structplywoot_1_1reflect_1_1Type_3_01T_00_01typename_01std_1_1void__t_3_01typename_01T_1_1DestT_01_4_01_4.html#a49dd8536df02c850e62e612b06c7d737">plywoot::reflect::Type&lt; T, typename std::void_t&lt; typename T::DestT &gt; &gt;::DestT</a></div><div class="ttdeci">typename T::DestT DestT</div><div class="ttdoc">Target property type.</div><div class="ttdef"><b>Definition</b> <a href="reflect_8hpp_source.html#l00045">reflect.hpp:45</a></div></div>
+<div class="ttc" id="astructplywoot_1_1reflect_1_1Type_html"><div class="ttname"><a href="structplywoot_1_1reflect_1_1Type.html">plywoot::reflect::Type</a></div><div class="ttdef"><b>Definition</b> <a href="reflect_8hpp_source.html#l00035">reflect.hpp:36</a></div></div>
+<div class="ttc" id="astructplywoot_1_1reflect_1_1Type_html_aed1d85d7bde0c7716f845e254ea81353"><div class="ttname"><a href="structplywoot_1_1reflect_1_1Type.html#aed1d85d7bde0c7716f845e254ea81353">plywoot::reflect::Type::DestT</a></div><div class="ttdeci">T DestT</div><div class="ttdoc">Target property type.</div><div class="ttdef"><b>Definition</b> <a href="reflect_8hpp_source.html#l00038">reflect.hpp:38</a></div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><a class="el" href="dir_d44c64559bbebec7f509842c48db8b23.html">include</a></li><li class="navelem"><a class="el" href="dir_b2fbfe87ca2e6ec30f52492568d29687.html">plywoot</a></li><li class="navelem"><a class="el" href="dir_b12cbd9ae501c9151e96d863980be05f.html">plywoot</a></li><li class="navelem"><b>reflect.hpp</b></li>
+    <li class="navelem"><a class="el" href="dir_d44c64559bbebec7f509842c48db8b23.html">include</a></li><li class="navelem"><a class="el" href="dir_b2fbfe87ca2e6ec30f52492568d29687.html">plywoot</a></li><li class="navelem"><a class="el" href="dir_b12cbd9ae501c9151e96d863980be05f.html">plywoot</a></li><li class="navelem"><a class="el" href="reflect_8hpp.html">reflect.hpp</a></li>
     <li class="footer">Generated by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8 </li>
   </ul>
 </div>

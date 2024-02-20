@@ -1,3 +1,4 @@
+<!-- HTML header for doxygen 1.10.0-->
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en-US">
 <head>
@@ -6,9 +7,15 @@
 <meta name="generator" content="Doxygen 1.9.8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
 <title>PLYwoot: include/plywoot/plywoot/ascii_parser_policy.hpp Source File</title>
+<!--BEGIN PROJECT_ICON-->
+<link rel="icon" href="$projecticon" type="image/x-icon" />
+<!--END PROJECT_ICON-->
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
+<!--BEGIN COPY_CLIPBOARD-->
+<script type="text/javascript" src="clipboard.js"></script>
+<!--END COPY_CLIPBOARD-->
 <link href="navtree.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="resize.js"></script>
 <script type="text/javascript" src="navtreedata.js"></script>
@@ -19,7 +26,14 @@
 <link href="doxygen.css" rel="stylesheet" type="text/css" />
 <link href="doxygen-awesome.css" rel="stylesheet" type="text/css"/>
 <link href="doxygen-awesome-sidebar-only.css" rel="stylesheet" type="text/css"/>
+<link href="doxygen-awesome-sidebar-only-darkmode-toggle.css" rel="stylesheet" type="text/css"/>
 <link href="custom.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="doxygen-awesome-darkmode-toggle.js"></script>
+<script type="text/javascript" src="doxygen-awesome-paragraph-link.js"></script>
+<script type="text/javascript">
+	DoxygenAwesomeDarkModeToggle.init()
+	DoxygenAwesomeParagraphLink.init()
+</script>
 </head>
 <body>
 <div id="top"><!-- do not remove this div, it is closed by doxygen! -->
@@ -101,7 +115,7 @@ $(document).ready(function(){initNavTree('ascii__parser__policy_8hpp_source.html
   <div class="headertitle"><div class="title">ascii_parser_policy.hpp</div></div>
 </div><!--header-->
 <div class="contents">
-<div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span><span class="comment">/*</span></div>
+<a href="ascii__parser__policy_8hpp.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span><span class="comment">/*</span></div>
 <div class="line"><a id="l00002" name="l00002"></a><span class="lineno">    2</span><span class="comment">   This file is part of PLYwoot, a header-only PLY parser.</span></div>
 <div class="line"><a id="l00003" name="l00003"></a><span class="lineno">    3</span><span class="comment"></span> </div>
 <div class="line"><a id="l00004" name="l00004"></a><span class="lineno">    4</span><span class="comment">   Copyright (C) 2023-2024, Ton van den Heuvel</span></div>
@@ -123,103 +137,109 @@ $(document).ready(function(){initNavTree('ascii__parser__policy_8hpp_source.html
 <div class="line"><a id="l00020" name="l00020"></a><span class="lineno">   20</span><span class="preprocessor">#ifndef PLYWOOT_ASCII_PARSER_POLICY_HPP</span></div>
 <div class="line"><a id="l00021" name="l00021"></a><span class="lineno">   21</span><span class="preprocessor">#define PLYWOOT_ASCII_PARSER_POLICY_HPP</span></div>
 <div class="line"><a id="l00022" name="l00022"></a><span class="lineno">   22</span> </div>
-<div class="line"><a id="l00023" name="l00023"></a><span class="lineno">   23</span><span class="preprocessor">#include &quot;buffered_istream.hpp&quot;</span></div>
-<div class="line"><a id="l00024" name="l00024"></a><span class="lineno">   24</span><span class="preprocessor">#include &quot;exceptions.hpp&quot;</span></div>
-<div class="line"><a id="l00025" name="l00025"></a><span class="lineno">   25</span><span class="preprocessor">#include &quot;reflect.hpp&quot;</span></div>
-<div class="line"><a id="l00026" name="l00026"></a><span class="lineno">   26</span><span class="preprocessor">#include &quot;std.hpp&quot;</span></div>
-<div class="line"><a id="l00027" name="l00027"></a><span class="lineno">   27</span><span class="preprocessor">#include &quot;types.hpp&quot;</span></div>
-<div class="line"><a id="l00028" name="l00028"></a><span class="lineno">   28</span> </div>
-<div class="line"><a id="l00029" name="l00029"></a><span class="lineno">   29</span><span class="preprocessor">#include &lt;cstdint&gt;</span></div>
-<div class="line"><a id="l00030" name="l00030"></a><span class="lineno">   30</span><span class="preprocessor">#include &lt;string&gt;</span></div>
-<div class="line"><a id="l00031" name="l00031"></a><span class="lineno">   31</span> </div>
-<div class="line"><a id="l00032" name="l00032"></a><span class="lineno">   32</span><span class="keyword">namespace </span>plywoot {</div>
+<div class="line"><a id="l00024" name="l00024"></a><span class="lineno">   24</span> </div>
+<div class="line"><a id="l00025" name="l00025"></a><span class="lineno">   25</span><span class="preprocessor">#include &quot;<a class="code" href="buffered__istream_8hpp.html">buffered_istream.hpp</a>&quot;</span></div>
+<div class="line"><a id="l00026" name="l00026"></a><span class="lineno">   26</span><span class="preprocessor">#include &quot;<a class="code" href="exceptions_8hpp.html">exceptions.hpp</a>&quot;</span></div>
+<div class="line"><a id="l00027" name="l00027"></a><span class="lineno">   27</span><span class="preprocessor">#include &quot;<a class="code" href="reflect_8hpp.html">reflect.hpp</a>&quot;</span></div>
+<div class="line"><a id="l00028" name="l00028"></a><span class="lineno">   28</span><span class="preprocessor">#include &quot;<a class="code" href="std_8hpp.html">std.hpp</a>&quot;</span></div>
+<div class="line"><a id="l00029" name="l00029"></a><span class="lineno">   29</span><span class="preprocessor">#include &quot;<a class="code" href="types_8hpp.html">types.hpp</a>&quot;</span></div>
+<div class="line"><a id="l00030" name="l00030"></a><span class="lineno">   30</span> </div>
+<div class="line"><a id="l00031" name="l00031"></a><span class="lineno">   31</span><span class="preprocessor">#include &lt;cstdint&gt;</span></div>
+<div class="line"><a id="l00032" name="l00032"></a><span class="lineno">   32</span><span class="preprocessor">#include &lt;string&gt;</span></div>
 <div class="line"><a id="l00033" name="l00033"></a><span class="lineno">   33</span> </div>
-<div class="foldopen" id="foldopen00035" data-start="{" data-end="};">
-<div class="line"><a id="l00035" name="l00035"></a><span class="lineno"><a class="line" href="structplywoot_1_1ParserException.html">   35</a></span><span class="keyword">struct </span><a class="code hl_struct" href="structplywoot_1_1ParserException.html">ParserException</a> : <a class="code hl_class" href="classplywoot_1_1Exception.html">Exception</a></div>
-<div class="line"><a id="l00036" name="l00036"></a><span class="lineno">   36</span>{</div>
-<div class="line"><a id="l00040" name="l00040"></a><span class="lineno"><a class="line" href="structplywoot_1_1ParserException.html#a66dada128eb63b5eae508a9da592182d">   40</a></span>  <a class="code hl_function" href="structplywoot_1_1ParserException.html#a66dada128eb63b5eae508a9da592182d">ParserException</a>(<span class="keyword">const</span> std::string &amp;message) : <a class="code hl_class" href="classplywoot_1_1Exception.html">Exception</a>(<span class="stringliteral">&quot;parser error: &quot;</span> + message) {}</div>
-<div class="line"><a id="l00041" name="l00041"></a><span class="lineno">   41</span>};</div>
+<div class="line"><a id="l00034" name="l00034"></a><span class="lineno">   34</span><span class="keyword">namespace </span>plywoot {</div>
+<div class="line"><a id="l00035" name="l00035"></a><span class="lineno">   35</span> </div>
+<div class="foldopen" id="foldopen00037" data-start="{" data-end="};">
+<div class="line"><a id="l00037" name="l00037"></a><span class="lineno"><a class="line" href="structplywoot_1_1ParserException.html">   37</a></span><span class="keyword">struct </span><a class="code hl_struct" href="structplywoot_1_1ParserException.html">ParserException</a> : <a class="code hl_class" href="classplywoot_1_1Exception.html">Exception</a></div>
+<div class="line"><a id="l00038" name="l00038"></a><span class="lineno">   38</span>{</div>
+<div class="line"><a id="l00042" name="l00042"></a><span class="lineno"><a class="line" href="structplywoot_1_1ParserException.html#a66dada128eb63b5eae508a9da592182d">   42</a></span>  <a class="code hl_function" href="structplywoot_1_1ParserException.html#a66dada128eb63b5eae508a9da592182d">ParserException</a>(<span class="keyword">const</span> std::string &amp;message) : <a class="code hl_class" href="classplywoot_1_1Exception.html">Exception</a>(<span class="stringliteral">&quot;parser error: &quot;</span> + message) {}</div>
+<div class="line"><a id="l00043" name="l00043"></a><span class="lineno">   43</span>};</div>
 </div>
-<div class="line"><a id="l00042" name="l00042"></a><span class="lineno">   42</span> </div>
-<div class="foldopen" id="foldopen00044" data-start="{" data-end="};">
-<div class="line"><a id="l00044" name="l00044"></a><span class="lineno"><a class="line" href="structplywoot_1_1UnexpectedEof.html">   44</a></span><span class="keyword">struct </span><a class="code hl_struct" href="structplywoot_1_1UnexpectedEof.html">UnexpectedEof</a> : <a class="code hl_struct" href="structplywoot_1_1ParserException.html">ParserException</a></div>
-<div class="line"><a id="l00045" name="l00045"></a><span class="lineno">   45</span>{</div>
-<div class="line"><a id="l00047" name="l00047"></a><span class="lineno"><a class="line" href="structplywoot_1_1UnexpectedEof.html#a3d89f7a7aa2356a81444c102accdc26a">   47</a></span>  <a class="code hl_function" href="structplywoot_1_1UnexpectedEof.html#a3d89f7a7aa2356a81444c102accdc26a">UnexpectedEof</a>() : <a class="code hl_struct" href="structplywoot_1_1ParserException.html">ParserException</a>(<span class="stringliteral">&quot;unexpected end of file&quot;</span>) {}</div>
-<div class="line"><a id="l00048" name="l00048"></a><span class="lineno">   48</span>};</div>
+<div class="line"><a id="l00044" name="l00044"></a><span class="lineno">   44</span> </div>
+<div class="foldopen" id="foldopen00046" data-start="{" data-end="};">
+<div class="line"><a id="l00046" name="l00046"></a><span class="lineno"><a class="line" href="structplywoot_1_1UnexpectedEof.html">   46</a></span><span class="keyword">struct </span><a class="code hl_struct" href="structplywoot_1_1UnexpectedEof.html">UnexpectedEof</a> : <a class="code hl_struct" href="structplywoot_1_1ParserException.html">ParserException</a></div>
+<div class="line"><a id="l00047" name="l00047"></a><span class="lineno">   47</span>{</div>
+<div class="line"><a id="l00049" name="l00049"></a><span class="lineno"><a class="line" href="structplywoot_1_1UnexpectedEof.html#a3d89f7a7aa2356a81444c102accdc26a">   49</a></span>  <a class="code hl_function" href="structplywoot_1_1UnexpectedEof.html#a3d89f7a7aa2356a81444c102accdc26a">UnexpectedEof</a>() : <a class="code hl_struct" href="structplywoot_1_1ParserException.html">ParserException</a>(<span class="stringliteral">&quot;unexpected end of file&quot;</span>) {}</div>
+<div class="line"><a id="l00050" name="l00050"></a><span class="lineno">   50</span>};</div>
 </div>
-<div class="line"><a id="l00049" name="l00049"></a><span class="lineno">   49</span> </div>
-<div class="line"><a id="l00050" name="l00050"></a><span class="lineno">   50</span><span class="keyword">namespace </span>detail {</div>
 <div class="line"><a id="l00051" name="l00051"></a><span class="lineno">   51</span> </div>
-<div class="line"><a id="l00055" name="l00055"></a><span class="lineno">   55</span><span class="keyword">class </span>AsciiParserPolicy</div>
-<div class="line"><a id="l00056" name="l00056"></a><span class="lineno">   56</span>{</div>
-<div class="line"><a id="l00057" name="l00057"></a><span class="lineno">   57</span><span class="keyword">public</span>:</div>
-<div class="line"><a id="l00061" name="l00061"></a><span class="lineno">   61</span>  AsciiParserPolicy(std::istream &amp;is) : is_{is} {}</div>
-<div class="line"><a id="l00062" name="l00062"></a><span class="lineno">   62</span> </div>
-<div class="line"><a id="l00067" name="l00067"></a><span class="lineno">   67</span>  <span class="keywordtype">void</span> skipElement(<span class="keyword">const</span> PlyElement &amp;e)<span class="keyword"> const </span>{ is_.skipLines(e.size()); }</div>
-<div class="line"><a id="l00068" name="l00068"></a><span class="lineno">   68</span> </div>
-<div class="line"><a id="l00072" name="l00072"></a><span class="lineno">   72</span>  <span class="keywordtype">void</span> skipProperty(<span class="keyword">const</span> PlyProperty &amp;p)<span class="keyword"> const</span></div>
-<div class="line"><a id="l00073" name="l00073"></a><span class="lineno">   73</span><span class="keyword">  </span>{</div>
-<div class="line"><a id="l00074" name="l00074"></a><span class="lineno">   74</span>    <span class="keywordflow">if</span> (p.isList())</div>
-<div class="line"><a id="l00075" name="l00075"></a><span class="lineno">   75</span>    {</div>
-<div class="line"><a id="l00076" name="l00076"></a><span class="lineno">   76</span>      <span class="comment">// TODO(ton): maybe switch on the list size type...?</span></div>
-<div class="line"><a id="l00077" name="l00077"></a><span class="lineno">   77</span>      <span class="keyword">const</span> <span class="keyword">auto</span> size = readNumber&lt;int&gt;();</div>
-<div class="line"><a id="l00078" name="l00078"></a><span class="lineno">   78</span>      <span class="keywordflow">for</span> (<span class="keywordtype">int</span> i = 0; i &lt; size; ++i) { skipNumber(); }</div>
-<div class="line"><a id="l00079" name="l00079"></a><span class="lineno">   79</span>    }</div>
-<div class="line"><a id="l00080" name="l00080"></a><span class="lineno">   80</span>    <span class="keywordflow">else</span> { skipNumber(); }</div>
-<div class="line"><a id="l00081" name="l00081"></a><span class="lineno">   81</span>  }</div>
-<div class="line"><a id="l00082" name="l00082"></a><span class="lineno">   82</span> </div>
-<div class="line"><a id="l00086" name="l00086"></a><span class="lineno">   86</span>  <span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt;</div>
-<div class="line"><a id="l00087" name="l00087"></a><span class="lineno">   87</span>  T readNumber()<span class="keyword"> const</span></div>
-<div class="line"><a id="l00088" name="l00088"></a><span class="lineno">   88</span><span class="keyword">  </span>{</div>
-<div class="line"><a id="l00089" name="l00089"></a><span class="lineno">   89</span>    is_.skipWhitespace();</div>
-<div class="line"><a id="l00090" name="l00090"></a><span class="lineno">   90</span>    <span class="keywordflow">if</span> (is_.eof()) { <span class="keywordflow">throw</span> UnexpectedEof(); }</div>
-<div class="line"><a id="l00091" name="l00091"></a><span class="lineno">   91</span> </div>
-<div class="line"><a id="l00092" name="l00092"></a><span class="lineno">   92</span>    is_.buffer(256);</div>
-<div class="line"><a id="l00093" name="l00093"></a><span class="lineno">   93</span>    <span class="keywordflow">return</span> detail::to_number&lt;T&gt;(is_.data(), is_.data() + 256, &amp;is_.data());</div>
-<div class="line"><a id="l00094" name="l00094"></a><span class="lineno">   94</span>  }</div>
-<div class="line"><a id="l00095" name="l00095"></a><span class="lineno">   95</span> </div>
-<div class="line"><a id="l00103" name="l00103"></a><span class="lineno">  103</span>  <span class="keyword">template</span>&lt;<span class="keyword">typename</span> PlyT, <span class="keyword">typename</span> DestT, std::<span class="keywordtype">size_t</span> N&gt;</div>
-<div class="line"><a id="l00104" name="l00104"></a><span class="lineno">  104</span>  std::uint8_t *readNumbers(std::uint8_t *dest)<span class="keyword"> const</span></div>
-<div class="line"><a id="l00105" name="l00105"></a><span class="lineno">  105</span><span class="keyword">  </span>{</div>
-<div class="line"><a id="l00106" name="l00106"></a><span class="lineno">  106</span>    <span class="comment">// TODO(ton): needs to be specialized for improved performance.</span></div>
-<div class="line"><a id="l00107" name="l00107"></a><span class="lineno">  107</span>    <span class="keywordflow">for</span> (std::size_t i = 0; i &lt; N; ++i, dest += <span class="keyword">sizeof</span>(DestT))</div>
-<div class="line"><a id="l00108" name="l00108"></a><span class="lineno">  108</span>    {</div>
-<div class="line"><a id="l00109" name="l00109"></a><span class="lineno">  109</span>      *<span class="keyword">reinterpret_cast&lt;</span>DestT *<span class="keyword">&gt;</span>(dest) = readNumber&lt;PlyT&gt;();</div>
-<div class="line"><a id="l00110" name="l00110"></a><span class="lineno">  110</span>    }</div>
-<div class="line"><a id="l00111" name="l00111"></a><span class="lineno">  111</span>    <span class="keywordflow">return</span> dest;</div>
-<div class="line"><a id="l00112" name="l00112"></a><span class="lineno">  112</span>  }</div>
-<div class="line"><a id="l00113" name="l00113"></a><span class="lineno">  113</span> </div>
-<div class="line"><a id="l00115" name="l00115"></a><span class="lineno">  115</span>  <span class="keyword">template</span>&lt;<span class="keyword">typename</span> T = <span class="keywordtype">void</span>&gt;</div>
-<div class="line"><a id="l00116" name="l00116"></a><span class="lineno">  116</span>  <span class="keywordtype">void</span> skipNumber()<span class="keyword"> const</span></div>
-<div class="line"><a id="l00117" name="l00117"></a><span class="lineno">  117</span><span class="keyword">  </span>{</div>
-<div class="line"><a id="l00118" name="l00118"></a><span class="lineno">  118</span>    is_.skipWhitespace();</div>
-<div class="line"><a id="l00119" name="l00119"></a><span class="lineno">  119</span>    is_.skipNonWhitespace();</div>
-<div class="line"><a id="l00120" name="l00120"></a><span class="lineno">  120</span>  }</div>
-<div class="line"><a id="l00121" name="l00121"></a><span class="lineno">  121</span> </div>
-<div class="line"><a id="l00125" name="l00125"></a><span class="lineno">  125</span>  <span class="keywordtype">void</span> skipProperties(std::size_t n)<span class="keyword"> const</span></div>
-<div class="line"><a id="l00126" name="l00126"></a><span class="lineno">  126</span><span class="keyword">  </span>{</div>
-<div class="line"><a id="l00127" name="l00127"></a><span class="lineno">  127</span>    <span class="keywordflow">if</span> (n &gt; 0) is_.skipLines(1);</div>
-<div class="line"><a id="l00128" name="l00128"></a><span class="lineno">  128</span>  }</div>
-<div class="line"><a id="l00129" name="l00129"></a><span class="lineno">  129</span> </div>
-<div class="line"><a id="l00130" name="l00130"></a><span class="lineno">  130</span><span class="keyword">private</span>:</div>
-<div class="line"><a id="l00132" name="l00132"></a><span class="lineno">  132</span>  <span class="keyword">mutable</span> detail::BufferedIStream is_;</div>
-<div class="line"><a id="l00133" name="l00133"></a><span class="lineno">  133</span>};</div>
-<div class="line"><a id="l00134" name="l00134"></a><span class="lineno">  134</span> </div>
-<div class="line"><a id="l00135" name="l00135"></a><span class="lineno">  135</span>}</div>
-<div class="line"><a id="l00136" name="l00136"></a><span class="lineno">  136</span>}</div>
-<div class="line"><a id="l00137" name="l00137"></a><span class="lineno">  137</span> </div>
-<div class="line"><a id="l00138" name="l00138"></a><span class="lineno">  138</span><span class="preprocessor">#endif</span></div>
-<div class="ttc" id="aclassplywoot_1_1Exception_html"><div class="ttname"><a href="classplywoot_1_1Exception.html">plywoot::Exception</a></div><div class="ttdoc">Base class for all exceptions thrown by PLYwoot.</div><div class="ttdef"><b>Definition</b> <a href="exceptions_8hpp_source.html#l00029">exceptions.hpp:30</a></div></div>
-<div class="ttc" id="astructplywoot_1_1ParserException_html"><div class="ttname"><a href="structplywoot_1_1ParserException.html">plywoot::ParserException</a></div><div class="ttdoc">Base class for all parser exceptions.</div><div class="ttdef"><b>Definition</b> <a href="ascii__parser__policy_8hpp_source.html#l00035">ascii_parser_policy.hpp:36</a></div></div>
-<div class="ttc" id="astructplywoot_1_1ParserException_html_a66dada128eb63b5eae508a9da592182d"><div class="ttname"><a href="structplywoot_1_1ParserException.html#a66dada128eb63b5eae508a9da592182d">plywoot::ParserException::ParserException</a></div><div class="ttdeci">ParserException(const std::string &amp;message)</div><div class="ttdef"><b>Definition</b> <a href="ascii__parser__policy_8hpp_source.html#l00040">ascii_parser_policy.hpp:40</a></div></div>
-<div class="ttc" id="astructplywoot_1_1UnexpectedEof_html"><div class="ttname"><a href="structplywoot_1_1UnexpectedEof.html">plywoot::UnexpectedEof</a></div><div class="ttdoc">Unexpected end-of-file exception.</div><div class="ttdef"><b>Definition</b> <a href="ascii__parser__policy_8hpp_source.html#l00044">ascii_parser_policy.hpp:45</a></div></div>
-<div class="ttc" id="astructplywoot_1_1UnexpectedEof_html_a3d89f7a7aa2356a81444c102accdc26a"><div class="ttname"><a href="structplywoot_1_1UnexpectedEof.html#a3d89f7a7aa2356a81444c102accdc26a">plywoot::UnexpectedEof::UnexpectedEof</a></div><div class="ttdeci">UnexpectedEof()</div><div class="ttdoc">Constructs an unexpected end-of-file exception.</div><div class="ttdef"><b>Definition</b> <a href="ascii__parser__policy_8hpp_source.html#l00047">ascii_parser_policy.hpp:47</a></div></div>
+<div class="line"><a id="l00052" name="l00052"></a><span class="lineno">   52</span><span class="keyword">namespace </span>detail {</div>
+<div class="line"><a id="l00053" name="l00053"></a><span class="lineno">   53</span> </div>
+<div class="line"><a id="l00057" name="l00057"></a><span class="lineno">   57</span><span class="keyword">class </span>AsciiParserPolicy</div>
+<div class="line"><a id="l00058" name="l00058"></a><span class="lineno">   58</span>{</div>
+<div class="line"><a id="l00059" name="l00059"></a><span class="lineno">   59</span><span class="keyword">public</span>:</div>
+<div class="line"><a id="l00063" name="l00063"></a><span class="lineno">   63</span>  AsciiParserPolicy(std::istream &amp;is) : is_{is} {}</div>
+<div class="line"><a id="l00064" name="l00064"></a><span class="lineno">   64</span> </div>
+<div class="line"><a id="l00069" name="l00069"></a><span class="lineno">   69</span>  <span class="keywordtype">void</span> skipElement(<span class="keyword">const</span> PlyElement &amp;e)<span class="keyword"> const </span>{ is_.skipLines(e.size()); }</div>
+<div class="line"><a id="l00070" name="l00070"></a><span class="lineno">   70</span> </div>
+<div class="line"><a id="l00074" name="l00074"></a><span class="lineno">   74</span>  <span class="keywordtype">void</span> skipProperty(<span class="keyword">const</span> PlyProperty &amp;p)<span class="keyword"> const</span></div>
+<div class="line"><a id="l00075" name="l00075"></a><span class="lineno">   75</span><span class="keyword">  </span>{</div>
+<div class="line"><a id="l00076" name="l00076"></a><span class="lineno">   76</span>    <span class="keywordflow">if</span> (p.isList())</div>
+<div class="line"><a id="l00077" name="l00077"></a><span class="lineno">   77</span>    {</div>
+<div class="line"><a id="l00078" name="l00078"></a><span class="lineno">   78</span>      <span class="comment">// TODO(ton): maybe switch on the list size type...?</span></div>
+<div class="line"><a id="l00079" name="l00079"></a><span class="lineno">   79</span>      <span class="keyword">const</span> <span class="keyword">auto</span> size = readNumber&lt;int&gt;();</div>
+<div class="line"><a id="l00080" name="l00080"></a><span class="lineno">   80</span>      <span class="keywordflow">for</span> (<span class="keywordtype">int</span> i = 0; i &lt; size; ++i) { skipNumber(); }</div>
+<div class="line"><a id="l00081" name="l00081"></a><span class="lineno">   81</span>    }</div>
+<div class="line"><a id="l00082" name="l00082"></a><span class="lineno">   82</span>    <span class="keywordflow">else</span> { skipNumber(); }</div>
+<div class="line"><a id="l00083" name="l00083"></a><span class="lineno">   83</span>  }</div>
+<div class="line"><a id="l00084" name="l00084"></a><span class="lineno">   84</span> </div>
+<div class="line"><a id="l00088" name="l00088"></a><span class="lineno">   88</span>  <span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt;</div>
+<div class="line"><a id="l00089" name="l00089"></a><span class="lineno">   89</span>  T readNumber()<span class="keyword"> const</span></div>
+<div class="line"><a id="l00090" name="l00090"></a><span class="lineno">   90</span><span class="keyword">  </span>{</div>
+<div class="line"><a id="l00091" name="l00091"></a><span class="lineno">   91</span>    is_.skipWhitespace();</div>
+<div class="line"><a id="l00092" name="l00092"></a><span class="lineno">   92</span>    <span class="keywordflow">if</span> (is_.eof()) { <span class="keywordflow">throw</span> UnexpectedEof(); }</div>
+<div class="line"><a id="l00093" name="l00093"></a><span class="lineno">   93</span> </div>
+<div class="line"><a id="l00094" name="l00094"></a><span class="lineno">   94</span>    is_.buffer(256);</div>
+<div class="line"><a id="l00095" name="l00095"></a><span class="lineno">   95</span>    <span class="keywordflow">return</span> detail::to_number&lt;T&gt;(is_.data(), is_.data() + 256, &amp;is_.data());</div>
+<div class="line"><a id="l00096" name="l00096"></a><span class="lineno">   96</span>  }</div>
+<div class="line"><a id="l00097" name="l00097"></a><span class="lineno">   97</span> </div>
+<div class="line"><a id="l00105" name="l00105"></a><span class="lineno">  105</span>  <span class="keyword">template</span>&lt;<span class="keyword">typename</span> PlyT, <span class="keyword">typename</span> DestT, std::<span class="keywordtype">size_t</span> N&gt;</div>
+<div class="line"><a id="l00106" name="l00106"></a><span class="lineno">  106</span>  std::uint8_t *readNumbers(std::uint8_t *dest)<span class="keyword"> const</span></div>
+<div class="line"><a id="l00107" name="l00107"></a><span class="lineno">  107</span><span class="keyword">  </span>{</div>
+<div class="line"><a id="l00108" name="l00108"></a><span class="lineno">  108</span>    <span class="comment">// TODO(ton): needs to be specialized for improved performance.</span></div>
+<div class="line"><a id="l00109" name="l00109"></a><span class="lineno">  109</span>    <span class="keywordflow">for</span> (std::size_t i = 0; i &lt; N; ++i, dest += <span class="keyword">sizeof</span>(DestT))</div>
+<div class="line"><a id="l00110" name="l00110"></a><span class="lineno">  110</span>    {</div>
+<div class="line"><a id="l00111" name="l00111"></a><span class="lineno">  111</span>      *<span class="keyword">reinterpret_cast&lt;</span>DestT *<span class="keyword">&gt;</span>(dest) = readNumber&lt;PlyT&gt;();</div>
+<div class="line"><a id="l00112" name="l00112"></a><span class="lineno">  112</span>    }</div>
+<div class="line"><a id="l00113" name="l00113"></a><span class="lineno">  113</span>    <span class="keywordflow">return</span> dest;</div>
+<div class="line"><a id="l00114" name="l00114"></a><span class="lineno">  114</span>  }</div>
+<div class="line"><a id="l00115" name="l00115"></a><span class="lineno">  115</span> </div>
+<div class="line"><a id="l00117" name="l00117"></a><span class="lineno">  117</span>  <span class="keyword">template</span>&lt;<span class="keyword">typename</span> T = <span class="keywordtype">void</span>&gt;</div>
+<div class="line"><a id="l00118" name="l00118"></a><span class="lineno">  118</span>  <span class="keywordtype">void</span> skipNumber()<span class="keyword"> const</span></div>
+<div class="line"><a id="l00119" name="l00119"></a><span class="lineno">  119</span><span class="keyword">  </span>{</div>
+<div class="line"><a id="l00120" name="l00120"></a><span class="lineno">  120</span>    is_.skipWhitespace();</div>
+<div class="line"><a id="l00121" name="l00121"></a><span class="lineno">  121</span>    is_.skipNonWhitespace();</div>
+<div class="line"><a id="l00122" name="l00122"></a><span class="lineno">  122</span>  }</div>
+<div class="line"><a id="l00123" name="l00123"></a><span class="lineno">  123</span> </div>
+<div class="line"><a id="l00127" name="l00127"></a><span class="lineno">  127</span>  <span class="keywordtype">void</span> skipProperties(std::size_t n)<span class="keyword"> const</span></div>
+<div class="line"><a id="l00128" name="l00128"></a><span class="lineno">  128</span><span class="keyword">  </span>{</div>
+<div class="line"><a id="l00129" name="l00129"></a><span class="lineno">  129</span>    <span class="keywordflow">if</span> (n &gt; 0) is_.skipLines(1);</div>
+<div class="line"><a id="l00130" name="l00130"></a><span class="lineno">  130</span>  }</div>
+<div class="line"><a id="l00131" name="l00131"></a><span class="lineno">  131</span> </div>
+<div class="line"><a id="l00132" name="l00132"></a><span class="lineno">  132</span><span class="keyword">private</span>:</div>
+<div class="line"><a id="l00134" name="l00134"></a><span class="lineno">  134</span>  <span class="keyword">mutable</span> detail::BufferedIStream is_;</div>
+<div class="line"><a id="l00135" name="l00135"></a><span class="lineno">  135</span>};</div>
+<div class="line"><a id="l00136" name="l00136"></a><span class="lineno">  136</span> </div>
+<div class="line"><a id="l00137" name="l00137"></a><span class="lineno">  137</span>}</div>
+<div class="line"><a id="l00138" name="l00138"></a><span class="lineno">  138</span>}</div>
+<div class="line"><a id="l00139" name="l00139"></a><span class="lineno">  139</span> </div>
+<div class="line"><a id="l00140" name="l00140"></a><span class="lineno">  140</span><span class="preprocessor">#endif</span></div>
+<div class="ttc" id="abuffered__istream_8hpp_html"><div class="ttname"><a href="buffered__istream_8hpp.html">buffered_istream.hpp</a></div></div>
+<div class="ttc" id="aclassplywoot_1_1Exception_html"><div class="ttname"><a href="classplywoot_1_1Exception.html">plywoot::Exception</a></div><div class="ttdoc">Base class for all exceptions thrown by PLYwoot.</div><div class="ttdef"><b>Definition</b> <a href="exceptions_8hpp_source.html#l00031">exceptions.hpp:32</a></div></div>
+<div class="ttc" id="aexceptions_8hpp_html"><div class="ttname"><a href="exceptions_8hpp.html">exceptions.hpp</a></div></div>
+<div class="ttc" id="areflect_8hpp_html"><div class="ttname"><a href="reflect_8hpp.html">reflect.hpp</a></div></div>
+<div class="ttc" id="astd_8hpp_html"><div class="ttname"><a href="std_8hpp.html">std.hpp</a></div></div>
+<div class="ttc" id="astructplywoot_1_1ParserException_html"><div class="ttname"><a href="structplywoot_1_1ParserException.html">plywoot::ParserException</a></div><div class="ttdoc">Base class for all parser exceptions.</div><div class="ttdef"><b>Definition</b> <a href="ascii__parser__policy_8hpp_source.html#l00037">ascii_parser_policy.hpp:38</a></div></div>
+<div class="ttc" id="astructplywoot_1_1ParserException_html_a66dada128eb63b5eae508a9da592182d"><div class="ttname"><a href="structplywoot_1_1ParserException.html#a66dada128eb63b5eae508a9da592182d">plywoot::ParserException::ParserException</a></div><div class="ttdeci">ParserException(const std::string &amp;message)</div><div class="ttdef"><b>Definition</b> <a href="ascii__parser__policy_8hpp_source.html#l00042">ascii_parser_policy.hpp:42</a></div></div>
+<div class="ttc" id="astructplywoot_1_1UnexpectedEof_html"><div class="ttname"><a href="structplywoot_1_1UnexpectedEof.html">plywoot::UnexpectedEof</a></div><div class="ttdoc">Unexpected end-of-file exception.</div><div class="ttdef"><b>Definition</b> <a href="ascii__parser__policy_8hpp_source.html#l00046">ascii_parser_policy.hpp:47</a></div></div>
+<div class="ttc" id="astructplywoot_1_1UnexpectedEof_html_a3d89f7a7aa2356a81444c102accdc26a"><div class="ttname"><a href="structplywoot_1_1UnexpectedEof.html#a3d89f7a7aa2356a81444c102accdc26a">plywoot::UnexpectedEof::UnexpectedEof</a></div><div class="ttdeci">UnexpectedEof()</div><div class="ttdoc">Constructs an unexpected end-of-file exception.</div><div class="ttdef"><b>Definition</b> <a href="ascii__parser__policy_8hpp_source.html#l00049">ascii_parser_policy.hpp:49</a></div></div>
+<div class="ttc" id="atypes_8hpp_html"><div class="ttname"><a href="types_8hpp.html">types.hpp</a></div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><a class="el" href="dir_d44c64559bbebec7f509842c48db8b23.html">include</a></li><li class="navelem"><a class="el" href="dir_b2fbfe87ca2e6ec30f52492568d29687.html">plywoot</a></li><li class="navelem"><a class="el" href="dir_b12cbd9ae501c9151e96d863980be05f.html">plywoot</a></li><li class="navelem"><b>ascii_parser_policy.hpp</b></li>
+    <li class="navelem"><a class="el" href="dir_d44c64559bbebec7f509842c48db8b23.html">include</a></li><li class="navelem"><a class="el" href="dir_b2fbfe87ca2e6ec30f52492568d29687.html">plywoot</a></li><li class="navelem"><a class="el" href="dir_b12cbd9ae501c9151e96d863980be05f.html">plywoot</a></li><li class="navelem"><a class="el" href="ascii__parser__policy_8hpp.html">ascii_parser_policy.hpp</a></li>
     <li class="footer">Generated by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8 </li>
   </ul>
 </div>

@@ -1,3 +1,4 @@
+<!-- HTML header for doxygen 1.10.0-->
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en-US">
 <head>
@@ -6,9 +7,15 @@
 <meta name="generator" content="Doxygen 1.9.8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
 <title>PLYwoot: include/plywoot/plywoot.hpp Source File</title>
+<!--BEGIN PROJECT_ICON-->
+<link rel="icon" href="$projecticon" type="image/x-icon" />
+<!--END PROJECT_ICON-->
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
+<!--BEGIN COPY_CLIPBOARD-->
+<script type="text/javascript" src="clipboard.js"></script>
+<!--END COPY_CLIPBOARD-->
 <link href="navtree.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="resize.js"></script>
 <script type="text/javascript" src="navtreedata.js"></script>
@@ -19,7 +26,14 @@
 <link href="doxygen.css" rel="stylesheet" type="text/css" />
 <link href="doxygen-awesome.css" rel="stylesheet" type="text/css"/>
 <link href="doxygen-awesome-sidebar-only.css" rel="stylesheet" type="text/css"/>
+<link href="doxygen-awesome-sidebar-only-darkmode-toggle.css" rel="stylesheet" type="text/css"/>
 <link href="custom.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="doxygen-awesome-darkmode-toggle.js"></script>
+<script type="text/javascript" src="doxygen-awesome-paragraph-link.js"></script>
+<script type="text/javascript">
+	DoxygenAwesomeDarkModeToggle.init()
+	DoxygenAwesomeParagraphLink.init()
+</script>
 </head>
 <body>
 <div id="top"><!-- do not remove this div, it is closed by doxygen! -->
@@ -101,7 +115,7 @@ $(document).ready(function(){initNavTree('plywoot_8hpp_source.html',''); initRes
   <div class="headertitle"><div class="title">plywoot.hpp</div></div>
 </div><!--header-->
 <div class="contents">
-<div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span><span class="comment">/*</span></div>
+<a href="plywoot_8hpp.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span><span class="comment">/*</span></div>
 <div class="line"><a id="l00002" name="l00002"></a><span class="lineno">    2</span><span class="comment">   This file is part of PLYwoot, a header-only PLY parser.</span></div>
 <div class="line"><a id="l00003" name="l00003"></a><span class="lineno">    3</span><span class="comment"></span> </div>
 <div class="line"><a id="l00004" name="l00004"></a><span class="lineno">    4</span><span class="comment">   Copyright (C) 2023-2024, Ton van den Heuvel</span></div>
@@ -123,65 +137,66 @@ $(document).ready(function(){initNavTree('plywoot_8hpp_source.html',''); initRes
 <div class="line"><a id="l00020" name="l00020"></a><span class="lineno">   20</span><span class="preprocessor">#ifndef PLYWOOT_HPP</span></div>
 <div class="line"><a id="l00021" name="l00021"></a><span class="lineno">   21</span><span class="preprocessor">#define PLYWOOT_HPP</span></div>
 <div class="line"><a id="l00022" name="l00022"></a><span class="lineno">   22</span> </div>
-<div class="line"><a id="l00023" name="l00023"></a><span class="lineno">   23</span><span class="preprocessor">#include &quot;plywoot/ascii_parser_policy.hpp&quot;</span></div>
-<div class="line"><a id="l00024" name="l00024"></a><span class="lineno">   24</span><span class="preprocessor">#include &quot;plywoot/ascii_writer_policy.hpp&quot;</span></div>
-<div class="line"><a id="l00025" name="l00025"></a><span class="lineno">   25</span><span class="preprocessor">#include &quot;plywoot/binary_parser_policy.hpp&quot;</span></div>
-<div class="line"><a id="l00026" name="l00026"></a><span class="lineno">   26</span><span class="preprocessor">#include &quot;plywoot/binary_writer_policy.hpp&quot;</span></div>
-<div class="line"><a id="l00027" name="l00027"></a><span class="lineno">   27</span><span class="preprocessor">#include &quot;plywoot/element_data.hpp&quot;</span></div>
-<div class="line"><a id="l00028" name="l00028"></a><span class="lineno">   28</span><span class="preprocessor">#include &quot;plywoot/header_parser.hpp&quot;</span></div>
-<div class="line"><a id="l00029" name="l00029"></a><span class="lineno">   29</span><span class="preprocessor">#include &quot;plywoot/parser.hpp&quot;</span></div>
-<div class="line"><a id="l00030" name="l00030"></a><span class="lineno">   30</span><span class="preprocessor">#include &quot;plywoot/parser_variant.hpp&quot;</span></div>
-<div class="line"><a id="l00031" name="l00031"></a><span class="lineno">   31</span><span class="preprocessor">#include &quot;plywoot/reflect.hpp&quot;</span></div>
-<div class="line"><a id="l00032" name="l00032"></a><span class="lineno">   32</span><span class="preprocessor">#include &quot;plywoot/type_traits.hpp&quot;</span></div>
-<div class="line"><a id="l00033" name="l00033"></a><span class="lineno">   33</span><span class="preprocessor">#include &quot;plywoot/types.hpp&quot;</span></div>
-<div class="line"><a id="l00034" name="l00034"></a><span class="lineno">   34</span><span class="preprocessor">#include &quot;plywoot/writer.hpp&quot;</span></div>
-<div class="line"><a id="l00035" name="l00035"></a><span class="lineno">   35</span><span class="preprocessor">#include &quot;plywoot/writer_variant.hpp&quot;</span></div>
-<div class="line"><a id="l00036" name="l00036"></a><span class="lineno">   36</span> </div>
-<div class="line"><a id="l00037" name="l00037"></a><span class="lineno">   37</span><span class="preprocessor">#include &lt;algorithm&gt;</span></div>
-<div class="line"><a id="l00038" name="l00038"></a><span class="lineno">   38</span><span class="preprocessor">#include &lt;cstdint&gt;</span></div>
-<div class="line"><a id="l00039" name="l00039"></a><span class="lineno">   39</span><span class="preprocessor">#include &lt;functional&gt;</span></div>
-<div class="line"><a id="l00040" name="l00040"></a><span class="lineno">   40</span><span class="preprocessor">#include &lt;istream&gt;</span></div>
-<div class="line"><a id="l00041" name="l00041"></a><span class="lineno">   41</span><span class="preprocessor">#include &lt;ostream&gt;</span></div>
-<div class="line"><a id="l00042" name="l00042"></a><span class="lineno">   42</span><span class="preprocessor">#include &lt;string&gt;</span></div>
-<div class="line"><a id="l00043" name="l00043"></a><span class="lineno">   43</span><span class="preprocessor">#include &lt;utility&gt;</span></div>
-<div class="line"><a id="l00044" name="l00044"></a><span class="lineno">   44</span><span class="preprocessor">#include &lt;vector&gt;</span></div>
-<div class="line"><a id="l00045" name="l00045"></a><span class="lineno">   45</span> </div>
-<div class="line"><a id="l00046" name="l00046"></a><span class="lineno">   46</span><span class="keyword">namespace </span>plywoot {</div>
+<div class="line"><a id="l00024" name="l00024"></a><span class="lineno">   24</span> </div>
+<div class="line"><a id="l00025" name="l00025"></a><span class="lineno">   25</span><span class="preprocessor">#include &quot;<a class="code" href="ascii__parser__policy_8hpp.html">plywoot/ascii_parser_policy.hpp</a>&quot;</span></div>
+<div class="line"><a id="l00026" name="l00026"></a><span class="lineno">   26</span><span class="preprocessor">#include &quot;<a class="code" href="ascii__writer__policy_8hpp.html">plywoot/ascii_writer_policy.hpp</a>&quot;</span></div>
+<div class="line"><a id="l00027" name="l00027"></a><span class="lineno">   27</span><span class="preprocessor">#include &quot;<a class="code" href="binary__parser__policy_8hpp.html">plywoot/binary_parser_policy.hpp</a>&quot;</span></div>
+<div class="line"><a id="l00028" name="l00028"></a><span class="lineno">   28</span><span class="preprocessor">#include &quot;<a class="code" href="binary__writer__policy_8hpp.html">plywoot/binary_writer_policy.hpp</a>&quot;</span></div>
+<div class="line"><a id="l00029" name="l00029"></a><span class="lineno">   29</span><span class="preprocessor">#include &quot;<a class="code" href="element__data_8hpp.html">plywoot/element_data.hpp</a>&quot;</span></div>
+<div class="line"><a id="l00030" name="l00030"></a><span class="lineno">   30</span><span class="preprocessor">#include &quot;<a class="code" href="header__parser_8hpp.html">plywoot/header_parser.hpp</a>&quot;</span></div>
+<div class="line"><a id="l00031" name="l00031"></a><span class="lineno">   31</span><span class="preprocessor">#include &quot;<a class="code" href="parser_8hpp.html">plywoot/parser.hpp</a>&quot;</span></div>
+<div class="line"><a id="l00032" name="l00032"></a><span class="lineno">   32</span><span class="preprocessor">#include &quot;<a class="code" href="parser__variant_8hpp.html">plywoot/parser_variant.hpp</a>&quot;</span></div>
+<div class="line"><a id="l00033" name="l00033"></a><span class="lineno">   33</span><span class="preprocessor">#include &quot;<a class="code" href="reflect_8hpp.html">plywoot/reflect.hpp</a>&quot;</span></div>
+<div class="line"><a id="l00034" name="l00034"></a><span class="lineno">   34</span><span class="preprocessor">#include &quot;<a class="code" href="type__traits_8hpp.html">plywoot/type_traits.hpp</a>&quot;</span></div>
+<div class="line"><a id="l00035" name="l00035"></a><span class="lineno">   35</span><span class="preprocessor">#include &quot;<a class="code" href="types_8hpp.html">plywoot/types.hpp</a>&quot;</span></div>
+<div class="line"><a id="l00036" name="l00036"></a><span class="lineno">   36</span><span class="preprocessor">#include &quot;<a class="code" href="writer_8hpp.html">plywoot/writer.hpp</a>&quot;</span></div>
+<div class="line"><a id="l00037" name="l00037"></a><span class="lineno">   37</span><span class="preprocessor">#include &quot;<a class="code" href="writer__variant_8hpp.html">plywoot/writer_variant.hpp</a>&quot;</span></div>
+<div class="line"><a id="l00038" name="l00038"></a><span class="lineno">   38</span> </div>
+<div class="line"><a id="l00039" name="l00039"></a><span class="lineno">   39</span><span class="preprocessor">#include &lt;algorithm&gt;</span></div>
+<div class="line"><a id="l00040" name="l00040"></a><span class="lineno">   40</span><span class="preprocessor">#include &lt;cstdint&gt;</span></div>
+<div class="line"><a id="l00041" name="l00041"></a><span class="lineno">   41</span><span class="preprocessor">#include &lt;functional&gt;</span></div>
+<div class="line"><a id="l00042" name="l00042"></a><span class="lineno">   42</span><span class="preprocessor">#include &lt;istream&gt;</span></div>
+<div class="line"><a id="l00043" name="l00043"></a><span class="lineno">   43</span><span class="preprocessor">#include &lt;ostream&gt;</span></div>
+<div class="line"><a id="l00044" name="l00044"></a><span class="lineno">   44</span><span class="preprocessor">#include &lt;string&gt;</span></div>
+<div class="line"><a id="l00045" name="l00045"></a><span class="lineno">   45</span><span class="preprocessor">#include &lt;utility&gt;</span></div>
+<div class="line"><a id="l00046" name="l00046"></a><span class="lineno">   46</span><span class="preprocessor">#include &lt;vector&gt;</span></div>
 <div class="line"><a id="l00047" name="l00047"></a><span class="lineno">   47</span> </div>
-<div class="foldopen" id="foldopen00049" data-start="{" data-end="};">
-<div class="line"><a id="l00049" name="l00049"></a><span class="lineno"><a class="line" href="classplywoot_1_1IStream.html">   49</a></span><span class="keyword">class </span><a class="code hl_class" href="classplywoot_1_1IStream.html">IStream</a></div>
-<div class="line"><a id="l00050" name="l00050"></a><span class="lineno">   50</span>{</div>
-<div class="line"><a id="l00051" name="l00051"></a><span class="lineno">   51</span><span class="keyword">public</span>:</div>
-<div class="line"><a id="l00056" name="l00056"></a><span class="lineno"><a class="line" href="classplywoot_1_1IStream.html#a25a0f4f70a6593e78019b203283925b2">   56</a></span>  <a class="code hl_function" href="classplywoot_1_1IStream.html#a25a0f4f70a6593e78019b203283925b2">IStream</a>(std::istream &amp;is) : <a class="code hl_class" href="classplywoot_1_1IStream.html">IStream</a>{is, detail::HeaderParser{is}} {}</div>
-<div class="line"><a id="l00057" name="l00057"></a><span class="lineno">   57</span> </div>
-<div class="line"><a id="l00061" name="l00061"></a><span class="lineno"><a class="line" href="classplywoot_1_1IStream.html#a1f7f1779ded3278f3564e48cb56f17c9">   61</a></span>  <span class="keyword">const</span> std::vector&lt;Comment&gt; &amp;<a class="code hl_function" href="classplywoot_1_1IStream.html#a1f7f1779ded3278f3564e48cb56f17c9">comments</a>()<span class="keyword"> const </span>{ <span class="keywordflow">return</span> comments_; }</div>
-<div class="line"><a id="l00062" name="l00062"></a><span class="lineno">   62</span> </div>
-<div class="line"><a id="l00066" name="l00066"></a><span class="lineno"><a class="line" href="classplywoot_1_1IStream.html#aa6e347b25f31e46e9a904033bd729e22">   66</a></span>  <span class="keyword">const</span> std::vector&lt;PlyElement&gt; &amp;<a class="code hl_function" href="classplywoot_1_1IStream.html#aa6e347b25f31e46e9a904033bd729e22">elements</a>()<span class="keyword"> const </span>{ <span class="keywordflow">return</span> elements_; }</div>
-<div class="line"><a id="l00067" name="l00067"></a><span class="lineno">   67</span> </div>
-<div class="line"><a id="l00078" name="l00078"></a><span class="lineno">   78</span>  <span class="comment">// TODO(ton): change return type to an optional.</span></div>
-<div class="foldopen" id="foldopen00079" data-start="{" data-end="}">
-<div class="line"><a id="l00079" name="l00079"></a><span class="lineno"><a class="line" href="classplywoot_1_1IStream.html#a490fb88df0d9a610f0e6744b99c9ce57">   79</a></span>  std::pair&lt;PlyElement, bool&gt; <a class="code hl_function" href="classplywoot_1_1IStream.html#a490fb88df0d9a610f0e6744b99c9ce57">element</a>(<span class="keyword">const</span> std::string &amp;name)<span class="keyword"> const</span></div>
-<div class="line"><a id="l00080" name="l00080"></a><span class="lineno">   80</span><span class="keyword">  </span>{</div>
-<div class="line"><a id="l00081" name="l00081"></a><span class="lineno">   81</span>    <span class="keyword">const</span> <span class="keyword">auto</span> it = std::find_if(</div>
-<div class="line"><a id="l00082" name="l00082"></a><span class="lineno">   82</span>        elements_.begin(), elements_.end(), [&amp;](<span class="keyword">const</span> <a class="code hl_struct" href="structplywoot_1_1PlyElement.html">PlyElement</a> &amp;e) { return e.name() == name; });</div>
-<div class="line"><a id="l00083" name="l00083"></a><span class="lineno">   83</span>    <span class="keywordflow">return</span> it != elements_.end() ? std::pair&lt;PlyElement, bool&gt;{*it, <span class="keyword">true</span>}</div>
-<div class="line"><a id="l00084" name="l00084"></a><span class="lineno">   84</span>                                 : std::pair&lt;PlyElement, bool&gt;{{}, <span class="keyword">false</span>};</div>
-<div class="line"><a id="l00085" name="l00085"></a><span class="lineno">   85</span>  }</div>
+<div class="line"><a id="l00048" name="l00048"></a><span class="lineno">   48</span><span class="keyword">namespace </span>plywoot {</div>
+<div class="line"><a id="l00049" name="l00049"></a><span class="lineno">   49</span> </div>
+<div class="foldopen" id="foldopen00051" data-start="{" data-end="};">
+<div class="line"><a id="l00051" name="l00051"></a><span class="lineno"><a class="line" href="classplywoot_1_1IStream.html">   51</a></span><span class="keyword">class </span><a class="code hl_class" href="classplywoot_1_1IStream.html">IStream</a></div>
+<div class="line"><a id="l00052" name="l00052"></a><span class="lineno">   52</span>{</div>
+<div class="line"><a id="l00053" name="l00053"></a><span class="lineno">   53</span><span class="keyword">public</span>:</div>
+<div class="line"><a id="l00058" name="l00058"></a><span class="lineno"><a class="line" href="classplywoot_1_1IStream.html#a25a0f4f70a6593e78019b203283925b2">   58</a></span>  <a class="code hl_function" href="classplywoot_1_1IStream.html#a25a0f4f70a6593e78019b203283925b2">IStream</a>(std::istream &amp;is) : <a class="code hl_class" href="classplywoot_1_1IStream.html">IStream</a>{is, detail::HeaderParser{is}} {}</div>
+<div class="line"><a id="l00059" name="l00059"></a><span class="lineno">   59</span> </div>
+<div class="line"><a id="l00063" name="l00063"></a><span class="lineno"><a class="line" href="classplywoot_1_1IStream.html#a1f7f1779ded3278f3564e48cb56f17c9">   63</a></span>  <span class="keyword">const</span> std::vector&lt;Comment&gt; &amp;<a class="code hl_function" href="classplywoot_1_1IStream.html#a1f7f1779ded3278f3564e48cb56f17c9">comments</a>()<span class="keyword"> const </span>{ <span class="keywordflow">return</span> comments_; }</div>
+<div class="line"><a id="l00064" name="l00064"></a><span class="lineno">   64</span> </div>
+<div class="line"><a id="l00068" name="l00068"></a><span class="lineno"><a class="line" href="classplywoot_1_1IStream.html#aa6e347b25f31e46e9a904033bd729e22">   68</a></span>  <span class="keyword">const</span> std::vector&lt;PlyElement&gt; &amp;<a class="code hl_function" href="classplywoot_1_1IStream.html#aa6e347b25f31e46e9a904033bd729e22">elements</a>()<span class="keyword"> const </span>{ <span class="keywordflow">return</span> elements_; }</div>
+<div class="line"><a id="l00069" name="l00069"></a><span class="lineno">   69</span> </div>
+<div class="line"><a id="l00080" name="l00080"></a><span class="lineno">   80</span>  <span class="comment">// TODO(ton): change return type to an optional.</span></div>
+<div class="foldopen" id="foldopen00081" data-start="{" data-end="}">
+<div class="line"><a id="l00081" name="l00081"></a><span class="lineno"><a class="line" href="classplywoot_1_1IStream.html#a490fb88df0d9a610f0e6744b99c9ce57">   81</a></span>  std::pair&lt;PlyElement, bool&gt; <a class="code hl_function" href="classplywoot_1_1IStream.html#a490fb88df0d9a610f0e6744b99c9ce57">element</a>(<span class="keyword">const</span> std::string &amp;name)<span class="keyword"> const</span></div>
+<div class="line"><a id="l00082" name="l00082"></a><span class="lineno">   82</span><span class="keyword">  </span>{</div>
+<div class="line"><a id="l00083" name="l00083"></a><span class="lineno">   83</span>    <span class="keyword">const</span> <span class="keyword">auto</span> it = std::find_if(</div>
+<div class="line"><a id="l00084" name="l00084"></a><span class="lineno">   84</span>        elements_.begin(), elements_.end(), [&amp;](<span class="keyword">const</span> <a class="code hl_struct" href="structplywoot_1_1PlyElement.html">PlyElement</a> &amp;e) { return e.name() == name; });</div>
+<div class="line"><a id="l00085" name="l00085"></a><span class="lineno">   85</span>    <span class="keywordflow">return</span> it != elements_.end() ? std::pair&lt;PlyElement, bool&gt;{*it, <span class="keyword">true</span>}</div>
+<div class="line"><a id="l00086" name="l00086"></a><span class="lineno">   86</span>                                 : std::pair&lt;PlyElement, bool&gt;{{}, <span class="keyword">false</span>};</div>
+<div class="line"><a id="l00087" name="l00087"></a><span class="lineno">   87</span>  }</div>
 </div>
-<div class="line"><a id="l00086" name="l00086"></a><span class="lineno">   86</span> </div>
-<div class="line"><a id="l00090" name="l00090"></a><span class="lineno"><a class="line" href="classplywoot_1_1IStream.html#a23fb1fac551e54eb85b0595a297ce569">   90</a></span>  PlyFormat <a class="code hl_function" href="classplywoot_1_1IStream.html#a23fb1fac551e54eb85b0595a297ce569">format</a>()<span class="keyword"> const </span>{ <span class="keywordflow">return</span> format_; }</div>
-<div class="line"><a id="l00091" name="l00091"></a><span class="lineno">   91</span> </div>
-<div class="foldopen" id="foldopen00099" data-start="{" data-end="}">
-<div class="line"><a id="l00099" name="l00099"></a><span class="lineno"><a class="line" href="classplywoot_1_1IStream.html#a7c3b01bd0a56336259439b0663b8f3e7">   99</a></span>  <span class="keywordtype">bool</span> <a class="code hl_function" href="classplywoot_1_1IStream.html#a7c3b01bd0a56336259439b0663b8f3e7">find</a>(<span class="keyword">const</span> std::string &amp;elementName)<span class="keyword"> const</span></div>
-<div class="line"><a id="l00100" name="l00100"></a><span class="lineno">  100</span><span class="keyword">  </span>{</div>
-<div class="line"><a id="l00101" name="l00101"></a><span class="lineno">  101</span>    <span class="keywordflow">while</span> (currElement_ != elements_.end() &amp;&amp; currElement_-&gt;name() != elementName) { <a class="code hl_function" href="classplywoot_1_1IStream.html#a8683b8bba3fe88b3bd1be77f32b1bc0e">skipElement</a>(); }</div>
-<div class="line"><a id="l00102" name="l00102"></a><span class="lineno">  102</span>    <span class="keywordflow">return</span> currElement_ != elements_.end();</div>
-<div class="line"><a id="l00103" name="l00103"></a><span class="lineno">  103</span>  }</div>
+<div class="line"><a id="l00088" name="l00088"></a><span class="lineno">   88</span> </div>
+<div class="line"><a id="l00092" name="l00092"></a><span class="lineno"><a class="line" href="classplywoot_1_1IStream.html#a23fb1fac551e54eb85b0595a297ce569">   92</a></span>  <a class="code hl_enumeration" href="types_8hpp.html#a8befa81dd977847aad0435f0d606bb50">PlyFormat</a> <a class="code hl_function" href="classplywoot_1_1IStream.html#a23fb1fac551e54eb85b0595a297ce569">format</a>()<span class="keyword"> const </span>{ <span class="keywordflow">return</span> format_; }</div>
+<div class="line"><a id="l00093" name="l00093"></a><span class="lineno">   93</span> </div>
+<div class="foldopen" id="foldopen00101" data-start="{" data-end="}">
+<div class="line"><a id="l00101" name="l00101"></a><span class="lineno"><a class="line" href="classplywoot_1_1IStream.html#a7c3b01bd0a56336259439b0663b8f3e7">  101</a></span>  <span class="keywordtype">bool</span> <a class="code hl_function" href="classplywoot_1_1IStream.html#a7c3b01bd0a56336259439b0663b8f3e7">find</a>(<span class="keyword">const</span> std::string &amp;elementName)<span class="keyword"> const</span></div>
+<div class="line"><a id="l00102" name="l00102"></a><span class="lineno">  102</span><span class="keyword">  </span>{</div>
+<div class="line"><a id="l00103" name="l00103"></a><span class="lineno">  103</span>    <span class="keywordflow">while</span> (currElement_ != elements_.end() &amp;&amp; currElement_-&gt;name() != elementName) { <a class="code hl_function" href="classplywoot_1_1IStream.html#a8683b8bba3fe88b3bd1be77f32b1bc0e">skipElement</a>(); }</div>
+<div class="line"><a id="l00104" name="l00104"></a><span class="lineno">  104</span>    <span class="keywordflow">return</span> currElement_ != elements_.end();</div>
+<div class="line"><a id="l00105" name="l00105"></a><span class="lineno">  105</span>  }</div>
 </div>
-<div class="line"><a id="l00104" name="l00104"></a><span class="lineno">  104</span> </div>
-<div class="line"><a id="l00108" name="l00108"></a><span class="lineno"><a class="line" href="classplywoot_1_1IStream.html#a38792163d799dd453f6ffb8fc0b69173">  108</a></span>  <a class="code hl_struct" href="structplywoot_1_1PlyElement.html">PlyElement</a> <a class="code hl_function" href="classplywoot_1_1IStream.html#a38792163d799dd453f6ffb8fc0b69173">element</a>()<span class="keyword"> const </span>{ <span class="keywordflow">return</span> <a class="code hl_function" href="classplywoot_1_1IStream.html#a2e1944535d6e7ea16f6e7f066e21de6a">hasElement</a>() ? *currElement_ : <a class="code hl_struct" href="structplywoot_1_1PlyElement.html">PlyElement</a>{}; }</div>
-<div class="line"><a id="l00113" name="l00113"></a><span class="lineno"><a class="line" href="classplywoot_1_1IStream.html#a2e1944535d6e7ea16f6e7f066e21de6a">  113</a></span>  <span class="keywordtype">bool</span> <a class="code hl_function" href="classplywoot_1_1IStream.html#a2e1944535d6e7ea16f6e7f066e21de6a">hasElement</a>()<span class="keyword"> const </span>{ <span class="keywordflow">return</span> currElement_ != elements_.end(); }</div>
-<div class="line"><a id="l00114" name="l00114"></a><span class="lineno">  114</span> </div>
+<div class="line"><a id="l00106" name="l00106"></a><span class="lineno">  106</span> </div>
+<div class="line"><a id="l00110" name="l00110"></a><span class="lineno"><a class="line" href="classplywoot_1_1IStream.html#a38792163d799dd453f6ffb8fc0b69173">  110</a></span>  <a class="code hl_struct" href="structplywoot_1_1PlyElement.html">PlyElement</a> <a class="code hl_function" href="classplywoot_1_1IStream.html#a38792163d799dd453f6ffb8fc0b69173">element</a>()<span class="keyword"> const </span>{ <span class="keywordflow">return</span> <a class="code hl_function" href="classplywoot_1_1IStream.html#a2e1944535d6e7ea16f6e7f066e21de6a">hasElement</a>() ? *currElement_ : <a class="code hl_struct" href="structplywoot_1_1PlyElement.html">PlyElement</a>{}; }</div>
+<div class="line"><a id="l00115" name="l00115"></a><span class="lineno"><a class="line" href="classplywoot_1_1IStream.html#a2e1944535d6e7ea16f6e7f066e21de6a">  115</a></span>  <span class="keywordtype">bool</span> <a class="code hl_function" href="classplywoot_1_1IStream.html#a2e1944535d6e7ea16f6e7f066e21de6a">hasElement</a>()<span class="keyword"> const </span>{ <span class="keywordflow">return</span> currElement_ != elements_.end(); }</div>
+<div class="line"><a id="l00116" name="l00116"></a><span class="lineno">  116</span> </div>
 <div class="line"><a id="l00126" name="l00126"></a><span class="lineno"><a class="line" href="classplywoot_1_1IStream.html#a1db364e8f9c8d986bc9613762ae66790">  126</a></span>  <a class="code hl_class" href="classplywoot_1_1PlyElementData.html">PlyElementData</a> <a class="code hl_function" href="classplywoot_1_1IStream.html#a1db364e8f9c8d986bc9613762ae66790">readElement</a>()<span class="keyword"> const </span>{ <span class="keywordflow">return</span> parser_.read(*currElement_++); }</div>
 <div class="line"><a id="l00127" name="l00127"></a><span class="lineno">  127</span> </div>
 <div class="line"><a id="l00138" name="l00138"></a><span class="lineno">  138</span>  <span class="comment">// TODO(ton): add more extensive documentation</span></div>
@@ -222,9 +237,9 @@ $(document).ready(function(){initNavTree('plywoot_8hpp_source.html',''); initRes
 <div class="line"><a id="l00182" name="l00182"></a><span class="lineno"><a class="line" href="classplywoot_1_1OStream.html">  182</a></span><span class="keyword">class </span><a class="code hl_class" href="classplywoot_1_1OStream.html">OStream</a></div>
 <div class="line"><a id="l00183" name="l00183"></a><span class="lineno">  183</span>{</div>
 <div class="line"><a id="l00184" name="l00184"></a><span class="lineno">  184</span><span class="keyword">public</span>:</div>
-<div class="line"><a id="l00188" name="l00188"></a><span class="lineno"><a class="line" href="classplywoot_1_1OStream.html#a2256223b013c6b4547675bbe799891c8">  188</a></span>  <a class="code hl_function" href="classplywoot_1_1OStream.html#a2256223b013c6b4547675bbe799891c8">OStream</a>(PlyFormat format) : format_{format} {}</div>
+<div class="line"><a id="l00188" name="l00188"></a><span class="lineno"><a class="line" href="classplywoot_1_1OStream.html#a2256223b013c6b4547675bbe799891c8">  188</a></span>  <a class="code hl_function" href="classplywoot_1_1OStream.html#a2256223b013c6b4547675bbe799891c8">OStream</a>(<a class="code hl_enumeration" href="types_8hpp.html#a8befa81dd977847aad0435f0d606bb50">PlyFormat</a> format) : format_{format} {}</div>
 <div class="foldopen" id="foldopen00198" data-start="{" data-end="}">
-<div class="line"><a id="l00198" name="l00198"></a><span class="lineno"><a class="line" href="classplywoot_1_1OStream.html#a257924fb5f71f9434a4450aac6eab058">  198</a></span>  <a class="code hl_function" href="classplywoot_1_1OStream.html#a257924fb5f71f9434a4450aac6eab058">OStream</a>(PlyFormat format, std::vector&lt;Comment&gt; comments) : format_{format}, comments_{std::move(comments)}</div>
+<div class="line"><a id="l00198" name="l00198"></a><span class="lineno"><a class="line" href="classplywoot_1_1OStream.html#a257924fb5f71f9434a4450aac6eab058">  198</a></span>  <a class="code hl_function" href="classplywoot_1_1OStream.html#a257924fb5f71f9434a4450aac6eab058">OStream</a>(<a class="code hl_enumeration" href="types_8hpp.html#a8befa81dd977847aad0435f0d606bb50">PlyFormat</a> format, std::vector&lt;Comment&gt; comments) : format_{format}, comments_{std::move(comments)}</div>
 <div class="line"><a id="l00199" name="l00199"></a><span class="lineno">  199</span>  {</div>
 <div class="line"><a id="l00200" name="l00200"></a><span class="lineno">  200</span>    <span class="comment">// Ensure comments are sorted on line number (ascending).</span></div>
 <div class="line"><a id="l00201" name="l00201"></a><span class="lineno">  201</span>    std::stable_sort(comments_.begin(), comments_.end(), [](<span class="keyword">const</span> <a class="code hl_struct" href="structplywoot_1_1Comment.html">Comment</a> &amp;x, <span class="keyword">const</span> <a class="code hl_struct" href="structplywoot_1_1Comment.html">Comment</a> &amp;y) {</div>
@@ -336,15 +351,16 @@ $(document).ready(function(){initNavTree('plywoot_8hpp_source.html',''); initRes
 <div class="line"><a id="l00319" name="l00319"></a><span class="lineno">  319</span>  <span class="keyword">using </span>ElementWriteClosure = std::function&lt;void(detail::WriterVariant &amp;, <span class="keyword">const</span> PlyElement &amp;)&gt;;</div>
 <div class="line"><a id="l00320" name="l00320"></a><span class="lineno">  320</span> </div>
 <div class="line"><a id="l00322" name="l00322"></a><span class="lineno">  322</span>  std::vector&lt;std::pair&lt;PlyElement, ElementWriteClosure&gt;&gt; elementWriteClosures_;</div>
-<div class="line"><a id="l00324" name="l00324"></a><span class="lineno">  324</span>  PlyFormat format_;</div>
+<div class="line"><a id="l00324" name="l00324"></a><span class="lineno">  324</span>  <a class="code hl_enumeration" href="types_8hpp.html#a8befa81dd977847aad0435f0d606bb50">PlyFormat</a> format_;</div>
 <div class="line"><a id="l00327" name="l00327"></a><span class="lineno">  327</span>  std::vector&lt;Comment&gt; comments_;</div>
 <div class="line"><a id="l00328" name="l00328"></a><span class="lineno">  328</span>};</div>
 </div>
 <div class="line"><a id="l00329" name="l00329"></a><span class="lineno">  329</span> </div>
-<div class="line"><a id="l00336" name="l00336"></a><span class="lineno">  336</span><span class="keyword">inline</span> <span class="keywordtype">void</span> convert(std::istream &amp;is, std::ostream &amp;os, PlyFormat format)</div>
+<div class="foldopen" id="foldopen00336" data-start="{" data-end="}">
+<div class="line"><a id="l00336" name="l00336"></a><span class="lineno"><a class="line" href="plywoot_8hpp.html#a43bf8ef75c4ac926b3af27b8f9c628e2">  336</a></span><span class="keyword">inline</span> <span class="keywordtype">void</span> <a class="code hl_function" href="plywoot_8hpp.html#a43bf8ef75c4ac926b3af27b8f9c628e2">convert</a>(std::istream &amp;is, std::ostream &amp;os, <a class="code hl_enumeration" href="types_8hpp.html#a8befa81dd977847aad0435f0d606bb50">PlyFormat</a> format)</div>
 <div class="line"><a id="l00337" name="l00337"></a><span class="lineno">  337</span>{</div>
-<div class="line"><a id="l00338" name="l00338"></a><span class="lineno">  338</span>  IStream plyIs{is};</div>
-<div class="line"><a id="l00339" name="l00339"></a><span class="lineno">  339</span>  OStream plyOs{format};</div>
+<div class="line"><a id="l00338" name="l00338"></a><span class="lineno">  338</span>  <a class="code hl_class" href="classplywoot_1_1IStream.html">IStream</a> plyIs{is};</div>
+<div class="line"><a id="l00339" name="l00339"></a><span class="lineno">  339</span>  <a class="code hl_class" href="classplywoot_1_1OStream.html">OStream</a> plyOs{format};</div>
 <div class="line"><a id="l00340" name="l00340"></a><span class="lineno">  340</span> </div>
 <div class="line"><a id="l00341" name="l00341"></a><span class="lineno">  341</span>  <span class="comment">// Note; preserve element data until the write() function below finishes.</span></div>
 <div class="line"><a id="l00342" name="l00342"></a><span class="lineno">  342</span>  std::vector&lt;PlyElementData&gt; elementsData;</div>
@@ -358,44 +374,60 @@ $(document).ready(function(){initNavTree('plywoot_8hpp_source.html',''); initRes
 <div class="line"><a id="l00350" name="l00350"></a><span class="lineno">  350</span> </div>
 <div class="line"><a id="l00351" name="l00351"></a><span class="lineno">  351</span>  plyOs.write(os);</div>
 <div class="line"><a id="l00352" name="l00352"></a><span class="lineno">  352</span>}</div>
+</div>
 <div class="line"><a id="l00353" name="l00353"></a><span class="lineno">  353</span> </div>
 <div class="line"><a id="l00354" name="l00354"></a><span class="lineno">  354</span>}</div>
 <div class="line"><a id="l00355" name="l00355"></a><span class="lineno">  355</span> </div>
 <div class="line"><a id="l00356" name="l00356"></a><span class="lineno">  356</span><span class="preprocessor">#endif</span></div>
-<div class="ttc" id="aclassplywoot_1_1IStream_html"><div class="ttname"><a href="classplywoot_1_1IStream.html">plywoot::IStream</a></div><div class="ttdoc">Represents an input PLY data stream that can be queried for data.</div><div class="ttdef"><b>Definition</b> <a href="plywoot_8hpp_source.html#l00049">plywoot.hpp:50</a></div></div>
+<div class="ttc" id="aascii__parser__policy_8hpp_html"><div class="ttname"><a href="ascii__parser__policy_8hpp.html">ascii_parser_policy.hpp</a></div></div>
+<div class="ttc" id="aascii__writer__policy_8hpp_html"><div class="ttname"><a href="ascii__writer__policy_8hpp.html">ascii_writer_policy.hpp</a></div></div>
+<div class="ttc" id="abinary__parser__policy_8hpp_html"><div class="ttname"><a href="binary__parser__policy_8hpp.html">binary_parser_policy.hpp</a></div></div>
+<div class="ttc" id="abinary__writer__policy_8hpp_html"><div class="ttname"><a href="binary__writer__policy_8hpp.html">binary_writer_policy.hpp</a></div></div>
+<div class="ttc" id="aclassplywoot_1_1IStream_html"><div class="ttname"><a href="classplywoot_1_1IStream.html">plywoot::IStream</a></div><div class="ttdoc">Represents an input PLY data stream that can be queried for data.</div><div class="ttdef"><b>Definition</b> <a href="plywoot_8hpp_source.html#l00051">plywoot.hpp:52</a></div></div>
 <div class="ttc" id="aclassplywoot_1_1IStream_html_a1db364e8f9c8d986bc9613762ae66790"><div class="ttname"><a href="classplywoot_1_1IStream.html#a1db364e8f9c8d986bc9613762ae66790">plywoot::IStream::readElement</a></div><div class="ttdeci">PlyElementData readElement() const</div><div class="ttdef"><b>Definition</b> <a href="plywoot_8hpp_source.html#l00126">plywoot.hpp:126</a></div></div>
-<div class="ttc" id="aclassplywoot_1_1IStream_html_a1f7f1779ded3278f3564e48cb56f17c9"><div class="ttname"><a href="classplywoot_1_1IStream.html#a1f7f1779ded3278f3564e48cb56f17c9">plywoot::IStream::comments</a></div><div class="ttdeci">const std::vector&lt; Comment &gt; &amp; comments() const</div><div class="ttdef"><b>Definition</b> <a href="plywoot_8hpp_source.html#l00061">plywoot.hpp:61</a></div></div>
-<div class="ttc" id="aclassplywoot_1_1IStream_html_a23fb1fac551e54eb85b0595a297ce569"><div class="ttname"><a href="classplywoot_1_1IStream.html#a23fb1fac551e54eb85b0595a297ce569">plywoot::IStream::format</a></div><div class="ttdeci">PlyFormat format() const</div><div class="ttdef"><b>Definition</b> <a href="plywoot_8hpp_source.html#l00090">plywoot.hpp:90</a></div></div>
+<div class="ttc" id="aclassplywoot_1_1IStream_html_a1f7f1779ded3278f3564e48cb56f17c9"><div class="ttname"><a href="classplywoot_1_1IStream.html#a1f7f1779ded3278f3564e48cb56f17c9">plywoot::IStream::comments</a></div><div class="ttdeci">const std::vector&lt; Comment &gt; &amp; comments() const</div><div class="ttdef"><b>Definition</b> <a href="plywoot_8hpp_source.html#l00063">plywoot.hpp:63</a></div></div>
+<div class="ttc" id="aclassplywoot_1_1IStream_html_a23fb1fac551e54eb85b0595a297ce569"><div class="ttname"><a href="classplywoot_1_1IStream.html#a23fb1fac551e54eb85b0595a297ce569">plywoot::IStream::format</a></div><div class="ttdeci">PlyFormat format() const</div><div class="ttdef"><b>Definition</b> <a href="plywoot_8hpp_source.html#l00092">plywoot.hpp:92</a></div></div>
 <div class="ttc" id="aclassplywoot_1_1IStream_html_a250a33348f5fd0cabf36ca60a72b500a"><div class="ttname"><a href="classplywoot_1_1IStream.html#a250a33348f5fd0cabf36ca60a72b500a">plywoot::IStream::readElement</a></div><div class="ttdeci">std::vector&lt; T &gt; readElement() const</div><div class="ttdef"><b>Definition</b> <a href="plywoot_8hpp_source.html#l00141">plywoot.hpp:141</a></div></div>
-<div class="ttc" id="aclassplywoot_1_1IStream_html_a25a0f4f70a6593e78019b203283925b2"><div class="ttname"><a href="classplywoot_1_1IStream.html#a25a0f4f70a6593e78019b203283925b2">plywoot::IStream::IStream</a></div><div class="ttdeci">IStream(std::istream &amp;is)</div><div class="ttdef"><b>Definition</b> <a href="plywoot_8hpp_source.html#l00056">plywoot.hpp:56</a></div></div>
-<div class="ttc" id="aclassplywoot_1_1IStream_html_a2e1944535d6e7ea16f6e7f066e21de6a"><div class="ttname"><a href="classplywoot_1_1IStream.html#a2e1944535d6e7ea16f6e7f066e21de6a">plywoot::IStream::hasElement</a></div><div class="ttdeci">bool hasElement() const</div><div class="ttdef"><b>Definition</b> <a href="plywoot_8hpp_source.html#l00113">plywoot.hpp:113</a></div></div>
-<div class="ttc" id="aclassplywoot_1_1IStream_html_a38792163d799dd453f6ffb8fc0b69173"><div class="ttname"><a href="classplywoot_1_1IStream.html#a38792163d799dd453f6ffb8fc0b69173">plywoot::IStream::element</a></div><div class="ttdeci">PlyElement element() const</div><div class="ttdef"><b>Definition</b> <a href="plywoot_8hpp_source.html#l00108">plywoot.hpp:108</a></div></div>
-<div class="ttc" id="aclassplywoot_1_1IStream_html_a490fb88df0d9a610f0e6744b99c9ce57"><div class="ttname"><a href="classplywoot_1_1IStream.html#a490fb88df0d9a610f0e6744b99c9ce57">plywoot::IStream::element</a></div><div class="ttdeci">std::pair&lt; PlyElement, bool &gt; element(const std::string &amp;name) const</div><div class="ttdef"><b>Definition</b> <a href="plywoot_8hpp_source.html#l00079">plywoot.hpp:79</a></div></div>
-<div class="ttc" id="aclassplywoot_1_1IStream_html_a7c3b01bd0a56336259439b0663b8f3e7"><div class="ttname"><a href="classplywoot_1_1IStream.html#a7c3b01bd0a56336259439b0663b8f3e7">plywoot::IStream::find</a></div><div class="ttdeci">bool find(const std::string &amp;elementName) const</div><div class="ttdef"><b>Definition</b> <a href="plywoot_8hpp_source.html#l00099">plywoot.hpp:99</a></div></div>
+<div class="ttc" id="aclassplywoot_1_1IStream_html_a25a0f4f70a6593e78019b203283925b2"><div class="ttname"><a href="classplywoot_1_1IStream.html#a25a0f4f70a6593e78019b203283925b2">plywoot::IStream::IStream</a></div><div class="ttdeci">IStream(std::istream &amp;is)</div><div class="ttdef"><b>Definition</b> <a href="plywoot_8hpp_source.html#l00058">plywoot.hpp:58</a></div></div>
+<div class="ttc" id="aclassplywoot_1_1IStream_html_a2e1944535d6e7ea16f6e7f066e21de6a"><div class="ttname"><a href="classplywoot_1_1IStream.html#a2e1944535d6e7ea16f6e7f066e21de6a">plywoot::IStream::hasElement</a></div><div class="ttdeci">bool hasElement() const</div><div class="ttdef"><b>Definition</b> <a href="plywoot_8hpp_source.html#l00115">plywoot.hpp:115</a></div></div>
+<div class="ttc" id="aclassplywoot_1_1IStream_html_a38792163d799dd453f6ffb8fc0b69173"><div class="ttname"><a href="classplywoot_1_1IStream.html#a38792163d799dd453f6ffb8fc0b69173">plywoot::IStream::element</a></div><div class="ttdeci">PlyElement element() const</div><div class="ttdef"><b>Definition</b> <a href="plywoot_8hpp_source.html#l00110">plywoot.hpp:110</a></div></div>
+<div class="ttc" id="aclassplywoot_1_1IStream_html_a490fb88df0d9a610f0e6744b99c9ce57"><div class="ttname"><a href="classplywoot_1_1IStream.html#a490fb88df0d9a610f0e6744b99c9ce57">plywoot::IStream::element</a></div><div class="ttdeci">std::pair&lt; PlyElement, bool &gt; element(const std::string &amp;name) const</div><div class="ttdef"><b>Definition</b> <a href="plywoot_8hpp_source.html#l00081">plywoot.hpp:81</a></div></div>
+<div class="ttc" id="aclassplywoot_1_1IStream_html_a7c3b01bd0a56336259439b0663b8f3e7"><div class="ttname"><a href="classplywoot_1_1IStream.html#a7c3b01bd0a56336259439b0663b8f3e7">plywoot::IStream::find</a></div><div class="ttdeci">bool find(const std::string &amp;elementName) const</div><div class="ttdef"><b>Definition</b> <a href="plywoot_8hpp_source.html#l00101">plywoot.hpp:101</a></div></div>
 <div class="ttc" id="aclassplywoot_1_1IStream_html_a8683b8bba3fe88b3bd1be77f32b1bc0e"><div class="ttname"><a href="classplywoot_1_1IStream.html#a8683b8bba3fe88b3bd1be77f32b1bc0e">plywoot::IStream::skipElement</a></div><div class="ttdeci">void skipElement() const</div><div class="ttdoc">Skips the current element.</div><div class="ttdef"><b>Definition</b> <a href="plywoot_8hpp_source.html#l00149">plywoot.hpp:149</a></div></div>
-<div class="ttc" id="aclassplywoot_1_1IStream_html_aa6e347b25f31e46e9a904033bd729e22"><div class="ttname"><a href="classplywoot_1_1IStream.html#aa6e347b25f31e46e9a904033bd729e22">plywoot::IStream::elements</a></div><div class="ttdeci">const std::vector&lt; PlyElement &gt; &amp; elements() const</div><div class="ttdef"><b>Definition</b> <a href="plywoot_8hpp_source.html#l00066">plywoot.hpp:66</a></div></div>
+<div class="ttc" id="aclassplywoot_1_1IStream_html_aa6e347b25f31e46e9a904033bd729e22"><div class="ttname"><a href="classplywoot_1_1IStream.html#aa6e347b25f31e46e9a904033bd729e22">plywoot::IStream::elements</a></div><div class="ttdeci">const std::vector&lt; PlyElement &gt; &amp; elements() const</div><div class="ttdef"><b>Definition</b> <a href="plywoot_8hpp_source.html#l00068">plywoot.hpp:68</a></div></div>
 <div class="ttc" id="aclassplywoot_1_1OStream_html"><div class="ttname"><a href="classplywoot_1_1OStream.html">plywoot::OStream</a></div><div class="ttdef"><b>Definition</b> <a href="plywoot_8hpp_source.html#l00182">plywoot.hpp:183</a></div></div>
 <div class="ttc" id="aclassplywoot_1_1OStream_html_a2256223b013c6b4547675bbe799891c8"><div class="ttname"><a href="classplywoot_1_1OStream.html#a2256223b013c6b4547675bbe799891c8">plywoot::OStream::OStream</a></div><div class="ttdeci">OStream(PlyFormat format)</div><div class="ttdef"><b>Definition</b> <a href="plywoot_8hpp_source.html#l00188">plywoot.hpp:188</a></div></div>
 <div class="ttc" id="aclassplywoot_1_1OStream_html_a257924fb5f71f9434a4450aac6eab058"><div class="ttname"><a href="classplywoot_1_1OStream.html#a257924fb5f71f9434a4450aac6eab058">plywoot::OStream::OStream</a></div><div class="ttdeci">OStream(PlyFormat format, std::vector&lt; Comment &gt; comments)</div><div class="ttdef"><b>Definition</b> <a href="plywoot_8hpp_source.html#l00198">plywoot.hpp:198</a></div></div>
 <div class="ttc" id="aclassplywoot_1_1OStream_html_a4285cc7b9be38286e57621df287db388"><div class="ttname"><a href="classplywoot_1_1OStream.html#a4285cc7b9be38286e57621df287db388">plywoot::OStream::add</a></div><div class="ttdeci">void add(const PlyElementData &amp;elementData)</div><div class="ttdef"><b>Definition</b> <a href="plywoot_8hpp_source.html#l00229">plywoot.hpp:229</a></div></div>
 <div class="ttc" id="aclassplywoot_1_1OStream_html_a543c346130ea97fcd26dd6073cfcbb19"><div class="ttname"><a href="classplywoot_1_1OStream.html#a543c346130ea97fcd26dd6073cfcbb19">plywoot::OStream::add</a></div><div class="ttdeci">void add(const PlyElement &amp;element, const reflect::Layout&lt; Ts... &gt; layout)</div><div class="ttdef"><b>Definition</b> <a href="plywoot_8hpp_source.html#l00213">plywoot.hpp:213</a></div></div>
 <div class="ttc" id="aclassplywoot_1_1OStream_html_abe61c5e9a6407b13c910e76ba06c755b"><div class="ttname"><a href="classplywoot_1_1OStream.html#abe61c5e9a6407b13c910e76ba06c755b">plywoot::OStream::write</a></div><div class="ttdeci">void write(std::ostream &amp;os) const</div><div class="ttdef"><b>Definition</b> <a href="plywoot_8hpp_source.html#l00246">plywoot.hpp:246</a></div></div>
-<div class="ttc" id="aclassplywoot_1_1PlyElementData_html"><div class="ttname"><a href="classplywoot_1_1PlyElementData.html">plywoot::PlyElementData</a></div><div class="ttdef"><b>Definition</b> <a href="element__data_8hpp_source.html#l00033">element_data.hpp:34</a></div></div>
-<div class="ttc" id="aclassplywoot_1_1PlyElementData_html_a0c59bc7d57fe596363dd69211add416f"><div class="ttname"><a href="classplywoot_1_1PlyElementData.html#a0c59bc7d57fe596363dd69211add416f">plywoot::PlyElementData::element</a></div><div class="ttdeci">const PlyElement &amp; element() const</div><div class="ttdef"><b>Definition</b> <a href="element__data_8hpp_source.html#l00198">element_data.hpp:198</a></div></div>
-<div class="ttc" id="aclassplywoot_1_1PlyElementData_html_a2a9e2fcebaa3999d5cf06e1c94c66fc3"><div class="ttname"><a href="classplywoot_1_1PlyElementData.html#a2a9e2fcebaa3999d5cf06e1c94c66fc3">plywoot::PlyElementData::data</a></div><div class="ttdeci">std::uint8_t * data() const</div><div class="ttdef"><b>Definition</b> <a href="element__data_8hpp_source.html#l00203">element_data.hpp:203</a></div></div>
-<div class="ttc" id="aclassplywoot_1_1PlyElementData_html_ad870d6ae347caf8d317a1b3ef4b0eb32"><div class="ttname"><a href="classplywoot_1_1PlyElementData.html#ad870d6ae347caf8d317a1b3ef4b0eb32">plywoot::PlyElementData::alignment</a></div><div class="ttdeci">std::size_t alignment() const</div><div class="ttdef"><b>Definition</b> <a href="element__data_8hpp_source.html#l00210">element_data.hpp:210</a></div></div>
+<div class="ttc" id="aclassplywoot_1_1PlyElementData_html"><div class="ttname"><a href="classplywoot_1_1PlyElementData.html">plywoot::PlyElementData</a></div><div class="ttdef"><b>Definition</b> <a href="element__data_8hpp_source.html#l00035">element_data.hpp:36</a></div></div>
+<div class="ttc" id="aclassplywoot_1_1PlyElementData_html_a0c59bc7d57fe596363dd69211add416f"><div class="ttname"><a href="classplywoot_1_1PlyElementData.html#a0c59bc7d57fe596363dd69211add416f">plywoot::PlyElementData::element</a></div><div class="ttdeci">const PlyElement &amp; element() const</div><div class="ttdef"><b>Definition</b> <a href="element__data_8hpp_source.html#l00222">element_data.hpp:222</a></div></div>
+<div class="ttc" id="aclassplywoot_1_1PlyElementData_html_a2a9e2fcebaa3999d5cf06e1c94c66fc3"><div class="ttname"><a href="classplywoot_1_1PlyElementData.html#a2a9e2fcebaa3999d5cf06e1c94c66fc3">plywoot::PlyElementData::data</a></div><div class="ttdeci">std::uint8_t * data() const</div><div class="ttdef"><b>Definition</b> <a href="element__data_8hpp_source.html#l00227">element_data.hpp:227</a></div></div>
+<div class="ttc" id="aclassplywoot_1_1PlyElementData_html_ad870d6ae347caf8d317a1b3ef4b0eb32"><div class="ttname"><a href="classplywoot_1_1PlyElementData.html#ad870d6ae347caf8d317a1b3ef4b0eb32">plywoot::PlyElementData::alignment</a></div><div class="ttdeci">std::size_t alignment() const</div><div class="ttdef"><b>Definition</b> <a href="element__data_8hpp_source.html#l00234">element_data.hpp:234</a></div></div>
 <div class="ttc" id="aclassplywoot_1_1reflect_1_1Layout_html"><div class="ttname"><a href="classplywoot_1_1reflect_1_1Layout.html">plywoot::reflect::Layout</a></div><div class="ttdef"><b>Definition</b> <a href="reflect_8hpp_source.html#l00094">reflect.hpp:95</a></div></div>
 <div class="ttc" id="aclassplywoot_1_1reflect_1_1Layout_html_ae1b12fdbd5db8e0de77790f883f211cf"><div class="ttname"><a href="classplywoot_1_1reflect_1_1Layout.html#ae1b12fdbd5db8e0de77790f883f211cf">plywoot::reflect::Layout::size</a></div><div class="ttdeci">std::size_t size() const</div><div class="ttdef"><b>Definition</b> <a href="reflect_8hpp_source.html#l00144">reflect.hpp:144</a></div></div>
-<div class="ttc" id="astructplywoot_1_1Comment_html"><div class="ttname"><a href="structplywoot_1_1Comment.html">plywoot::Comment</a></div><div class="ttdef"><b>Definition</b> <a href="types_8hpp_source.html#l00241">types.hpp:242</a></div></div>
-<div class="ttc" id="astructplywoot_1_1PlyElement_html"><div class="ttname"><a href="structplywoot_1_1PlyElement.html">plywoot::PlyElement</a></div><div class="ttdef"><b>Definition</b> <a href="types_8hpp_source.html#l00130">types.hpp:131</a></div></div>
-<div class="ttc" id="astructplywoot_1_1PlyElement_html_a0f9b682a2aa7f7996c8141b2799f8a46"><div class="ttname"><a href="structplywoot_1_1PlyElement.html#a0f9b682a2aa7f7996c8141b2799f8a46">plywoot::PlyElement::properties</a></div><div class="ttdeci">const std::vector&lt; PlyProperty &gt; &amp; properties() const</div><div class="ttdef"><b>Definition</b> <a href="types_8hpp_source.html#l00173">types.hpp:173</a></div></div>
-<div class="ttc" id="astructplywoot_1_1PlyElement_html_a8491fcd630663b92ebb943e50a7d8f9b"><div class="ttname"><a href="structplywoot_1_1PlyElement.html#a8491fcd630663b92ebb943e50a7d8f9b">plywoot::PlyElement::name</a></div><div class="ttdeci">const std::string &amp; name() const</div><div class="ttdef"><b>Definition</b> <a href="types_8hpp_source.html#l00164">types.hpp:164</a></div></div>
+<div class="ttc" id="aelement__data_8hpp_html"><div class="ttname"><a href="element__data_8hpp.html">element_data.hpp</a></div></div>
+<div class="ttc" id="aheader__parser_8hpp_html"><div class="ttname"><a href="header__parser_8hpp.html">header_parser.hpp</a></div></div>
+<div class="ttc" id="aparser_8hpp_html"><div class="ttname"><a href="parser_8hpp.html">parser.hpp</a></div></div>
+<div class="ttc" id="aparser__variant_8hpp_html"><div class="ttname"><a href="parser__variant_8hpp.html">parser_variant.hpp</a></div></div>
+<div class="ttc" id="aplywoot_8hpp_html_a43bf8ef75c4ac926b3af27b8f9c628e2"><div class="ttname"><a href="plywoot_8hpp.html#a43bf8ef75c4ac926b3af27b8f9c628e2">plywoot::convert</a></div><div class="ttdeci">void convert(std::istream &amp;is, std::ostream &amp;os, PlyFormat format)</div><div class="ttdef"><b>Definition</b> <a href="plywoot_8hpp_source.html#l00336">plywoot.hpp:336</a></div></div>
+<div class="ttc" id="areflect_8hpp_html"><div class="ttname"><a href="reflect_8hpp.html">reflect.hpp</a></div></div>
+<div class="ttc" id="astructplywoot_1_1Comment_html"><div class="ttname"><a href="structplywoot_1_1Comment.html">plywoot::Comment</a></div><div class="ttdef"><b>Definition</b> <a href="types_8hpp_source.html#l00257">types.hpp:258</a></div></div>
+<div class="ttc" id="astructplywoot_1_1PlyElement_html"><div class="ttname"><a href="structplywoot_1_1PlyElement.html">plywoot::PlyElement</a></div><div class="ttdef"><b>Definition</b> <a href="types_8hpp_source.html#l00148">types.hpp:149</a></div></div>
+<div class="ttc" id="astructplywoot_1_1PlyElement_html_a0f9b682a2aa7f7996c8141b2799f8a46"><div class="ttname"><a href="structplywoot_1_1PlyElement.html#a0f9b682a2aa7f7996c8141b2799f8a46">plywoot::PlyElement::properties</a></div><div class="ttdeci">const std::vector&lt; PlyProperty &gt; &amp; properties() const</div><div class="ttdef"><b>Definition</b> <a href="types_8hpp_source.html#l00191">types.hpp:191</a></div></div>
+<div class="ttc" id="astructplywoot_1_1PlyElement_html_a8491fcd630663b92ebb943e50a7d8f9b"><div class="ttname"><a href="structplywoot_1_1PlyElement.html#a8491fcd630663b92ebb943e50a7d8f9b">plywoot::PlyElement::name</a></div><div class="ttdeci">const std::string &amp; name() const</div><div class="ttdef"><b>Definition</b> <a href="types_8hpp_source.html#l00182">types.hpp:182</a></div></div>
+<div class="ttc" id="atype__traits_8hpp_html"><div class="ttname"><a href="type__traits_8hpp.html">type_traits.hpp</a></div></div>
+<div class="ttc" id="atypes_8hpp_html"><div class="ttname"><a href="types_8hpp.html">types.hpp</a></div></div>
+<div class="ttc" id="atypes_8hpp_html_a8befa81dd977847aad0435f0d606bb50"><div class="ttname"><a href="types_8hpp.html#a8befa81dd977847aad0435f0d606bb50">plywoot::PlyFormat</a></div><div class="ttdeci">PlyFormat</div><div class="ttdef"><b>Definition</b> <a href="types_8hpp_source.html#l00071">types.hpp:71</a></div></div>
+<div class="ttc" id="awriter_8hpp_html"><div class="ttname"><a href="writer_8hpp.html">writer.hpp</a></div></div>
+<div class="ttc" id="awriter__variant_8hpp_html"><div class="ttname"><a href="writer__variant_8hpp.html">writer_variant.hpp</a></div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><a class="el" href="dir_d44c64559bbebec7f509842c48db8b23.html">include</a></li><li class="navelem"><a class="el" href="dir_b2fbfe87ca2e6ec30f52492568d29687.html">plywoot</a></li><li class="navelem"><b>plywoot.hpp</b></li>
+    <li class="navelem"><a class="el" href="dir_d44c64559bbebec7f509842c48db8b23.html">include</a></li><li class="navelem"><a class="el" href="dir_b2fbfe87ca2e6ec30f52492568d29687.html">plywoot</a></li><li class="navelem"><a class="el" href="plywoot_8hpp.html">plywoot.hpp</a></li>
     <li class="footer">Generated by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8 </li>
   </ul>
 </div>

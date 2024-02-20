@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['text_0',['text',['../structplywoot_1_1Comment.html#a75e8a38598c015f3460c09e970ae6c17',1,'plywoot::Comment']]],
-  ['type_1',['type',['../structplywoot_1_1reflect_1_1Type.html',1,'plywoot::reflect::Type&lt; T, typename &gt;'],['../structplywoot_1_1PlyProperty.html#a734c9ae9b3c699a03993376e7a9aa832',1,'plywoot::PlyProperty::type()']]],
-  ['type_3c_20t_2c_20typename_20std_3a_3avoid_5ft_3c_20typename_20t_3a_3adestt_20_3e_20_3e_2',['Type&lt; T, typename std::void_t&lt; typename T::DestT &gt; &gt;',['../structplywoot_1_1reflect_1_1Type_3_01T_00_01typename_01std_1_1void__t_3_01typename_01T_1_1DestT_01_4_01_4.html',1,'plywoot::reflect']]]
+  ['read_20performance_20by_20packing_20properties_0',['Improving read performance by packing properties',['../index.html#autotoc_md5',1,'']]],
+  ['readelement_1',['readelement',['../classplywoot_1_1IStream.html#a1db364e8f9c8d986bc9613762ae66790',1,'plywoot::IStream::readElement() const'],['../classplywoot_1_1IStream.html#a250a33348f5fd0cabf36ca60a72b500a',1,'plywoot::IStream::readElement() const']]],
+  ['reflect_2ehpp_2',['reflect.hpp',['../reflect_8hpp.html',1,'']]]
 ];

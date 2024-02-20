@@ -6,7 +6,7 @@ var annotated_dup =
         [ "Layout", "classplywoot_1_1reflect_1_1Layout.html", "classplywoot_1_1reflect_1_1Layout" ],
         [ "Pack", "structplywoot_1_1reflect_1_1Pack.html", "structplywoot_1_1reflect_1_1Pack" ],
         [ "Skip", "structplywoot_1_1reflect_1_1Skip.html", null ],
-        [ "Stride", "structplywoot_1_1reflect_1_1Stride.html", "structplywoot_1_1reflect_1_1Stride" ],
+        [ "Stride", "structplywoot_1_1reflect_1_1Stride.html", null ],
         [ "Type", "structplywoot_1_1reflect_1_1Type.html", "structplywoot_1_1reflect_1_1Type" ],
         [ "Type< T, typename std::void_t< typename T::DestT > >", "structplywoot_1_1reflect_1_1Type_3_01T_00_01typename_01std_1_1void__t_3_01typename_01T_1_1DestT_01_4_01_4.html", "structplywoot_1_1reflect_1_1Type_3_01T_00_01typename_01std_1_1void__t_3_01typename_01T_1_1DestT_01_4_01_4" ]
       ] ],

@@ -1,3 +1,4 @@
+<!-- HTML header for doxygen 1.10.0-->
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en-US">
 <head>
@@ -6,9 +7,15 @@
 <meta name="generator" content="Doxygen 1.9.8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
 <title>PLYwoot: PLYwoot</title>
+<!--BEGIN PROJECT_ICON-->
+<link rel="icon" href="$projecticon" type="image/x-icon" />
+<!--END PROJECT_ICON-->
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
+<!--BEGIN COPY_CLIPBOARD-->
+<script type="text/javascript" src="clipboard.js"></script>
+<!--END COPY_CLIPBOARD-->
 <link href="navtree.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="resize.js"></script>
 <script type="text/javascript" src="navtreedata.js"></script>
@@ -19,7 +26,14 @@
 <link href="doxygen.css" rel="stylesheet" type="text/css" />
 <link href="doxygen-awesome.css" rel="stylesheet" type="text/css"/>
 <link href="doxygen-awesome-sidebar-only.css" rel="stylesheet" type="text/css"/>
+<link href="doxygen-awesome-sidebar-only-darkmode-toggle.css" rel="stylesheet" type="text/css"/>
 <link href="custom.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="doxygen-awesome-darkmode-toggle.js"></script>
+<script type="text/javascript" src="doxygen-awesome-paragraph-link.js"></script>
+<script type="text/javascript">
+	DoxygenAwesomeDarkModeToggle.init()
+	DoxygenAwesomeParagraphLink.init()
+</script>
 </head>
 <body>
 <div id="top"><!-- do not remove this div, it is closed by doxygen! -->
@@ -97,6 +111,142 @@ $(document).ready(function(){initNavTree('index.html',''); initResizable(); });
 </div><!--header-->
 <div class="contents">
 <div class="textblock"><p><a class="anchor" id="md_docs_2main"></a> PLYwoot is a C++17 header-only library providing read/write support for <a href="https://paulbourke.net/dataformats/ply/">PLY</a> files. A major design goal of PLYwoot was to provide an <a href="https://en.cppreference.com/w/cpp/io">iostreams</a> based interface without sacrificing performance. </p>
+<h1><a class="anchor" id="autotoc_md1"></a>
+Getting started</h1>
+<p>Since PLYwoot is header-only, all that is needed is to copy the PLYwoot sources into your project and <a href="include/plywoot/plywoot.hpp"><code>#include &lt;plywoot/plywoot.hpp&gt;</code></a> (taking into account license constraints of course). To build <code>rePLY</code>, a tool to convert PLY files between different formats (ASCII, binary little/big endian), PLYwoot can be built as follows, assuming you have at least CMake version 3.5 installed (see <a class="el" href="index.html#Dependencies">dependencies</a>).</p>
+<p>In case you are using a CMake based project and would like to depend on a system-wide installation of PLYwoot, use the following steps to build the unit tests, <code>rePLY</code> and install PLYwoot:</p>
+<div class="fragment"><div class="line">$ cmake -DCMAKE_BUILD_TYPE=Release -B build</div>
+<div class="line">$ cd build &amp;&amp; make install</div>
+</div><!-- fragment --><h2><a class="anchor" id="autotoc_md2"></a>
+Using PLYwoot in a CMake project</h2>
+<p>Assuming PLYwoot has been installed using the previous steps, you should be able to depend on PLYwoot in your CMake project as follows, without having to include the PLYwoot sources in your project:</p>
+<div class="fragment"><div class="line">find_package(PLYwoot REQUIRED)</div>
+</div><!-- fragment --><p>PLYwoot exports one target named <code>PLYwoot::plywoot</code> which represents the header-only library to depend on.</p>
+<h1><a class="anchor" id="autotoc_md3"></a>
+Parsing PLY files</h1>
+<p>This section will demonstrate how to use PLYwoot to parse a PLY file for the typical use case of parsing triangle mesh data.</p>
+<p>Suppose we have the following two very <em>naive</em> types <code>Triangle</code> and <code>Vertex</code> to represent a triangle and vertex in a triangle mesh:</p>
+<div class="fragment"><div class="line"><span class="keyword">struct </span>Triangle</div>
+<div class="line">{</div>
+<div class="line">    std::vector&lt;std::int32_t&gt; indices;</div>
+<div class="line">};</div>
+<div class="line"> </div>
+<div class="line"><span class="keyword">struct </span>Vertex</div>
+<div class="line">{</div>
+<div class="line">    <span class="keywordtype">double</span> x, y, z;</div>
+<div class="line">};</div>
+</div><!-- fragment --><p>Furthermore, suppose we have a PLY file that contains the following element data, that is, it contains 1612868 vertices containing an (<code>x</code>, <code>y</code>, <code>z</code>) tuple representing the vertex coordinates together with an RGB tuple representing the vertex color. Finally, the PLY file contains 3224192 triangles represented by indices into the vertex list. PLY does not support fixed lists, so the triangle data is stored using variable length lists, which in practice will always be a list of three elements. PLYwoot provides functionality to pass on this assumption to the parser to speed up parsing.</p>
+<div class="fragment"><div class="line">element vertex 1612868</div>
+<div class="line">property float x</div>
+<div class="line">property float y</div>
+<div class="line">property float z</div>
+<div class="line">property uchar red</div>
+<div class="line">property uchar green</div>
+<div class="line">property uchar blue</div>
+<div class="line">element face 3224192</div>
+<div class="line">property list uchar int vertex_indices</div>
+</div><!-- fragment --><h2><a class="anchor" id="autotoc_md4"></a>
+Parsing the vertex element</h2>
+<p>PLYwoot allows you to directly map the <code>x</code>, <code>y</code>, and <code>z</code> properties on the <code>Vertex</code> type, the so-called 'target type', and ignore the color data. For that, PLYwoot needs to know the memory layout of the <code>Vertex</code> type. Reflection is not yet standardized in C++, so we have to come up with a work-around to pass on this information to PLYwoot. PLYwoot provides a <code><a class="el" href="classplywoot_1_1reflect_1_1Layout.html">plywoot::reflect::Layout</a></code> type which enables specifying the mapping of PLY properties onto member types of the <code>Vertex</code> struct in this case. This is done using a <code><a class="el" href="classplywoot_1_1reflect_1_1Layout.html">plywoot::reflect::Layout</a></code> template type. For example, to create a property map for vertex element in the PLY data above onto the <code>Vertex</code> type, the following layout type can be specified:</p>
+<div class="fragment"><div class="line"><span class="keyword">using namespace </span>plywoot::reflect;</div>
+<div class="line"><span class="keyword">using </span>VertexLayout = <a class="code hl_class" href="classplywoot_1_1reflect_1_1Layout.html">Layout&lt;double, double, double, Skip, Skip, Skip&gt;</a>;</div>
+<div class="ttc" id="aclassplywoot_1_1reflect_1_1Layout_html"><div class="ttname"><a href="classplywoot_1_1reflect_1_1Layout.html">plywoot::reflect::Layout</a></div><div class="ttdef"><b>Definition</b> <a href="reflect_8hpp_source.html#l00094">reflect.hpp:95</a></div></div>
+</div><!-- fragment --><p>This tells PLYwoot to map the first three properties in the PLY element, that is the three float properties <code>x</code>, <code>y</code>, and <code>z</code> respectively onto <code>double</code> member variables. We are not interested in the <code>red</code>, <code>green</code>, and <code>blue</code> properties in the PLY data, so those can be skipped when parsing the PLY data, which is indicated by the last three <code><a class="el" href="structplywoot_1_1reflect_1_1Skip.html">plywoot::reflect::Skip</a></code> types. <code><a class="el" href="structplywoot_1_1reflect_1_1Skip.html">plywoot::reflect::Skip</a></code> types occuring at the end of a layout specification do not necessarily need to be specified, PLYwoot is smart enough to skip any extra element properties for which no mapping was defined, so the <code>VertexLayout</code> type can be further simplified to:</p>
+<div class="fragment"><div class="line"><span class="keyword">using namespace </span>plywoot::reflect;</div>
+<div class="line"><span class="keyword">using </span>VertexLayout = <a class="code hl_class" href="classplywoot_1_1reflect_1_1Layout.html">Layout&lt;double, double, double&gt;</a>;</div>
+</div><!-- fragment --><p>Now, suppose we have some input stream <code>is</code> containing our PLY data, then the <code>vertex</code> element in the PLY data can now be parsed as follows:</p>
+<div class="fragment"><div class="line"><span class="keyword">using </span>VertexLayout = <a class="code hl_class" href="classplywoot_1_1reflect_1_1Layout.html">plywoot::reflect::Layout&lt;double, double, double&gt;</a>;</div>
+<div class="line"> </div>
+<div class="line"><a class="code hl_class" href="classplywoot_1_1IStream.html">plywoot::IStream</a> ply_is{is};</div>
+<div class="line"><span class="keyword">const</span> std::vector&lt;Vertex&gt; vertices = ply_is.<a class="code hl_function" href="classplywoot_1_1IStream.html#a1db364e8f9c8d986bc9613762ae66790">readElement</a>&lt;Vertex, VertexLayout&gt;();</div>
+<div class="ttc" id="aclassplywoot_1_1IStream_html"><div class="ttname"><a href="classplywoot_1_1IStream.html">plywoot::IStream</a></div><div class="ttdoc">Represents an input PLY data stream that can be queried for data.</div><div class="ttdef"><b>Definition</b> <a href="plywoot_8hpp_source.html#l00051">plywoot.hpp:52</a></div></div>
+<div class="ttc" id="aclassplywoot_1_1IStream_html_a1db364e8f9c8d986bc9613762ae66790"><div class="ttname"><a href="classplywoot_1_1IStream.html#a1db364e8f9c8d986bc9613762ae66790">plywoot::IStream::readElement</a></div><div class="ttdeci">PlyElementData readElement() const</div><div class="ttdef"><b>Definition</b> <a href="plywoot_8hpp_source.html#l00126">plywoot.hpp:126</a></div></div>
+</div><!-- fragment --><h3><a class="anchor" id="autotoc_md5"></a>
+Improving read performance by packing properties</h3>
+<p>PLYwoot will copy each individual PLY property separately in the last code fragment that we saw. This can be improved a bit further. In case we know that the struct member variables are laid out consecutively in memory using standard C++ alignment rules, the three <code>x</code>, <code>y</code>, and <code>z</code> PLY properties can be directly <code>memcpy</code>'d into each <code>Vertex</code> instance. This can be done by packing the three target member types into a <code><a class="el" href="structplywoot_1_1reflect_1_1Pack.html">plywoot::reflect::Pack</a></code> type as follows:</p>
+<div class="fragment"><div class="line"><span class="keyword">using </span>VertexLayout = <a class="code hl_class" href="classplywoot_1_1reflect_1_1Layout.html">plywoot::reflect::Layout&lt;plywoot::reflect::Pack&lt;double, 3&gt;</a>&gt;;</div>
+</div><!-- fragment --><p>This tells PLYwoot that three consecutive PLY properties should be mapped on <code>double</code> target member types. Parsing performance is greatly improved in this way, as the three PLY properties <code>x</code>, <code>y</code>, and <code>z</code> will be <code>memcpy</code>'d at the same time into a <code>Vertex</code> instance. In principle, <code><a class="el" href="structplywoot_1_1reflect_1_1Pack.html">plywoot::reflect::Pack</a></code> could be an implementation detail in the sense that PLYwoot could be smart enough to do automatic packing of target member types, but this has not been implemented yet.</p>
+<h3><a class="anchor" id="autotoc_md6"></a>
+Skipping over properties in the target type</h3>
+<p>As we saw, using <code><a class="el" href="structplywoot_1_1reflect_1_1Skip.html">plywoot::reflect::Skip</a></code> can be used to skip over unwanted PLY property data. But suppose we would like to skip over a member variable in the target type, this can be done as well. For example, suppose our <code>Vertex</code> type has a slightly different form, where each vertex also stores a UV-coordinate. For the sake of this argument, assume the UV-coordinate is laid out before the X, Y, Z coordinate in memory:</p>
+<div class="fragment"><div class="line"><span class="keyword">struct </span>Vertex</div>
+<div class="line">{</div>
+<div class="line">    <span class="keywordtype">double</span> u, v;</div>
+<div class="line">    <span class="keywordtype">double</span> x, y, z;</div>
+<div class="line">};</div>
+</div><!-- fragment --><p>The UV-coordinates can not be initialized directly from the PLY data that we saw earlier. For this, PLYwoot provides a <code><a class="el" href="structplywoot_1_1reflect_1_1Stride.html">plywoot::reflect::Stride</a></code> type, that allows skipping over types in the target type, as follows:</p>
+<div class="fragment"><div class="line"><span class="keyword">using namespace </span>plywoot::reflect;</div>
+<div class="line"><span class="keyword">using </span>VertexLayout = <a class="code hl_class" href="classplywoot_1_1reflect_1_1Layout.html">Layout&lt;Stride&lt;double&gt;</a>, <a class="code hl_struct" href="structplywoot_1_1reflect_1_1Stride.html">Stride&lt;double&gt;</a>, <a class="code hl_struct" href="structplywoot_1_1reflect_1_1Pack.html">Pack&lt;double, 3&gt;</a>&gt;;</div>
+<div class="ttc" id="astructplywoot_1_1reflect_1_1Pack_html"><div class="ttname"><a href="structplywoot_1_1reflect_1_1Pack.html">plywoot::reflect::Pack</a></div><div class="ttdef"><b>Definition</b> <a href="reflect_8hpp_source.html#l00075">reflect.hpp:76</a></div></div>
+<div class="ttc" id="astructplywoot_1_1reflect_1_1Stride_html"><div class="ttname"><a href="structplywoot_1_1reflect_1_1Stride.html">plywoot::reflect::Stride</a></div><div class="ttdef"><b>Definition</b> <a href="reflect_8hpp_source.html#l00068">reflect.hpp:69</a></div></div>
+</div><!-- fragment --><h2><a class="anchor" id="autotoc_md7"></a>
+Parsing the triangle element</h2>
+<p>To parse the triangle data in the PLY file listed above to our target type <code>Triangle</code>, the following layout can be used:</p>
+<div class="fragment"><div class="line"><span class="keyword">using namespace </span>plywoot::reflect;</div>
+<div class="line"><span class="keyword">using </span>TriangleLayout = <a class="code hl_class" href="classplywoot_1_1reflect_1_1Layout.html">Layout&lt;std::vector&lt;std::int32_t&gt;</a>&gt;;</div>
+</div><!-- fragment --><p>This tells PLYwoot that the first property in the PLY <code>face</code> element which is a variable length list <code>vertex_indices</code> needs to be mapped onto an <code>std::vector</code> instance. This works, but is not very efficient. PLYwoot will not make any assumption on the length of the lists in the input data, and will have to initialize a vector of indices for each triangle it reads. Typically, a triangle type will have the following form:</p>
+<div class="fragment"><div class="line"><span class="keyword">struct </span>Triangle</div>
+<div class="line">{</div>
+<div class="line">    std::int32_t a, b, c;</div>
+<div class="line">};</div>
+</div><!-- fragment --><p>In case we know up front that each face in the PLY data is encoded by three vertex indices, this assumption can be embedded in the layout map by mapping the PLY list property using <code><a class="el" href="structplywoot_1_1reflect_1_1Array.html">plywoot::reflect::Array</a></code>, as follows:</p>
+<div class="fragment"><div class="line"><span class="keyword">using namespace </span>plywoot::reflect;</div>
+<div class="line"><span class="keyword">using </span>TriangleLayout = <a class="code hl_class" href="classplywoot_1_1reflect_1_1Layout.html">Layout&lt;Array&lt;std::int32_t, 3&gt;</a>&gt;;</div>
+</div><!-- fragment --><p><code><a class="el" href="structplywoot_1_1reflect_1_1Array.html">plywoot::reflect::Array</a></code> is very similar to <code><a class="el" href="structplywoot_1_1reflect_1_1Pack.html">plywoot::reflect::Pack</a></code> we saw before, except that it maps a <em>single list</em> PLY property onto the target type, instead of multiple PLY properties at once. As long as the target type holds one or more member types that have the same memory representation as the list data in the PLY file, <code><a class="el" href="structplywoot_1_1reflect_1_1Array.html">plywoot::reflect::Array</a></code> can be used. Thus, in case <code>Triangle</code> has the form below, the above <code>TriangleLayout</code> type will still work, since the memory representation of the two forms of <code>Triangle</code> are the same:</p>
+<div class="fragment"><div class="line"><span class="keyword">struct </span>Triangle</div>
+<div class="line">{</div>
+<div class="line">    std::array&lt;std::int32_t, 3&gt; indices;</div>
+<div class="line">};</div>
+</div><!-- fragment --><p>This way of mapping the PLY list property will improve parser performance dramatically. In this case, the PLY list type exactly matches the target member type (<code>std::int32_t</code>), and as such the triangle data will be directly <code>memcpy</code>'d into the result vector. Note that implicit type conversions are still supported in this way. In case <code>Triangle</code> has the following form:</p>
+<div class="fragment"><div class="line"><span class="keyword">struct </span>Triangle</div>
+<div class="line">{</div>
+<div class="line">    std::array&lt;std::uint32_t, 3&gt; indices;</div>
+<div class="line">};</div>
+</div><!-- fragment --><p>Thus, an array with elements of type <code>std::uint32_t</code> instead of <code>std::int32_t</code>, the <code>TriangleLayout</code> defined above needs to be adapted to read:</p>
+<div class="fragment"><div class="line"><span class="keyword">using namespace </span>plywoot::reflect;</div>
+<div class="line"><span class="keyword">using </span>TriangleLayout = <a class="code hl_class" href="classplywoot_1_1reflect_1_1Layout.html">Layout&lt;Array&lt;std::uint32_t, 3&gt;</a>&gt;;</div>
+</div><!-- fragment --><p>Then, reading the same PLY data will still work, and PLYwoot will take care of the implicit type conversion from a signed integer in the PLY data to an unsigned integer in the target type. Just note that a direct <code>memcpy</code> is then no longer performed. The latter restriction may be too tight in some cases, and future PLYwoot versions can improve on this.</p>
+<h1><a class="anchor" id="autotoc_md8"></a>
+Writing PLY files</h1>
+<p>Writing PLY files makes use of the same reflection mechanism used for parsing PLY files. You will need to tell PLYwoot how your source type maps onto PLY properties in the resulting PLY file. Suppose we would like to write out a list of vertices and triangles to a PLY file with the following elements and respective properties:</p>
+<div class="fragment"><div class="line">element vertex</div>
+<div class="line">property float x</div>
+<div class="line">property float y</div>
+<div class="line">property float z</div>
+<div class="line">element face</div>
+<div class="line">property list uchar int vertex_indices</div>
+</div><!-- fragment --><p>To do this, first define the elements and properties:</p>
+<div class="fragment"><div class="line">std::vector&lt;Vertex&gt; vertices;</div>
+<div class="line">std::vector&lt;Triangle&gt; triangles;</div>
+<div class="line"> </div>
+<div class="line"><span class="keyword">const</span> <a class="code hl_struct" href="structplywoot_1_1PlyProperty.html">plywoot::PlyProperty</a> x{<span class="stringliteral">&quot;x&quot;</span>, plywoot::PlyDataType::Float};</div>
+<div class="line"><span class="keyword">const</span> <a class="code hl_struct" href="structplywoot_1_1PlyProperty.html">plywoot::PlyProperty</a> y{<span class="stringliteral">&quot;y&quot;</span>, plywoot::PlyDataType::Float};</div>
+<div class="line"><span class="keyword">const</span> <a class="code hl_struct" href="structplywoot_1_1PlyProperty.html">plywoot::PlyProperty</a> z{<span class="stringliteral">&quot;z&quot;</span>, plywoot::PlyDataType::Float};</div>
+<div class="line"><span class="keyword">const</span> <a class="code hl_struct" href="structplywoot_1_1PlyElement.html">plywoot::PlyElement</a> vertex_element{<span class="stringliteral">&quot;vertex&quot;</span>, vertices.<a class="code hl_function" href="structplywoot_1_1PlyElement.html#abb9cce830ddef34d5a1509863f4eed94">size</a>(), {x, y, z}};</div>
+<div class="line"> </div>
+<div class="line"><span class="keyword">const</span> <a class="code hl_struct" href="structplywoot_1_1PlyProperty.html">plywoot::PlyProperty</a> vertex_indices{<span class="stringliteral">&quot;vertex_indices&quot;</span>, plywoot::PlyDataType::Int, plywoot::PlyDataType::UChar};</div>
+<div class="line"><span class="keyword">const</span> <a class="code hl_struct" href="structplywoot_1_1PlyElement.html">plywoot::PlyElement</a> face_element{<span class="stringliteral">&quot;face&quot;</span>, triangles.<a class="code hl_function" href="structplywoot_1_1PlyElement.html#abb9cce830ddef34d5a1509863f4eed94">size</a>(), {vertex_indices}};</div>
+<div class="ttc" id="astructplywoot_1_1PlyElement_html"><div class="ttname"><a href="structplywoot_1_1PlyElement.html">plywoot::PlyElement</a></div><div class="ttdef"><b>Definition</b> <a href="types_8hpp_source.html#l00148">types.hpp:149</a></div></div>
+<div class="ttc" id="astructplywoot_1_1PlyElement_html_abb9cce830ddef34d5a1509863f4eed94"><div class="ttname"><a href="structplywoot_1_1PlyElement.html#abb9cce830ddef34d5a1509863f4eed94">plywoot::PlyElement::size</a></div><div class="ttdeci">std::size_t size() const</div><div class="ttdef"><b>Definition</b> <a href="types_8hpp_source.html#l00187">types.hpp:187</a></div></div>
+<div class="ttc" id="astructplywoot_1_1PlyProperty_html"><div class="ttname"><a href="structplywoot_1_1PlyProperty.html">plywoot::PlyProperty</a></div><div class="ttdef"><b>Definition</b> <a href="types_8hpp_source.html#l00079">types.hpp:80</a></div></div>
+</div><!-- fragment --><p>Then, define the source layout in a similar way as was done for parsing the PLY data:</p>
+<div class="fragment"><div class="line"><span class="keyword">using namespace </span>plywoot::reflect;</div>
+<div class="line"><span class="keyword">using </span>VertexLayout = <a class="code hl_class" href="classplywoot_1_1reflect_1_1Layout.html">Layout&lt;Pack&lt;double, 3&gt;</a>&gt;;</div>
+<div class="line"><span class="keyword">using </span>TriangleLayout = <a class="code hl_class" href="classplywoot_1_1reflect_1_1Layout.html">Layout&lt;Pack&lt;int, 3&gt;</a>&gt;;</div>
+</div><!-- fragment --><p>Finally, add the elements together with the data to be written for that element to a <code><a class="el" href="classplywoot_1_1OStream.html">plywoot::OStream</a></code>, and write the data to some <code>std::ostream</code> instance as follows:</p>
+<div class="fragment"><div class="line"><a class="code hl_class" href="classplywoot_1_1OStream.html">plywoot::OStream</a> ply_os{plywoot::PlyFormat::Ascii}</div>
+<div class="line">ply_os.<a class="code hl_function" href="classplywoot_1_1OStream.html#a543c346130ea97fcd26dd6073cfcbb19">add</a>(vertex_element, VertexLayout{vertices});</div>
+<div class="line">ply_os.add(face_element, TriangleLayout{triangles});</div>
+<div class="line"> </div>
+<div class="line">std::ofstream ofs{<span class="stringliteral">&quot;output.ply&quot;</span>, std::ios::out | std::ios::trunc}</div>
+<div class="line">ply_os.write(ofs);</div>
+<div class="ttc" id="aclassplywoot_1_1OStream_html"><div class="ttname"><a href="classplywoot_1_1OStream.html">plywoot::OStream</a></div><div class="ttdef"><b>Definition</b> <a href="plywoot_8hpp_source.html#l00182">plywoot.hpp:183</a></div></div>
+<div class="ttc" id="aclassplywoot_1_1OStream_html_a543c346130ea97fcd26dd6073cfcbb19"><div class="ttname"><a href="classplywoot_1_1OStream.html#a543c346130ea97fcd26dd6073cfcbb19">plywoot::OStream::add</a></div><div class="ttdeci">void add(const PlyElement &amp;element, const reflect::Layout&lt; Ts... &gt; layout)</div><div class="ttdef"><b>Definition</b> <a href="plywoot_8hpp_source.html#l00213">plywoot.hpp:213</a></div></div>
+</div><!-- fragment --><p>Note that the data to be written is passed in as an argument to the <code><a class="el" href="classplywoot_1_1reflect_1_1Layout.html">plywoot::reflect::Layout</a></code> type encoding the source to PLY property type mapping. In this case, an ASCII PLY file is written. Binary little and big endian output format types are supported as well.</p>
+<h1><a class="anchor" id="Dependencies"></a>
+Dependencies</h1>
+<p>To be able to build the unit tests of PLYwoot and the <code>rePLY</code> tool, <a href="https://cmake.org">CMake</a> is required (at least version 3.5). The unit tests are implemented using the <a href="https://github.com/catchorg/Catch2">Catch2</a> unit test framework. One of the unit tests depends on <a href="https://www.boost.org">Boost</a> to implement reading PLY data from a compressed stream.</p>
+<p>By default, PLYwoot will use functionality from C++'s standard library to perform string to floating point and integer conversion for parsing of ASCII PLY files. Performance of parsing ASCII PLY files can be improved significantly by ensuring that the <a href="https://github.com/fastfloat/fast_float"><code>fast_float</code></a> and/or <a href="https://github.com/ton/fast_int"><code>fast_int</code></a> libraries are installed. </p>
 </div></div><!-- PageDoc -->
 </div><!-- contents -->
 </div><!-- doc-content -->
