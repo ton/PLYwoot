@@ -67,6 +67,39 @@ element face 3224192
 property list uchar int vertex_indices
 ```
 
+The following program uses PLYwoot to parse a PLY file with the layout given above from the standard input stream:
+
+```cpp
+#include <plywoot/plywoot.hpp>
+
+#include <iostream>
+#include <vector>
+
+struct Triangle
+{
+    std::vector<std::int32_t> indices;
+};
+
+struct Vertex
+{
+    double x, y, z;
+};
+
+int main(int argc, char** argv)
+{
+    using VertexLayout = plywoot::reflect::Layout<plywoot::reflect::Pack<double, 3>>;
+    using TriangleLayout = plywoot::reflect::Layout<std::vector<std::int32_t>>;
+
+    const plywoot::IStream ply_is{std::cin};
+    const std::vector<Vertex> vertices = ply_is.readElement<Vertex, VertexLayout>();
+    const std::vector<Triangle> triangles = ply_is.readElement<Triangle, TriangleLayout>();
+
+    return 0;
+}
+```
+
+The following sections aim to explain the sample program above in more detail.
+
 ### Parsing the vertex element
 
 PLYwoot allows you to directly map the `x`, `y`, and `z` properties on the `Vertex` type, the so-called 'target type', and ignore the color data. For that, PLYwoot needs to know the memory layout of the `Vertex` type. Reflection is not yet standardized in C++, so we have to come up with a work-around to pass on this information to PLYwoot. PLYwoot provides a `plywoot::reflect::Layout` type which enables specifying the mapping of PLY properties onto member types of the `Vertex` struct in this case. This is done using a `plywoot::reflect::Layout` template type. For example, to create a property map for vertex element in the PLY data above onto the `Vertex` type, the following layout type can be specified:
