@@ -200,11 +200,11 @@ using TriangleLayout = Layout<Pack<int, 3>>;
 Finally, add the elements together with the data to be written for that element to a `plywoot::OStream`, and write the data to some `std::ostream` instance as follows:
 
 ```cpp
-plywoot::OStream ply_os{plywoot::PlyFormat::Ascii}
+plywoot::OStream ply_os{plywoot::PlyFormat::Ascii};
 ply_os.add(vertex_element, VertexLayout{vertices});
 ply_os.add(face_element, TriangleLayout{triangles});
 
-std::ofstream ofs{"output.ply", std::ios::out | std::ios::trunc}
+std::ofstream ofs{"output.ply", std::ios::out | std::ios::trunc};
 ply_os.write(ofs);
 ```
 
