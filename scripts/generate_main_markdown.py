@@ -33,7 +33,7 @@ if __name__ == '__main__':
         remove_res = [re.compile('For more details on the functions.*$')]
 
         # Some sections need to be linkable.
-        link_section_res = [re.compile('## (Dependencies).*$')]
+        link_section_res = [re.compile('## (Dependencies).*$'), re.compile('## (Generating an amalgamation header).*$')]
 
         extract = False
 
@@ -51,7 +51,7 @@ if __name__ == '__main__':
                 for link_section_re in link_section_res:
                     m = re.match(link_section_re, line)
                     if m:
-                        line = line.strip() + ' {#%s}\n' % m.group(1)
+                        line = line.strip() + ' {#%s}\n' % m.group(1).replace(' ', '-')
 
                 for remove_re in remove_res:
                     line = re.sub(remove_re, '', line)
