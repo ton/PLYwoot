@@ -5,6 +5,8 @@
 
 PLYwoot is a C++17 header-only library providing read/write support for [PLY](https://paulbourke.net/dataformats/ply/) files. A major design goal of PLYwoot was to provide an [iostreams](https://en.cppreference.com/w/cpp/io) based interface without sacrificing performance.
 
+The latest version of the API documentation is available at: https://ton.github.io/PLYwoot/.
+
 ## Features
 
 * **Fast!** In fact, the fastest PLY parser and writer out there according to my own benchmarks :D Refer to the benchmark results at [PLYbench](https://github.com/ton/PLYbench) to see how PLYwoot stacks up to other PLY parsers in terms of both read and write performance.
