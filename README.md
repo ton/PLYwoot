@@ -19,14 +19,14 @@ The latest version of the API documentation is available at: https://ton.github.
 
 ## Getting started
 
-Since PLYwoot is header-only, all that is needed is to copy the PLYwoot sources into your project and [`#include <plywoot/plywoot.hpp>`](include/plywoot/plywoot.hpp) (taking into account license constraints of course). To build `rePLY`, a tool to convert PLY files between different formats (ASCII, binary little/big endian), PLYwoot can be built as follows, assuming you have at least CMake version 3.5 installed (see [dependencies](#Dependencies)). Instead of copying all separate header files, it is possible to generate a single header file to include in your project, see [generating an amalgamation header](#Generating-an-amalgamation-header) for more details.
-
-In case you are using a CMake based project and would like to depend on a system-wide installation of PLYwoot, use the following steps to build the unit tests, `rePLY` and install PLYwoot:
+Since PLYwoot is header-only, all that is needed is to copy the PLYwoot sources into your project and [`#include <plywoot/plywoot.hpp>`](include/plywoot/plywoot.hpp) (taking into account license constraints of course). Use the following steps to build the unit tests, `rePLY` and install PLYwoot, assuming you have at least CMake version 3.5 installed (see [dependencies](#Dependencies)):
 
 ```sh
 $ cmake -DCMAKE_BUILD_TYPE=Release -B build
 $ cd build && make install
 ```
+
+Instead of copying all separate header files, it is possible to generate a single header file to include in your project, see [generating an amalgamation header](#Generating-an-amalgamation-header) for more details.
 
 ### Using PLYwoot in a CMake project
 
