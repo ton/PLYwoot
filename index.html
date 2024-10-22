@@ -113,7 +113,7 @@ $(document).ready(function(){initNavTree('index.html',''); initResizable(); });
 <div class="textblock"><p><a class="anchor" id="md_docs_2main"></a> PLYwoot is a C++17 header-only library providing read/write support for <a href="https://paulbourke.net/dataformats/ply/">PLY</a> files. A major design goal of PLYwoot was to provide an <a href="https://en.cppreference.com/w/cpp/io">iostreams</a> based interface without sacrificing performance. </p>
 <h1><a class="anchor" id="autotoc_md1"></a>
 Getting started</h1>
-<p>Since PLYwoot is header-only, all that is needed is to copy the PLYwoot sources into your project and <a href="include/plywoot/plywoot.hpp"><code>#include &lt;plywoot/plywoot.hpp&gt;</code></a> (taking into account license constraints of course). To build <code>rePLY</code>, a tool to convert PLY files between different formats (ASCII, binary little/big endian), PLYwoot can be built as follows, assuming you have at least CMake version 3.5 installed (see <a class="el" href="index.html#Dependencies">dependencies</a>).</p>
+<p>Since PLYwoot is header-only, all that is needed is to copy the PLYwoot sources into your project and <a href="include/plywoot/plywoot.hpp"><code>#include &lt;plywoot/plywoot.hpp&gt;</code></a> (taking into account license constraints of course). To build <code>rePLY</code>, a tool to convert PLY files between different formats (ASCII, binary little/big endian), PLYwoot can be built as follows, assuming you have at least CMake version 3.5 installed (see <a class="el" href="index.html#Dependencies">dependencies</a>). Instead of copying all separate header files, it is possible to generate a single header file to include in your project, see <a class="el" href="index.html#Generating-an-amalgamation-header">generating an amalgamation header</a> for more details.</p>
 <p>In case you are using a CMake based project and would like to depend on a system-wide installation of PLYwoot, use the following steps to build the unit tests, <code>rePLY</code> and install PLYwoot:</p>
 <div class="fragment"><div class="line">$ cmake -DCMAKE_BUILD_TYPE=Release -B build</div>
 <div class="line">$ cd build &amp;&amp; make install</div>
@@ -275,8 +275,12 @@ Writing PLY files</h1>
 <h1><a class="anchor" id="Dependencies"></a>
 Dependencies</h1>
 <p>To be able to build the unit tests of PLYwoot and the <code>rePLY</code> tool, <a href="https://cmake.org">CMake</a> is required (at least version 3.5). The unit tests are implemented using the <a href="https://github.com/catchorg/Catch2">Catch2</a> unit test framework. One of the unit tests depends on <a href="https://www.boost.org">Boost</a> to implement reading PLY data from a compressed stream.</p>
-<p>By default, PLYwoot will use functionality from C++'s standard library to perform string to floating point and integer conversion for parsing of ASCII PLY files. Performance of parsing ASCII PLY files can be improved significantly by ensuring that the <a href="https://github.com/fastfloat/fast_float"><code>fast_float</code></a> and/or <a href="https://github.com/ton/fast_int"><code>fast_int</code></a> libraries are installed. </p>
-</div></div><!-- PageDoc -->
+<p>By default, PLYwoot will use functionality from C++'s standard library to perform string to floating point and integer conversion for parsing of ASCII PLY files. Performance of parsing ASCII PLY files can be improved significantly by ensuring that the <a href="https://github.com/fastfloat/fast_float"><code>fast_float</code></a> and/or <a href="https://github.com/ton/fast_int"><code>fast_int</code></a> libraries are installed.</p>
+<h1><a class="anchor" id="Generating-an-amalgamation-header"></a>
+Generating an amalgamation header</h1>
+<p>For convenience, it is possible to combine all separate header files into a single header file for inclusion in your project. For this, a script <a href="scripts/generate_amalgamation.py">generate_amalgamation.py</a> is provided. Run it as follows from the root of the PLYwoot repository:</p>
+<div class="fragment"><div class="line">$ scripts/generate_amalgamation.py &gt; plywoot_single_header.hpp</div>
+</div><!-- fragment --> </div></div><!-- PageDoc -->
 </div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->

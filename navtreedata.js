@@ -37,6 +37,7 @@ var NAVTREE =
     ] ],
     [ "Writing PLY files", "index.html#autotoc_md8", null ],
     [ "Dependencies", "index.html#Dependencies", null ],
+    [ "Generating an amalgamation header", "index.html#Generating-an-amalgamation-header", null ],
     [ "Classes", "annotated.html", [
       [ "Class List", "annotated.html", "annotated_dup" ],
       [ "Class Index", "classes.html", null ],
