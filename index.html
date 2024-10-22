@@ -113,11 +113,11 @@ $(document).ready(function(){initNavTree('index.html',''); initResizable(); });
 <div class="textblock"><p><a class="anchor" id="md_docs_2main"></a> PLYwoot is a C++17 header-only library providing read/write support for <a href="https://paulbourke.net/dataformats/ply/">PLY</a> files. A major design goal of PLYwoot was to provide an <a href="https://en.cppreference.com/w/cpp/io">iostreams</a> based interface without sacrificing performance. </p>
 <h1><a class="anchor" id="autotoc_md1"></a>
 Getting started</h1>
-<p>Since PLYwoot is header-only, all that is needed is to copy the PLYwoot sources into your project and <a href="include/plywoot/plywoot.hpp"><code>#include &lt;plywoot/plywoot.hpp&gt;</code></a> (taking into account license constraints of course). To build <code>rePLY</code>, a tool to convert PLY files between different formats (ASCII, binary little/big endian), PLYwoot can be built as follows, assuming you have at least CMake version 3.5 installed (see <a class="el" href="index.html#Dependencies">dependencies</a>). Instead of copying all separate header files, it is possible to generate a single header file to include in your project, see <a class="el" href="index.html#Generating-an-amalgamation-header">generating an amalgamation header</a> for more details.</p>
-<p>In case you are using a CMake based project and would like to depend on a system-wide installation of PLYwoot, use the following steps to build the unit tests, <code>rePLY</code> and install PLYwoot:</p>
+<p>Since PLYwoot is header-only, all that is needed is to copy the PLYwoot sources into your project and <a href="include/plywoot/plywoot.hpp"><code>#include &lt;plywoot/plywoot.hpp&gt;</code></a> (taking into account license constraints of course). Use the following steps to build the unit tests, <code>rePLY</code> and install PLYwoot, assuming you have at least CMake version 3.5 installed (see <a class="el" href="index.html#Dependencies">dependencies</a>):</p>
 <div class="fragment"><div class="line">$ cmake -DCMAKE_BUILD_TYPE=Release -B build</div>
 <div class="line">$ cd build &amp;&amp; make install</div>
-</div><!-- fragment --><h2><a class="anchor" id="autotoc_md2"></a>
+</div><!-- fragment --><p>Instead of copying all separate header files, it is possible to generate a single header file to include in your project, see <a class="el" href="index.html#Generating-an-amalgamation-header">generating an amalgamation header</a> for more details.</p>
+<h2><a class="anchor" id="autotoc_md2"></a>
 Using PLYwoot in a CMake project</h2>
 <p>Assuming PLYwoot has been installed using the previous steps, you should be able to depend on PLYwoot in your CMake project as follows, without having to include the PLYwoot sources in your project:</p>
 <div class="fragment"><div class="line">find_package(PLYwoot REQUIRED)</div>
