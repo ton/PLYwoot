@@ -234,11 +234,11 @@ Writing PLY files</h1>
 <div class="line"><span class="keyword">using </span>VertexLayout = <a class="code hl_class" href="classplywoot_1_1reflect_1_1Layout.html">Layout&lt;Pack&lt;double, 3&gt;</a>&gt;;</div>
 <div class="line"><span class="keyword">using </span>TriangleLayout = <a class="code hl_class" href="classplywoot_1_1reflect_1_1Layout.html">Layout&lt;Pack&lt;int, 3&gt;</a>&gt;;</div>
 </div><!-- fragment --><p>Finally, add the elements together with the data to be written for that element to a <code><a class="el" href="classplywoot_1_1OStream.html">plywoot::OStream</a></code>, and write the data to some <code>std::ostream</code> instance as follows:</p>
-<div class="fragment"><div class="line"><a class="code hl_class" href="classplywoot_1_1OStream.html">plywoot::OStream</a> ply_os{plywoot::PlyFormat::Ascii}</div>
+<div class="fragment"><div class="line"><a class="code hl_class" href="classplywoot_1_1OStream.html">plywoot::OStream</a> ply_os{plywoot::PlyFormat::Ascii};</div>
 <div class="line">ply_os.<a class="code hl_function" href="classplywoot_1_1OStream.html#a543c346130ea97fcd26dd6073cfcbb19">add</a>(vertex_element, VertexLayout{vertices});</div>
 <div class="line">ply_os.add(face_element, TriangleLayout{triangles});</div>
 <div class="line"> </div>
-<div class="line">std::ofstream ofs{<span class="stringliteral">&quot;output.ply&quot;</span>, std::ios::out | std::ios::trunc}</div>
+<div class="line">std::ofstream ofs{<span class="stringliteral">&quot;output.ply&quot;</span>, std::ios::out | std::ios::trunc};</div>
 <div class="line">ply_os.write(ofs);</div>
 <div class="ttc" id="aclassplywoot_1_1OStream_html"><div class="ttname"><a href="classplywoot_1_1OStream.html">plywoot::OStream</a></div><div class="ttdef"><b>Definition</b> <a href="plywoot_8hpp_source.html#l00182">plywoot.hpp:183</a></div></div>
 <div class="ttc" id="aclassplywoot_1_1OStream_html_a543c346130ea97fcd26dd6073cfcbb19"><div class="ttname"><a href="classplywoot_1_1OStream.html#a543c346130ea97fcd26dd6073cfcbb19">plywoot::OStream::add</a></div><div class="ttdeci">void add(const PlyElement &amp;element, const reflect::Layout&lt; Ts... &gt; layout)</div><div class="ttdef"><b>Definition</b> <a href="plywoot_8hpp_source.html#l00213">plywoot.hpp:213</a></div></div>
