@@ -74,29 +74,6 @@ public:
     return *reinterpret_cast<const T *>(t);
   }
 
-  /// Copies `n` bytes to the given destination buffer, assuming it may hold
-  /// that many bytes. Returns a pointer pointing to one byte after the last
-  /// byte that was copied to `dest`.
-  inline std::uint8_t *memcpy(std::uint8_t *dest, std::size_t n)
-  {
-    if (n > IStreamBufferSize)
-    {
-      const std::size_t remaining = eob_ - c_;
-      std::memcpy(dest, c_, remaining);
-      is_.read(reinterpret_cast<char *>(dest) + remaining, n - remaining);
-      c_ = eob_;
-    }
-    else
-    {
-      if (c_ + n > eob_) buffer(n);
-
-      std::memcpy(dest, c_, n);
-      c_ += n;
-    }
-
-    return dest + n;
-  }
-
   /// Reads `N` objects of the given type `From` from the input data stream, and
   /// stores them contiguously at the given destination in memory as numbers of
   /// type `To`.
@@ -124,6 +101,29 @@ public:
 
       return reinterpret_cast<std::uint8_t *>(to);
     }
+  }
+
+  /// Copies `n` bytes to the given destination buffer, assuming it may hold
+  /// that many bytes. Returns a pointer pointing to one byte after the last
+  /// byte that was copied to `dest`.
+  inline std::uint8_t *memcpy(std::uint8_t *dest, std::size_t n)
+  {
+    if (n > IStreamBufferSize)
+    {
+      const std::size_t remaining = eob_ - c_;
+      std::memcpy(dest, c_, remaining);
+      is_.read(reinterpret_cast<char *>(dest) + remaining, n - remaining);
+      c_ = eob_;
+    }
+    else
+    {
+      if (c_ + n > eob_) buffer(n);
+
+      std::memcpy(dest, c_, n);
+      c_ += n;
+    }
+
+    return dest + n;
   }
 
   /// Skips the given number of bytes in the input stream.
