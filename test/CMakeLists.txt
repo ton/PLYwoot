@@ -1,4 +1,4 @@
-find_package(Boost COMPONENTS iostreams REQUIRED)
+find_package(Boost 1.70 COMPONENTS iostreams REQUIRED CONFIG)
 find_package(Catch2 3 REQUIRED)
 
 # Main test executable; depends on Catch2, requires C++14 support.
