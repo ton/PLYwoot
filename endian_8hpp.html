@@ -108,6 +108,7 @@ $(document).ready(function(){initNavTree('endian_8hpp.html',''); initResizable()
 
 <div class="header">
   <div class="summary">
+<a href="#typedef-members">Typedefs</a> &#124;
 <a href="#func-members">Functions</a>  </div>
   <div class="headertitle"><div class="title">endian.hpp File Reference</div></div>
 </div><!--header-->
@@ -118,6 +119,11 @@ $(document).ready(function(){initNavTree('endian_8hpp.html',''); initResizable()
 </div>
 <p><a href="endian_8hpp_source.html">Go to the source code of this file.</a></p>
 <table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="typedef-members" name="typedef-members"></a>
+Typedefs</h2></td></tr>
+<tr class="memitem:ac49d3d05d5ec63b55d197a8e337e1b9c" id="r_ac49d3d05d5ec63b55d197a8e337e1b9c"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="endian_8hpp.html#ac49d3d05d5ec63b55d197a8e337e1b9c">plywoot::detail::HostEndian</a> = std::conditional_t&lt; __BYTE_ORDER__==__ORDER_LITTLE_ENDIAN__, LittleEndian, BigEndian &gt;</td></tr>
+<tr class="separator:ac49d3d05d5ec63b55d197a8e337e1b9c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
 <tr class="memitem:a87be09a5dbea413624acfb24f19fc0ea" id="r_a87be09a5dbea413624acfb24f19fc0ea"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
@@ -130,6 +136,24 @@ Functions</h2></td></tr>
 <tr class="memitem:ada6ff32d29f23df27f43084b2319f132"><td class="memTemplItemLeft" align="right" valign="top">T&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="endian_8hpp.html#ada6ff32d29f23df27f43084b2319f132">plywoot::detail::betoh</a> (T t)</td></tr>
 <tr class="separator:ada6ff32d29f23df27f43084b2319f132"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
+<h2 class="groupheader">Typedef Documentation</h2>
+<a id="ac49d3d05d5ec63b55d197a8e337e1b9c" name="ac49d3d05d5ec63b55d197a8e337e1b9c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac49d3d05d5ec63b55d197a8e337e1b9c">&#9670;&#160;</a></span>HostEndian</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">using <a class="el" href="endian_8hpp.html#ac49d3d05d5ec63b55d197a8e337e1b9c">plywoot::detail::HostEndian</a> = typedef std::conditional_t&lt;__BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__, LittleEndian, BigEndian&gt;</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Alias type encoding the host platform endianness. Based on the possible implementation for <code>std::endian</code> documented on cppreference.com. </p>
+
+<p class="definition">Definition at line <a class="el" href="endian_8hpp_source.html#l00049">49</a> of file <a class="el" href="endian_8hpp_source.html">endian.hpp</a>.</p>
+
+</div>
+</div>
 <h2 class="groupheader">Function Documentation</h2>
 <a id="ada6ff32d29f23df27f43084b2319f132" name="ada6ff32d29f23df27f43084b2319f132"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ada6ff32d29f23df27f43084b2319f132">&#9670;&#160;</a></span>betoh()</h2>
@@ -157,7 +181,7 @@ template&lt;typename T &gt; </div>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd><code>t</code> in host endian representation </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="endian_8hpp_source.html#l00093">93</a> of file <a class="el" href="endian_8hpp_source.html">endian.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="endian_8hpp_source.html#l00101">101</a> of file <a class="el" href="endian_8hpp_source.html">endian.hpp</a>.</p>
 
 </div>
 </div>
@@ -187,7 +211,7 @@ template&lt;typename T &gt; </div>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd><code>t</code> converted from either big/little to little/big endian </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="endian_8hpp_source.html#l00050">50</a> of file <a class="el" href="endian_8hpp_source.html">endian.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="endian_8hpp_source.html#l00058">58</a> of file <a class="el" href="endian_8hpp_source.html">endian.hpp</a>.</p>
 
 </div>
 </div>
@@ -217,7 +241,7 @@ template&lt;typename T &gt; </div>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd><code>t</code> in big endian representation </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="endian_8hpp_source.html#l00077">77</a> of file <a class="el" href="endian_8hpp_source.html">endian.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="endian_8hpp_source.html#l00085">85</a> of file <a class="el" href="endian_8hpp_source.html">endian.hpp</a>.</p>
 
 </div>
 </div>
