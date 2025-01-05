@@ -227,8 +227,9 @@ public:
   /// \param elementData raw element data to stream to this output stream
   void add(const PlyElementData &elementData)
   {
-    // TODO(ton): once we upgrade to C++17, move capture element data in the
-    // lambda below.
+    // TODO(ton): ideally, move capture element data in the lambda below, but it
+    // runs into the issue that the `std::function` instance needs to be
+    // copyable.
     const std::uint8_t *src = elementData.data();
     const std::size_t alignment = elementData.alignment();
 
