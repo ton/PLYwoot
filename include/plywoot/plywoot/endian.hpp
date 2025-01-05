@@ -57,8 +57,7 @@ T byte_swap(T t)
 {
   unsigned char *bytes = reinterpret_cast<unsigned char *>(&t);
 
-  if constexpr (sizeof(T) == 1) { return t; }
-  else if constexpr (sizeof(T) == 2) { std::swap(bytes[0], bytes[1]); }
+  if constexpr (sizeof(T) == 2) { std::swap(bytes[0], bytes[1]); }
   else if constexpr (sizeof(T) == 4)
   {
     std::swap(bytes[0], bytes[3]);
