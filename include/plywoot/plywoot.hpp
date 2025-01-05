@@ -135,7 +135,6 @@ public:
   /// \return a vector of object of type `T` representing the element that was
   ///     parsed using the PLY property mapping embedded in the given `Layout`
   ///     type
-  // TODO(ton): add more extensive documentation
   // TODO(ton): probably better to add another parameter 'size' to guard
   template<typename T, typename Layout>
   std::vector<T> readElement() const
