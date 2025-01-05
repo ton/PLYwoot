@@ -22,10 +22,8 @@
 
 /// \file
 
-#include <cstdint>
+#include <type_traits>
 #include <utility>
-
-#include <endian.h>
 
 namespace plywoot::detail {
 
@@ -41,6 +39,14 @@ struct BigEndian
 {
 };
 
+/// Alias type encoding the host platform endianness. Based on the possible
+/// implementation for `std::endian` documented on cppreference.com.
+#if defined(_MSC_VER) && !defined(__clang__)
+using HostEndian = LittleEndian;
+#else
+using HostEndian = std::conditional_t<__BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__, LittleEndian, BigEndian>;
+#endif
+
 /// Naive byte swap functions for floating point numbers to convert between
 /// endian representations.
 ///
@@ -51,7 +57,9 @@ T byte_swap(T t)
 {
   unsigned char *bytes = reinterpret_cast<unsigned char *>(&t);
 
-  if constexpr (sizeof(T) == 4)
+  if constexpr (sizeof(T) == 1) { return t; }
+  else if constexpr (sizeof(T) == 2) { std::swap(bytes[0], bytes[1]); }
+  else if constexpr (sizeof(T) == 4)
   {
     std::swap(bytes[0], bytes[3]);
     std::swap(bytes[1], bytes[2]);
@@ -65,38 +73,6 @@ T byte_swap(T t)
   }
 
   return t;
-}
-
-/// Wrapper around the glibc htobe* functions that pick the correct call
-/// depending on the size of the argument type, converts the number object from
-/// host endianess to big endian.
-///
-/// \param t number to convert
-/// \return \p t in big endian representation
-template<typename T>
-T htobe(T t)
-{
-  if constexpr (sizeof(T) == 1) { return t; }
-  else if constexpr (std::is_integral_v<T> && sizeof(T) == 2) { return static_cast<T>(htobe16(t)); }
-  else if constexpr (std::is_integral_v<T> && sizeof(T) == 4) { return static_cast<T>(htobe32(t)); }
-  else if constexpr (std::is_integral_v<T> && sizeof(T) == 8) { return static_cast<T>(htobe64(t)); }
-  else if constexpr (std::is_floating_point_v<T>) { return byte_swap(t); }
-}
-
-/// Wrappers around the glibc be*toh functions that pick the correct call
-/// depending on the size of the argument type, converts the number object from
-/// big endian to host endianess.
-///
-/// \param t big endian number to convert
-/// \return \p t in host endian representation
-template<typename T>
-T betoh(T t)
-{
-  if constexpr (sizeof(T) == 1) { return t; }
-  else if constexpr (std::is_integral_v<T> && sizeof(T) == 2) { return static_cast<T>(be16toh(t)); }
-  else if constexpr (std::is_integral_v<T> && sizeof(T) == 4) { return static_cast<T>(be32toh(t)); }
-  else if constexpr (std::is_integral_v<T> && sizeof(T) == 8) { return static_cast<T>(be64toh(t)); }
-  else if constexpr (std::is_floating_point_v<T>) { return byte_swap(t); }
 }
 
 }

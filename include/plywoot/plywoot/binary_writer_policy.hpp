@@ -41,15 +41,14 @@ public:
   template<typename T, typename EndiannessDependent = Endianness>
   void writeNumber(T t) const
   {
-    // TODO(ton): this assumes the target architecture is little endian.
-    if constexpr (std::is_same_v<EndiannessDependent, LittleEndian>)
+    if constexpr (std::is_same_v<EndiannessDependent, HostEndian>)
     {
       os_.write(reinterpret_cast<const char *>(&t), sizeof(T));
     }
     else
     {
-      const auto be = htobe(t);
-      os_.write(reinterpret_cast<const char *>(&be), sizeof(T));
+      const auto bs = byte_swap(t);
+      os_.write(reinterpret_cast<const char *>(&bs), sizeof(T));
     }
   }
 
@@ -69,7 +68,7 @@ public:
   template<typename PlyT, typename SrcT, typename EndiannessDependent = Endianness>
   void writeNumbers(const SrcT *t, std::size_t n) const
   {
-    if constexpr (std::is_same_v<PlyT, SrcT> && std::is_same_v<EndiannessDependent, LittleEndian>)
+    if constexpr (std::is_same_v<PlyT, SrcT> && std::is_same_v<EndiannessDependent, HostEndian>)
     {
       os_.write(reinterpret_cast<const char *>(t), sizeof(SrcT) * n);
     }
