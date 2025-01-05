@@ -118,7 +118,7 @@ $(document).ready(function(){initNavTree('endian_8hpp_source.html',''); initResi
 <a href="endian_8hpp.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span><span class="comment">/*</span></div>
 <div class="line"><a id="l00002" name="l00002"></a><span class="lineno">    2</span><span class="comment">   This file is part of PLYwoot, a header-only PLY parser.</span></div>
 <div class="line"><a id="l00003" name="l00003"></a><span class="lineno">    3</span><span class="comment"></span> </div>
-<div class="line"><a id="l00004" name="l00004"></a><span class="lineno">    4</span><span class="comment">   Copyright (C) 2023-2024, Ton van den Heuvel</span></div>
+<div class="line"><a id="l00004" name="l00004"></a><span class="lineno">    4</span><span class="comment">   Copyright (C) 2023-2025, Ton van den Heuvel</span></div>
 <div class="line"><a id="l00005" name="l00005"></a><span class="lineno">    5</span><span class="comment"></span> </div>
 <div class="line"><a id="l00006" name="l00006"></a><span class="lineno">    6</span><span class="comment">   PLYwoot is free software: you can redistribute it and/or modify</span></div>
 <div class="line"><a id="l00007" name="l00007"></a><span class="lineno">    7</span><span class="comment">   it under the terms of the GNU General Public License as published by</span></div>
@@ -163,28 +163,27 @@ $(document).ready(function(){initNavTree('endian_8hpp_source.html',''); initResi
 <div class="line"><a id="l00057" name="l00057"></a><span class="lineno">   57</span>{</div>
 <div class="line"><a id="l00058" name="l00058"></a><span class="lineno">   58</span>  <span class="keywordtype">unsigned</span> <span class="keywordtype">char</span> *bytes = <span class="keyword">reinterpret_cast&lt;</span><span class="keywordtype">unsigned</span> <span class="keywordtype">char</span> *<span class="keyword">&gt;</span>(&amp;t);</div>
 <div class="line"><a id="l00059" name="l00059"></a><span class="lineno">   59</span> </div>
-<div class="line"><a id="l00060" name="l00060"></a><span class="lineno">   60</span>  <span class="keywordflow">if</span> <span class="keyword">constexpr</span> (<span class="keyword">sizeof</span>(T) == 1) { <span class="keywordflow">return</span> t; }</div>
-<div class="line"><a id="l00061" name="l00061"></a><span class="lineno">   61</span>  <span class="keywordflow">else</span> <span class="keywordflow">if</span> <span class="keyword">constexpr</span> (<span class="keyword">sizeof</span>(T) == 2) { std::swap(bytes[0], bytes[1]); }</div>
-<div class="line"><a id="l00062" name="l00062"></a><span class="lineno">   62</span>  <span class="keywordflow">else</span> <span class="keywordflow">if</span> <span class="keyword">constexpr</span> (<span class="keyword">sizeof</span>(T) == 4)</div>
-<div class="line"><a id="l00063" name="l00063"></a><span class="lineno">   63</span>  {</div>
-<div class="line"><a id="l00064" name="l00064"></a><span class="lineno">   64</span>    std::swap(bytes[0], bytes[3]);</div>
-<div class="line"><a id="l00065" name="l00065"></a><span class="lineno">   65</span>    std::swap(bytes[1], bytes[2]);</div>
-<div class="line"><a id="l00066" name="l00066"></a><span class="lineno">   66</span>  }</div>
-<div class="line"><a id="l00067" name="l00067"></a><span class="lineno">   67</span>  <span class="keywordflow">else</span> <span class="keywordflow">if</span> <span class="keyword">constexpr</span> (<span class="keyword">sizeof</span>(T) == 8)</div>
-<div class="line"><a id="l00068" name="l00068"></a><span class="lineno">   68</span>  {</div>
-<div class="line"><a id="l00069" name="l00069"></a><span class="lineno">   69</span>    std::swap(bytes[0], bytes[7]);</div>
-<div class="line"><a id="l00070" name="l00070"></a><span class="lineno">   70</span>    std::swap(bytes[1], bytes[6]);</div>
-<div class="line"><a id="l00071" name="l00071"></a><span class="lineno">   71</span>    std::swap(bytes[2], bytes[5]);</div>
-<div class="line"><a id="l00072" name="l00072"></a><span class="lineno">   72</span>    std::swap(bytes[3], bytes[4]);</div>
-<div class="line"><a id="l00073" name="l00073"></a><span class="lineno">   73</span>  }</div>
-<div class="line"><a id="l00074" name="l00074"></a><span class="lineno">   74</span> </div>
-<div class="line"><a id="l00075" name="l00075"></a><span class="lineno">   75</span>  <span class="keywordflow">return</span> t;</div>
-<div class="line"><a id="l00076" name="l00076"></a><span class="lineno">   76</span>}</div>
+<div class="line"><a id="l00060" name="l00060"></a><span class="lineno">   60</span>  <span class="keywordflow">if</span> <span class="keyword">constexpr</span> (<span class="keyword">sizeof</span>(T) == 2) { std::swap(bytes[0], bytes[1]); }</div>
+<div class="line"><a id="l00061" name="l00061"></a><span class="lineno">   61</span>  <span class="keywordflow">else</span> <span class="keywordflow">if</span> <span class="keyword">constexpr</span> (<span class="keyword">sizeof</span>(T) == 4)</div>
+<div class="line"><a id="l00062" name="l00062"></a><span class="lineno">   62</span>  {</div>
+<div class="line"><a id="l00063" name="l00063"></a><span class="lineno">   63</span>    std::swap(bytes[0], bytes[3]);</div>
+<div class="line"><a id="l00064" name="l00064"></a><span class="lineno">   64</span>    std::swap(bytes[1], bytes[2]);</div>
+<div class="line"><a id="l00065" name="l00065"></a><span class="lineno">   65</span>  }</div>
+<div class="line"><a id="l00066" name="l00066"></a><span class="lineno">   66</span>  <span class="keywordflow">else</span> <span class="keywordflow">if</span> <span class="keyword">constexpr</span> (<span class="keyword">sizeof</span>(T) == 8)</div>
+<div class="line"><a id="l00067" name="l00067"></a><span class="lineno">   67</span>  {</div>
+<div class="line"><a id="l00068" name="l00068"></a><span class="lineno">   68</span>    std::swap(bytes[0], bytes[7]);</div>
+<div class="line"><a id="l00069" name="l00069"></a><span class="lineno">   69</span>    std::swap(bytes[1], bytes[6]);</div>
+<div class="line"><a id="l00070" name="l00070"></a><span class="lineno">   70</span>    std::swap(bytes[2], bytes[5]);</div>
+<div class="line"><a id="l00071" name="l00071"></a><span class="lineno">   71</span>    std::swap(bytes[3], bytes[4]);</div>
+<div class="line"><a id="l00072" name="l00072"></a><span class="lineno">   72</span>  }</div>
+<div class="line"><a id="l00073" name="l00073"></a><span class="lineno">   73</span> </div>
+<div class="line"><a id="l00074" name="l00074"></a><span class="lineno">   74</span>  <span class="keywordflow">return</span> t;</div>
+<div class="line"><a id="l00075" name="l00075"></a><span class="lineno">   75</span>}</div>
 </div>
-<div class="line"><a id="l00077" name="l00077"></a><span class="lineno">   77</span> </div>
-<div class="line"><a id="l00078" name="l00078"></a><span class="lineno">   78</span>}</div>
-<div class="line"><a id="l00079" name="l00079"></a><span class="lineno">   79</span> </div>
-<div class="line"><a id="l00080" name="l00080"></a><span class="lineno">   80</span><span class="preprocessor">#endif</span></div>
+<div class="line"><a id="l00076" name="l00076"></a><span class="lineno">   76</span> </div>
+<div class="line"><a id="l00077" name="l00077"></a><span class="lineno">   77</span>}</div>
+<div class="line"><a id="l00078" name="l00078"></a><span class="lineno">   78</span> </div>
+<div class="line"><a id="l00079" name="l00079"></a><span class="lineno">   79</span><span class="preprocessor">#endif</span></div>
 <div class="ttc" id="aendian_8hpp_html_a87be09a5dbea413624acfb24f19fc0ea"><div class="ttname"><a href="endian_8hpp.html#a87be09a5dbea413624acfb24f19fc0ea">plywoot::detail::byte_swap</a></div><div class="ttdeci">T byte_swap(T t)</div><div class="ttdef"><b>Definition</b> <a href="endian_8hpp_source.html#l00056">endian.hpp:56</a></div></div>
 <div class="ttc" id="aendian_8hpp_html_ac49d3d05d5ec63b55d197a8e337e1b9c"><div class="ttname"><a href="endian_8hpp.html#ac49d3d05d5ec63b55d197a8e337e1b9c">plywoot::detail::HostEndian</a></div><div class="ttdeci">std::conditional_t&lt; __BYTE_ORDER__==__ORDER_LITTLE_ENDIAN__, LittleEndian, BigEndian &gt; HostEndian</div><div class="ttdef"><b>Definition</b> <a href="endian_8hpp_source.html#l00047">endian.hpp:47</a></div></div>
 </div><!-- fragment --></div><!-- contents -->
