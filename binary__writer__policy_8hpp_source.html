@@ -154,90 +154,91 @@ $(document).ready(function(){initNavTree('binary__writer__policy_8hpp_source.htm
 <div class="line"><a id="l00041" name="l00041"></a><span class="lineno">   41</span>  <span class="keyword">template</span>&lt;<span class="keyword">typename</span> T, <span class="keyword">typename</span> EndiannessDependent = Endianness&gt;</div>
 <div class="line"><a id="l00042" name="l00042"></a><span class="lineno">   42</span>  <span class="keywordtype">void</span> writeNumber(T t)<span class="keyword"> const</span></div>
 <div class="line"><a id="l00043" name="l00043"></a><span class="lineno">   43</span><span class="keyword">  </span>{</div>
-<div class="line"><a id="l00044" name="l00044"></a><span class="lineno">   44</span>    <span class="keywordflow">if</span> <span class="keyword">constexpr</span> (std::is_same_v&lt;EndiannessDependent, HostEndian&gt;)</div>
-<div class="line"><a id="l00045" name="l00045"></a><span class="lineno">   45</span>    {</div>
-<div class="line"><a id="l00046" name="l00046"></a><span class="lineno">   46</span>      os_.write(<span class="keyword">reinterpret_cast&lt;</span><span class="keyword">const </span><span class="keywordtype">char</span> *<span class="keyword">&gt;</span>(&amp;t), <span class="keyword">sizeof</span>(T));</div>
-<div class="line"><a id="l00047" name="l00047"></a><span class="lineno">   47</span>    }</div>
-<div class="line"><a id="l00048" name="l00048"></a><span class="lineno">   48</span>    <span class="keywordflow">else</span></div>
-<div class="line"><a id="l00049" name="l00049"></a><span class="lineno">   49</span>    {</div>
-<div class="line"><a id="l00050" name="l00050"></a><span class="lineno">   50</span>      <span class="keyword">const</span> <span class="keyword">auto</span> be = <a class="code hl_function" href="endian_8hpp.html#a17c8cb97e2c4fde2b27676640ca70202">htobe</a>(t);</div>
-<div class="line"><a id="l00051" name="l00051"></a><span class="lineno">   51</span>      os_.write(<span class="keyword">reinterpret_cast&lt;</span><span class="keyword">const </span><span class="keywordtype">char</span> *<span class="keyword">&gt;</span>(&amp;be), <span class="keyword">sizeof</span>(T));</div>
-<div class="line"><a id="l00052" name="l00052"></a><span class="lineno">   52</span>    }</div>
-<div class="line"><a id="l00053" name="l00053"></a><span class="lineno">   53</span>  }</div>
-<div class="line"><a id="l00054" name="l00054"></a><span class="lineno">   54</span> </div>
-<div class="line"><a id="l00059" name="l00059"></a><span class="lineno">   59</span>  <span class="keyword">template</span>&lt;<span class="keyword">typename</span> PlySizeT, <span class="keyword">typename</span> PlyT, <span class="keyword">typename</span> SrcT, <span class="keyword">typename</span> EndiannessDependent = Endianness&gt;</div>
-<div class="line"><a id="l00060" name="l00060"></a><span class="lineno">   60</span>  <span class="keywordtype">void</span> writeList(<span class="keyword">const</span> SrcT *t, std::size_t n)<span class="keyword"> const</span></div>
-<div class="line"><a id="l00061" name="l00061"></a><span class="lineno">   61</span><span class="keyword">  </span>{</div>
-<div class="line"><a id="l00062" name="l00062"></a><span class="lineno">   62</span>    writeNumber&lt;PlySizeT&gt;(n);</div>
-<div class="line"><a id="l00063" name="l00063"></a><span class="lineno">   63</span>    writeNumbers&lt;PlyT, SrcT&gt;(t, n);</div>
-<div class="line"><a id="l00064" name="l00064"></a><span class="lineno">   64</span>  }</div>
-<div class="line"><a id="l00065" name="l00065"></a><span class="lineno">   65</span> </div>
-<div class="line"><a id="l00068" name="l00068"></a><span class="lineno">   68</span>  <span class="keyword">template</span>&lt;<span class="keyword">typename</span> PlyT, <span class="keyword">typename</span> SrcT, <span class="keyword">typename</span> EndiannessDependent = Endianness&gt;</div>
-<div class="line"><a id="l00069" name="l00069"></a><span class="lineno">   69</span>  <span class="keywordtype">void</span> writeNumbers(<span class="keyword">const</span> SrcT *t, std::size_t n)<span class="keyword"> const</span></div>
-<div class="line"><a id="l00070" name="l00070"></a><span class="lineno">   70</span><span class="keyword">  </span>{</div>
-<div class="line"><a id="l00071" name="l00071"></a><span class="lineno">   71</span>    <span class="keywordflow">if</span> <span class="keyword">constexpr</span> (std::is_same_v&lt;PlyT, SrcT&gt; &amp;&amp; std::is_same_v&lt;EndiannessDependent, HostEndian&gt;)</div>
-<div class="line"><a id="l00072" name="l00072"></a><span class="lineno">   72</span>    {</div>
-<div class="line"><a id="l00073" name="l00073"></a><span class="lineno">   73</span>      os_.write(<span class="keyword">reinterpret_cast&lt;</span><span class="keyword">const </span><span class="keywordtype">char</span> *<span class="keyword">&gt;</span>(t), <span class="keyword">sizeof</span>(SrcT) * n);</div>
-<div class="line"><a id="l00074" name="l00074"></a><span class="lineno">   74</span>    }</div>
-<div class="line"><a id="l00075" name="l00075"></a><span class="lineno">   75</span>    <span class="keywordflow">else</span></div>
-<div class="line"><a id="l00076" name="l00076"></a><span class="lineno">   76</span>    {</div>
-<div class="line"><a id="l00077" name="l00077"></a><span class="lineno">   77</span>      <span class="keywordflow">for</span> (std::size_t i = 0; i &lt; n; ++i) { writeNumber&lt;PlyT&gt;(*t++); }</div>
-<div class="line"><a id="l00078" name="l00078"></a><span class="lineno">   78</span>    }</div>
-<div class="line"><a id="l00079" name="l00079"></a><span class="lineno">   79</span>  }</div>
-<div class="line"><a id="l00080" name="l00080"></a><span class="lineno">   80</span> </div>
-<div class="line"><a id="l00086" name="l00086"></a><span class="lineno">   86</span>  <span class="keywordtype">void</span> writeMissingProperties(PlyPropertyConstIterator first, PlyPropertyConstIterator last)<span class="keyword"> const</span></div>
-<div class="line"><a id="l00087" name="l00087"></a><span class="lineno">   87</span><span class="keyword">  </span>{</div>
-<div class="line"><a id="l00088" name="l00088"></a><span class="lineno">   88</span>    <span class="keywordflow">while</span> (first != last)</div>
-<div class="line"><a id="l00089" name="l00089"></a><span class="lineno">   89</span>    {</div>
-<div class="line"><a id="l00090" name="l00090"></a><span class="lineno">   90</span>      <span class="keywordflow">switch</span> (first-&gt;isList() ? first-&gt;sizeType() : first-&gt;type())</div>
-<div class="line"><a id="l00091" name="l00091"></a><span class="lineno">   91</span>      {</div>
-<div class="line"><a id="l00092" name="l00092"></a><span class="lineno">   92</span>        <span class="keywordflow">case</span> PlyDataType::Char:</div>
-<div class="line"><a id="l00093" name="l00093"></a><span class="lineno">   93</span>          writeNumber&lt;char&gt;(0);</div>
-<div class="line"><a id="l00094" name="l00094"></a><span class="lineno">   94</span>          <span class="keywordflow">break</span>;</div>
-<div class="line"><a id="l00095" name="l00095"></a><span class="lineno">   95</span>        <span class="keywordflow">case</span> PlyDataType::UChar:</div>
-<div class="line"><a id="l00096" name="l00096"></a><span class="lineno">   96</span>          writeNumber&lt;unsigned char&gt;(0);</div>
-<div class="line"><a id="l00097" name="l00097"></a><span class="lineno">   97</span>          <span class="keywordflow">break</span>;</div>
-<div class="line"><a id="l00098" name="l00098"></a><span class="lineno">   98</span>        <span class="keywordflow">case</span> PlyDataType::Short:</div>
-<div class="line"><a id="l00099" name="l00099"></a><span class="lineno">   99</span>          writeNumber&lt;short&gt;(0);</div>
-<div class="line"><a id="l00100" name="l00100"></a><span class="lineno">  100</span>          <span class="keywordflow">break</span>;</div>
-<div class="line"><a id="l00101" name="l00101"></a><span class="lineno">  101</span>        <span class="keywordflow">case</span> PlyDataType::UShort:</div>
-<div class="line"><a id="l00102" name="l00102"></a><span class="lineno">  102</span>          writeNumber&lt;unsigned short&gt;(0);</div>
-<div class="line"><a id="l00103" name="l00103"></a><span class="lineno">  103</span>          <span class="keywordflow">break</span>;</div>
-<div class="line"><a id="l00104" name="l00104"></a><span class="lineno">  104</span>        <span class="keywordflow">case</span> PlyDataType::Int:</div>
-<div class="line"><a id="l00105" name="l00105"></a><span class="lineno">  105</span>          writeNumber&lt;int&gt;(0);</div>
-<div class="line"><a id="l00106" name="l00106"></a><span class="lineno">  106</span>          <span class="keywordflow">break</span>;</div>
-<div class="line"><a id="l00107" name="l00107"></a><span class="lineno">  107</span>        <span class="keywordflow">case</span> PlyDataType::UInt:</div>
-<div class="line"><a id="l00108" name="l00108"></a><span class="lineno">  108</span>          writeNumber&lt;unsigned int&gt;(0);</div>
-<div class="line"><a id="l00109" name="l00109"></a><span class="lineno">  109</span>          <span class="keywordflow">break</span>;</div>
-<div class="line"><a id="l00110" name="l00110"></a><span class="lineno">  110</span>        <span class="keywordflow">case</span> PlyDataType::Float:</div>
-<div class="line"><a id="l00111" name="l00111"></a><span class="lineno">  111</span>          writeNumber&lt;float&gt;(0);</div>
-<div class="line"><a id="l00112" name="l00112"></a><span class="lineno">  112</span>          <span class="keywordflow">break</span>;</div>
-<div class="line"><a id="l00113" name="l00113"></a><span class="lineno">  113</span>        <span class="keywordflow">case</span> PlyDataType::Double:</div>
-<div class="line"><a id="l00114" name="l00114"></a><span class="lineno">  114</span>          writeNumber&lt;double&gt;(0);</div>
-<div class="line"><a id="l00115" name="l00115"></a><span class="lineno">  115</span>          <span class="keywordflow">break</span>;</div>
-<div class="line"><a id="l00116" name="l00116"></a><span class="lineno">  116</span>      }</div>
-<div class="line"><a id="l00117" name="l00117"></a><span class="lineno">  117</span>      ++first;</div>
-<div class="line"><a id="l00118" name="l00118"></a><span class="lineno">  118</span>    }</div>
-<div class="line"><a id="l00119" name="l00119"></a><span class="lineno">  119</span>  }</div>
-<div class="line"><a id="l00120" name="l00120"></a><span class="lineno">  120</span> </div>
-<div class="line"><a id="l00122" name="l00122"></a><span class="lineno">  122</span>  <span class="keywordtype">void</span> writeNewline()<span class="keyword"> const </span>{}</div>
-<div class="line"><a id="l00124" name="l00124"></a><span class="lineno">  124</span>  <span class="keywordtype">void</span> writeTokenSeparator()<span class="keyword"> const </span>{}</div>
-<div class="line"><a id="l00125" name="l00125"></a><span class="lineno">  125</span> </div>
-<div class="line"><a id="l00126" name="l00126"></a><span class="lineno">  126</span><span class="keyword">private</span>:</div>
-<div class="line"><a id="l00127" name="l00127"></a><span class="lineno">  127</span>  <span class="keyword">mutable</span> detail::BufferedOStream os_;</div>
-<div class="line"><a id="l00128" name="l00128"></a><span class="lineno">  128</span>};</div>
-<div class="line"><a id="l00129" name="l00129"></a><span class="lineno">  129</span> </div>
-<div class="line"><a id="l00131" name="l00131"></a><span class="lineno"><a class="line" href="binary__writer__policy_8hpp.html#ad54dc6792ef0abd51bd48a4adadf3687">  131</a></span><span class="keyword">using </span><a class="code hl_typedef" href="binary__writer__policy_8hpp.html#ad54dc6792ef0abd51bd48a4adadf3687">BinaryLittleEndianWriterPolicy</a> = BinaryWriterPolicy&lt;LittleEndian&gt;;</div>
-<div class="line"><a id="l00133" name="l00133"></a><span class="lineno"><a class="line" href="binary__writer__policy_8hpp.html#a9bc726d5f79ad5b167cb249daeea6271">  133</a></span><span class="keyword">using </span><a class="code hl_typedef" href="binary__writer__policy_8hpp.html#a9bc726d5f79ad5b167cb249daeea6271">BinaryBigEndianWriterPolicy</a> = BinaryWriterPolicy&lt;BigEndian&gt;;</div>
-<div class="line"><a id="l00134" name="l00134"></a><span class="lineno">  134</span> </div>
-<div class="line"><a id="l00135" name="l00135"></a><span class="lineno">  135</span>}</div>
-<div class="line"><a id="l00136" name="l00136"></a><span class="lineno">  136</span> </div>
-<div class="line"><a id="l00137" name="l00137"></a><span class="lineno">  137</span><span class="preprocessor">#endif</span></div>
-<div class="ttc" id="abinary__writer__policy_8hpp_html_a9bc726d5f79ad5b167cb249daeea6271"><div class="ttname"><a href="binary__writer__policy_8hpp.html#a9bc726d5f79ad5b167cb249daeea6271">plywoot::detail::BinaryBigEndianWriterPolicy</a></div><div class="ttdeci">BinaryWriterPolicy&lt; BigEndian &gt; BinaryBigEndianWriterPolicy</div><div class="ttdoc">Convenience type alias for the binary big endian writer policy.</div><div class="ttdef"><b>Definition</b> <a href="binary__writer__policy_8hpp_source.html#l00133">binary_writer_policy.hpp:133</a></div></div>
-<div class="ttc" id="abinary__writer__policy_8hpp_html_ad54dc6792ef0abd51bd48a4adadf3687"><div class="ttname"><a href="binary__writer__policy_8hpp.html#ad54dc6792ef0abd51bd48a4adadf3687">plywoot::detail::BinaryLittleEndianWriterPolicy</a></div><div class="ttdeci">BinaryWriterPolicy&lt; LittleEndian &gt; BinaryLittleEndianWriterPolicy</div><div class="ttdoc">Convenience type alias for the binary little endian writer policy.</div><div class="ttdef"><b>Definition</b> <a href="binary__writer__policy_8hpp_source.html#l00131">binary_writer_policy.hpp:131</a></div></div>
+<div class="line"><a id="l00044" name="l00044"></a><span class="lineno">   44</span>    <span class="comment">// TODO(ton): this assumes the target architecture is little endian.</span></div>
+<div class="line"><a id="l00045" name="l00045"></a><span class="lineno">   45</span>    <span class="keywordflow">if</span> <span class="keyword">constexpr</span> (std::is_same_v&lt;EndiannessDependent, LittleEndian&gt;)</div>
+<div class="line"><a id="l00046" name="l00046"></a><span class="lineno">   46</span>    {</div>
+<div class="line"><a id="l00047" name="l00047"></a><span class="lineno">   47</span>      os_.write(<span class="keyword">reinterpret_cast&lt;</span><span class="keyword">const </span><span class="keywordtype">char</span> *<span class="keyword">&gt;</span>(&amp;t), <span class="keyword">sizeof</span>(T));</div>
+<div class="line"><a id="l00048" name="l00048"></a><span class="lineno">   48</span>    }</div>
+<div class="line"><a id="l00049" name="l00049"></a><span class="lineno">   49</span>    <span class="keywordflow">else</span></div>
+<div class="line"><a id="l00050" name="l00050"></a><span class="lineno">   50</span>    {</div>
+<div class="line"><a id="l00051" name="l00051"></a><span class="lineno">   51</span>      <span class="keyword">const</span> <span class="keyword">auto</span> be = <a class="code hl_function" href="endian_8hpp.html#a17c8cb97e2c4fde2b27676640ca70202">htobe</a>(t);</div>
+<div class="line"><a id="l00052" name="l00052"></a><span class="lineno">   52</span>      os_.write(<span class="keyword">reinterpret_cast&lt;</span><span class="keyword">const </span><span class="keywordtype">char</span> *<span class="keyword">&gt;</span>(&amp;be), <span class="keyword">sizeof</span>(T));</div>
+<div class="line"><a id="l00053" name="l00053"></a><span class="lineno">   53</span>    }</div>
+<div class="line"><a id="l00054" name="l00054"></a><span class="lineno">   54</span>  }</div>
+<div class="line"><a id="l00055" name="l00055"></a><span class="lineno">   55</span> </div>
+<div class="line"><a id="l00060" name="l00060"></a><span class="lineno">   60</span>  <span class="keyword">template</span>&lt;<span class="keyword">typename</span> PlySizeT, <span class="keyword">typename</span> PlyT, <span class="keyword">typename</span> SrcT, <span class="keyword">typename</span> EndiannessDependent = Endianness&gt;</div>
+<div class="line"><a id="l00061" name="l00061"></a><span class="lineno">   61</span>  <span class="keywordtype">void</span> writeList(<span class="keyword">const</span> SrcT *t, std::size_t n)<span class="keyword"> const</span></div>
+<div class="line"><a id="l00062" name="l00062"></a><span class="lineno">   62</span><span class="keyword">  </span>{</div>
+<div class="line"><a id="l00063" name="l00063"></a><span class="lineno">   63</span>    writeNumber&lt;PlySizeT&gt;(n);</div>
+<div class="line"><a id="l00064" name="l00064"></a><span class="lineno">   64</span>    writeNumbers&lt;PlyT, SrcT&gt;(t, n);</div>
+<div class="line"><a id="l00065" name="l00065"></a><span class="lineno">   65</span>  }</div>
+<div class="line"><a id="l00066" name="l00066"></a><span class="lineno">   66</span> </div>
+<div class="line"><a id="l00069" name="l00069"></a><span class="lineno">   69</span>  <span class="keyword">template</span>&lt;<span class="keyword">typename</span> PlyT, <span class="keyword">typename</span> SrcT, <span class="keyword">typename</span> EndiannessDependent = Endianness&gt;</div>
+<div class="line"><a id="l00070" name="l00070"></a><span class="lineno">   70</span>  <span class="keywordtype">void</span> writeNumbers(<span class="keyword">const</span> SrcT *t, std::size_t n)<span class="keyword"> const</span></div>
+<div class="line"><a id="l00071" name="l00071"></a><span class="lineno">   71</span><span class="keyword">  </span>{</div>
+<div class="line"><a id="l00072" name="l00072"></a><span class="lineno">   72</span>    <span class="keywordflow">if</span> <span class="keyword">constexpr</span> (std::is_same_v&lt;PlyT, SrcT&gt; &amp;&amp; std::is_same_v&lt;EndiannessDependent, LittleEndian&gt;)</div>
+<div class="line"><a id="l00073" name="l00073"></a><span class="lineno">   73</span>    {</div>
+<div class="line"><a id="l00074" name="l00074"></a><span class="lineno">   74</span>      os_.write(<span class="keyword">reinterpret_cast&lt;</span><span class="keyword">const </span><span class="keywordtype">char</span> *<span class="keyword">&gt;</span>(t), <span class="keyword">sizeof</span>(SrcT) * n);</div>
+<div class="line"><a id="l00075" name="l00075"></a><span class="lineno">   75</span>    }</div>
+<div class="line"><a id="l00076" name="l00076"></a><span class="lineno">   76</span>    <span class="keywordflow">else</span></div>
+<div class="line"><a id="l00077" name="l00077"></a><span class="lineno">   77</span>    {</div>
+<div class="line"><a id="l00078" name="l00078"></a><span class="lineno">   78</span>      <span class="keywordflow">for</span> (std::size_t i = 0; i &lt; n; ++i) { writeNumber&lt;PlyT&gt;(*t++); }</div>
+<div class="line"><a id="l00079" name="l00079"></a><span class="lineno">   79</span>    }</div>
+<div class="line"><a id="l00080" name="l00080"></a><span class="lineno">   80</span>  }</div>
+<div class="line"><a id="l00081" name="l00081"></a><span class="lineno">   81</span> </div>
+<div class="line"><a id="l00087" name="l00087"></a><span class="lineno">   87</span>  <span class="keywordtype">void</span> writeMissingProperties(PlyPropertyConstIterator first, PlyPropertyConstIterator last)<span class="keyword"> const</span></div>
+<div class="line"><a id="l00088" name="l00088"></a><span class="lineno">   88</span><span class="keyword">  </span>{</div>
+<div class="line"><a id="l00089" name="l00089"></a><span class="lineno">   89</span>    <span class="keywordflow">while</span> (first != last)</div>
+<div class="line"><a id="l00090" name="l00090"></a><span class="lineno">   90</span>    {</div>
+<div class="line"><a id="l00091" name="l00091"></a><span class="lineno">   91</span>      <span class="keywordflow">switch</span> (first-&gt;isList() ? first-&gt;sizeType() : first-&gt;type())</div>
+<div class="line"><a id="l00092" name="l00092"></a><span class="lineno">   92</span>      {</div>
+<div class="line"><a id="l00093" name="l00093"></a><span class="lineno">   93</span>        <span class="keywordflow">case</span> PlyDataType::Char:</div>
+<div class="line"><a id="l00094" name="l00094"></a><span class="lineno">   94</span>          writeNumber&lt;char&gt;(0);</div>
+<div class="line"><a id="l00095" name="l00095"></a><span class="lineno">   95</span>          <span class="keywordflow">break</span>;</div>
+<div class="line"><a id="l00096" name="l00096"></a><span class="lineno">   96</span>        <span class="keywordflow">case</span> PlyDataType::UChar:</div>
+<div class="line"><a id="l00097" name="l00097"></a><span class="lineno">   97</span>          writeNumber&lt;unsigned char&gt;(0);</div>
+<div class="line"><a id="l00098" name="l00098"></a><span class="lineno">   98</span>          <span class="keywordflow">break</span>;</div>
+<div class="line"><a id="l00099" name="l00099"></a><span class="lineno">   99</span>        <span class="keywordflow">case</span> PlyDataType::Short:</div>
+<div class="line"><a id="l00100" name="l00100"></a><span class="lineno">  100</span>          writeNumber&lt;short&gt;(0);</div>
+<div class="line"><a id="l00101" name="l00101"></a><span class="lineno">  101</span>          <span class="keywordflow">break</span>;</div>
+<div class="line"><a id="l00102" name="l00102"></a><span class="lineno">  102</span>        <span class="keywordflow">case</span> PlyDataType::UShort:</div>
+<div class="line"><a id="l00103" name="l00103"></a><span class="lineno">  103</span>          writeNumber&lt;unsigned short&gt;(0);</div>
+<div class="line"><a id="l00104" name="l00104"></a><span class="lineno">  104</span>          <span class="keywordflow">break</span>;</div>
+<div class="line"><a id="l00105" name="l00105"></a><span class="lineno">  105</span>        <span class="keywordflow">case</span> PlyDataType::Int:</div>
+<div class="line"><a id="l00106" name="l00106"></a><span class="lineno">  106</span>          writeNumber&lt;int&gt;(0);</div>
+<div class="line"><a id="l00107" name="l00107"></a><span class="lineno">  107</span>          <span class="keywordflow">break</span>;</div>
+<div class="line"><a id="l00108" name="l00108"></a><span class="lineno">  108</span>        <span class="keywordflow">case</span> PlyDataType::UInt:</div>
+<div class="line"><a id="l00109" name="l00109"></a><span class="lineno">  109</span>          writeNumber&lt;unsigned int&gt;(0);</div>
+<div class="line"><a id="l00110" name="l00110"></a><span class="lineno">  110</span>          <span class="keywordflow">break</span>;</div>
+<div class="line"><a id="l00111" name="l00111"></a><span class="lineno">  111</span>        <span class="keywordflow">case</span> PlyDataType::Float:</div>
+<div class="line"><a id="l00112" name="l00112"></a><span class="lineno">  112</span>          writeNumber&lt;float&gt;(0);</div>
+<div class="line"><a id="l00113" name="l00113"></a><span class="lineno">  113</span>          <span class="keywordflow">break</span>;</div>
+<div class="line"><a id="l00114" name="l00114"></a><span class="lineno">  114</span>        <span class="keywordflow">case</span> PlyDataType::Double:</div>
+<div class="line"><a id="l00115" name="l00115"></a><span class="lineno">  115</span>          writeNumber&lt;double&gt;(0);</div>
+<div class="line"><a id="l00116" name="l00116"></a><span class="lineno">  116</span>          <span class="keywordflow">break</span>;</div>
+<div class="line"><a id="l00117" name="l00117"></a><span class="lineno">  117</span>      }</div>
+<div class="line"><a id="l00118" name="l00118"></a><span class="lineno">  118</span>      ++first;</div>
+<div class="line"><a id="l00119" name="l00119"></a><span class="lineno">  119</span>    }</div>
+<div class="line"><a id="l00120" name="l00120"></a><span class="lineno">  120</span>  }</div>
+<div class="line"><a id="l00121" name="l00121"></a><span class="lineno">  121</span> </div>
+<div class="line"><a id="l00123" name="l00123"></a><span class="lineno">  123</span>  <span class="keywordtype">void</span> writeNewline()<span class="keyword"> const </span>{}</div>
+<div class="line"><a id="l00125" name="l00125"></a><span class="lineno">  125</span>  <span class="keywordtype">void</span> writeTokenSeparator()<span class="keyword"> const </span>{}</div>
+<div class="line"><a id="l00126" name="l00126"></a><span class="lineno">  126</span> </div>
+<div class="line"><a id="l00127" name="l00127"></a><span class="lineno">  127</span><span class="keyword">private</span>:</div>
+<div class="line"><a id="l00128" name="l00128"></a><span class="lineno">  128</span>  <span class="keyword">mutable</span> detail::BufferedOStream os_;</div>
+<div class="line"><a id="l00129" name="l00129"></a><span class="lineno">  129</span>};</div>
+<div class="line"><a id="l00130" name="l00130"></a><span class="lineno">  130</span> </div>
+<div class="line"><a id="l00132" name="l00132"></a><span class="lineno"><a class="line" href="binary__writer__policy_8hpp.html#ad54dc6792ef0abd51bd48a4adadf3687">  132</a></span><span class="keyword">using </span><a class="code hl_typedef" href="binary__writer__policy_8hpp.html#ad54dc6792ef0abd51bd48a4adadf3687">BinaryLittleEndianWriterPolicy</a> = BinaryWriterPolicy&lt;LittleEndian&gt;;</div>
+<div class="line"><a id="l00134" name="l00134"></a><span class="lineno"><a class="line" href="binary__writer__policy_8hpp.html#a9bc726d5f79ad5b167cb249daeea6271">  134</a></span><span class="keyword">using </span><a class="code hl_typedef" href="binary__writer__policy_8hpp.html#a9bc726d5f79ad5b167cb249daeea6271">BinaryBigEndianWriterPolicy</a> = BinaryWriterPolicy&lt;BigEndian&gt;;</div>
+<div class="line"><a id="l00135" name="l00135"></a><span class="lineno">  135</span> </div>
+<div class="line"><a id="l00136" name="l00136"></a><span class="lineno">  136</span>}</div>
+<div class="line"><a id="l00137" name="l00137"></a><span class="lineno">  137</span> </div>
+<div class="line"><a id="l00138" name="l00138"></a><span class="lineno">  138</span><span class="preprocessor">#endif</span></div>
+<div class="ttc" id="abinary__writer__policy_8hpp_html_a9bc726d5f79ad5b167cb249daeea6271"><div class="ttname"><a href="binary__writer__policy_8hpp.html#a9bc726d5f79ad5b167cb249daeea6271">plywoot::detail::BinaryBigEndianWriterPolicy</a></div><div class="ttdeci">BinaryWriterPolicy&lt; BigEndian &gt; BinaryBigEndianWriterPolicy</div><div class="ttdoc">Convenience type alias for the binary big endian writer policy.</div><div class="ttdef"><b>Definition</b> <a href="binary__writer__policy_8hpp_source.html#l00134">binary_writer_policy.hpp:134</a></div></div>
+<div class="ttc" id="abinary__writer__policy_8hpp_html_ad54dc6792ef0abd51bd48a4adadf3687"><div class="ttname"><a href="binary__writer__policy_8hpp.html#ad54dc6792ef0abd51bd48a4adadf3687">plywoot::detail::BinaryLittleEndianWriterPolicy</a></div><div class="ttdeci">BinaryWriterPolicy&lt; LittleEndian &gt; BinaryLittleEndianWriterPolicy</div><div class="ttdoc">Convenience type alias for the binary little endian writer policy.</div><div class="ttdef"><b>Definition</b> <a href="binary__writer__policy_8hpp_source.html#l00132">binary_writer_policy.hpp:132</a></div></div>
 <div class="ttc" id="abuffered__ostream_8hpp_html"><div class="ttname"><a href="buffered__ostream_8hpp.html">buffered_ostream.hpp</a></div></div>
 <div class="ttc" id="aendian_8hpp_html"><div class="ttname"><a href="endian_8hpp.html">endian.hpp</a></div></div>
-<div class="ttc" id="aendian_8hpp_html_a17c8cb97e2c4fde2b27676640ca70202"><div class="ttname"><a href="endian_8hpp.html#a17c8cb97e2c4fde2b27676640ca70202">plywoot::detail::htobe</a></div><div class="ttdeci">T htobe(T t)</div><div class="ttdef"><b>Definition</b> <a href="endian_8hpp_source.html#l00085">endian.hpp:85</a></div></div>
+<div class="ttc" id="aendian_8hpp_html_a17c8cb97e2c4fde2b27676640ca70202"><div class="ttname"><a href="endian_8hpp.html#a17c8cb97e2c4fde2b27676640ca70202">plywoot::detail::htobe</a></div><div class="ttdeci">T htobe(T t)</div><div class="ttdef"><b>Definition</b> <a href="endian_8hpp_source.html#l00077">endian.hpp:77</a></div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
