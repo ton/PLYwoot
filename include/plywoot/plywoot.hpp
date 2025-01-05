@@ -40,6 +40,7 @@
 #include <cstdint>
 #include <functional>
 #include <istream>
+#include <optional>
 #include <ostream>
 #include <string>
 #include <utility>
@@ -77,13 +78,11 @@ public:
   /// \return a pair where the first element is a copy of the element in case it
   ///   exists, and the second element is a Boolean indicating whether the
   ///   requested element was found
-  // TODO(ton): change return type to an optional.
-  std::pair<PlyElement, bool> element(const std::string &name) const
+  std::optional<PlyElement> element(const std::string &name) const
   {
     const auto it = std::find_if(
         elements_.begin(), elements_.end(), [&](const PlyElement &e) { return e.name() == name; });
-    return it != elements_.end() ? std::pair<PlyElement, bool>{*it, true}
-                                 : std::pair<PlyElement, bool>{{}, false};
+    return it != elements_.end() ? std::optional(*it) : std::nullopt;
   }
 
   /// Returns the format of the input PLY data stream.
@@ -105,6 +104,7 @@ public:
   }
 
   /// Returns a copy of the current element that can be either read or skipped.
+  /// In case no element can be read, returns a default constructed element.
   ///
   /// \return  a copy of the current element that can be either read or skipped
   PlyElement element() const { return hasElement() ? *currElement_ : PlyElement{}; }

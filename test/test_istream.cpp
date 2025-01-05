@@ -383,38 +383,33 @@ TEST_CASE("Retrieve a element and property definition from an IStream given an e
   std::ifstream ifs{inputFilename};
   const plywoot::IStream plyFile{ifs};
 
-  plywoot::PlyElement faceElement;
-  bool isFaceElementFound{false};
-  std::tie(faceElement, isFaceElementFound) = plyFile.element("face");
+  const std::optional<plywoot::PlyElement> maybeFaceElement = plyFile.element("face");
+  REQUIRE(maybeFaceElement.has_value());
 
-  CHECK(isFaceElementFound);
+  const plywoot::PlyElement &faceElement = *maybeFaceElement;
   CHECK(faceElement.name() == "face");
   CHECK(faceElement.size() == 12);
 
-  plywoot::PlyProperty vertexIndicesProperty;
-  bool isVertexIndicesPropertyFound{false};
-  std::tie(vertexIndicesProperty, isVertexIndicesPropertyFound) = faceElement.property("vertex_indices");
+  const std::optional<plywoot::PlyProperty> maybeVertexIndicesProperty =
+      faceElement.property("vertex_indices");
+  REQUIRE(maybeVertexIndicesProperty.has_value());
 
+  const plywoot::PlyProperty &vertexIndicesProperty = *maybeVertexIndicesProperty;
   CHECK(vertexIndicesProperty.name() == "vertex_indices");
   CHECK(vertexIndicesProperty.type() == plywoot::PlyDataType::Int);
   CHECK(vertexIndicesProperty.isList());
   CHECK(vertexIndicesProperty.sizeType() == plywoot::PlyDataType::UChar);
 
-  plywoot::PlyElement vertexElement;
-  bool isVertexElementFound{false};
-  std::tie(vertexElement, isVertexElementFound) = plyFile.element("vertex");
+  const std::optional<plywoot::PlyElement> maybeVertexElement = plyFile.element("vertex");
+  REQUIRE(maybeVertexElement.has_value());
 
-  CHECK(isVertexElementFound);
+  const plywoot::PlyElement &vertexElement = *maybeVertexElement;
   CHECK(vertexElement.name() == "vertex");
   CHECK(vertexElement.size() == 8);
   CHECK(vertexElement.properties().size() == 3);
 
-  plywoot::PlyElement fooElement;
-  bool isFooElementFound{false};
-  std::tie(fooElement, isFooElementFound) = plyFile.element("foo");
-
-  CHECK(fooElement.size() == 0);
-  CHECK(!isFooElementFound);
+  const std::optional<plywoot::PlyElement> maybeFooElement = plyFile.element("foo");
+  CHECK(!maybeFooElement.has_value());
 }
 
 TEST_CASE("Test out of order retrieval of element data", "[istream]")

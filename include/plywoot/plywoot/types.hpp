@@ -24,6 +24,7 @@
 
 #include <algorithm>
 #include <cstdint>
+#include <optional>
 #include <ostream>
 #include <string>
 #include <utility>
@@ -189,14 +190,12 @@ struct PlyElement
   /// \return a pair where the first element is a copy of the property with
   ///     the given name in case it exists and the second element is a Boolean
   ///     that indicates whether the requested property was found
-  // TODO(ton): return an optional
-  std::pair<PlyProperty, bool> property(const std::string &propertyName) const
+  std::optional<PlyProperty> property(const std::string &propertyName) const
   {
     const auto it = std::find_if(properties_.begin(), properties_.end(), [&](const PlyProperty &p) {
       return p.name() == propertyName;
     });
-    return it != properties_.end() ? std::pair<PlyProperty, bool>{*it, true}
-                                   : std::pair<PlyProperty, bool>{{}, false};
+    return it != properties_.end() ? std::optional(*it) : std::nullopt;
   }
 
   /// Factory method that constructs a new PLY property definition associated

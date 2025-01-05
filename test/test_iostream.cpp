@@ -202,8 +202,8 @@ TEST_CASE("Tests reading and writing vertex and face data", "[iostream]")
   // Now write the data to a string stream, read it back in again, and compare.
   std::stringstream oss;
   plywoot::OStream plyos{format};
-  plyos.add(plyFile.element("vertex").first, VertexLayout{vertices});
-  plyos.add(plyFile.element("face").first, TriangleLayout{triangles});
+  plyos.add(*plyFile.element("vertex"), VertexLayout{vertices});
+  plyos.add(*plyFile.element("face"), TriangleLayout{triangles});
   plyos.write(oss);
 
   {
