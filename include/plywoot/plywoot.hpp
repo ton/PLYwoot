@@ -217,7 +217,7 @@ public:
 
     elementWriteClosures_.emplace_back(
         std::move(layoutElement),
-        [this, layout](detail::WriterVariant &writer, const PlyElement &e) { writer.write(e, layout); });
+        [layout](detail::WriterVariant &writer, const PlyElement &e) { writer.write(e, layout); });
   }
 
   /// Queues the given element data for writing. This takes ownership of the
@@ -233,7 +233,7 @@ public:
     const std::size_t alignment = elementData.alignment();
 
     elementWriteClosures_.emplace_back(
-        elementData.element(), [this, src, alignment](detail::WriterVariant &writer, const PlyElement &e) {
+        elementData.element(), [src, alignment](detail::WriterVariant &writer, const PlyElement &e) {
           writer.write(e, src, alignment);
         });
   }
