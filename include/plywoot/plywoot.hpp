@@ -342,7 +342,6 @@ inline void convert(std::istream &is, std::ostream &os, PlyFormat format)
 
   while (plyIs.hasElement())
   {
-    const plywoot::PlyElement element = plyIs.element();
     elementsData.emplace_back(plyIs.readElement());
     plyOs.add(elementsData.back());
   }
