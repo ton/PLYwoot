@@ -93,7 +93,7 @@ TEST_CASE("Element definition does not contain the number of elements", "[header
   std::ifstream ifs{"test/input/header/missing_element_size.ply"};
   REQUIRE_THROWS_MATCHES(
       plywoot::IStream(ifs), plywoot::UnexpectedToken,
-      MessageContains("'end_header'") && MessageContains("'<number>'"));
+      MessageContains("end_header") && MessageContains("<number>"));
 }
 
 TEST_CASE("No property data for an element value", "[header][istream][error]")
