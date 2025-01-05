@@ -257,7 +257,7 @@ TEST_CASE("Test casting of input property from integer to some floating point ty
   using Layout = plywoot::reflect::Layout<int>;
 
   const plywoot::PlyProperty x{"x", plywoot::PlyDataType::Double};
-  const plywoot::PlyElement element{"e", {x}};
+  const plywoot::PlyElement element{"e", 0, {x}};
 
   std::stringstream oss;
   plywoot::OStream plyos{format};

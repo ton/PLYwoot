@@ -149,16 +149,6 @@ struct PlyElement
 {
   /// Default constructor.
   PlyElement() = default;
-  /// Constructor taking a name and a list of initial properties to associate
-  /// with this element.
-  ///
-  /// \param name name of the PLY element to construct
-  /// \param properties definitions of the PLY properties embedded in this
-  ///     PLY element
-  PlyElement(std::string name, std::vector<PlyProperty> properties)
-      : name_{std::move(name)}, size_{0}, properties_{std::move(properties)}
-  {
-  }
   /// Constructor taking a name and size for this element.
   ///
   /// \param name name of the PLY element to construct
