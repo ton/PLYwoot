@@ -152,13 +152,13 @@ struct PlyElement
   /// Constructor taking a name and size for this element.
   ///
   /// \param name name of the PLY element to construct
-  /// \param size TODO
+  /// \param size the number of instances of this element in the PLY file
   PlyElement(std::string name, std::size_t size) : name_{std::move(name)}, size_{size} {}
   /// Constructor taking a name and size for this element, as well as a list
   /// of initial properties to associate with this element.
   ///
   /// \param name name of the PLY element to construct
-  /// \param size TODO
+  /// \param size the number of instances of this element in the PLY file
   /// \param properties definitions of the PLY properties embedded in this
   ///     PLY element
   PlyElement(std::string name, std::size_t size, std::vector<PlyProperty> properties)
@@ -170,10 +170,9 @@ struct PlyElement
   ///
   /// \return the name of this element
   const std::string &name() const { return name_; }
-  /// Returns the size of this element.
+  /// Returns the number of instances of this element in the PLY file
   ///
-  /// \return the size of this element
-  // TODO(ton): remove from this type?
+  /// \return the number of instances of this element in the PLY file
   std::size_t size() const { return size_; }
   /// Returns the properties associated with this element.
   ///
@@ -236,7 +235,7 @@ struct PlyElement
 private:
   /// Name of this element.
   std::string name_;
-  /// Size of this element.
+  /// The number of instances of this element in the PLY file.
   std::size_t size_;
   /// The definitions of the properties contained in this element.
   std::vector<PlyProperty> properties_;
