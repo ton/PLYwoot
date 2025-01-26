@@ -125,6 +125,28 @@ public:
   ///     representing all data for the active element to be parsed
   PlyElementData readElement() const { return parser_.read(*currElement_++); }
 
+  /// Reads the current element from the PLY input data stream into memory
+  /// pointed to by \p dest, where the `Layout` type is used to identify how
+  /// properties from the PLY element are mapped on objects of type `T`.
+  ///
+  /// \param dest pointer to the memory where elements of type T need to be
+  ///    written to
+  /// \tparam T type of objects to be read from the stream
+  /// \tparam Layout layout specifying the mapping of PLY properties to `T`
+  /// \pre `hasElement()` must be \c true
+  /// \note This assumes that \p dest points to a block of memory that allows
+  ///     holding at least as many instances of T as the size of the element
+  ///     that is being read!
+  /// \return a vector of object of type `T` representing the element that was
+  ///     parsed using the PLY property mapping embedded in the given `Layout`
+  ///     type
+  // TODO(ton): probably better to add another parameter 'size' to guard
+  template<typename T, typename Layout>
+  void readElement(T *dest) const
+  {
+    parser_.read<Layout>(*currElement_++, reinterpret_cast<std::uint8_t *>(dest), alignof(T));
+  }
+
   /// Reads the current element from the PLY input data stream, returning a list
   /// of objects of type `T`, where the `Layout` type is used to identify how
   /// properties from the PLY element are mapped on objects of type `T`.
