@@ -56,7 +56,7 @@ public:
     {
       is_.skip(
           e.size() * std::accumulate(
-                         properties.begin(), properties.end(), 0,
+                         properties.begin(), properties.end(), static_cast<std::size_t>(0),
                          [](std::size_t acc, const PlyProperty &p) { return acc + sizeOf(p.type()); }));
     }
     else

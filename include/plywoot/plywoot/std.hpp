@@ -58,6 +58,23 @@ constexpr Ptr align(Ptr ptr, std::size_t alignment)
   return reinterpret_cast<Ptr>((uintptr + alignment - 1u) & -alignment);
 }
 
+/// Aligns the given input pointer. Implementation is taken from GCCs
+/// `std::align` implementation. The given alignment value should be a power
+/// of two.
+///
+/// \param ptr pointer to align
+/// \param alignment alignment requirements of the given pointer
+/// \return \p ptr aligned according to the given alignment requirements
+template<>
+constexpr std::size_t align(std::size_t ptr, std::size_t alignment)
+{
+  // Some explanation on the code below; -x is x in two's complement, which
+  // means that an alignment value x of power two is converted to (~x + 1).
+  // For example, for an alignment value of 4, this turns 0b000100 into
+  // 0b111100. The factor (ptr + alignment - 1u) guarantees that the
+  // alignment bit is set unless (ptr % alignment == 0).
+  return (ptr + alignment - 1u) & -alignment;
+}
 
 /// Converts a text to an integer number. The <a
 /// href="https://github.com/ton/fast_int">fast_int</a> library will be used to
