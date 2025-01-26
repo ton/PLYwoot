@@ -4,8 +4,10 @@ import argparse
 import os
 import pathlib
 import re
+import shutil
 import subprocess
 import sys
+import tempfile
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(
@@ -16,7 +18,33 @@ if __name__ == '__main__':
 
     encoding = os.device_encoding(sys.stdout.fileno()) or 'utf-8'
 
-    result = subprocess.run(['/usr/bin/g++', '-E', '-CC', '-nostdinc', '-nostdinc++', 'include/plywoot/plywoot.hpp'], capture_output=True, stderr=None, encoding=encoding)
+    # Copy all of the PLYwoot code to /tmp, to be able to modify some of the
+    # `#ifdef` clauses.
+    td = tempfile.TemporaryDirectory()
+    tmp_path = os.path.join(td.name, 'plywoot')
+
+    shutil.copytree('include/plywoot', tmp_path)
+
+    # In `std.hpp`, comment out all `#ifdef PLYWOOT_HAS_*` preprocessor
+    # directives using this super-ugly hard-coded mechanism :P
+    lines = open(os.path.join(tmp_path, 'plywoot/std.hpp')).readlines()
+
+    # Strip out the last `#ifdef` to prevent it from being commented out below.
+    lines = lines[:-1]
+
+    with open(os.path.join(tmp_path, 'plywoot/std.hpp'), 'w+') as std_hpp:
+        in_namespace = False
+        for line in lines:
+            in_namespace = in_namespace or ('namespace' in line)
+            if in_namespace and line.startswith('#'):
+                std_hpp.write('//' + line)
+            else:
+                std_hpp.write(line)
+
+        # Write out last `#endif` that was stripped out above.
+        std_hpp.write('#endif\n')
+
+    result = subprocess.run(['/usr/bin/g++', '-E', '-CC', '-nostdinc', '-nostdinc++', os.path.join(tmp_path, 'plywoot.hpp')], capture_output=True, stderr=None, encoding=encoding)
 
     # List all system headers in the source code.
     system_headers = set()
@@ -44,6 +72,9 @@ if __name__ == '__main__':
 
     # Strip out `\file` tags.
     output = re.sub(r'^/// \\file.*$', '', output, flags=re.MULTILINE)
+
+    # Fixup commented out preprocessor directives.
+    output = re.sub(r'//#(.*)$', '#\\1', output, flags=re.MULTILINE)
 
     # Join empty lines.
     output = re.sub(r'\n[\n]+\n', '\n\n', output, flags=re.MULTILINE).strip()
