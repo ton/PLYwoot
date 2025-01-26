@@ -36,9 +36,6 @@ class WriterVariant
 public:
   WriterVariant(std::ostream &os, PlyFormat format) : variant_{makeVariant(os, format)} {}
 
-  WriterVariant(const WriterVariant &) = delete;
-  WriterVariant &operator=(const WriterVariant &) = delete;
-
   void write(const PlyElement &element, const std::uint8_t *src, std::size_t alignment) const
   {
     std::visit(

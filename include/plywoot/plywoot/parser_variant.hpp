@@ -37,9 +37,6 @@ class ParserVariant
 public:
   ParserVariant(std::istream &is, PlyFormat format) : variant_{makeVariant(is, format)} {}
 
-  ParserVariant(const ParserVariant &) = delete;
-  ParserVariant &operator=(const ParserVariant &) = delete;
-
   PlyElementData read(const PlyElement &element) const
   {
     return std::visit([&](auto &&parser) { return parser.read(element); }, variant_);
