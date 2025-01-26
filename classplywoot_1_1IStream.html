@@ -139,6 +139,9 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a2e1944535d6e7ea16f6e7f066e21de6a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1db364e8f9c8d986bc9613762ae66790" id="r_a1db364e8f9c8d986bc9613762ae66790"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classplywoot_1_1PlyElementData.html">PlyElementData</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classplywoot_1_1IStream.html#a1db364e8f9c8d986bc9613762ae66790">readElement</a> () const</td></tr>
 <tr class="separator:a1db364e8f9c8d986bc9613762ae66790"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a353caa875a30185777d12b935733e8a1" id="r_a353caa875a30185777d12b935733e8a1"><td class="memTemplParams" colspan="2">template&lt;typename T , typename Layout &gt; </td></tr>
+<tr class="memitem:a353caa875a30185777d12b935733e8a1"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classplywoot_1_1IStream.html#a353caa875a30185777d12b935733e8a1">readElement</a> (T *dest) const</td></tr>
+<tr class="separator:a353caa875a30185777d12b935733e8a1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a250a33348f5fd0cabf36ca60a72b500a" id="r_a250a33348f5fd0cabf36ca60a72b500a"><td class="memTemplParams" colspan="2">template&lt;typename T , typename Layout &gt; </td></tr>
 <tr class="memitem:a250a33348f5fd0cabf36ca60a72b500a"><td class="memTemplItemLeft" align="right" valign="top">std::vector&lt; T &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classplywoot_1_1IStream.html#a250a33348f5fd0cabf36ca60a72b500a">readElement</a> () const</td></tr>
 <tr class="separator:a250a33348f5fd0cabf36ca60a72b500a"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -405,7 +408,7 @@ Public Member Functions</h2></td></tr>
 </div>
 </div>
 <a id="a1db364e8f9c8d986bc9613762ae66790" name="a1db364e8f9c8d986bc9613762ae66790"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a1db364e8f9c8d986bc9613762ae66790">&#9670;&#160;</a></span>readElement() <span class="overload">[1/2]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a1db364e8f9c8d986bc9613762ae66790">&#9670;&#160;</a></span>readElement() <span class="overload">[1/3]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -435,7 +438,7 @@ Public Member Functions</h2></td></tr>
 </div>
 </div>
 <a id="a250a33348f5fd0cabf36ca60a72b500a" name="a250a33348f5fd0cabf36ca60a72b500a"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a250a33348f5fd0cabf36ca60a72b500a">&#9670;&#160;</a></span>readElement() <span class="overload">[2/2]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a250a33348f5fd0cabf36ca60a72b500a">&#9670;&#160;</a></span>readElement() <span class="overload">[2/3]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -469,7 +472,54 @@ template&lt;typename T , typename Layout &gt; </div>
 <dl class="section pre"><dt>Precondition</dt><dd><code><a class="el" href="classplywoot_1_1IStream.html#a2e1944535d6e7ea16f6e7f066e21de6a">hasElement()</a></code> must be <code>true</code> </dd></dl>
 <dl class="section return"><dt>Returns</dt><dd>a vector of object of type <code>T</code> representing the element that was parsed using the PLY property mapping embedded in the given <code>Layout</code> type </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="plywoot_8hpp_source.html#l00140">140</a> of file <a class="el" href="plywoot_8hpp_source.html">plywoot.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="plywoot_8hpp_source.html#l00162">162</a> of file <a class="el" href="plywoot_8hpp_source.html">plywoot.hpp</a>.</p>
+
+</div>
+</div>
+<a id="a353caa875a30185777d12b935733e8a1" name="a353caa875a30185777d12b935733e8a1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a353caa875a30185777d12b935733e8a1">&#9670;&#160;</a></span>readElement() <span class="overload">[3/3]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T , typename Layout &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void plywoot::IStream::readElement </td>
+          <td>(</td>
+          <td class="paramtype">T *&#160;</td>
+          <td class="paramname"><em>dest</em></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Reads the current element from the PLY input data stream into memory pointed to by <code>dest</code>, where the <code>Layout</code> type is used to identify how properties from the PLY element are mapped on objects of type <code>T</code>.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">dest</td><td>pointer to the memory where elements of type T need to be written to </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">T</td><td>type of objects to be read from the stream </td></tr>
+    <tr><td class="paramname">Layout</td><td>layout specifying the mapping of PLY properties to <code>T</code> </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section pre"><dt>Precondition</dt><dd><code><a class="el" href="classplywoot_1_1IStream.html#a2e1944535d6e7ea16f6e7f066e21de6a">hasElement()</a></code> must be <code>true</code> </dd></dl>
+<dl class="section note"><dt>Note</dt><dd>This assumes that <code>dest</code> points to a block of memory that allows holding at least as many instances of T as the size of the element that is being read! </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>a vector of object of type <code>T</code> representing the element that was parsed using the PLY property mapping embedded in the given <code>Layout</code> type </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="plywoot_8hpp_source.html#l00145">145</a> of file <a class="el" href="plywoot_8hpp_source.html">plywoot.hpp</a>.</p>
 
 </div>
 </div>
@@ -498,7 +548,7 @@ template&lt;typename T , typename Layout &gt; </div>
 
 <p>Skips the current element. </p>
 
-<p class="definition">Definition at line <a class="el" href="plywoot_8hpp_source.html#l00148">148</a> of file <a class="el" href="plywoot_8hpp_source.html">plywoot.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="plywoot_8hpp_source.html#l00170">170</a> of file <a class="el" href="plywoot_8hpp_source.html">plywoot.hpp</a>.</p>
 
 </div>
 </div>
