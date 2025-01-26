@@ -14,7 +14,6 @@ if __name__ == '__main__':
 
     args = parser.parse_args()
 
-
     encoding = os.device_encoding(sys.stdout.fileno()) or 'utf-8'
 
     result = subprocess.run(['/usr/bin/g++', '-E', '-CC', '-nostdinc', '-nostdinc++', 'include/plywoot/plywoot.hpp'], capture_output=True, stderr=None, encoding=encoding)
