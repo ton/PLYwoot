@@ -93,7 +93,7 @@ class HeaderScanner
 public:
   /// Constructs a header scanner for the PLY header defined in the given input
   /// stream. Throws `InvalidInputStream` in case the input stream is not valid.
-  HeaderScanner(std::istream &is) : is_{is}
+  HeaderScanner(std::istream &is)
   {
     if (!is) { throw InvalidInputStream{}; }
 
@@ -344,9 +344,6 @@ private:
   std::string_view tokenString_;
   /// Current line number.
   std::uint32_t line_{0};
-
-  /// Reference to the wrapped input stream.
-  std::istream &is_;
 };
 
 }
