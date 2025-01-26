@@ -126,6 +126,9 @@ Functions</h2></td></tr>
 <tr class="memitem:a22be282111b7b6256dc2c29da0d69521" id="r_a22be282111b7b6256dc2c29da0d69521"><td class="memTemplParams" colspan="2">template&lt;typename Ptr &gt; </td></tr>
 <tr class="memitem:a22be282111b7b6256dc2c29da0d69521"><td class="memTemplItemLeft" align="right" valign="top">constexpr Ptr&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="std_8hpp.html#a22be282111b7b6256dc2c29da0d69521">plywoot::detail::align</a> (Ptr ptr, std::size_t alignment)</td></tr>
 <tr class="separator:a22be282111b7b6256dc2c29da0d69521"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a312a84e6e0c5ee8aee8e96195a678040" id="r_a312a84e6e0c5ee8aee8e96195a678040"><td class="memItemLeft" align="right" valign="top">template&lt;&gt; </td></tr>
+<tr class="memitem:a312a84e6e0c5ee8aee8e96195a678040"><td class="memTemplItemLeft" align="right" valign="top">constexpr std::size_t&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="std_8hpp.html#a312a84e6e0c5ee8aee8e96195a678040">plywoot::detail::align</a> (std::size_t ptr, std::size_t alignment)</td></tr>
+<tr class="separator:a312a84e6e0c5ee8aee8e96195a678040"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a032192c72cdf2643a8021e7d7fc1d8e2" id="r_a032192c72cdf2643a8021e7d7fc1d8e2"><td class="memTemplParams" colspan="2">template&lt;typename Number &gt; </td></tr>
 <tr class="memitem:a032192c72cdf2643a8021e7d7fc1d8e2"><td class="memTemplItemLeft" align="right" valign="top">Number&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="std_8hpp.html#a032192c72cdf2643a8021e7d7fc1d8e2">plywoot::detail::to_number</a> (const char *first, const char *last, const char **end)</td></tr>
 <tr class="separator:a032192c72cdf2643a8021e7d7fc1d8e2"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -143,7 +146,7 @@ Functions</h2></td></tr>
 </table>
 <h2 class="groupheader">Function Documentation</h2>
 <a id="a22be282111b7b6256dc2c29da0d69521" name="a22be282111b7b6256dc2c29da0d69521"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a22be282111b7b6256dc2c29da0d69521">&#9670;&#160;</a></span>align()</h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a22be282111b7b6256dc2c29da0d69521">&#9670;&#160;</a></span>align() <span class="overload">[1/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -191,6 +194,55 @@ template&lt;typename Ptr &gt; </div>
 
 </div>
 </div>
+<a id="a312a84e6e0c5ee8aee8e96195a678040" name="a312a84e6e0c5ee8aee8e96195a678040"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a312a84e6e0c5ee8aee8e96195a678040">&#9670;&#160;</a></span>align() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">constexpr std::size_t plywoot::detail::align </td>
+          <td>(</td>
+          <td class="paramtype">std::size_t&#160;</td>
+          <td class="paramname"><em>ptr</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::size_t&#160;</td>
+          <td class="paramname"><em>alignment</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">constexpr</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Aligns the given input pointer. Implementation is taken from GCCs <code>std::align</code> implementation. The given alignment value should be a power of two.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">ptr</td><td>pointer to align </td></tr>
+    <tr><td class="paramname">alignment</td><td>alignment requirements of the given pointer </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd><code>ptr</code> aligned according to the given alignment requirements </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="std_8hpp_source.html#l00069">69</a> of file <a class="el" href="std_8hpp_source.html">std.hpp</a>.</p>
+
+</div>
+</div>
 <a id="a622677af5327f450d0b4b2cece14f011" name="a622677af5327f450d0b4b2cece14f011"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a622677af5327f450d0b4b2cece14f011">&#9670;&#160;</a></span>starts_with()</h2>
 
@@ -234,7 +286,7 @@ template&lt;typename Ptr &gt; </div>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd><code>true</code> in case the given string starts with the given prefix, <code>false</code> otherwise </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="std_8hpp_source.html#l00134">134</a> of file <a class="el" href="std_8hpp_source.html">std.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="std_8hpp_source.html#l00151">151</a> of file <a class="el" href="std_8hpp_source.html">std.hpp</a>.</p>
 
 </div>
 </div>
@@ -296,7 +348,7 @@ template&lt;typename Number &gt; </div>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>converted integer number </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="std_8hpp_source.html#l00073">73</a> of file <a class="el" href="std_8hpp_source.html">std.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="std_8hpp_source.html#l00090">90</a> of file <a class="el" href="std_8hpp_source.html">std.hpp</a>.</p>
 
 </div>
 </div>
@@ -352,7 +404,7 @@ template&lt;&gt; </div>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>converted single precision floating point number </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="std_8hpp_source.html#l00095">95</a> of file <a class="el" href="std_8hpp_source.html">std.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="std_8hpp_source.html#l00112">112</a> of file <a class="el" href="std_8hpp_source.html">std.hpp</a>.</p>
 
 </div>
 </div>
@@ -408,7 +460,7 @@ template&lt;&gt; </div>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>converted double precision floating point number </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="std_8hpp_source.html#l00117">117</a> of file <a class="el" href="std_8hpp_source.html">std.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="std_8hpp_source.html#l00134">134</a> of file <a class="el" href="std_8hpp_source.html">std.hpp</a>.</p>
 
 </div>
 </div>
@@ -438,7 +490,7 @@ template&lt;typename T &gt; </div>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd><code>t</code> converted to string </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="std_8hpp_source.html#l00143">143</a> of file <a class="el" href="std_8hpp_source.html">std.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="std_8hpp_source.html#l00160">160</a> of file <a class="el" href="std_8hpp_source.html">std.hpp</a>.</p>
 
 </div>
 </div>

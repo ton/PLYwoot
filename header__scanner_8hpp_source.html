@@ -195,7 +195,7 @@ $(document).ready(function(){initNavTree('header__scanner_8hpp_source.html','');
 <div class="line"><a id="l00091" name="l00091"></a><span class="lineno">   91</span><span class="keyword">class </span>HeaderScanner</div>
 <div class="line"><a id="l00092" name="l00092"></a><span class="lineno">   92</span>{</div>
 <div class="line"><a id="l00093" name="l00093"></a><span class="lineno">   93</span><span class="keyword">public</span>:</div>
-<div class="line"><a id="l00096" name="l00096"></a><span class="lineno">   96</span>  HeaderScanner(std::istream &amp;is) : is_{is}</div>
+<div class="line"><a id="l00096" name="l00096"></a><span class="lineno">   96</span>  HeaderScanner(std::istream &amp;is)</div>
 <div class="line"><a id="l00097" name="l00097"></a><span class="lineno">   97</span>  {</div>
 <div class="line"><a id="l00098" name="l00098"></a><span class="lineno">   98</span>    <span class="keywordflow">if</span> (!is) { <span class="keywordflow">throw</span> <a class="code hl_struct" href="structplywoot_1_1InvalidInputStream.html">InvalidInputStream</a>{}; }</div>
 <div class="line"><a id="l00099" name="l00099"></a><span class="lineno">   99</span> </div>
@@ -426,13 +426,11 @@ $(document).ready(function(){initNavTree('header__scanner_8hpp_source.html','');
 <div class="line"><a id="l00342" name="l00342"></a><span class="lineno">  342</span>  Token token_{Token::Unknown};</div>
 <div class="line"><a id="l00344" name="l00344"></a><span class="lineno">  344</span>  std::string_view tokenString_;</div>
 <div class="line"><a id="l00346" name="l00346"></a><span class="lineno">  346</span>  std::uint32_t line_{0};</div>
-<div class="line"><a id="l00347" name="l00347"></a><span class="lineno">  347</span> </div>
-<div class="line"><a id="l00349" name="l00349"></a><span class="lineno">  349</span>  std::istream &amp;is_;</div>
-<div class="line"><a id="l00350" name="l00350"></a><span class="lineno">  350</span>};</div>
-<div class="line"><a id="l00351" name="l00351"></a><span class="lineno">  351</span> </div>
-<div class="line"><a id="l00352" name="l00352"></a><span class="lineno">  352</span>}</div>
-<div class="line"><a id="l00353" name="l00353"></a><span class="lineno">  353</span> </div>
-<div class="line"><a id="l00354" name="l00354"></a><span class="lineno">  354</span><span class="preprocessor">#endif</span></div>
+<div class="line"><a id="l00347" name="l00347"></a><span class="lineno">  347</span>};</div>
+<div class="line"><a id="l00348" name="l00348"></a><span class="lineno">  348</span> </div>
+<div class="line"><a id="l00349" name="l00349"></a><span class="lineno">  349</span>}</div>
+<div class="line"><a id="l00350" name="l00350"></a><span class="lineno">  350</span> </div>
+<div class="line"><a id="l00351" name="l00351"></a><span class="lineno">  351</span><span class="preprocessor">#endif</span></div>
 <div class="ttc" id="aclassplywoot_1_1Exception_html"><div class="ttname"><a href="classplywoot_1_1Exception.html">plywoot::Exception</a></div><div class="ttdoc">Base class for all exceptions thrown by PLYwoot.</div><div class="ttdef"><b>Definition</b> <a href="exceptions_8hpp_source.html#l00031">exceptions.hpp:32</a></div></div>
 <div class="ttc" id="aheader__scanner_8hpp_html_a9a093d75eea4e3e7dd56f8a1c093348a"><div class="ttname"><a href="header__scanner_8hpp.html#a9a093d75eea4e3e7dd56f8a1c093348a">plywoot::detail::isTokenDelimiter</a></div><div class="ttdeci">constexpr bool isTokenDelimiter[256]</div><div class="ttdef"><b>Definition</b> <a href="header__scanner_8hpp_source.html#l00068">header_scanner.hpp:68</a></div></div>
 <div class="ttc" id="astd_8hpp_html"><div class="ttname"><a href="std_8hpp.html">std.hpp</a></div></div>

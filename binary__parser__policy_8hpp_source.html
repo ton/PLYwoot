@@ -162,7 +162,7 @@ $(document).ready(function(){initNavTree('binary__parser__policy_8hpp_source.htm
 <div class="line"><a id="l00056" name="l00056"></a><span class="lineno">   56</span>    {</div>
 <div class="line"><a id="l00057" name="l00057"></a><span class="lineno">   57</span>      is_.skip(</div>
 <div class="line"><a id="l00058" name="l00058"></a><span class="lineno">   58</span>          e.size() * std::accumulate(</div>
-<div class="line"><a id="l00059" name="l00059"></a><span class="lineno">   59</span>                         properties.begin(), properties.end(), 0,</div>
+<div class="line"><a id="l00059" name="l00059"></a><span class="lineno">   59</span>                         properties.begin(), properties.end(), <span class="keyword">static_cast&lt;</span>std::size_t<span class="keyword">&gt;</span>(0),</div>
 <div class="line"><a id="l00060" name="l00060"></a><span class="lineno">   60</span>                         [](std::size_t acc, <span class="keyword">const</span> PlyProperty &amp;p) { return acc + sizeOf(p.type()); }));</div>
 <div class="line"><a id="l00061" name="l00061"></a><span class="lineno">   61</span>    }</div>
 <div class="line"><a id="l00062" name="l00062"></a><span class="lineno">   62</span>    <span class="keywordflow">else</span></div>
