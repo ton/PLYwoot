@@ -167,31 +167,29 @@ public:
   // TODO(ton): probably better to add another parameter 'size' to guard
   // against overwriting the input buffer.
   template<typename... Ts>
-  void read(const PlyElement &element, reflect::Layout<Ts...> layout) const
+  void read(const PlyElement &element, std::uint8_t *dest, std::size_t alignment) const
   {
     if constexpr (MaybeMemcpyable<Ts...>::value)
     {
       if (detail::isMemcpyable<Ts...>(element.properties().begin(), element.properties().end()))
       {
-        this->template memcpy<Ts...>(layout.data(), element);
+        this->template memcpy<Ts...>(dest, element);
         return;
       }
     }
 
-    readElements<Ts...>(element, layout);
+    readElements<Ts...>(element, dest, alignment);
   }
 
   void skip(const PlyElement &element) const { this->skipElement(element); }
 
 private:
   template<typename... Ts>
-  void readElements(const PlyElement &element, reflect::Layout<Ts...> layout) const
+  void readElements(const PlyElement &element, std::uint8_t *dest, std::size_t alignment) const
   {
     const PlyPropertyConstIterator first = element.properties().begin();
     const PlyPropertyConstIterator last = element.properties().end();
     const PlyPropertyConstIterator firstToSkip = first + detail::numProperties<Ts...>();
-
-    std::uint8_t *dest = layout.data();
 
     if (firstToSkip < last)
     {
@@ -202,7 +200,7 @@ private:
       {
         for (std::size_t i{0}; i < element.size(); ++i)
         {
-          dest = detail::align(readElement<Ts...>(dest, first, last), layout.alignment());
+          dest = detail::align(readElement<Ts...>(dest, first, last), alignment);
 
           auto curr = firstToSkip;
           while (curr < last) this->skipProperty(*curr++);
@@ -221,7 +219,7 @@ private:
 
         for (std::size_t i{0}; i < element.size(); ++i)
         {
-          dest = detail::align(readElement<Ts...>(dest, first, last), layout.alignment());
+          dest = detail::align(readElement<Ts...>(dest, first, last), alignment);
           this->skipProperties(numBytesToSkip);
         }
       }
@@ -230,7 +228,7 @@ private:
     {
       for (std::size_t i{0}; i < element.size(); ++i)
       {
-        dest = detail::align(readElement<Ts...>(dest, first, last), layout.alignment());
+        dest = detail::align(readElement<Ts...>(dest, first, last), alignment);
       }
     }
   }

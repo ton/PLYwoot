@@ -45,10 +45,10 @@ public:
     return std::visit([&](auto &&parser) { return parser.read(element); }, variant_);
   }
 
-  template<typename... Ts>
-  void read(const PlyElement &element, reflect::Layout<Ts...> layout) const
+  template<typename Layout>
+  void read(const PlyElement &element, std::uint8_t *dest, std::size_t alignment) const
   {
-    std::visit([&element, layout](auto &&parser) { parser.read(element, layout); }, variant_);
+    VisitHelper<Layout>::visit(element, dest, alignment, variant_);
   }
 
   void skip(const PlyElement &element) const
@@ -61,6 +61,19 @@ private:
       detail::Parser<detail::AsciiParserPolicy>,
       detail::Parser<detail::BinaryBigEndianParserPolicy>,
       detail::Parser<detail::BinaryLittleEndianParserPolicy>>;
+
+  // Note; VisitHelper exists to be able to extract `Ts...` from `Layout`.
+  template<typename Layout>
+  struct VisitHelper;
+
+  template<template <typename ...> class Layout, typename ...Ts>
+  struct VisitHelper<Layout<Ts...>>
+  {
+    static void visit(const PlyElement &element, std::uint8_t *dest, std::size_t alignment, const Variant &v)
+    {
+      std::visit([&element, dest, alignment](auto &&parser) { parser.template read<Ts...>(element, dest, alignment); }, v);
+    }
+  };
 
   Variant makeVariant(std::istream &is, PlyFormat format)
   {

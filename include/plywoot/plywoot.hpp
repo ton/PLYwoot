@@ -140,7 +140,7 @@ public:
   std::vector<T> readElement() const
   {
     std::vector<T> result(currElement_->size());
-    parser_.read(*currElement_++, Layout{result});
+    parser_.read<Layout>(*currElement_++, reinterpret_cast<std::uint8_t *>(result.data()), alignof(T));
     return result;
   }
 
