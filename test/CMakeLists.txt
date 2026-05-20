@@ -8,6 +8,10 @@ FetchContent_Declare(
 
 FetchContent_MakeAvailable(Catch2)
 
+list(APPEND CMAKE_MODULE_PATH ${catch2_SOURCE_DIR}/extras)
+include(CTest)
+include(Catch)
+
 # Main test executable; depends on Catch2, requires C++14 support.
 add_executable(tests
   main.cpp
@@ -23,6 +27,8 @@ target_link_libraries(tests
     Boost::iostreams
     Catch2::Catch2WithMain
 )
+
+catch_discover_tests(tests WORKING_DIRECTORY ${PROJECT_SOURCE_DIR})
 
 # Seems there is a bug in GCC 12 where it issues a warning in the standard
 # library code for a trivial `std::reverse` call.

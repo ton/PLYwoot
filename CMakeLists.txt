@@ -73,6 +73,7 @@ target_link_libraries(plywoot
 
 # Define additional targets depending on the current configuration.
 if(PLYWOOT_WITH_TEST)
+  enable_testing()
   add_subdirectory(test)
 else()
   message(STATUS "Building unit tests is disabled, set PLYWOOT_WITH_TEST to ON to build the unit test binary.")
