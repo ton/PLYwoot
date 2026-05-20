@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.5)
+cmake_minimum_required(VERSION 3.14)
 
 project(PLYwoot
   VERSION 0.0.1
@@ -21,18 +21,32 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
 add_compile_options("$<$<CONFIG:DEBUG>:-Wall;-Wextra;-Wshadow;-Wno-maybe-uninitialized;-Wno-unused-variable;-Wno-unused-function;-Wno-unused-parameter;-Werror;-fno-strict-aliasing;-march=native>")
 add_compile_options("$<$<CONFIG:RELEASE>:-Wall;-Wextra;-Wshadow;-Wno-maybe-uninitialized;-Wpedantic;-Werror;-Wno-unused-parameter;-fno-strict-aliasing;-march=native>")
 
+# Options supported by this build.
+option(PLYWOOT_WITH_FAST_FLOAT "Enable building tests and tools with `fast_float` support" OFF)
+option(PLYWOOT_WITH_FAST_INT "Enable building tests and tools with `fast_int` support" OFF)
+option(PLYWOOT_WITH_TEST "Enable building the unit test binary" OFF)
+option(PLYWOOT_WITH_TOOLS "Enable building PLYwoot tools (rePLY only for now)" OFF)
+
 # External (optional) dependencies.
-include(FeatureSummary)
+include(FetchContent)
 
-find_package(FastFloat QUIET)
-set_package_properties(FastFloat PROPERTIES TYPE DESCRIPTION "fast and exact implementation of the C++ from_chars functions for float and double types.")
-set_package_properties(FastFloat PROPERTIES TYPE RECOMMENDED PURPOSE "Significantly improves ASCII parser performance.")
+if(PLYWOOT_WITH_FAST_FLOAT)
+  FetchContent_Declare(
+    FastFloat
+    GIT_REPOSITORY https://github.com/fastfloat/fast_float.git
+    GIT_TAG v8.2.5
+  )
+  FetchContent_MakeAvailable(FastFloat)
+endif()
 
-find_package(fast_int QUIET)
-set_package_properties(fast_int PROPERTIES TYPE DESCRIPTION "header-only C++11 implementation of the C++17 `from_chars` functions for integer types.")
-set_package_properties(fast_int PROPERTIES TYPE RECOMMENDED PURPOSE "Significantly improves ASCII parser performance.")
-
-feature_summary(WHAT ALL INCLUDE_QUIET_PACKAGES)
+if(PLYWOOT_WITH_FAST_INT)
+  FetchContent_Declare(
+    fast_int
+    GIT_REPOSITORY https://github.com/ton/fast_int.git
+    GIT_TAG v0.0.1
+  )
+  FetchContent_MakeAvailable(fast_int)
+endif()
 
 # Define the header-only library target for plywoot.
 add_library(plywoot INTERFACE)
@@ -44,6 +58,8 @@ target_include_directories(plywoot
 target_compile_features(plywoot INTERFACE cxx_std_17)
 set_property(TARGET plywoot PROPERTY CXX_EXTENSIONS OFF)
 
+# Conditionally add `fast_int` and `FastFloat` dependencies in case they have
+# been found.
 target_compile_definitions(plywoot
   INTERFACE
   $<$<TARGET_EXISTS:FastFloat::fast_float>:PLYWOOT_USE_FAST_FLOAT>
@@ -55,8 +71,18 @@ target_link_libraries(plywoot
   $<$<TARGET_EXISTS:fast_int::fast_int>:fast_int::fast_int>
 )
 
-add_subdirectory(test)
-add_subdirectory(tools)
+# Define additional targets depending on the current configuration.
+if(PLYWOOT_WITH_TEST)
+  add_subdirectory(test)
+else()
+  message(STATUS "Building unit tests is disabled, set PLYWOOT_WITH_TEST to ON to build the unit test binary.")
+endif()
+
+if(PLYWOOT_WITH_TOOLS)
+  add_subdirectory(tools)
+else()
+  message(STATUS "Building tools is disabled, set PLYWOOT_WITH_TOOLS to ON to build tools.")
+endif()
 
 # install target
 include(GNUInstallDirs)

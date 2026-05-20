@@ -1,5 +1,12 @@
 find_package(Boost 1.70 COMPONENTS iostreams REQUIRED CONFIG)
-find_package(Catch2 3 REQUIRED)
+
+FetchContent_Declare(
+  Catch2
+  GIT_REPOSITORY https://github.com/catchorg/Catch2
+  GIT_TAG v3.14.0
+)
+
+FetchContent_MakeAvailable(Catch2)
 
 # Main test executable; depends on Catch2, requires C++14 support.
 add_executable(tests
