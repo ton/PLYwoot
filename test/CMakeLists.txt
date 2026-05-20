@@ -12,9 +12,9 @@ add_executable(tests
 )
 target_link_libraries(tests
   PRIVATE
-  plywoot
-  Boost::iostreams
-  Catch2::Catch2WithMain
+    plywoot
+    Boost::iostreams
+    Catch2::Catch2WithMain
 )
 
 # Seems there is a bug in GCC 12 where it issues a warning in the standard
