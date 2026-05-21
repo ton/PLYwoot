@@ -11,6 +11,9 @@ project(PLYwoot
 set(PROJECT_CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/cmake")
 list(APPEND CMAKE_MODULE_PATH ${PROJECT_CMAKE_MODULE_PATH})
 
+# Hide 'up-to-date' installation messages.
+set(CMAKE_INSTALL_MESSAGE LAZY)
+
 # Put all executables in build/.
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
 
