@@ -83,7 +83,7 @@ struct UnexpectedToken : HeaderParserException
   UnexpectedToken(
       std::vector<detail::HeaderScanner::Token> expected,
       detail::HeaderScanner::Token found,
-      const std::string &tokenString)
+      const std::string &)
       : HeaderParserException(
             "unexpected token '" + detail::to_string(found) + "' found, expected a token in the set {" +
             std::accumulate(

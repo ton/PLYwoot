@@ -87,7 +87,11 @@ constexpr std::size_t align(std::size_t ptr, std::size_t alignment)
 ///     text
 /// \return converted integer number
 template<typename Number>
+#ifdef PLYWOOT_USE_FAST_INT
 inline Number to_number(const char *first, const char *last, const char **end)
+#else
+inline Number to_number(const char *first, const char *, const char **end)
+#endif
 {
 #ifdef PLYWOOT_USE_FAST_INT
   Number n{};
@@ -109,7 +113,11 @@ inline Number to_number(const char *first, const char *last, const char **end)
 ///     text
 /// \return converted single precision floating point number
 template<>
+#ifdef PLYWOOT_USE_FAST_FLOAT
 inline float to_number<>(const char *first, const char *last, const char **end)
+#else
+inline float to_number<>(const char *first, const char *, const char **end)
+#endif
 {
 #ifdef PLYWOOT_USE_FAST_FLOAT
   float x;
@@ -131,7 +139,11 @@ inline float to_number<>(const char *first, const char *last, const char **end)
 ///     text
 /// \return converted double precision floating point number
 template<>
+#ifdef PLYWOOT_USE_FAST_FLOAT
 inline double to_number<double>(const char *first, const char *last, const char **end)
+#else
+inline double to_number<double>(const char *first, const char *, const char **end)
+#endif
 {
 #ifdef PLYWOOT_USE_FAST_FLOAT
   double x;
