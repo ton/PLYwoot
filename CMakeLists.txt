@@ -11,15 +11,8 @@ project(PLYwoot
 set(PROJECT_CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/cmake")
 list(APPEND CMAKE_MODULE_PATH ${PROJECT_CMAKE_MODULE_PATH})
 
-# Specify release flags.
-set(CMAKE_CXX_FLAGS_RELEASE "-O3 -DNDEBUG")
-
 # Put all executables in build/.
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
-
-# Set the appropriate compiler flags.
-add_compile_options("$<$<CONFIG:DEBUG>:-Wall;-Wextra;-Wshadow;-Wno-maybe-uninitialized;-Wno-unused-variable;-Wno-unused-function;-Wno-unused-parameter;-Werror;-fno-strict-aliasing;-march=native>")
-add_compile_options("$<$<CONFIG:RELEASE>:-Wall;-Wextra;-Wshadow;-Wno-maybe-uninitialized;-Wpedantic;-Werror;-Wno-unused-parameter;-fno-strict-aliasing;-march=native>")
 
 # Improve configure step performance for big FetchContent dependencies, and do
 # not place fetched dependencies in the builds directory but rather in `.deps`.
@@ -74,6 +67,17 @@ target_link_libraries(plywoot
   INTERFACE
   $<$<TARGET_EXISTS:FastFloat::fast_float>:FastFloat::fast_float>
   $<$<TARGET_EXISTS:fast_int::fast_int>:fast_int::fast_int>
+)
+
+# Set the appropriate compiler flags.
+add_library(plywoot-compiler-flags INTERFACE)
+target_compile_options(plywoot-compiler-flags
+  INTERFACE
+    "$<$<CONFIG:DEBUG>:-O3;-DNDEBUG;-Wall;-Wextra;-Wshadow;-Wno-maybe-uninitialized;-Wno-unused-variable;-Wno-unused-function;-Wno-unused-parameter;-Werror;-fno-strict-aliasing;-march=native>"
+)
+target_compile_options(plywoot-compiler-flags
+  INTERFACE
+    "$<$<CONFIG:RELEASE>:-Wall;-Wextra;-Wshadow;-Wno-maybe-uninitialized;-Wpedantic;-Werror;-Wno-unused-parameter;-fno-strict-aliasing;-march=native>"
 )
 
 # Define additional targets depending on the current configuration.

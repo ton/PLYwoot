@@ -10,4 +10,5 @@ set_property(TARGET reply PROPERTY CXX_STANDARD 17)
 target_link_libraries(reply
   PRIVATE
     plywoot
+    plywoot-compiler-flags
 )
