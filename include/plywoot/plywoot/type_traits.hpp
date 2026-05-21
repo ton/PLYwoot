@@ -319,7 +319,7 @@ struct IsMemcpyable
 {
   bool operator()(const PlyPropertyConstIterator first, const PlyPropertyConstIterator last) const
   {
-    return first < last && isSame<T>(first->type());
+    return first != last && isSame<T>(first->type());
   }
 };
 
