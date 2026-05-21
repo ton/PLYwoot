@@ -21,6 +21,11 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
 add_compile_options("$<$<CONFIG:DEBUG>:-Wall;-Wextra;-Wshadow;-Wno-maybe-uninitialized;-Wno-unused-variable;-Wno-unused-function;-Wno-unused-parameter;-Werror;-fno-strict-aliasing;-march=native>")
 add_compile_options("$<$<CONFIG:RELEASE>:-Wall;-Wextra;-Wshadow;-Wno-maybe-uninitialized;-Wpedantic;-Werror;-Wno-unused-parameter;-fno-strict-aliasing;-march=native>")
 
+# Improve configure step performance for big FetchContent dependencies, and do
+# not place fetched dependencies in the builds directory but rather in `.deps`.
+set(FETCHCONTENT_UPDATES_DISCONNECTED ON)
+set(FETCHCONTENT_BASE_DIR "${PROJECT_SOURCE_DIR}/.deps" CACHE PATH "FetchContent base directory")
+
 # Options supported by this build.
 option(PLYWOOT_WITH_FAST_FLOAT "Enable building tests and tools with `fast_float` support" OFF)
 option(PLYWOOT_WITH_FAST_INT "Enable building tests and tools with `fast_int` support" OFF)
