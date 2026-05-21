@@ -72,16 +72,17 @@ target_link_libraries(plywoot
   $<$<TARGET_EXISTS:fast_int::fast_int>:fast_int::fast_int>
 )
 
-# Set the appropriate compiler flags.
 add_library(plywoot-compiler-flags INTERFACE)
-target_compile_options(plywoot-compiler-flags
-  INTERFACE
-    "$<$<CONFIG:DEBUG>:-O3;-DNDEBUG;-Wall;-Wextra;-Wshadow;-Wno-maybe-uninitialized;-Wno-unused-variable;-Wno-unused-function;-Wno-unused-parameter;-Werror;-fno-strict-aliasing;-march=native>"
-)
-target_compile_options(plywoot-compiler-flags
-  INTERFACE
-    "$<$<CONFIG:RELEASE>:-Wall;-Wextra;-Wshadow;-Wno-maybe-uninitialized;-Wpedantic;-Werror;-Wno-unused-parameter;-fno-strict-aliasing;-march=native>"
-)
+
+# Set the appropriate compiler flags (GCC)
+target_compile_options(plywoot-compiler-flags INTERFACE "$<$<CXX_COMPILER_ID:GNU>:-Wall;-Werror;-Wextra;-Wshadow;-Wno-unused-parameter;-fno-strict-aliasing>")
+target_compile_options(plywoot-compiler-flags INTERFACE "$<$<AND:$<CXX_COMPILER_ID:GNU>,$<CONFIG:DEBUG>>:-g;-Wno-unused-variable;-Wno-unused-function>")
+target_compile_options(plywoot-compiler-flags INTERFACE "$<$<AND:$<CXX_COMPILER_ID:GNU>,$<CONFIG:RELEASE>>:-Wpedantic;-O3;-DNDEBUG;-march=native>")
+
+# Set the appropriate compiler flags (MSVC)
+target_compile_options(plywoot-compiler-flags INTERFACE "$<$<CXX_COMPILER_ID:MSVC>:/W4;/WX;/permissive>")
+target_compile_options(plywoot-compiler-flags INTERFACE "$<$<AND:$<CXX_COMPILER_ID:MSVC>,$<CONFIG:DEBUG>>:/Od>")
+target_compile_options(plywoot-compiler-flags INTERFACE "$<$<AND:$<CXX_COMPILER_ID:MSVC>,$<CONFIG:RELEASE>>:/O2>")
 
 # Define additional targets depending on the current configuration.
 if(PLYWOOT_WITH_TEST)
