@@ -111,9 +111,15 @@ if(NOT TARGET uninstall)
 endif()
 
 # Create installation targets (because of `INSTALL_INTERFACE` above, headers are automatically included.
-install(TARGETS plywoot plywoot-reply
-  EXPORT ${PROJECT_NAME}_Targets
-)
+if(PLYWOOT_WITH_TOOLS)
+  install(TARGETS plywoot plywoot-reply
+    EXPORT ${PROJECT_NAME}_Targets
+  )
+else()
+  install(TARGETS plywoot
+    EXPORT ${PROJECT_NAME}_Targets
+  )
+endif()
 
 # Install a CMake config and version file.
 include(CMakePackageConfigHelpers)
