@@ -55,7 +55,7 @@ constexpr Ptr align(Ptr ptr, std::size_t alignment)
   // 0b111100. The factor (uintptr + alignment - 1u) guarantees that the
   // alignment bit is set unless (uintptr % alignment == 0).
   const auto uintptr = reinterpret_cast<uintptr_t>(ptr);
-  return reinterpret_cast<Ptr>((uintptr + alignment - 1u) & -alignment);
+  return reinterpret_cast<Ptr>((uintptr + alignment - 1u) & (~alignment + 1u));
 }
 
 /// Aligns the given input pointer. Implementation is taken from GCCs
@@ -73,7 +73,7 @@ constexpr std::size_t align(std::size_t ptr, std::size_t alignment)
   // For example, for an alignment value of 4, this turns 0b000100 into
   // 0b111100. The factor (ptr + alignment - 1u) guarantees that the
   // alignment bit is set unless (ptr % alignment == 0).
-  return (ptr + alignment - 1u) & -alignment;
+  return (ptr + alignment - 1u) & (~alignment + 1u);
 }
 
 /// Converts a text to an integer number. The <a
