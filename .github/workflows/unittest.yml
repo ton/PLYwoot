@@ -3,26 +3,32 @@ name: Unit tests
 on:
   push:
     branches: [ master ]
+    paths-ignore: ['README.md']
   pull_request:
     branches: [ master ]
+    paths-ignore: ['README.md']
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    name: ${{matrix.os}}, ${{matrix.std}}, ${{matrix.build_type}}, ${{matrix.platform}}
+    runs-on: ${{matrix.os}}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-2025]
+        platform: [x64]
+        build_type: [Debug, Release]
+        std: [11]
+
     steps:
-      - uses: actions/checkout@v3
+    - uses: actions/checkout@v6
 
-      - name: Install CMake, C++ compilers, and Boost
-        run: |
-          sudo apt install -y g++ gcc cmake libboost-iostreams-dev
+    - name: Configure
+      run: |
+        cmake -DCMAKE_BUILD_TYPE=${{matrix.build_type}} -DCMAKE_CXX_STANDARD=${{matrix.std}} -DPLYWOOT_WITH_TEST=ON -B build
 
-      - name: Download, build and install Catch2 version 3
-        run: |
-          wget https://github.com/catchorg/Catch2/archive/refs/tags/v3.5.2.tar.gz
-          tar xf v3.5.2.tar.gz
-          cd Catch2-3.5.2
-          cmake -DCMAKE_BUILD_TYPE=Release -B build && sudo cmake --build build -j8 --target install
+    - name: Build
+      run: cmake --build build -j
 
-      - name: Build and execute PLYwoot unit tests
-        run: |
-          cmake -DCMAKE_BUILD_TYPE=Release -B build && cmake --build build -j8 && build/tests
+    - name: Test
+      run: ctest --test-dir build -j
