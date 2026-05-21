@@ -1,13 +1,17 @@
-add_executable(reply)
+add_executable(plywoot-reply)
 
-target_sources(reply
+target_sources(plywoot-reply
   PRIVATE
     reply.cpp
 )
 
-set_property(TARGET reply PROPERTY CXX_STANDARD 17)
+set_target_properties(plywoot-reply
+  PROPERTIES
+    OUTPUT_NAME reply
+    CXX_STANDARD 17
+)
 
-target_link_libraries(reply
+target_link_libraries(plywoot-reply
   PRIVATE
     plywoot
     plywoot-compiler-flags

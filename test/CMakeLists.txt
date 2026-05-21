@@ -13,7 +13,7 @@ include(CTest)
 include(Catch)
 
 # Main test executable; depends on Catch2, requires C++14 support.
-add_executable(tests
+add_executable(plywoot-tests
   main.cpp
   test_convert.cpp
   test_istream.cpp
@@ -21,7 +21,10 @@ add_executable(tests
   test_iostream.cpp
   test_type_traits.cpp
 )
-target_link_libraries(tests
+set_target_properties(plywoot-tests
+  PROPERTIES OUTPUT_NAME tests
+)
+target_link_libraries(plywoot-tests
   PRIVATE
     plywoot
     plywoot-compiler-flags
@@ -29,7 +32,7 @@ target_link_libraries(tests
     Catch2::Catch2WithMain
 )
 
-catch_discover_tests(tests WORKING_DIRECTORY ${PROJECT_SOURCE_DIR})
+catch_discover_tests(plywoot-tests WORKING_DIRECTORY ${PROJECT_SOURCE_DIR})
 
 # Seems there is a bug in GCC 12 where it issues a warning in the standard
 # library code for a trivial `std::reverse` call.

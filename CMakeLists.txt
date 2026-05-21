@@ -108,7 +108,7 @@ if(NOT TARGET uninstall)
 endif()
 
 # Create installation targets (because of `INSTALL_INTERFACE` above, headers are automatically included.
-install(TARGETS plywoot reply
+install(TARGETS plywoot plywoot-reply
   EXPORT ${PROJECT_NAME}_Targets
 )
 
