@@ -75,7 +75,7 @@ target_link_libraries(plywoot
 add_library(plywoot-compiler-flags INTERFACE)
 
 # Set the appropriate compiler flags (GCC)
-target_compile_options(plywoot-compiler-flags INTERFACE "$<$<CXX_COMPILER_ID:GNU>:-Wall;-Werror;-Wextra;-Wshadow;-Wno-unused-parameter;-fno-strict-aliasing>")
+target_compile_options(plywoot-compiler-flags INTERFACE "$<$<CXX_COMPILER_ID:GNU>:-Wall;-Werror;-Wextra;-Wshadow;-Wno-maybe-uninitialized;-Wno-unused-parameter;-fno-strict-aliasing>")
 target_compile_options(plywoot-compiler-flags INTERFACE "$<$<AND:$<CXX_COMPILER_ID:GNU>,$<CONFIG:DEBUG>>:-g;-Wno-unused-variable;-Wno-unused-function>")
 target_compile_options(plywoot-compiler-flags INTERFACE "$<$<AND:$<CXX_COMPILER_ID:GNU>,$<CONFIG:RELEASE>>:-Wpedantic;-O3;-DNDEBUG;-march=native>")
 

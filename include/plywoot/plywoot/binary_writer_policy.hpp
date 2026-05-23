@@ -59,7 +59,7 @@ public:
   template<typename PlySizeT, typename PlyT, typename SrcT, typename EndiannessDependent = Endianness>
   void writeList(const SrcT *t, std::size_t n) const
   {
-    writeNumber<PlySizeT>(n);
+    writeNumber<PlySizeT>(static_cast<PlySizeT>(n));
     writeNumbers<PlyT, SrcT>(t, n);
   }
 
@@ -74,7 +74,7 @@ public:
     }
     else
     {
-      for (std::size_t i = 0; i < n; ++i) { writeNumber<PlyT>(*t++); }
+      for (std::size_t i = 0; i < n; ++i) { writeNumber<PlyT>(static_cast<const PlyT>(*t++)); }
     }
   }
 

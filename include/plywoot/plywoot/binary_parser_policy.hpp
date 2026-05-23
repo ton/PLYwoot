@@ -56,7 +56,7 @@ public:
     {
       is_.skip(
           e.size() * std::accumulate(
-                         properties.begin(), properties.end(), static_cast<std::size_t>(0),
+                         properties.begin(), properties.end(), std::size_t{0},
                          [](std::size_t acc, const PlyProperty &p) { return acc + sizeOf(p.type()); }));
     }
     else
@@ -99,10 +99,10 @@ public:
           size = readNumber<unsigned int>();
           break;
         case PlyDataType::Float:
-          size = readNumber<float>();
+          size = static_cast<std::size_t>(readNumber<float>());
           break;
         case PlyDataType::Double:
-          size = readNumber<double>();
+          size = static_cast<std::size_t>(readNumber<double>());
           break;
       }
 
@@ -139,7 +139,7 @@ public:
 
       // Perform endianess conversion.
       DestT *to = reinterpret_cast<DestT *>(dest);
-      for (std::size_t i = 0; i < N; ++i, ++to) { *to = byte_swap(static_cast<PlyT>(*to)); }
+      for (std::size_t i = 0; i < N; ++i, ++to) { *to = static_cast<DestT>(byte_swap(static_cast<PlyT>(*to))); }
 
       return result;
     }

@@ -98,7 +98,7 @@ inline Number to_number(const char *first, const char *, const char **end)
   *end = fast_int::from_chars(first, last, n).ptr;
   return n;
 #else
-  return std::strtoll(first, const_cast<char **>(end), 10);
+  return static_cast<Number>(std::strtoll(first, const_cast<char **>(end), 10));
 #endif
 }
 

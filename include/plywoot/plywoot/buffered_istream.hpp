@@ -95,7 +95,7 @@ public:
 
       const From *from = reinterpret_cast<const From *>(c_);
       To *to = reinterpret_cast<To *>(dest);
-      for (std::size_t i = 0; i < N; ++i) { *to++ = *from++; }
+      for (std::size_t i = 0; i < N; ++i) { *to++ = static_cast<To>(*from++); }
 
       c_ += bytesToRead;
 

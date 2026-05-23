@@ -213,7 +213,7 @@ private:
         // any bytes need to be skipped, the ASCII parser will just ignore the
         // remainder of the line to read, and as such skip to the next element.
         const std::size_t numBytesToSkip =
-            std::accumulate(firstToSkip, last, 0ul, [](std::size_t acc, const PlyProperty &p) {
+            std::accumulate(firstToSkip, last, std::size_t{0}, [](std::size_t acc, const PlyProperty &p) {
               return acc + sizeOf(p.isList() ? p.sizeType() : p.type());
             });
 
@@ -254,8 +254,8 @@ private:
     std::vector<DestT> &v = *reinterpret_cast<std::vector<DestT> *>(dest);
 
     const PlySizeT size = this->template readNumber<PlySizeT>();
-    v.reserve(size);
-    for (PlySizeT i = 0; i < size; ++i) { v.push_back(this->template readNumber<PlyT>()); }
+    v.reserve(static_cast<std::size_t>(size));
+    for (PlySizeT i = 0; i < size; ++i) { v.push_back(static_cast<DestT>(this->template readNumber<PlyT>())); }
 
     return dest + sizeof(std::vector<DestT>);
   }
@@ -304,7 +304,7 @@ private:
     if constexpr (std::is_arithmetic_v<DestT>)
     {
       dest = static_cast<std::uint8_t *>(detail::align(dest, alignof(DestT)));
-      *reinterpret_cast<DestT *>(dest) = this->template readNumber<PlyT>();
+      *reinterpret_cast<DestT *>(dest) = static_cast<DestT>(this->template readNumber<PlyT>());
       return dest + sizeof(DestT);
     }
     else { return static_cast<std::uint8_t *>(detail::align(dest, alignof(DestT))) + sizeof(DestT); }

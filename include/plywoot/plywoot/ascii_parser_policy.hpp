@@ -108,7 +108,7 @@ public:
     // TODO(ton): needs to be specialized for improved performance.
     for (std::size_t i = 0; i < N; ++i, dest += sizeof(DestT))
     {
-      *reinterpret_cast<DestT *>(dest) = readNumber<PlyT>();
+      *reinterpret_cast<DestT *>(dest) = static_cast<DestT>(readNumber<PlyT>());
     }
     return dest;
   }

@@ -82,7 +82,7 @@ TEST_CASE("Test converting an ASCII PLY file to binary little and big endian.", 
 
   // Verify the contents of the elements.
   const std::vector<Element> expectedElements = {
-      {86, 255, -32768, 65535, -2147483648, 2147483647, 1.0, -1.0},
+      {86, 255, -32768, 65535, -2147483647 - 1, 2147483647, 1.0, -1.0},
       {87, 254, -32767, 65534, -2147483647, 2147483646, 2.0, -2.0},
       {88, 253, -32766, 65533, -2147483646, 2147483645, 3.0, -3.0},
       {89, 252, -32765, 65532, -2147483645, 2147483644, 4.0, -4.0},
@@ -104,10 +104,10 @@ TEST_CASE("Test converting an ASCII PLY file to binary little and big endian.", 
   const std::vector<Ints> inputInts = plyFile.readElement<Ints, IntsLayout>();
   const std::vector<Ints> expectedInts = {
       {},
-      {-2147483648},
-      {-2147483648, -2147483647},
-      {-2147483648, -2147483647, -2147483646},
-      {-2147483648, -2147483647, -2147483646, -2147483645}};
+      {-2147483647 - 1},
+      {-2147483647 - 1, -2147483647},
+      {-2147483647 - 1, -2147483647, -2147483646},
+      {-2147483647 - 1, -2147483647, -2147483646, -2147483645}};
   REQUIRE(expectedInts == inputInts);
 
   // Convert the input file to another format.

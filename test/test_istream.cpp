@@ -531,7 +531,7 @@ TEST_CASE("Test reading Standford Bunny", "[istream]")
   }
 
   CHECK(triangles.back() == Triangle{17277, 17346, 17345});
-  CHECK(vertices.back() == Vertex{-0.0400442, 0.15362, -0.00816685});
+  CHECK(vertices.back() == Vertex{-0.0400442f, 0.15362f, -0.00816685f});
 }
 
 TEST_CASE("Test reading a zipped binary PLY file", "[istream]")
@@ -563,7 +563,7 @@ TEST_CASE("Test reading a zipped binary PLY file", "[istream]")
   }
 
   CHECK(triangles.back() == Triangle{17277, 17346, 17345});
-  CHECK(vertices.back() == Vertex{-0.0400442, 0.15362, -0.00816685});
+  CHECK(vertices.back() == Vertex{-0.0400442f, 0.15362f, -0.00816685f});
 }
 
 TEST_CASE("Test reading data that can be directly mapped on to the target layout", "[istream]")
