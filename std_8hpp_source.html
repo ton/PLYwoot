@@ -118,7 +118,7 @@ $(document).ready(function(){initNavTree('std_8hpp_source.html',''); initResizab
 <a href="std_8hpp.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span><span class="comment">/*</span></div>
 <div class="line"><a id="l00002" name="l00002"></a><span class="lineno">    2</span><span class="comment">   This file is part of PLYwoot, a header-only PLY parser.</span></div>
 <div class="line"><a id="l00003" name="l00003"></a><span class="lineno">    3</span><span class="comment"></span> </div>
-<div class="line"><a id="l00004" name="l00004"></a><span class="lineno">    4</span><span class="comment">   Copyright (C) 2023-2025, Ton van den Heuvel</span></div>
+<div class="line"><a id="l00004" name="l00004"></a><span class="lineno">    4</span><span class="comment">   Copyright (C) 2023-2026, Ton van den Heuvel</span></div>
 <div class="line"><a id="l00005" name="l00005"></a><span class="lineno">    5</span><span class="comment"></span> </div>
 <div class="line"><a id="l00006" name="l00006"></a><span class="lineno">    6</span><span class="comment">   PLYwoot is free software: you can redistribute it and/or modify</span></div>
 <div class="line"><a id="l00007" name="l00007"></a><span class="lineno">    7</span><span class="comment">   it under the terms of the GNU General Public License as published by</span></div>
@@ -195,7 +195,7 @@ $(document).ready(function(){initNavTree('std_8hpp_source.html',''); initResizab
 <div class="line"><a id="l00098" name="l00098"></a><span class="lineno">   98</span>  *end = fast_int::from_chars(first, last, n).ptr;</div>
 <div class="line"><a id="l00099" name="l00099"></a><span class="lineno">   99</span>  <span class="keywordflow">return</span> n;</div>
 <div class="line"><a id="l00100" name="l00100"></a><span class="lineno">  100</span><span class="preprocessor">#else</span></div>
-<div class="line"><a id="l00101" name="l00101"></a><span class="lineno">  101</span>  <span class="keywordflow">return</span> std::strtoll(first, <span class="keyword">const_cast&lt;</span><span class="keywordtype">char</span> **<span class="keyword">&gt;</span>(end), 10);</div>
+<div class="line"><a id="l00101" name="l00101"></a><span class="lineno">  101</span>  <span class="keywordflow">return</span> <span class="keyword">static_cast&lt;</span>Number<span class="keyword">&gt;</span>(std::strtoll(first, <span class="keyword">const_cast&lt;</span><span class="keywordtype">char</span> **<span class="keyword">&gt;</span>(end), 10));</div>
 <div class="line"><a id="l00102" name="l00102"></a><span class="lineno">  102</span><span class="preprocessor">#endif</span></div>
 <div class="line"><a id="l00103" name="l00103"></a><span class="lineno">  103</span>}</div>
 </div>

@@ -118,7 +118,7 @@ $(document).ready(function(){initNavTree('binary__writer__policy_8hpp_source.htm
 <a href="binary__writer__policy_8hpp.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span><span class="comment">/*</span></div>
 <div class="line"><a id="l00002" name="l00002"></a><span class="lineno">    2</span><span class="comment">   This file is part of PLYwoot, a header-only PLY parser.</span></div>
 <div class="line"><a id="l00003" name="l00003"></a><span class="lineno">    3</span><span class="comment"></span> </div>
-<div class="line"><a id="l00004" name="l00004"></a><span class="lineno">    4</span><span class="comment">   Copyright (C) 2023-2025, Ton van den Heuvel</span></div>
+<div class="line"><a id="l00004" name="l00004"></a><span class="lineno">    4</span><span class="comment">   Copyright (C) 2023-2026, Ton van den Heuvel</span></div>
 <div class="line"><a id="l00005" name="l00005"></a><span class="lineno">    5</span><span class="comment"></span> </div>
 <div class="line"><a id="l00006" name="l00006"></a><span class="lineno">    6</span><span class="comment">   PLYwoot is free software: you can redistribute it and/or modify</span></div>
 <div class="line"><a id="l00007" name="l00007"></a><span class="lineno">    7</span><span class="comment">   it under the terms of the GNU General Public License as published by</span></div>
@@ -168,7 +168,7 @@ $(document).ready(function(){initNavTree('binary__writer__policy_8hpp_source.htm
 <div class="line"><a id="l00059" name="l00059"></a><span class="lineno">   59</span>  <span class="keyword">template</span>&lt;<span class="keyword">typename</span> PlySizeT, <span class="keyword">typename</span> PlyT, <span class="keyword">typename</span> SrcT, <span class="keyword">typename</span> EndiannessDependent = Endianness&gt;</div>
 <div class="line"><a id="l00060" name="l00060"></a><span class="lineno">   60</span>  <span class="keywordtype">void</span> writeList(<span class="keyword">const</span> SrcT *t, std::size_t n)<span class="keyword"> const</span></div>
 <div class="line"><a id="l00061" name="l00061"></a><span class="lineno">   61</span><span class="keyword">  </span>{</div>
-<div class="line"><a id="l00062" name="l00062"></a><span class="lineno">   62</span>    writeNumber&lt;PlySizeT&gt;(n);</div>
+<div class="line"><a id="l00062" name="l00062"></a><span class="lineno">   62</span>    writeNumber&lt;PlySizeT&gt;(<span class="keyword">static_cast&lt;</span>PlySizeT<span class="keyword">&gt;</span>(n));</div>
 <div class="line"><a id="l00063" name="l00063"></a><span class="lineno">   63</span>    writeNumbers&lt;PlyT, SrcT&gt;(t, n);</div>
 <div class="line"><a id="l00064" name="l00064"></a><span class="lineno">   64</span>  }</div>
 <div class="line"><a id="l00065" name="l00065"></a><span class="lineno">   65</span> </div>

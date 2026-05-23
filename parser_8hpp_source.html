@@ -118,7 +118,7 @@ $(document).ready(function(){initNavTree('parser_8hpp_source.html',''); initResi
 <a href="parser_8hpp.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span><span class="comment">/*</span></div>
 <div class="line"><a id="l00002" name="l00002"></a><span class="lineno">    2</span><span class="comment">   This file is part of PLYwoot, a header-only PLY parser.</span></div>
 <div class="line"><a id="l00003" name="l00003"></a><span class="lineno">    3</span><span class="comment"></span> </div>
-<div class="line"><a id="l00004" name="l00004"></a><span class="lineno">    4</span><span class="comment">   Copyright (C) 2023-2025, Ton van den Heuvel</span></div>
+<div class="line"><a id="l00004" name="l00004"></a><span class="lineno">    4</span><span class="comment">   Copyright (C) 2023-2026, Ton van den Heuvel</span></div>
 <div class="line"><a id="l00005" name="l00005"></a><span class="lineno">    5</span><span class="comment"></span> </div>
 <div class="line"><a id="l00006" name="l00006"></a><span class="lineno">    6</span><span class="comment">   PLYwoot is free software: you can redistribute it and/or modify</span></div>
 <div class="line"><a id="l00007" name="l00007"></a><span class="lineno">    7</span><span class="comment">   it under the terms of the GNU General Public License as published by</span></div>
@@ -332,7 +332,7 @@ $(document).ready(function(){initNavTree('parser_8hpp_source.html',''); initResi
 <div class="line"><a id="l00255" name="l00255"></a><span class="lineno">  255</span> </div>
 <div class="line"><a id="l00256" name="l00256"></a><span class="lineno">  256</span>    <span class="keyword">const</span> PlySizeT size = this-&gt;<span class="keyword">template</span> readNumber&lt;PlySizeT&gt;();</div>
 <div class="line"><a id="l00257" name="l00257"></a><span class="lineno">  257</span>    v.reserve(size);</div>
-<div class="line"><a id="l00258" name="l00258"></a><span class="lineno">  258</span>    <span class="keywordflow">for</span> (PlySizeT i = 0; i &lt; size; ++i) { v.push_back(this-&gt;<span class="keyword">template</span> readNumber&lt;PlyT&gt;()); }</div>
+<div class="line"><a id="l00258" name="l00258"></a><span class="lineno">  258</span>    <span class="keywordflow">for</span> (PlySizeT i = 0; i &lt; size; ++i) { v.push_back(<span class="keyword">static_cast&lt;</span>DestT<span class="keyword">&gt;</span>(this-&gt;<span class="keyword">template</span> readNumber&lt;PlyT&gt;())); }</div>
 <div class="line"><a id="l00259" name="l00259"></a><span class="lineno">  259</span> </div>
 <div class="line"><a id="l00260" name="l00260"></a><span class="lineno">  260</span>    <span class="keywordflow">return</span> dest + <span class="keyword">sizeof</span>(std::vector&lt;DestT&gt;);</div>
 <div class="line"><a id="l00261" name="l00261"></a><span class="lineno">  261</span>  }</div>
@@ -381,7 +381,7 @@ $(document).ready(function(){initNavTree('parser_8hpp_source.html',''); initResi
 <div class="line"><a id="l00304" name="l00304"></a><span class="lineno">  304</span>    <span class="keywordflow">if</span> <span class="keyword">constexpr</span> (std::is_arithmetic_v&lt;DestT&gt;)</div>
 <div class="line"><a id="l00305" name="l00305"></a><span class="lineno">  305</span>    {</div>
 <div class="line"><a id="l00306" name="l00306"></a><span class="lineno">  306</span>      dest = <span class="keyword">static_cast&lt;</span>std::uint8_t *<span class="keyword">&gt;</span>(detail::align(dest, <span class="keyword">alignof</span>(DestT)));</div>
-<div class="line"><a id="l00307" name="l00307"></a><span class="lineno">  307</span>      *<span class="keyword">reinterpret_cast&lt;</span>DestT *<span class="keyword">&gt;</span>(dest) = this-&gt;<span class="keyword">template</span> readNumber&lt;PlyT&gt;();</div>
+<div class="line"><a id="l00307" name="l00307"></a><span class="lineno">  307</span>      *<span class="keyword">reinterpret_cast&lt;</span>DestT *<span class="keyword">&gt;</span>(dest) = <span class="keyword">static_cast&lt;</span>DestT<span class="keyword">&gt;</span>(this-&gt;<span class="keyword">template</span> readNumber&lt;PlyT&gt;());</div>
 <div class="line"><a id="l00308" name="l00308"></a><span class="lineno">  308</span>      <span class="keywordflow">return</span> dest + <span class="keyword">sizeof</span>(DestT);</div>
 <div class="line"><a id="l00309" name="l00309"></a><span class="lineno">  309</span>    }</div>
 <div class="line"><a id="l00310" name="l00310"></a><span class="lineno">  310</span>    <span class="keywordflow">else</span> { <span class="keywordflow">return</span> <span class="keyword">static_cast&lt;</span>std::uint8_t *<span class="keyword">&gt;</span>(detail::align(dest, <span class="keyword">alignof</span>(DestT))) + <span class="keyword">sizeof</span>(DestT); }</div>
