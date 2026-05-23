@@ -194,7 +194,7 @@ $(document).ready(function(){initNavTree('buffered__istream_8hpp_source.html',''
 <div class="line"><a id="l00095" name="l00095"></a><span class="lineno">   95</span> </div>
 <div class="line"><a id="l00096" name="l00096"></a><span class="lineno">   96</span>      <span class="keyword">const</span> From *from = <span class="keyword">reinterpret_cast&lt;</span><span class="keyword">const </span>From *<span class="keyword">&gt;</span>(c_);</div>
 <div class="line"><a id="l00097" name="l00097"></a><span class="lineno">   97</span>      To *to = <span class="keyword">reinterpret_cast&lt;</span>To *<span class="keyword">&gt;</span>(dest);</div>
-<div class="line"><a id="l00098" name="l00098"></a><span class="lineno">   98</span>      <span class="keywordflow">for</span> (std::size_t i = 0; i &lt; N; ++i) { *to++ = *from++; }</div>
+<div class="line"><a id="l00098" name="l00098"></a><span class="lineno">   98</span>      <span class="keywordflow">for</span> (std::size_t i = 0; i &lt; N; ++i) { *to++ = <span class="keyword">static_cast&lt;</span>To<span class="keyword">&gt;</span>(*from++); }</div>
 <div class="line"><a id="l00099" name="l00099"></a><span class="lineno">   99</span> </div>
 <div class="line"><a id="l00100" name="l00100"></a><span class="lineno">  100</span>      c_ += bytesToRead;</div>
 <div class="line"><a id="l00101" name="l00101"></a><span class="lineno">  101</span> </div>

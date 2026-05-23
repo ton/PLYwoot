@@ -199,7 +199,7 @@ $(document).ready(function(){initNavTree('ascii__parser__policy_8hpp_source.html
 <div class="line"><a id="l00108" name="l00108"></a><span class="lineno">  108</span>    <span class="comment">// TODO(ton): needs to be specialized for improved performance.</span></div>
 <div class="line"><a id="l00109" name="l00109"></a><span class="lineno">  109</span>    <span class="keywordflow">for</span> (std::size_t i = 0; i &lt; N; ++i, dest += <span class="keyword">sizeof</span>(DestT))</div>
 <div class="line"><a id="l00110" name="l00110"></a><span class="lineno">  110</span>    {</div>
-<div class="line"><a id="l00111" name="l00111"></a><span class="lineno">  111</span>      *<span class="keyword">reinterpret_cast&lt;</span>DestT *<span class="keyword">&gt;</span>(dest) = readNumber&lt;PlyT&gt;();</div>
+<div class="line"><a id="l00111" name="l00111"></a><span class="lineno">  111</span>      *<span class="keyword">reinterpret_cast&lt;</span>DestT *<span class="keyword">&gt;</span>(dest) = <span class="keyword">static_cast&lt;</span>DestT<span class="keyword">&gt;</span>(readNumber&lt;PlyT&gt;());</div>
 <div class="line"><a id="l00112" name="l00112"></a><span class="lineno">  112</span>    }</div>
 <div class="line"><a id="l00113" name="l00113"></a><span class="lineno">  113</span>    <span class="keywordflow">return</span> dest;</div>
 <div class="line"><a id="l00114" name="l00114"></a><span class="lineno">  114</span>  }</div>
