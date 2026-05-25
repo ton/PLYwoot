@@ -34,7 +34,8 @@ std::optional<std::string> convert(
     plywoot::PlyFormat format)
 {
   std::ifstream ifs{inputFilename};
-  if (!ifs) { return "could not open input file " + std::string(inputFilename); }
+
+  if (!ifs) { return "could not open input file " + inputFilename.string(); }
 
   std::ofstream of;
   if (outputFilename) { of.open(*outputFilename, std::ios::out | std::ios::trunc); }
@@ -42,7 +43,7 @@ std::optional<std::string> convert(
   std::ostream &os = (outputFilename ? of : std::cout);
   if (!os)
   {
-    return outputFilename ? "failed to open " + std::string(*outputFilename) + " for writing"
+    return outputFilename ? "failed to open " + outputFilename->string() + " for writing"
                           : "can not write to standard output";
   }
 
@@ -52,7 +53,7 @@ std::optional<std::string> convert(
   }
   catch (const std::exception &e)
   {
-    return "could not read input PLY file " + std::string(inputFilename) + "; " + e.what();
+    return "could not read input PLY file " + inputFilename.string() + " " + e.what();
   }
 
   return std::nullopt;
@@ -98,13 +99,13 @@ std::optional<std::string> maybeValidationError(
 
   if (!std::filesystem::exists(*inputFilename))
   {
-    return "specified input file " + std::string(*inputFilename) + " does not exist";
+    return std::string("specified input file ") + inputFilename->string() + " does not exist";
   }
 
   // In case no target format type was specified, issue an error.
   if (!requestedFormat)
   {
-    return "no target format specified, specify '-h' to display usage information";
+    return std::string("no target format specified, specify '-h' to display usage information");
   }
 
   return std::nullopt;
