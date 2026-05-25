@@ -38,7 +38,17 @@ Assuming PLYwoot has been installed using the previous steps, you should be able
 find_package(PLYwoot REQUIRED)
 ```
 
-PLYwoot exports one target named `PLYwoot::plywoot` which represents the header-only library to depend on.
+PLYwoot exports one target named `PLYwoot::plywoot` which represents the header-only library to depend on. Alternatively, you can use FetchContent to automatically download and integrate PLYwoot in your project:
+
+```cmake
+FetchBoostContent_MakeAvailable(PLYwoot)
+
+FetchContent_Declare(
+  PLYwoot
+  GIT_REPOSITORY https://github.com/ton/PLYwoot
+  GIT_TAG v0.3.0
+)
+```
 
 ## Parsing PLY files
 
