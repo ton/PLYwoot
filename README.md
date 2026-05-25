@@ -40,7 +40,7 @@ PLYwoot exports one target named `PLYwoot::plywoot` which represents the header-
 
 ## Parsing PLY files
 
-This section will demonstrate how to use PLYwoot to parse a PLY file for the typical use case of parsing triangle mesh data. For more details on the functions used below, please refer to the [API documentation](https://ton.github.io/PLYwoot).
+This section will demonstrate how to use PLYwoot to parse a PLY file for the typical use case of parsing triangle mesh data. For more details on the functions used below, please refer to the [API documentation](https://ton.github.io/PLYwoot). *A note to Windows users*; it is important to open an IO stream to a PLY file on disk in binary mode (pass `std::ios::binary` as part of the mode flags)!
 
 Suppose we have the following two very *naive* types `Triangle` and `Vertex` to represent a triangle and vertex in a triangle mesh:
 
