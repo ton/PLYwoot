@@ -341,7 +341,7 @@ private:
 
     // In case the element defines more properties than the source data,
     // append the missing properties with a default value of zero.
-    if (detail::numProperties<Ts...>() < static_cast<std::size_t>(std::distance(first, last)))
+    if (detail::numProperties<Ts...>() < std::distance(first, last))
     {
       this->writeMissingProperties(first + detail::numProperties<Ts...>(), last);
     }
