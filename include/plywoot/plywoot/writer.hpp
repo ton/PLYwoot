@@ -319,9 +319,15 @@ private:
     if constexpr (std::is_same_v<Policy, AsciiWriterPolicy>)
     {
       src = writeProperty<T>(src, first, last);
-      first += detail::numProperties<T>();
-      if (first < last) { this->writeTokenSeparator(); }
-      return writeProperties<Policy, U, Ts...>(src, first, last);
+      if (detail::numProperties<T>() < last - first)
+      {
+        this->writeTokenSeparator();
+        return writeProperties<Policy, U, Ts...>(src, first + detail::numProperties<T>(), last);
+      }
+      else
+      {
+        return writeProperties<Policy, U, Ts...>(src, last, last);
+      }
     }
     else
     {

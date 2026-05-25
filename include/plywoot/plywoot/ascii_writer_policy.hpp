@@ -97,7 +97,11 @@ public:
   /// since in case of a list we store a zero-element list.
   void writeMissingProperties(PlyPropertyConstIterator first, PlyPropertyConstIterator last) const
   {
-    while (first++ != last) { os_.write(" 0", 2); }
+    while (first < last)
+    {
+      os_.write(" 0", 2);
+      ++first;
+    }
   }
 
   /// Writes a newline separator.

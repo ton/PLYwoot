@@ -189,10 +189,11 @@ private:
   {
     const PlyPropertyConstIterator first = element.properties().begin();
     const PlyPropertyConstIterator last = element.properties().end();
-    const PlyPropertyConstIterator firstToSkip = first + detail::numProperties<Ts...>();
 
-    if (firstToSkip < last)
+    if (detail::numProperties<Ts...>() < (last - first))
     {
+      const PlyPropertyConstIterator firstToSkip = first + detail::numProperties<Ts...>();
+
       // In case any property that needs to be skipped is a list property, take
       // the expensive code path. Otherwise, we can calculate the exact number
       // of bytes to skip over.

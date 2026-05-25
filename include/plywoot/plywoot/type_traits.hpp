@@ -335,8 +335,7 @@ struct IsMemcpyable<reflect::Pack<T, N>>
 {
   bool operator()(const PlyPropertyConstIterator first, const PlyPropertyConstIterator last) const
   {
-    return first + N <= last &&
-           std::all_of(first, first + N, [](const PlyProperty &p) { return isSame<T>(p.type()); });
+    return first + N <= last && std::all_of(first, first + N, [](const PlyProperty &p) { return isSame<T>(p.type()); });
   }
 };
 
@@ -354,7 +353,7 @@ struct IsMemcpyable<reflect::Pack<T, N>>
 template<typename T>
 bool isMemcpyable(const PlyPropertyConstIterator first, const PlyPropertyConstIterator last)
 {
-  return first + detail::numProperties<T>() == last && IsMemcpyable<T>{}(first, last);
+  return detail::numProperties<T>() == std::distance(first, last) && IsMemcpyable<T>{}(first, last);
 }
 
 /// Returns whether the range of properties in [`first`, `last`) represents PLY
