@@ -115,7 +115,7 @@ TEST_CASE(
 
   using Layout = plywoot::reflect::Layout<int, float, double, std::string>;
 
-  struct MyPair
+  struct MyTuple
   {
     int i;
     float f;
@@ -123,7 +123,7 @@ TEST_CASE(
     std::string s;
   };
 
-  std::vector<MyPair> values{{1, 3.0, 0.0, "skip"}, {4, 86.0, 0.0, "this"}, {7, 42.0, 0.0, "please"}};
+  std::vector<MyTuple> values{{1, 3.0, 0.0, "skip"}, {4, 86.0, 0.0, "this"}, {7, 42.0, 0.0, "please"}};
   plyos.add(element, Layout{values});
   plyos.write(ss);
 
