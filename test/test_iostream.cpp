@@ -35,7 +35,7 @@ namespace {
 
 std::string readAll(const std::string &filename)
 {
-  std::ifstream ifs{filename};
+  std::ifstream ifs{filename, std::ios::binary};
 
   ifs.seekg(0, std::ios_base::end);
   const auto size = ifs.tellg();
@@ -43,6 +43,9 @@ std::string readAll(const std::string &filename)
 
   std::string text(size, '\0');
   ifs.read(&text[0], size);
+
+  // Remove all line-feeds to ensure results match between Windows and Unix.
+  text.erase(std::remove(text.begin(), text.end(), '\r'), text.end());
 
   return text;
 }
@@ -361,7 +364,7 @@ TEST_CASE(
 
 TEST_CASE("Test reading and writing of comments", "[iostream]")
 {
-  std::ifstream ifs{"test/input/ascii/comments.ply"};
+  std::ifstream ifs{"test/input/ascii/comments.ply", std::ios::binary};
   const plywoot::IStream plyFile{ifs};
   const std::vector<plywoot::PlyElement> elements{plyFile.elements()};
   REQUIRE(elements.size() == 1);

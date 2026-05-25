@@ -542,7 +542,7 @@ TEST_CASE("Test reading a zipped binary PLY file", "[istream]")
 
   auto inputFilename = "test/input/ascii/bunny.ply.gz";
 
-  std::ifstream ifs{inputFilename};
+  std::ifstream ifs{inputFilename, std::ios::binary};
 
   boost::iostreams::filtering_streambuf<boost::iostreams::input> buf;
   buf.push(boost::iostreams::gzip_decompressor());

@@ -38,7 +38,7 @@ std::optional<std::string> convert(
   if (!ifs) { return "could not open input file " + inputFilename.string(); }
 
   std::ofstream of;
-  if (outputFilename) { of.open(*outputFilename, std::ios::out | std::ios::trunc); }
+  if (outputFilename) { of.open(*outputFilename, std::ios::out | std::ios::binary | std::ios::trunc); }
 
   std::ostream &os = (outputFilename ? of : std::cout);
   if (!os)

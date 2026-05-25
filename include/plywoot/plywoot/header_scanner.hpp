@@ -55,6 +55,12 @@ namespace plywoot::detail {
 
 static constexpr const char endHeaderToken[] = "end_header";
 
+inline std::istream &getline_without_linefeed(std::istream &is, std::string &s)
+{
+  if (std::getline(is, s) && !s.empty() && s.back() == '\r') s.pop_back();
+  return is;
+}
+
 /// Lookup table to check whether a character is a token delimiter.
 /// The following characters are token delimiters:
 ///
@@ -98,7 +104,7 @@ public:
     if (!is) { throw InvalidInputStream{}; }
 
     std::string line;
-    while (bool(std::getline(is, line)) && line != endHeaderToken)
+    while (bool(detail::getline_without_linefeed(is, line)) && line != endHeaderToken)
     {
       buffer_.append(line);
       buffer_.push_back('\n');
