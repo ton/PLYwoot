@@ -16,6 +16,8 @@ FetchContent_Declare(
 
 FetchContent_MakeAvailable(Catch2)
 
+find_package(ZLIB REQUIRED)
+
 list(APPEND CMAKE_MODULE_PATH ${catch2_SOURCE_DIR}/extras)
 
 include(Catch)
