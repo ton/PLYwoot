@@ -182,42 +182,42 @@ $(document).ready(function(){initNavTree('type__traits_8hpp_source.html',''); in
 <div class="line"><a id="l00075" name="l00075"></a><span class="lineno">   75</span><span class="keyword">template</span>&lt;<span class="keyword">typename</span>... Ts&gt;</div>
 <div class="line"><a id="l00076" name="l00076"></a><span class="lineno">   76</span><span class="keyword">struct </span>NumProperties</div>
 <div class="line"><a id="l00077" name="l00077"></a><span class="lineno">   77</span>{</div>
-<div class="line"><a id="l00078" name="l00078"></a><span class="lineno">   78</span>  <span class="keyword">static</span> <span class="keyword">constexpr</span> std::size_t size = 0;</div>
+<div class="line"><a id="l00078" name="l00078"></a><span class="lineno">   78</span>  <span class="keyword">static</span> <span class="keyword">constexpr</span> std::ptrdiff_t size = 0;</div>
 <div class="line"><a id="l00079" name="l00079"></a><span class="lineno">   79</span>};</div>
 <div class="line"><a id="l00080" name="l00080"></a><span class="lineno">   80</span> </div>
 <div class="line"><a id="l00081" name="l00081"></a><span class="lineno">   81</span><span class="keyword">template</span>&lt;<span class="keyword">typename</span> T, <span class="keyword">typename</span>... Ts&gt;</div>
 <div class="line"><a id="l00082" name="l00082"></a><span class="lineno">   82</span><span class="keyword">struct </span>NumProperties&lt;T, Ts...&gt;</div>
 <div class="line"><a id="l00083" name="l00083"></a><span class="lineno">   83</span>{</div>
-<div class="line"><a id="l00084" name="l00084"></a><span class="lineno">   84</span>  <span class="keyword">static</span> <span class="keyword">constexpr</span> std::size_t size = NumProperties&lt;T&gt;::size + NumProperties&lt;Ts...&gt;::size;</div>
+<div class="line"><a id="l00084" name="l00084"></a><span class="lineno">   84</span>  <span class="keyword">static</span> <span class="keyword">constexpr</span> std::ptrdiff_t size = NumProperties&lt;T&gt;::size + NumProperties&lt;Ts...&gt;::size;</div>
 <div class="line"><a id="l00085" name="l00085"></a><span class="lineno">   85</span>};</div>
 <div class="line"><a id="l00086" name="l00086"></a><span class="lineno">   86</span> </div>
 <div class="line"><a id="l00087" name="l00087"></a><span class="lineno">   87</span><span class="keyword">template</span>&lt;<span class="keyword">typename</span> T, std::<span class="keywordtype">size_t</span> N&gt;</div>
 <div class="line"><a id="l00088" name="l00088"></a><span class="lineno">   88</span><span class="keyword">struct </span>NumProperties&lt;reflect::Array&lt;T, N&gt;&gt;</div>
 <div class="line"><a id="l00089" name="l00089"></a><span class="lineno">   89</span>{</div>
-<div class="line"><a id="l00090" name="l00090"></a><span class="lineno">   90</span>  <span class="keyword">static</span> <span class="keyword">constexpr</span> std::size_t size = 1;</div>
+<div class="line"><a id="l00090" name="l00090"></a><span class="lineno">   90</span>  <span class="keyword">static</span> <span class="keyword">constexpr</span> std::ptrdiff_t size = 1;</div>
 <div class="line"><a id="l00091" name="l00091"></a><span class="lineno">   91</span>};</div>
 <div class="line"><a id="l00092" name="l00092"></a><span class="lineno">   92</span> </div>
 <div class="line"><a id="l00093" name="l00093"></a><span class="lineno">   93</span><span class="keyword">template</span>&lt;<span class="keyword">typename</span> T, std::<span class="keywordtype">size_t</span> N&gt;</div>
 <div class="line"><a id="l00094" name="l00094"></a><span class="lineno">   94</span><span class="keyword">struct </span>NumProperties&lt;reflect::Pack&lt;T, N&gt;&gt;</div>
 <div class="line"><a id="l00095" name="l00095"></a><span class="lineno">   95</span>{</div>
-<div class="line"><a id="l00096" name="l00096"></a><span class="lineno">   96</span>  <span class="keyword">static</span> <span class="keyword">constexpr</span> std::size_t size = N;</div>
+<div class="line"><a id="l00096" name="l00096"></a><span class="lineno">   96</span>  <span class="keyword">static</span> <span class="keyword">constexpr</span> std::ptrdiff_t size = N;</div>
 <div class="line"><a id="l00097" name="l00097"></a><span class="lineno">   97</span>};</div>
 <div class="line"><a id="l00098" name="l00098"></a><span class="lineno">   98</span> </div>
 <div class="line"><a id="l00099" name="l00099"></a><span class="lineno">   99</span><span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt;</div>
 <div class="line"><a id="l00100" name="l00100"></a><span class="lineno">  100</span><span class="keyword">struct </span>NumProperties&lt;reflect::Stride&lt;T&gt;&gt;</div>
 <div class="line"><a id="l00101" name="l00101"></a><span class="lineno">  101</span>{</div>
-<div class="line"><a id="l00102" name="l00102"></a><span class="lineno">  102</span>  <span class="keyword">static</span> <span class="keyword">constexpr</span> std::size_t size = 0;</div>
+<div class="line"><a id="l00102" name="l00102"></a><span class="lineno">  102</span>  <span class="keyword">static</span> <span class="keyword">constexpr</span> std::ptrdiff_t size = 0;</div>
 <div class="line"><a id="l00103" name="l00103"></a><span class="lineno">  103</span>};</div>
 <div class="line"><a id="l00104" name="l00104"></a><span class="lineno">  104</span> </div>
 <div class="line"><a id="l00105" name="l00105"></a><span class="lineno">  105</span><span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt;</div>
 <div class="line"><a id="l00106" name="l00106"></a><span class="lineno">  106</span><span class="keyword">struct </span>NumProperties&lt;T&gt;</div>
 <div class="line"><a id="l00107" name="l00107"></a><span class="lineno">  107</span>{</div>
-<div class="line"><a id="l00108" name="l00108"></a><span class="lineno">  108</span>  <span class="keyword">static</span> <span class="keyword">constexpr</span> std::size_t size = 1;</div>
+<div class="line"><a id="l00108" name="l00108"></a><span class="lineno">  108</span>  <span class="keyword">static</span> <span class="keyword">constexpr</span> std::ptrdiff_t size = 1;</div>
 <div class="line"><a id="l00109" name="l00109"></a><span class="lineno">  109</span>};</div>
 <div class="line"><a id="l00110" name="l00110"></a><span class="lineno">  110</span> </div>
 <div class="line"><a id="l00117" name="l00117"></a><span class="lineno">  117</span><span class="keyword">template</span>&lt;<span class="keyword">typename</span>... Ts&gt;</div>
 <div class="foldopen" id="foldopen00118" data-start="{" data-end="}">
-<div class="line"><a id="l00118" name="l00118"></a><span class="lineno"><a class="line" href="type__traits_8hpp.html#a484093026f80593157cdb54b7473c762">  118</a></span><span class="keyword">constexpr</span> std::size_t <a class="code hl_function" href="type__traits_8hpp.html#a484093026f80593157cdb54b7473c762">numProperties</a>()</div>
+<div class="line"><a id="l00118" name="l00118"></a><span class="lineno"><a class="line" href="type__traits_8hpp.html#a9f6c50bd5efbd2effe92c9fe3588c5c3">  118</a></span><span class="keyword">constexpr</span> std::ptrdiff_t <a class="code hl_function" href="type__traits_8hpp.html#a9f6c50bd5efbd2effe92c9fe3588c5c3">numProperties</a>()</div>
 <div class="line"><a id="l00119" name="l00119"></a><span class="lineno">  119</span>{</div>
 <div class="line"><a id="l00120" name="l00120"></a><span class="lineno">  120</span>  <span class="keywordflow">return</span> NumProperties&lt;Ts...&gt;::size;</div>
 <div class="line"><a id="l00121" name="l00121"></a><span class="lineno">  121</span>}</div>
@@ -390,39 +390,38 @@ $(document).ready(function(){initNavTree('type__traits_8hpp_source.html',''); in
 <div class="line"><a id="l00335" name="l00335"></a><span class="lineno">  335</span>{</div>
 <div class="line"><a id="l00336" name="l00336"></a><span class="lineno">  336</span>  <span class="keywordtype">bool</span> operator()(<span class="keyword">const</span> PlyPropertyConstIterator first, <span class="keyword">const</span> PlyPropertyConstIterator last)<span class="keyword"> const</span></div>
 <div class="line"><a id="l00337" name="l00337"></a><span class="lineno">  337</span><span class="keyword">  </span>{</div>
-<div class="line"><a id="l00338" name="l00338"></a><span class="lineno">  338</span>    <span class="keywordflow">return</span> first + N &lt;= last &amp;&amp;</div>
-<div class="line"><a id="l00339" name="l00339"></a><span class="lineno">  339</span>           std::all_of(first, first + N, [](<span class="keyword">const</span> PlyProperty &amp;p) { <span class="keywordflow">return</span> isSame&lt;T&gt;(p.type()); });</div>
-<div class="line"><a id="l00340" name="l00340"></a><span class="lineno">  340</span>  }</div>
-<div class="line"><a id="l00341" name="l00341"></a><span class="lineno">  341</span>};</div>
-<div class="line"><a id="l00342" name="l00342"></a><span class="lineno">  342</span> </div>
-<div class="line"><a id="l00354" name="l00354"></a><span class="lineno">  354</span><span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt;</div>
-<div class="foldopen" id="foldopen00355" data-start="{" data-end="}">
-<div class="line"><a id="l00355" name="l00355"></a><span class="lineno"><a class="line" href="type__traits_8hpp.html#a949e8fc577d61855004e434f9668a6c8">  355</a></span><span class="keywordtype">bool</span> <a class="code hl_function" href="type__traits_8hpp.html#a949e8fc577d61855004e434f9668a6c8">isMemcpyable</a>(<span class="keyword">const</span> <a class="code hl_typedef" href="types_8hpp.html#a6f063358a1ff8e5618d999479da1f657">PlyPropertyConstIterator</a> first, <span class="keyword">const</span> <a class="code hl_typedef" href="types_8hpp.html#a6f063358a1ff8e5618d999479da1f657">PlyPropertyConstIterator</a> last)</div>
-<div class="line"><a id="l00356" name="l00356"></a><span class="lineno">  356</span>{</div>
-<div class="line"><a id="l00357" name="l00357"></a><span class="lineno">  357</span>  <span class="keywordflow">return</span> first + detail::numProperties&lt;T&gt;() == last &amp;&amp; IsMemcpyable&lt;T&gt;{}(first, last);</div>
-<div class="line"><a id="l00358" name="l00358"></a><span class="lineno">  358</span>}</div>
+<div class="line"><a id="l00338" name="l00338"></a><span class="lineno">  338</span>    <span class="keywordflow">return</span> first + N &lt;= last &amp;&amp; std::all_of(first, first + N, [](<span class="keyword">const</span> PlyProperty &amp;p) { <span class="keywordflow">return</span> isSame&lt;T&gt;(p.type()); });</div>
+<div class="line"><a id="l00339" name="l00339"></a><span class="lineno">  339</span>  }</div>
+<div class="line"><a id="l00340" name="l00340"></a><span class="lineno">  340</span>};</div>
+<div class="line"><a id="l00341" name="l00341"></a><span class="lineno">  341</span> </div>
+<div class="line"><a id="l00353" name="l00353"></a><span class="lineno">  353</span><span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt;</div>
+<div class="foldopen" id="foldopen00354" data-start="{" data-end="}">
+<div class="line"><a id="l00354" name="l00354"></a><span class="lineno"><a class="line" href="type__traits_8hpp.html#a949e8fc577d61855004e434f9668a6c8">  354</a></span><span class="keywordtype">bool</span> <a class="code hl_function" href="type__traits_8hpp.html#a949e8fc577d61855004e434f9668a6c8">isMemcpyable</a>(<span class="keyword">const</span> <a class="code hl_typedef" href="types_8hpp.html#a6f063358a1ff8e5618d999479da1f657">PlyPropertyConstIterator</a> first, <span class="keyword">const</span> <a class="code hl_typedef" href="types_8hpp.html#a6f063358a1ff8e5618d999479da1f657">PlyPropertyConstIterator</a> last)</div>
+<div class="line"><a id="l00355" name="l00355"></a><span class="lineno">  355</span>{</div>
+<div class="line"><a id="l00356" name="l00356"></a><span class="lineno">  356</span>  <span class="keywordflow">return</span> detail::numProperties&lt;T&gt;() == std::distance(first, last) &amp;&amp; IsMemcpyable&lt;T&gt;{}(first, last);</div>
+<div class="line"><a id="l00357" name="l00357"></a><span class="lineno">  357</span>}</div>
 </div>
-<div class="line"><a id="l00359" name="l00359"></a><span class="lineno">  359</span> </div>
-<div class="line"><a id="l00371" name="l00371"></a><span class="lineno">  371</span><span class="keyword">template</span>&lt;<span class="keyword">typename</span> T, <span class="keyword">typename</span> U, <span class="keyword">typename</span>... Ts&gt;</div>
-<div class="foldopen" id="foldopen00372" data-start="{" data-end="}">
-<div class="line"><a id="l00372" name="l00372"></a><span class="lineno"><a class="line" href="type__traits_8hpp.html#a1d3cac67a1f0930eedbe584a729ecb9d">  372</a></span><span class="keywordtype">bool</span> <a class="code hl_function" href="type__traits_8hpp.html#a949e8fc577d61855004e434f9668a6c8">isMemcpyable</a>(<span class="keyword">const</span> <a class="code hl_typedef" href="types_8hpp.html#a6f063358a1ff8e5618d999479da1f657">PlyPropertyConstIterator</a> first, <span class="keyword">const</span> <a class="code hl_typedef" href="types_8hpp.html#a6f063358a1ff8e5618d999479da1f657">PlyPropertyConstIterator</a> last)</div>
-<div class="line"><a id="l00373" name="l00373"></a><span class="lineno">  373</span>{</div>
-<div class="line"><a id="l00374" name="l00374"></a><span class="lineno">  374</span>  <span class="keywordflow">return</span> IsMemcpyable&lt;T&gt;{}(first, last) &amp;&amp; isMemcpyable&lt;U, Ts...&gt;(first + detail::numProperties&lt;T&gt;(), last);</div>
-<div class="line"><a id="l00375" name="l00375"></a><span class="lineno">  375</span>}</div>
+<div class="line"><a id="l00358" name="l00358"></a><span class="lineno">  358</span> </div>
+<div class="line"><a id="l00370" name="l00370"></a><span class="lineno">  370</span><span class="keyword">template</span>&lt;<span class="keyword">typename</span> T, <span class="keyword">typename</span> U, <span class="keyword">typename</span>... Ts&gt;</div>
+<div class="foldopen" id="foldopen00371" data-start="{" data-end="}">
+<div class="line"><a id="l00371" name="l00371"></a><span class="lineno"><a class="line" href="type__traits_8hpp.html#a1d3cac67a1f0930eedbe584a729ecb9d">  371</a></span><span class="keywordtype">bool</span> <a class="code hl_function" href="type__traits_8hpp.html#a949e8fc577d61855004e434f9668a6c8">isMemcpyable</a>(<span class="keyword">const</span> <a class="code hl_typedef" href="types_8hpp.html#a6f063358a1ff8e5618d999479da1f657">PlyPropertyConstIterator</a> first, <span class="keyword">const</span> <a class="code hl_typedef" href="types_8hpp.html#a6f063358a1ff8e5618d999479da1f657">PlyPropertyConstIterator</a> last)</div>
+<div class="line"><a id="l00372" name="l00372"></a><span class="lineno">  372</span>{</div>
+<div class="line"><a id="l00373" name="l00373"></a><span class="lineno">  373</span>  <span class="keywordflow">return</span> IsMemcpyable&lt;T&gt;{}(first, last) &amp;&amp; isMemcpyable&lt;U, Ts...&gt;(first + detail::numProperties&lt;T&gt;(), last);</div>
+<div class="line"><a id="l00374" name="l00374"></a><span class="lineno">  374</span>}</div>
 </div>
-<div class="line"><a id="l00376" name="l00376"></a><span class="lineno">  376</span> </div>
-<div class="line"><a id="l00377" name="l00377"></a><span class="lineno">  377</span>}</div>
-<div class="line"><a id="l00378" name="l00378"></a><span class="lineno">  378</span> </div>
-<div class="line"><a id="l00379" name="l00379"></a><span class="lineno">  379</span><span class="preprocessor">#endif</span></div>
+<div class="line"><a id="l00375" name="l00375"></a><span class="lineno">  375</span> </div>
+<div class="line"><a id="l00376" name="l00376"></a><span class="lineno">  376</span>}</div>
+<div class="line"><a id="l00377" name="l00377"></a><span class="lineno">  377</span> </div>
+<div class="line"><a id="l00378" name="l00378"></a><span class="lineno">  378</span><span class="preprocessor">#endif</span></div>
 <div class="ttc" id="areflect_8hpp_html"><div class="ttname"><a href="reflect_8hpp.html">reflect.hpp</a></div></div>
 <div class="ttc" id="astd_8hpp_html"><div class="ttname"><a href="std_8hpp.html">std.hpp</a></div></div>
 <div class="ttc" id="astd_8hpp_html_a22be282111b7b6256dc2c29da0d69521"><div class="ttname"><a href="std_8hpp.html#a22be282111b7b6256dc2c29da0d69521">plywoot::detail::align</a></div><div class="ttdeci">constexpr Ptr align(Ptr ptr, std::size_t alignment)</div><div class="ttdef"><b>Definition</b> <a href="std_8hpp_source.html#l00050">std.hpp:50</a></div></div>
 <div class="ttc" id="atype__traits_8hpp_html_a21f232f6b38f177d0f9bfa80c468ab76"><div class="ttname"><a href="type__traits_8hpp.html#a21f232f6b38f177d0f9bfa80c468ab76">plywoot::detail::isTriviallyCopyable</a></div><div class="ttdeci">constexpr bool isTriviallyCopyable()</div><div class="ttdef"><b>Definition</b> <a href="type__traits_8hpp_source.html#l00308">type_traits.hpp:308</a></div></div>
-<div class="ttc" id="atype__traits_8hpp_html_a484093026f80593157cdb54b7473c762"><div class="ttname"><a href="type__traits_8hpp.html#a484093026f80593157cdb54b7473c762">plywoot::detail::numProperties</a></div><div class="ttdeci">constexpr std::size_t numProperties()</div><div class="ttdef"><b>Definition</b> <a href="type__traits_8hpp_source.html#l00118">type_traits.hpp:118</a></div></div>
 <div class="ttc" id="atype__traits_8hpp_html_a6cb6654941b40e7a8b7739c2f7ad79be"><div class="ttname"><a href="type__traits_8hpp.html#a6cb6654941b40e7a8b7739c2f7ad79be">plywoot::detail::isPacked</a></div><div class="ttdeci">constexpr bool isPacked(uintptr_t offset=0)</div><div class="ttdef"><b>Definition</b> <a href="type__traits_8hpp_source.html#l00283">type_traits.hpp:283</a></div></div>
 <div class="ttc" id="atype__traits_8hpp_html_a7e88f7ac5dbc8e189b8ca864c23628e2"><div class="ttname"><a href="type__traits_8hpp.html#a7e88f7ac5dbc8e189b8ca864c23628e2">plywoot::detail::sizeOf</a></div><div class="ttdeci">constexpr std::size_t sizeOf()</div><div class="ttdef"><b>Definition</b> <a href="type__traits_8hpp_source.html#l00211">type_traits.hpp:211</a></div></div>
-<div class="ttc" id="atype__traits_8hpp_html_a949e8fc577d61855004e434f9668a6c8"><div class="ttname"><a href="type__traits_8hpp.html#a949e8fc577d61855004e434f9668a6c8">plywoot::detail::isMemcpyable</a></div><div class="ttdeci">bool isMemcpyable(const PlyPropertyConstIterator first, const PlyPropertyConstIterator last)</div><div class="ttdef"><b>Definition</b> <a href="type__traits_8hpp_source.html#l00355">type_traits.hpp:355</a></div></div>
+<div class="ttc" id="atype__traits_8hpp_html_a949e8fc577d61855004e434f9668a6c8"><div class="ttname"><a href="type__traits_8hpp.html#a949e8fc577d61855004e434f9668a6c8">plywoot::detail::isMemcpyable</a></div><div class="ttdeci">bool isMemcpyable(const PlyPropertyConstIterator first, const PlyPropertyConstIterator last)</div><div class="ttdef"><b>Definition</b> <a href="type__traits_8hpp_source.html#l00354">type_traits.hpp:354</a></div></div>
 <div class="ttc" id="atype__traits_8hpp_html_a9f3b38074ccbc08f820609bebf024940"><div class="ttname"><a href="type__traits_8hpp.html#a9f3b38074ccbc08f820609bebf024940">plywoot::detail::isSame</a></div><div class="ttdeci">constexpr bool isSame(PlyDataType type)</div><div class="ttdef"><b>Definition</b> <a href="type__traits_8hpp_source.html#l00130">type_traits.hpp:130</a></div></div>
+<div class="ttc" id="atype__traits_8hpp_html_a9f6c50bd5efbd2effe92c9fe3588c5c3"><div class="ttname"><a href="type__traits_8hpp.html#a9f6c50bd5efbd2effe92c9fe3588c5c3">plywoot::detail::numProperties</a></div><div class="ttdeci">constexpr std::ptrdiff_t numProperties()</div><div class="ttdef"><b>Definition</b> <a href="type__traits_8hpp_source.html#l00118">type_traits.hpp:118</a></div></div>
 <div class="ttc" id="atype__traits_8hpp_html_ab2de45368537923625bc9978466d8a1f"><div class="ttname"><a href="type__traits_8hpp.html#ab2de45368537923625bc9978466d8a1f">plywoot::detail::isList</a></div><div class="ttdeci">constexpr bool isList()</div><div class="ttdef"><b>Definition</b> <a href="type__traits_8hpp_source.html#l00066">type_traits.hpp:66</a></div></div>
 <div class="ttc" id="atypes_8hpp_html"><div class="ttname"><a href="types_8hpp.html">types.hpp</a></div></div>
 <div class="ttc" id="atypes_8hpp_html_a6f063358a1ff8e5618d999479da1f657"><div class="ttname"><a href="types_8hpp.html#a6f063358a1ff8e5618d999479da1f657">plywoot::PlyPropertyConstIterator</a></div><div class="ttdeci">std::vector&lt; PlyProperty &gt;::const_iterator PlyPropertyConstIterator</div><div class="ttdef"><b>Definition</b> <a href="types_8hpp_source.html#l00145">types.hpp:145</a></div></div>

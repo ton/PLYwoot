@@ -268,7 +268,7 @@ $(document).ready(function(){initNavTree('buffered__istream_8hpp_source.html',''
 <div class="line"><a id="l00186" name="l00186"></a><span class="lineno">  186</span>        <span class="comment">// In case the buffer is only partially filled, fill the remainder with</span></div>
 <div class="line"><a id="l00187" name="l00187"></a><span class="lineno">  187</span>        <span class="comment">// EOF characters.</span></div>
 <div class="line"><a id="l00188" name="l00188"></a><span class="lineno">  188</span>        remaining += is_.gcount();</div>
-<div class="line"><a id="l00189" name="l00189"></a><span class="lineno">  189</span>        std::fill_n(buffer_.get() + remaining, IStreamBufferSize - remaining, EOF);</div>
+<div class="line"><a id="l00189" name="l00189"></a><span class="lineno">  189</span>        std::fill_n(buffer_.get() + remaining, IStreamBufferSize - remaining, <span class="keyword">static_cast&lt;</span><span class="keywordtype">char</span><span class="keyword">&gt;</span>(EOF));</div>
 <div class="line"><a id="l00190" name="l00190"></a><span class="lineno">  190</span>      }</div>
 <div class="line"><a id="l00191" name="l00191"></a><span class="lineno">  191</span> </div>
 <div class="line"><a id="l00192" name="l00192"></a><span class="lineno">  192</span>      c_ = buffer_.get();</div>
@@ -283,7 +283,7 @@ $(document).ready(function(){initNavTree('buffered__istream_8hpp_source.html',''
 <div class="line"><a id="l00202" name="l00202"></a><span class="lineno">  202</span>      <span class="comment">// In case the buffer is only partially filled, fill the remainder with</span></div>
 <div class="line"><a id="l00203" name="l00203"></a><span class="lineno">  203</span>      <span class="comment">// EOF characters.</span></div>
 <div class="line"><a id="l00204" name="l00204"></a><span class="lineno">  204</span>      <span class="keyword">auto</span> remaining = is_.gcount();</div>
-<div class="line"><a id="l00205" name="l00205"></a><span class="lineno">  205</span>      std::fill_n(buffer_.get() + remaining, IStreamBufferSize - remaining, EOF);</div>
+<div class="line"><a id="l00205" name="l00205"></a><span class="lineno">  205</span>      std::fill_n(buffer_.get() + remaining, IStreamBufferSize - remaining, <span class="keyword">static_cast&lt;</span><span class="keywordtype">char</span><span class="keyword">&gt;</span>(EOF));</div>
 <div class="line"><a id="l00206" name="l00206"></a><span class="lineno">  206</span>    }</div>
 <div class="line"><a id="l00207" name="l00207"></a><span class="lineno">  207</span> </div>
 <div class="line"><a id="l00208" name="l00208"></a><span class="lineno">  208</span>    c_ = buffer_.get();</div>

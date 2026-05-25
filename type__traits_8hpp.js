@@ -8,7 +8,7 @@ var type__traits_8hpp =
     [ "isPacked", "type__traits_8hpp.html#ae6cd6991c98d4ae09d21c3062e202f0c", null ],
     [ "isSame", "type__traits_8hpp.html#a9f3b38074ccbc08f820609bebf024940", null ],
     [ "isTriviallyCopyable", "type__traits_8hpp.html#a21f232f6b38f177d0f9bfa80c468ab76", null ],
-    [ "numProperties", "type__traits_8hpp.html#a484093026f80593157cdb54b7473c762", null ],
+    [ "numProperties", "type__traits_8hpp.html#a9f6c50bd5efbd2effe92c9fe3588c5c3", null ],
     [ "sizeOf", "type__traits_8hpp.html#a7e88f7ac5dbc8e189b8ca864c23628e2", null ],
     [ "sizeOf", "type__traits_8hpp.html#a936516bc0b351718a30904368623f3f2", null ]
 ];
