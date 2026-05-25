@@ -92,7 +92,7 @@ Miscellaneous options
 ///     arguments are valid
 std::optional<std::string> maybeValidationError(
     const std::optional<std::filesystem::path> &inputFilename,
-    const std::optional<std::filesystem::path> &outputFilename,
+    const std::optional<std::filesystem::path> &,
     const std::optional<plywoot::PlyFormat> &requestedFormat)
 {
   if (!inputFilename) { return "missing input file specified, specify '-h' to display usage information"; }

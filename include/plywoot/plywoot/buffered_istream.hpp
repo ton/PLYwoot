@@ -186,7 +186,7 @@ public:
         // In case the buffer is only partially filled, fill the remainder with
         // EOF characters.
         remaining += is_.gcount();
-        std::fill_n(buffer_.get() + remaining, IStreamBufferSize - remaining, EOF);
+        std::fill_n(buffer_.get() + remaining, IStreamBufferSize - remaining, static_cast<char>(EOF));
       }
 
       c_ = buffer_.get();
@@ -202,7 +202,7 @@ private:
       // In case the buffer is only partially filled, fill the remainder with
       // EOF characters.
       auto remaining = is_.gcount();
-      std::fill_n(buffer_.get() + remaining, IStreamBufferSize - remaining, EOF);
+      std::fill_n(buffer_.get() + remaining, IStreamBufferSize - remaining, static_cast<char>(EOF));
     }
 
     c_ = buffer_.get();
